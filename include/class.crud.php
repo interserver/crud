@@ -1328,7 +1328,7 @@
 				$GLOBALS['tf']->accounts->restore_db();
 				$GLOBALS['tf']->history->restore_db();
 				$GLOBALS['tf']->add_html_head_js('<script src="ga_my.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
-				$GLOBALS['tf']->add_html_head_js('<script src="jquery/customSelect/jquery.customSelect.min.js"></script>');
+				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 				$smarty = new TFSmarty;
 				$smarty->assign('module', $this->module);
 				$smarty->assign('use_size', $this->use_size);
