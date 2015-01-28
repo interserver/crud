@@ -4,7 +4,7 @@
 	 * Last Changed: $LastChangedDate$
 	 * @author $Author$
 	 * @version $Revision$
-	 * @copyright 2014
+	 * @copyright 2015
 	 * @package MyAdmin
 	 * @category Billing
 	 * @TODO Add API Interface to this
