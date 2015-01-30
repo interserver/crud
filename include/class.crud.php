@@ -767,7 +767,7 @@
 				variables->request['pp_payerid'] != '')
 			{
 				$payment_method = 'paypal';
-				require_once ('billing/paypal_checkout.functions.php');
+				require_once (INCLUDE_ROOT.'/billing/paypal_checkout.functions.php');
 				$token = $GLOBALS['tf']->variables->request['pp_token'];
 				$payerID = $GLOBALS['tf']->variables->request['pp_payerid'];
 				$res = unserialize(base64_decode($GLOBALS['tf']->session->appsession('pp_details')));
