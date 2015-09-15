@@ -774,8 +774,8 @@
 				$GLOBALS['tf']->session->delappsession('pp_details');
 				$resArray = unserialize(base64_decode($GLOBALS['tf']->session->appsession('pp_confirm')));
 				$GLOBALS['tf']->session->delappsession('pp_confirm');
-				billingd_log(print_r($res, true));
-				billingd_log(print_r($resArray, true));
+				billingd_log(str_replace("\n", "", print_r($res, true)));
+				billingd_log(str_replace("\n", "", print_r($resArray, true)));
 				$finalPaymentAmount = $res["AMT"];
 				$paymentType = 'Sale';
 				$currencyCodeType = $res['CURRENCYCODE'];
