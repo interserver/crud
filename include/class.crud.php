@@ -994,7 +994,7 @@
 					$extra .= "<br>";
 					$smarty->assign('extra', $extra);
 					$smarty->assign("settings", $this->settings);
-					$msg = $smarty->fetch('client_email_service_paytoactivate.tpl');
+					$msg = $smarty->fetch('email/client_email_service_paytoactivate.tpl');
 					$headers = '';
 					$headers .= "MIME-Version: 1.0" . EMAIL_NEWLINE;
 					$headers .= "Content-Type: text/html; charset=iso-8859-1" . EMAIL_NEWLINE;
