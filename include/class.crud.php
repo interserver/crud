@@ -599,6 +599,8 @@
 			{
 				$this->continue = false;
 			}
+			if ($this->continue == true && !verify_csrf('crud_order_form'))
+				$this->continue = false;
 		}
 
 		public function confirm_order()
@@ -949,23 +951,18 @@
 					$table->set_title($this->settings['TBLNAME'] . ' Order');
 					$table->set_options('style="max-width: 500px;"');
 					$table->set_colspan(2);
-					$table->add_field('	Thank you for your order of a ' . $this->settings['TBLNAME'] . '. Your ' . $this->settings['TBLNAME'] . ' is not yet active - ' . 'to complete activation of the ' . $this->settings['TBLNAME'] .
-						' please send a complete payment of US $' . $this->total_cost . ' through paypal or ' . $table->make_link('choice=update_info', 'login here to setup Credit Card billing') . ' When payment received, your ' .
-						$this->settings['TBLNAME'] . ' will be immediately activated. An email with the paypal ' . 'payment link has been sent as well as included below.<br><br><br><br>Thank you for your order of a ' . $this->settings['TBLNAME'] .
-						'.', 'l');
+					$table->add_field('	Thank you for your order of a ' . $this->settings['TBLNAME'] . '. Your ' . $this->settings['TBLNAME'] . ' is not yet active - ' . 'to complete activation of the ' . $this->settings['TBLNAME'] . ' please send a complete payment of US $' . $this->total_cost . ' through paypal or ' . $table->make_link('choice=update_info', 'login here to setup Credit Card billing') . ' When payment received, your ' . $this->settings['TBLNAME'] . ' will be immediately activated. An email with the paypal ' . 'payment link has been sent as well as included below.<br><br><br><br>Thank you for your order of a ' . $this->settings['TBLNAME'] . '.', 'l');
 					$table->add_row();
 					if ($GLOBALS['tf']->accounts->data['payment_method'] == 'cc')
 					{
-						$table->add_field(get_paypal_link(implode(',', $this->iids), $this->total_cost, $invoice_description, '<img src="' . URL_ROOT .
-							'/images/icons/creditcard_paypal.png" border="0" style="float: none;"><br>Pay via PayPal'));
+						$table->add_field(get_paypal_link(implode(',', $this->iids), $this->total_cost, $invoice_description, '<img src="' . URL_ROOT . '/images/icons/creditcard_paypal.png" border="0" style="float: none;"><br>Pay via PayPal'));
 						$table->add_field($table->make_link('choice=none.pay_balance&amp;module=' . $this->module, '<img src="' . URL_ROOT . '/images/icons/creditcard_visa.png" border="0" style="float: none;"><br>Pay via Credit Card'));
 						$table->add_row();
 					}
 					else
 					{
 						$table->set_colspan(2);
-						$table->add_field(get_paypal_link(implode(',', $this->iids), $this->total_cost, $invoice_description, '<img src="' . URL_ROOT .
-							'/images/icons/creditcard_paypal.png" border="0" style="float: none;"><br>Pay via PayPal'));
+						$table->add_field(get_paypal_link(implode(',', $this->iids), $this->total_cost, $invoice_description, '<img src="' . URL_ROOT . '/images/icons/creditcard_paypal.png" border="0" style="float: none;"><br>Pay via PayPal'));
 						$table->add_row();
 					}
 					add_output($table->get_table());
@@ -1028,6 +1025,7 @@
 				{
 					$table->add_hidden('custid', $this->custid);
 				}
+				$table->csrf('crud_order_form');
 				$table->add_hidden('module', $this->module);
 				$table_pos = 0;
 				foreach ($this->fields as $idx => $field)
@@ -1077,13 +1075,9 @@
 									break;
 								case 'func':
 									if (is_array($data))
-									{
 										$func = $data['data'];
-									}
 									else
-									{
 										$func = $data;
-									}
 									$field_text = $this->$func();
 									break;
 							}
