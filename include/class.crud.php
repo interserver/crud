@@ -1005,7 +1005,7 @@
 					$smarty->assign("module", $this->module);
 					$smarty->assign("total", $this->total_cost);
 					$smarty->assign("orderid", $this->service_id);
-					add_output($smarty->fetch('google.tpl'));
+					add_output($smarty->fetch('analytics/google.tpl'));
 				}
 			}
 		}
