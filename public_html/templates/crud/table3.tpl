@@ -18,12 +18,16 @@
 		<div class="col-md-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					Title - sortable list
+{if isset($title)}
+					{$title}
+{/if}
 					<div class="btn-group pull-right">
 						<button class="btn btn-primary btn-xs panel-reset-settings" type="button" title="Reset Panel Settings to Default State">
-							<i class="glyphicon glyphicon-off"></i></button>
+							<i class="glyphicon glyphicon-off"></i>
+						</button>
 						<button class="panel-collapse btn btn-primary btn-xs" title="Expand or Collapse Panel">
-							<i class="glyphicon glyphicon-chevron-down"></i></button>
+							<i class="glyphicon glyphicon-chevron-down"></i>
+						</button>
 					</div>
 					<div class="pull-right action-buttons">
 						<div class="btn-group pull-right">

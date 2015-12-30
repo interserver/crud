@@ -4,76 +4,48 @@
 		<div class="col-md-12">
 			<div class="table-responsive">
 				<table id="mytable" class="table table-bordred table-striped table-hover">
-					<thead>
-						<th><input type="checkbox" id="checkall" /></th>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Address</th>
-						<th>Email</th>
-						<th>Contact</th>
-						<th>Edit</th>
-						<th>Delete</th>
+{if isset($title) || isset($table_headers)}
+					<thead class=">
+{if isset($title)}
+						<tr>
+							<th><input type="checkbox" id="checkall" /></th>
+							<th style="text-align:center;" colspan={$titcolspan}>
+								{$title}
+							</th>
+						</tr>
+{/if}
+{if isset($table_headers)}
+{section name=itemrow loop=$table_headers}
+						<tr {$table_headers[itemrow].rowopts}>
+							<th><input type="checkbox" id="checkall" /></th>
+{section name=itemcol loop=$table_headers[itemrow].cols}
+							<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
+								{$table_headers[itemrow].cols[itemcol].text}
+											</th>
+{/section}
+						</tr>
+{/section}
+{/if}
 					</thead>
 					<tbody>
-						<tr>
+{section name=itemrow loop=$table_rows}
+						<tr {$table_rows[itemrow].rowopts}>
 							<td><input type="checkbox" class="checkthis" /></td>
-							<td>Mohsin</td>
-							<td>Irshad</td>
-							<td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-							<td>isometric.mohsin@gmail.com</td>
-							<td>+923335586757</td>
+{section name=itemcol loop=$table_rows[itemrow].cols}
+							<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {$table_rows[itemrow].cols[itemcol].colopts}>
+{assign var=value from=$table_rows[itemrow].cols[itemcol].text}
+{if $value|in_array:$label_rep}
+								<span class="label label-sm label-{$label_rep.$value}">{$value}</span>
+{else}
+								{$value}
+{/if}
+							</td>
+{/section}
 							<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
 							<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
 						</tr>
-						<tr>
-							<td><input type="checkbox" class="checkthis" /></td>
-							<td>Mohsin</td>
-							<td>Irshad</td>
-							<td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-							<td>isometric.mohsin@gmail.com</td>
-							<td>+923335586757</td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
-						</tr>
-
-
-						<tr>
-							<td><input type="checkbox" class="checkthis" /></td>
-							<td>Mohsin</td>
-							<td>Irshad</td>
-							<td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-							<td>isometric.mohsin@gmail.com</td>
-							<td>+923335586757</td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
-						</tr>
-
-
-
-						<tr>
-							<td><input type="checkbox" class="checkthis" /></td>
-							<td>Mohsin</td>
-							<td>Irshad</td>
-							<td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-							<td>isometric.mohsin@gmail.com</td>
-							<td>+923335586757</td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
-						</tr>
-
-
-						<tr>
-							<td><input type="checkbox" class="checkthis" /></td>
-							<td>Mohsin</td>
-							<td>Irshad</td>
-							<td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-							<td>isometric.mohsin@gmail.com</td>
-							<td>+923335586757</td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-							<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
-						</tr>
+{/section}
 					</tbody>
-
 				</table>
 				<div class="clearfix"></div>
 				<ul class="pagination pull-right">

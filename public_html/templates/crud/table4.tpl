@@ -34,43 +34,47 @@
 	<div class="row">
 		<div class="panel panel-primary filterable">
 			<div class="panel-heading">
-				<h3 class="panel-title">Users</h3>
+{if isset($title)}
+				<h3 class="panel-title">{$title}</h3>
+{/if}
 				<div class="pull-right">
 					<button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
 				</div>
 			</div>
 			<table class="table table-hover">
 				<thead>
-					<tr class="filters">
-						<th><input type="text" class="form-control" placeholder="#" disabled></th>
-						<th><input type="text" class="form-control" placeholder="First Name" disabled></th>
-						<th><input type="text" class="form-control" placeholder="Last Name" disabled></th>
-						<th><input type="text" class="form-control" placeholder="Username" disabled></th>
-						<th><input type="text" class="form-control" placeholder="Actions" disabled></th>
+{if isset($table_headers)}
+{section name=itemrow loop=$table_headers}
+					<tr class="filters" {$table_headers[itemrow].rowopts}>
+{section name=itemcol loop=$table_headers[itemrow].cols}
+						<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
+							<input type="text" class="form-control" placeholder="{$table_headers[itemrow].cols[itemcol].text}" disabled>
+						</th>
+{/section}
 					</tr>
+{/section}
+{/if}
 				</thead>
 				<tbody>
-					<tr>
-						<td>1</td>
-						<td>Mark</td>
-						<td>Otto</td>
-						<td>@mdo</td>
-						<td><a href="#" style="padding-right: 10px;" title="Edit User"><i class="glyphicon glyphicon-edit color-blue"></i></a> <a href="#" style="padding-right: 10px;" title="Account History"><i class="glyphicon glyphicon-time color-green"></i></a> <a href="#" style="padding-right: 10px" title="Delete User"><i class="glyphicon glyphicon-remove-sign color-red"></i></a></td>
+{section name=itemrow loop=$table_rows}
+					<tr {$table_rows[itemrow].rowopts}>
+{section name=itemcol loop=$table_rows[itemrow].cols}
+						<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {$table_rows[itemrow].cols[itemcol].colopts}>
+{assign var=value from=$table_rows[itemrow].cols[itemcol].text}
+{if $value|in_array:$label_rep}
+							<span class="label label-sm label-{$label_rep.$value}">{$value}</span>
+{else}
+							{$value}
+{/if}
+						</td>
+{/section}
+						<td>
+							<a href="#" style="padding-right: 10px;" title="Edit User"><i class="glyphicon glyphicon-edit color-blue"></i></a>
+							<a href="#" style="padding-right: 10px;" title="Account History"><i class="glyphicon glyphicon-time color-green"></i></a>
+							<a href="#" style="padding-right: 10px" title="Delete User"><i class="glyphicon glyphicon-remove-sign color-red"></i></a>
+						</td>
 					</tr>
-					<tr>
-						<td>2</td>
-						<td>Jacob</td>
-						<td>Thornton</td>
-						<td>@fat</td>
-						<td><a href="#" style="padding-right: 10px;" title="Edit User"><i class="glyphicon glyphicon-edit color-blue"></i></a> <a href="#" style="padding-right: 10px;" title="Account History"><i class="glyphicon glyphicon-time color-green"></i></a> <a href="#" style="padding-right: 10px" title="Delete User"><i class="glyphicon glyphicon-remove-sign color-red"></i></a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>Larry</td>
-						<td>the Bird</td>
-						<td>@twitter</td>
-						<td><a href="#" style="padding-right: 10px;" title="Edit User"><i class="glyphicon glyphicon-edit color-blue"></i></a> <a href="#" style="padding-right: 10px;" title="Account History"><i class="glyphicon glyphicon-time color-green"></i></a> <a href="#" style="padding-right: 10px" title="Delete User"><i class="glyphicon glyphicon-remove-sign color-red"></i></a></td>
-					</tr>
+{/section}
 				</tbody>
 			</table>
 		</div>
