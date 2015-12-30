@@ -45,11 +45,13 @@
 			{
 				$this->query = $table_or_query;
 				$this->type = 'query';
+				$this->load_tables();
 			}
 			else
 			{
 				$this->table = $table_or_query;
 				$this->type = 'table';
+				$this->tables[$this->table] = $this->get_table_details($this->table);
 			}
 			$this->set_title();
 			$this->choice = $GLOBALS['tf']->variables->request['choice'];
@@ -57,26 +59,38 @@
 
 		public function load_tables()
 		{
-			$this->db->query("show full tables where Table_Type = 'BASE TABLE'", __LINE__, __FILE__);
-			while ($this->db->next_record(MYSQL_NUM))
-				$this->tables[] = $this->db->f(0)
+			$db = clone $this->db;
+			$db->query("show full tables where Table_Type = 'BASE TABLE'", __LINE__, __FILE__);
+			while ($db->next_record(MYSQL_NUM))
+			{
+				$this->tables[$db->f(0)] = null;
+				$this->tables[$db->f(0)] = $this->get_table_details($db->f(0));
+			}
 		}
 
-		public function load_details()
+		public function get_table_details($table)
 		{
-
+			$db = clone $this->db;
+			$db->query("show full columns from {$table}", __LINE__, __FILE__);
+			$fields = array();
+			while ($db->next_record(MYSQL_ASSOC))
+			{
+				$fields[$db->Record['Field']] = $db->Record;
+			}
+			return $fields;
 		}
 
 		public function go()
 		{
-			$this->list();
+			$this->list_records();
 		}
 
-		public function list()
+		public function list_records()
 		{
-
+			echo '<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>';
+			$smarty = new TFSmarty();
+			//$smarty->assign('')
 		}
-
 		public function error($message)
 		{
 			dialog('Error', $message);
