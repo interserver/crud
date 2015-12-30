@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * Ordering Functionality
+	 * CRUD Class
 	 * Last Changed: $LastChangedDate$
 	 * @author $Author$
 	 * @version $Revision$
@@ -21,6 +21,7 @@
 		public $query;
 		public $db;
 		public $settings;
+		public $tables = array();
 
 		public $title = '';
 		public $columns = 3;
@@ -41,11 +42,39 @@
 			$this->settings = get_module_settings($this->module);
 			$this->db = get_module_db($this->module);
 			if (strpos($table_or_query, ' '))
+			{
 				$this->query = $table_or_query;
+				$this->type = 'query';
+			}
 			else
+			{
 				$this->table = $table_or_query;
+				$this->type = 'table';
+			}
 			$this->set_title();
 			$this->choice = $GLOBALS['tf']->variables->request['choice'];
+		}
+
+		public function load_tables()
+		{
+			$this->db->query("show full tables where Table_Type = 'BASE TABLE'", __LINE__, __FILE__);
+			while ($this->db->next_record(MYSQL_NUM))
+				$this->tables[] = $this->db->f(0)
+		}
+
+		public function load_details()
+		{
+
+		}
+
+		public function go()
+		{
+			$this->list();
+		}
+
+		public function list()
+		{
+
 		}
 
 		public function error($message)
