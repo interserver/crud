@@ -17,23 +17,10 @@
 		public $debug = false;
 		public $module;
 		public $choice;
-		public $use_service_select = true;
-		public $service_select_field;
-		public $service_select_function;
-		public $use_coupon = true;
-		public $coupon_field;
-		public $use_period = true;
-		public $period_discount = true;
-		public $period_minimum = 1;
-		public $period_field;
-		public $use_size = false;
-		public $size_field;
-
+		public $table;
+		public $query;
 		public $db;
 		public $settings;
-		public $custid = false;
-		public $data = false;
-		public $service_types = array();
 
 		public $title = '';
 		public $columns = 3;
@@ -48,74 +35,17 @@
 		public $price_align = 'r';
 		public $price_text_align = 'r';
 
-		public $stage = 1;
-		public $paid = false;
-		public $confirm = false;
-		public $continue = false;
-		public $coupon = '';
-		public $coupon_code = 0;
-		public $payment_vars = array();
-		public $errors = array();
-		public $error_fields = array();
-		public $set_vars = array();
-		public $checkout_items = array();
-		public $total_cost = 0;
-		public $service_cost = 0;
-		public $service_type = 0;
-		public $slice_cost = 0;
-		public $repeat_slice_cost = 0;
-		public $original_slice_cost = 0;
-		public $original_cost = 0;
-		public $repeat_service_cost = 0;
-		public $monthly_service_cost = 0;
-		public $iid = 0;
-		public $iids = array();
-		public $real_iids = array();
-		public $service_id = 0;
-		public $invoice_description = '';
-		public $cj_params = array();
-		public $returnURL = 0;
-
-
-		public function __construct($module, $choice = false)
+		public function __construct($table_or_query, $module = 'default')
 		{
 			$this->module = get_module_name($module);
 			$this->settings = get_module_settings($this->module);
-			$GLOBALS['tf']->accounts->set_db_module($this->module);
-			$GLOBALS['tf']->history->set_db_module($this->module);
 			$this->db = get_module_db($this->module);
-			$this->service_types = run_event('get_service_types', false, $this->module);
-			$this->set_title();
-			if ($choice === false)
-			{
-				$choice = $GLOBALS['tf']->variables->request['choice'];
-			}
-			$this->choice = $choice;
-			$this->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
-			$this->column_templates[] = array('text' => '%field%', 'align' => 'r');
-			$this->column_templates[] = array('text' => '', 'align' => 'r');
-			$this->use_service_select($this->use_service_select);
-			$this->use_period($this->use_period, is_string($this->period_field) && strlen($this->period_field) > 0 ? $this->period_field : false);
-			//$this->use_size($this->use_size, is_string($this->size_field) && strlen($this->size_field) > 0 ? $this->size_field : false);
-			$this->set_payment_vars();
-			$this->use_coupon($this->use_coupon);
-			$this->add_admin_confirmation_field('paid', 'Paid', 'no', 'select', array(
-				'values' => array('no', 'yes'),
-				'labels' => array('No', 'Yes'),
-				'default' => 'no',
-			));
-		}
-
-		public function set_payment_vars($payment_vars = false)
-		{
-			if ($payment_vars === false)
-			{
-				$this->payment_vars = array('pp_token', 'payza_token');
-			}
+			if (strpos($table_or_query, ' '))
+				$this->query = $table_or_query;
 			else
-			{
-				$this->payment_vars = $payment_vars;
-			}
+				$this->table = $table_or_query;
+			$this->set_title();
+			$this->choice = $GLOBALS['tf']->variables->request['choice'];
 		}
 
 		public function error($message)
@@ -135,51 +65,6 @@
 				billingd_log($message);
 		}
 
-		public function ensure_custid()
-		{
-			if ($this->custid === false)
-			{
-				return $this->set_custid();
-			}
-			return $this->custid;
-		}
-
-		public function set_custid($custid = false)
-		{
-			if ($custid === false)
-			{
-				if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
-				{
-					$this->custid = $GLOBALS['tf']->variables->request['custid'];
-				}
-				else
-				{
-					if (isset($GLOBALS['tf']->session->account_id) && $GLOBALS['tf']->session->account_id > 0)
-					{
-						$this->custid = get_custid($GLOBALS['tf']->session->account_id, $this->module);
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				$this->custid = $custid;
-			}
-			if ($this->custid !== false)
-			{
-				$this->custid = intval($this->custid);
-				$this->data = $GLOBALS['tf']->accounts->read($this->custid);
-				return $this->custid;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
 		public function set_title($title = false)
 		{
 			if ($title === false)
@@ -187,174 +72,6 @@
 				$title = 'Purchase ' . $this->settings['TITLE'];
 			}
 			$this->title = $title;
-		}
-
-		public function use_service_select($use = true, $field = 'service_type')
-		{
-			if ($field === false)
-			{
-				$field = 'service_type';
-			}
-			$this->use_service_select = $use;
-			$this->service_select_field = $field;
-			if ($use === false)
-			{
-				//if (isset($this->fields[$field]))
-				if (isset($this->fields[array_search($field, $this->fields)]))
-				{
-					unset($this->fields[array_search($field, $this->fields)]);
-					unset($this->input_types[array_search($field, $this->input_types)]);
-					unset($this->labels[array_search($field, $this->labels)]);
-					unset($this->defaults[array_search($field, $this->defaults)]);
-					unset($this->validations[array_search($field, $this->validations)]);
-				}
-			}
-			else
-			{
-				$labels = array();
-				foreach ($this->service_types as $service_id => $service_data)
-				{
-					if (!isset($default))
-					{
-						$default = $service_id;
-					}
-					$labels[] = $service_data['services_name'];
-				}
-				$this->add_field($field, 'Package', $default, array('int', 'in_array' => array_keys($this->service_types)),'select', array(
-					'values' => array_keys($this->service_types),
-					'labels' => $labels,
-					'default' => $default,
-				));
-			}
-		}
-
-		public function use_coupon($use = true, $field = 'coupon')
-		{
-			if ($field === false)
-			{
-				$field = 'coupon';
-			}
-			$this->use_coupon = $use;
-			$this->coupon_field = $field;
-			if ($use === false)
-			{
-				//if (isset($this->fields[$field]))
-				if (isset($this->fields[array_search($field, $this->fields)]))
-				{
-					unset($this->fields[array_search($field, $this->fields)]);
-					unset($this->input_types[array_search($field, $this->input_types)]);
-					unset($this->labels[array_search($field, $this->labels)]);
-					unset($this->defaults[array_search($field, $this->defaults)]);
-					unset($this->validations[array_search($field, $this->validations)]);
-					//unset($this->fields[$field]);
-					//unset($this->input_types[$field]);
-					//unset($this->labels[$field]);
-					//unset($this->defaults[$field]);
-					//unset($this->validations[$field]);
-				}
-			}
-			else
-			{
-				$this->add_field($field, 'Coupon', '', false, 'input', array(
-					'length' => 17,
-					'default' => '',
-					'extra' => 'id="coupon" onkeyup="update_coupon();" onChange="update_coupon();" class="customtext"',
-					'prefixhtml' => '<img src="https://my.interserver.net/validate_coupon.php?module='  . $this->module . (isset($GLOBALS['tf']->variables->request[$field]) ? '&coupon=' . htmlspecial($GLOBALS['tf']->variables->request[$field]) : '') . '" id="couponimg" height=20 width=20 style="padding-left: 0px;" alt=""> '
-				));
-			}
-		}
-
-		public function use_size($use = true, $field = 'size')
-		{
-			if ($field === false)
-			{
-				$field = 'size';
-			}
-			$this->use_size = $use;
-			$this->size_field = $field;
-			if ($use === false)
-			{
-				//if (isset($this->fields[$field]))
-				if (isset($this->fields[array_search($field, $this->fields)]))
-				{
-					unset($this->fields[array_search($field, $this->fields)]);
-					unset($this->input_types[array_search($field, $this->input_types)]);
-					unset($this->labels[array_search($field, $this->labels)]);
-					unset($this->defaults[array_search($field, $this->defaults)]);
-					unset($this->validations[array_search($field, $this->validations)]);
-				}
-			}
-			else
-			{
-				$this->add_field($field, ucwords($field), '', array('int'), 'select', array(
-					'values' => $fields,
-					'labels' => $labels,
-					'default' => $default,
-				));
-			}
-		}
-
-		public function use_period($use = true, $field = 'period')
-		{
-			if ($field === false)
-			{
-				$field = 'period';
-			}
-			$this->use_period = $use;
-			$this->period_field = $field;
-			if ($use === false)
-			{
-				//if (isset($this->fields[$field]))
-				if (isset($this->fields[array_search($field, $this->fields)]))
-				{
-					unset($this->fields[array_search($field, $this->fields)]);
-					unset($this->input_types[array_search($field, $this->input_types)]);
-					unset($this->labels[array_search($field, $this->labels)]);
-					unset($this->defaults[array_search($field, $this->defaults)]);
-					unset($this->validations[array_search($field, $this->validations)]);
-				}
-			}
-			else
-			{
-				$all_periods = array(1,3,6,12,24,36);
-				$all_period_labels = array('Monthly','3 Months','6 Months','Yearly','24 Months','36 Months');
-				$values = array();
-				$labels = array();
-				$default = $this->period_minimum;
-				foreach ($all_periods as $idx => $period)
-				{
-					if ($period >= $this->period_minimum)
-					{
-						$label = $all_period_labels[$idx];
-						if ($this->period_discount === true)
-						{
-							$off = round(100 - (100 * get_frequency_discount($period)), 0);
-							if ($off > 0)
-							{
-								$label .= ' (' . $off . '% off)';
-							}
-
-						}
-						$values[] = $period;
-						$labels[] = $label;
-					}
-				}
-				$this->add_field($field, 'Billing Cycle', $this->period_minimum, array('int'), 'select', array(
-					'values' => $values,
-					'labels' => $labels,
-					'default' => $default,
-				));
-			}
-		}
-
-		public function use_period_discount($use = true)
-		{
-			$this->period_discount = $use;
-		}
-
-		public function set_period_minimum($period = 1)
-		{
-			$this->period_minimum = $period;
 		}
 
 		public function add_field_validations($field, $validations)
@@ -462,23 +179,6 @@
 			}
 		}
 
-		public function has_payment_vars()
-		{
-			if ($this->ensure_custid() === false)
-			{
-				$this->error('No Client To Register Purchase With');
-				return false;
-			}
-			foreach ($this->payment_vars as $payment_var)
-			{
-				if (isset($GLOBALS['tf']->variables->request[$payment_var]))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
 		public function add_admin_confirmation_field($field, $label, $default, $type, $data = false)
 		{
 			$this->admin_confirm_fields[$field] = array(
@@ -487,22 +187,6 @@
 				'type' => $type,
 				'data' => $data,
 			);
-		}
-
-		public function select_service($field = 'service_type', $default = false)
-		{
-			$select = '<select name="' . $field . '" class="customsel" onChange="update_service_choices();">';
-			$this->db->query("select * from services where services_module='{$this->module}' and services_buyable=1", __LINE__, __FILE__);
-			if (isset($this->values[$field]))
-			{
-				$default = $this->values[$field];
-			}
-			while ($this->db->next_record(MYSQL_ASSOC))
-			{
-				$select .= '<option value="' . $this->db->Record['services_id'] . '" ' . ($default == $this->db->Record['services_id'] ? 'selected="selected"' : '') . '>' . $this->db->Record['services_name'] . '</option>';
-			}
-			$select .= '</select>';
-			return $select;
 		}
 
 		public function validate_order()
@@ -1346,34 +1030,6 @@
 				$GLOBALS['tf']->add_html_head_js($smarty->fetch('buy_service.js.tpl'));
 				$GLOBALS['tf']->add_html_head_css('<link rel=stylesheet href="templates/buy_service.css" type="text/css">');
 			}
-		}
-
-		public function order()
-		{
-			if ($this->debug === true)
-			{
-				//add_output('<pre style="text-align: left;">');
-				//add_output('Fields:  ' . print_r($this->fields, true) . '<br>');
-				//add_output('</pre>');
-			}
-			page_title($this->title);
-			$this->validate_order();
-			if ($this->continue)
-			{
-				if (!isset($GLOBALS['tf']->variables->request['confirm']) && !$this->has_payment_vars())
-				{
-					$this->confirm_order();
-				}
-			}
-			if ($this->continue)
-			{
-				$this->check_payment();
-			}
-			if (!$this->continue && !$this->confirm)
-			{
-				$this->order_form();
-			}
-			add_output(file_get_contents(INCLUDE_ROOT . '/../public_html/templates/livechat.html'));
 		}
 	}
 ?>
