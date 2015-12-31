@@ -1,4 +1,11 @@
-{assign var=label_rep from=['active'=>'success','pending'=>'info','locked'=>'danger','suspended'=>'warning','canceled'=>'warning','expired'=>'danger','terminated'=>'danger']}
+{assign var=label_rep value=[]}
+{assign var=label_rep.active value='success'}
+{assign var=label_rep.pending value='info'}
+{assign var=label_rep.locked value='danger'}
+{assign var=label_rep.suspended value='warning'}
+{assign var=label_rep.canceled value='warning'}
+{assign var=label_rep.expired value='danger'}
+{assign var=label_rep.terminated value='danger'}
 <div class="row">
 	<div class="col-md-12">
 		<div class="table-responsive">

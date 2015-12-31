@@ -1,7 +1,6 @@
-{assign var=label_rep from=['active'=>'success','pending'=>'info','locked'=>'danger','suspended'=>'warning','canceled'=>'warning','expired'=>'danger','terminated'=>'danger']}
 <table class="table table-bordered table-hover" {$tableopts}>
 {if isset($title) || isset($table_headers)}
-	<thead class=">
+	<thead class="">
 {if isset($title)}
 		<tr>
 			<th style="text-align:center;" colspan={$titcolspan}>
@@ -27,7 +26,7 @@
 		<tr {$table_rows[itemrow].rowopts}>
 {section name=itemcol loop=$table_rows[itemrow].cols}
 			<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {$table_rows[itemrow].cols[itemcol].colopts}>
-{assign var=value from=$table_rows[itemrow].cols[itemcol].text}
+{assign var=value value=$table_rows[itemrow].cols[itemcol].text}
 {if $value|in_array:$label_rep}
 				<span class="label label-sm label-{$label_rep.$value}">{$value}</span>
 {else}

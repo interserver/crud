@@ -38,6 +38,8 @@
 
 		public function __construct($table_or_query, $module = 'default')
 		{
+			add_js('bootstrap');
+			add_js('font-awesome');
 			$this->module = get_module_name($module);
 			$this->settings = get_module_settings($this->module);
 			$this->db = get_module_db($this->module);
@@ -75,6 +77,8 @@
 			$fields = array();
 			while ($db->next_record(MYSQL_ASSOC))
 			{
+				if ($db->Record['Comment'] == '')
+					$db->Record['Comment'] = ucwords(str_replace(array('_id', '_lid', '_ip', '_'), array(' ID', ' Login Name',' IP', ' '), $db->Record['Field']));
 				$fields[$db->Record['Field']] = $db->Record;
 			}
 			return $fields;
@@ -87,8 +91,53 @@
 
 		public function list_records()
 		{
-			echo '<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>';
+			/*$this->tables = Array(
+				[accounts] => Array(
+					[account_id] => Array(
+						[Field] => account_id
+						[Type] => int(11) unsigned
+						[Collation] =>
+						[Null] => NO
+						[Key] => PRI
+						[Default] =>
+						[Extra] => auto_increment
+						[Privileges] => select,insert,update,references
+						[Comment] => Account ID
+			)))*/
 			$smarty = new TFSmarty();
+			$table = new TFTable;
+			$table->set_title($this->table . ' Records');
+			foreach ($this->tables[$this->table] as $field => $field_data)
+			{
+				$table->add_header_field($field_data['Comment']);
+			}
+			$db = $this->db;
+			$db->query("select count(*) from {$this->table}");
+			$db->next_record(MYSQL_NUM);
+			$count = $db->f(0);
+			$page_limit = 10;
+			$page_offset = 0;
+			$db->query("select * from {$this->table} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+			while ($db->next_record(MYSQL_ASSOC))
+			{
+				foreach ($db->Record as $field =>$value)
+					$table->add_field($value);
+				$table->add_row();
+			}
+			$table->smarty->assign('label_rep', array(
+				'active' => 'success',
+				'pending' => 'info',
+				'locked' => 'danger',
+				'suspended' => 'warning',
+				'canceled' => 'warning',
+				'expired' => 'danger',
+				'terminated' => 'danger',
+			));
+			$table->set_template_dir('/templates/crud/');
+			$table->set_filename('../crud/table.tpl');
+			$table->add_header_row();
+			add_output($table->get_table());
+			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
 		}
 		public function error($message)
