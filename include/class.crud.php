@@ -134,7 +134,12 @@
 				'terminated' => 'danger',
 			));
 			$table->set_template_dir('/templates/crud/');
-			$table->set_filename('../crud/table.tpl');
+			//$table->set_filename('../crud/table.tpl');
+			//$table->set_filename('../crud/table1.tpl');
+			//$table->set_filename('../crud/table2.tpl');
+			//$table->set_filename('../crud/table3.tpl');
+			//$table->set_filename('../crud/table4.tpl');
+			$table->set_filename('../crud/table5.tpl');
 			$table->add_header_row();
 			add_output($table->get_table());
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
