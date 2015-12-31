@@ -1,11 +1,3 @@
-{assign var=label_rep value=[]}
-{assign var=label_rep.active value='success'}
-{assign var=label_rep.pending value='info'}
-{assign var=label_rep.locked value='danger'}
-{assign var=label_rep.suspended value='warning'}
-{assign var=label_rep.canceled value='warning'}
-{assign var=label_rep.expired value='danger'}
-{assign var=label_rep.terminated value='danger'}
 <!-- from http://pimpmy.interserver.net/bootstrap/bootstrap_users_list.html -->
 <div id="users-management" class="col-md-8">
 	<div class="panel-group" id="accordion">

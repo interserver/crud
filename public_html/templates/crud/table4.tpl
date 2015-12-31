@@ -1,11 +1,3 @@
-{assign var=label_rep value=[]}
-{assign var=label_rep.active value='success'}
-{assign var=label_rep.pending value='info'}
-{assign var=label_rep.locked value='danger'}
-{assign var=label_rep.suspended value='warning'}
-{assign var=label_rep.canceled value='warning'}
-{assign var=label_rep.expired value='danger'}
-{assign var=label_rep.terminated value='danger'}
 {literal}
 <style type="text/css">
 	.filterable {
@@ -67,7 +59,7 @@
 					<tr {$table_rows[itemrow].rowopts}>
 {section name=itemcol loop=$table_rows[itemrow].cols}
 						<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {$table_rows[itemrow].cols[itemcol].colopts}>
-{assign var=value from=$table_rows[itemrow].cols[itemcol].text}
+{assign var=value value=$table_rows[itemrow].cols[itemcol].text}
 {if $value|in_array:$label_rep}
 							<span class="label label-sm label-{$label_rep.$value}">{$value}</span>
 {else}
