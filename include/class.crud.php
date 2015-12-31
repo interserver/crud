@@ -40,9 +40,33 @@
 		{
 			add_js('bootstrap');
 			add_js('font-awesome');
-			$this->module = get_module_name($module);
-			$this->settings = get_module_settings($this->module);
-			$this->db = get_module_db($this->module);
+			if ($module != 'default')
+			{
+				if (isset($GLOBALS['modules'][$module]))
+				{
+					$this->module = get_module_name($module);
+					$this->settings = get_module_settings($this->module);
+					$this->db = get_module_db($this->module);
+				}
+				elseif (isset($GLOBALS[$module.'_dbh']))
+				{
+					$this->module = $module;
+					$this->settings = null;
+					$this->db = get_module_db($this->module);
+				}
+				else
+				{
+					$this->module = get_module_name($module);
+					$this->settings = get_module_settings($this->module);
+					$this->db = get_module_db($this->module);
+				}
+			}
+			else
+			{
+				$this->module = get_module_name($module);
+				$this->settings = get_module_settings($this->module);
+				$this->db = get_module_db($this->module);
+			}
 			if (strpos($table_or_query, ' '))
 			{
 				$this->query = $table_or_query;
@@ -78,7 +102,10 @@
 			while ($db->next_record(MYSQL_ASSOC))
 			{
 				if ($db->Record['Comment'] == '')
-					$db->Record['Comment'] = ucwords(str_replace(array('_id', '_lid', '_ip', '_'), array(' ID', ' Login Name',' IP', ' '), $db->Record['Field']));
+					$db->Record['Comment'] = ucwords(str_replace(
+						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
+						array('SSL_', 'VPS_', ' ID', ' Login Name',' IP', ' '),
+						$db->Record['Field']));
 				$fields[$db->Record['Field']] = $db->Record;
 			}
 			return $fields;
