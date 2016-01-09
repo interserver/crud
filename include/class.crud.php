@@ -186,7 +186,7 @@
 			elseif ($file !== false)
 				billingd_log($message, false, $file);
 			else
-				billingd_log($message);
+				billingd_log($message, __LINE__, __FILE__);
 		}
 
 		public function set_title($title = false)
@@ -653,11 +653,11 @@
 					$ErrorShortMsg = urldecode($resArray["L_SHORTMESSAGE0"]);
 					$ErrorLongMsg = urldecode($resArray["L_LONGMESSAGE0"]);
 					$ErrorSeverityCode = urldecode($resArray["L_SEVERITYCODE0"]);
-					billingd_log("DoExpressCheckoutDetails API call failed. ");
-					billingd_log("Detailed Error Message: " . $ErrorLongMsg);
-					billingd_log("Short Error Message: " . $ErrorShortMsg);
-					billingd_log("Error Code: " . $ErrorCode);
-					billingd_log("Error Severity Code: " . $ErrorSeverityCode);
+					billingd_log("DoExpressCheckoutDetails API call failed. ", __LINE__, __FILE__);
+					billingd_log("Detailed Error Message: " . $ErrorLongMsg, __LINE__, __FILE__);
+					billingd_log("Short Error Message: " . $ErrorShortMsg, __LINE__, __FILE__);
+					billingd_log("Error Code: " . $ErrorCode, __LINE__, __FILE__);
+					billingd_log("Error Severity Code: " . $ErrorSeverityCode, __LINE__, __FILE__);
 					add_output('There was an error with the PayPal transaction.   Please contact support@interserver.net about this.');
 					$this->continue = false;
 				}
