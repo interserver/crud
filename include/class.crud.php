@@ -720,7 +720,7 @@
 					use_prepay_related_amount($this->real_iids, $this->module, $this->total_cost, $this->custid);
 					$this->paid = true;
 				}
-				elseif (((isset($this->data['cc_whitelist']) && $this->data['cc_whitelist'] == 1) || (isset($this->data['maxmind_score']) && $this->data['maxmind_score'] < 3) || (isset($this->data['cc_auth_' . $GLOBALS['tf']->decrypt($this->data['cc'])]))) &&
+				elseif (((isset($this->data['cc_whitelist']) && $this->data['cc_whitelist'] == 1) || (isset($this->data['maxmind_score']) && $this->data['maxmind_score'] <= MAXMIND_SCORE_DISABLE_CC) || (isset($this->data['cc_auth_' . $GLOBALS['tf']->decrypt($this->data['cc'])]))) &&
 					$this->paid == false && (!isset($this->data['disable_cc']) || $this->data['disable_cc'] != 1) && $GLOBALS['tf']->decrypt($this->data['cc']) != '')
 				{
 					if ($GLOBALS['tf']->ima != 'admin')
