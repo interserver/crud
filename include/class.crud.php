@@ -533,7 +533,7 @@
 				'pend_timestamp' => mysql_now(),
 				'pend_custid' => $this->custid,
 				'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
-			//				$GLOBALS['tf']->add_html_head_js('<script src="js/google_analytics.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+			//				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			$this->continue = false;
 		}
 
@@ -982,7 +982,7 @@
 				$table->add_field($table->make_submit('Continue'));
 				$table->add_row();
 				add_output($table->get_table());
-				$GLOBALS['tf']->add_html_head_js('<script src="js/google_analytics.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			}
 			else
 			{
@@ -1129,7 +1129,7 @@
 				add_output($table->get_table());
 				$GLOBALS['tf']->accounts->restore_db();
 				$GLOBALS['tf']->history->restore_db();
-				$GLOBALS['tf']->add_html_head_js('<script src="js/google_analytics.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 				$smarty = new TFSmarty;
 				$smarty->assign('module', $this->module);
