@@ -58,7 +58,7 @@
 {section name=itemrow loop=$table_rows}
 					<tr {$table_rows[itemrow].rowopts}>
 {section name=itemcol loop=$table_rows[itemrow].cols}
-						<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {$table_rows[itemrow].cols[itemcol].colopts}>
+						<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {if isset($table_rows[itemrow].cols[itemcol].colopts)}{$table_rows[itemrow].cols[itemcol].colopts}{/if}>
 {assign var=value value=$table_rows[itemrow].cols[itemcol].text}
 {if $value|in_array:$label_rep}
 							<span class="label label-sm label-{$label_rep.$value}">{$value}</span>
