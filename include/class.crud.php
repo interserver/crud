@@ -598,17 +598,7 @@
 					handle_payment($this->custid, $this->total_cost, $this->real_iids, 12, $this->module);
 					use_prepay_related_amount($this->real_iids, $this->module, $this->total_cost, $this->custid);
 					$this->paid = true;
-				} elseif (
-					(
-						(isset($this->data['cc_whitelist']) && $this->data['cc_whitelist'] == 1)
-						|| (isset($this->data['maxmind_score']) && $this->data['maxmind_score'] <= MAXMIND_SCORE_DISABLE_CC)
-						|| (isset($this->data['maxmind_riskscore']) && $this->data['maxmind_riskscore'] <= MAXMIND_RISKSCORE_DISABLE_CC)
-						|| (isset($this->data['cc_auth_' . $GLOBALS['tf']->decrypt($this->data['cc'])]))
-					)
-					&& $this->paid == false
-					&& (!isset($this->data['disable_cc']) || $this->data['disable_cc'] != 1)
-					&& $GLOBALS['tf']->decrypt($this->data['cc']) != ''
-				) {
+				} elseif ($this->paid == false && can_use_cc($this->data)) {
 					if ($GLOBALS['tf']->ima != 'admin') {
 						if (charge_card($this->custid, $this->total_cost, $this->real_iids, $this->module)) {
 							$payment_method = 'cc';
