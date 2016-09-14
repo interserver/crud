@@ -61,7 +61,8 @@
 			if (strpos($table_or_query, ' ')) {
 				$this->query = $table_or_query;
 				$this->type = 'query';
-				$this->load_tables();
+				//$this->load_tables();
+				$this->get_tables_from_query();
 			} else {
 				$this->table = $table_or_query;
 				$this->type = 'table';
@@ -78,6 +79,26 @@
 				$this->tables[$db->f(0)] = null;
 				$this->tables[$db->f(0)] = $this->get_table_details($db->f(0));
 			}
+		}
+
+		public function get_tables_from_query($query = false) {
+			if ($query == false)
+				$query = $this->query;
+				$this->db->query("explain {$query}", __LINE__, __FILE__);
+				$tables = array();
+				$table = false;
+				if ($this->db->num_rows() > 0) {
+					while ($this->db->next_record(MYSQL_ASSOC)) {
+						if ($table === false)
+							$table = $this->db->Record['table'];
+						if (!isset($tables[$this->db->Record['table']])) {
+							$tables[$this->db->Record['table']] = null;
+							$tables[$this->db->Record['table']] = $this->get_table_details($this->db->Record['table']);
+						}
+					}
+				}
+				$this->table = $table;
+				$this->tables = $tables;
 		}
 
 		public function get_table_details($table) {
