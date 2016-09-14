@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<table id="mytable" class="table table-bordred table-striped table-hover">
+				<table id="mytable" class="table table-bordred table-striped table-hover table-condensed">
 {if isset($title) || isset($table_headers)}
 					<thead class=">
 {if isset($title)}
