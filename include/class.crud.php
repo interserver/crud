@@ -81,24 +81,36 @@
 			}
 		}
 
+		public function parse_query($query = false) {
+			if ($query == false)
+				$query = $this->query;
+			//require_once(INCLUDE_ROOT . '/../vendor/autoload.php');
+			//require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/SQLParser.php');
+			require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/autoload.php');
+			$parser = new SQLParser;
+			$queries = $parser->parse($query);
+			//_debug_array($queries);
+			add_output('<pre style="text-align: left;">' . print_r($queries, true) . '</pre>');
+		}
+
 		public function get_tables_from_query($query = false) {
 			if ($query == false)
 				$query = $this->query;
-				$this->db->query("explain {$query}", __LINE__, __FILE__);
-				$tables = array();
-				$table = false;
-				if ($this->db->num_rows() > 0) {
-					while ($this->db->next_record(MYSQL_ASSOC)) {
-						if ($table === false)
-							$table = $this->db->Record['table'];
-						if (!isset($tables[$this->db->Record['table']])) {
-							$tables[$this->db->Record['table']] = null;
-							$tables[$this->db->Record['table']] = $this->get_table_details($this->db->Record['table']);
-						}
+			$this->db->query("explain {$query}", __LINE__, __FILE__);
+			$tables = array();
+			$table = false;
+			if ($this->db->num_rows() > 0) {
+				while ($this->db->next_record(MYSQL_ASSOC)) {
+					if ($table === false)
+						$table = $this->db->Record['table'];
+					if (!isset($tables[$this->db->Record['table']])) {
+						$tables[$this->db->Record['table']] = null;
+						$tables[$this->db->Record['table']] = $this->get_table_details($this->db->Record['table']);
 					}
 				}
-				$this->table = $table;
-				$this->tables = $tables;
+			}
+			$this->table = $table;
+			$this->tables = $tables;
 		}
 
 		public function get_table_details($table) {
