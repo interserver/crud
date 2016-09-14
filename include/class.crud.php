@@ -175,12 +175,16 @@
 			while ($db->next_record(MYSQL_ASSOC)) {
 				if ($header_shown == false) {
 					$header_shown = true;
-					if ($this->type == 'table')
+					if ($this->type == 'table') {
 						foreach ($this->tables[$this->table] as $field => $field_data)
 							$table->add_header_field($field_data['Comment']);
-					else
+					} else {
 						foreach (array_keys($db->Record) as $field)
-							$table->add_header_field($this->tables[$this->table][$field]['Comment']);
+							if (isset($this->tables[$this->table][$field]))
+								$table->add_header_field($this->tables[$this->table][$field]['Comment']);
+							else
+								$table->add_header_field($this->label($field));
+					}
 					$table->add_header_row();
 				}
 				foreach ($db->Record as $field =>$value)
