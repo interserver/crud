@@ -22,7 +22,7 @@
 		public $db;
 		public $settings;
 		public $tables = array();
-
+		public $type = '';
 		public $title = '';
 		public $columns = 3;
 		public $column_templates = array();
@@ -58,6 +58,7 @@
 				$this->settings = get_module_settings($this->module);
 				$this->db = get_module_db($this->module);
 			}
+			$this->set_title();
 			if (strpos($table_or_query, ' ')) {
 				$this->query = $table_or_query;
 				$this->type = 'query';
@@ -68,7 +69,6 @@
 				$this->type = 'table';
 				$this->tables[$this->table] = $this->get_table_details($this->table);
 			}
-			$this->set_title();
 			$this->choice = $GLOBALS['tf']->variables->request['choice'];
 		}
 
@@ -136,7 +136,10 @@
 			)))*/
 			$smarty = new TFSmarty();
 			$table = new TFTable;
-			$table->set_title($this->table . ' Records');
+			if ($this->title == false)
+				$table->set_title($this->table . ' Records');
+			else
+				$table->set_title($this->title);
 			foreach ($this->tables[$this->table] as $field => $field_data) {
 				$table->add_header_field($field_data['Comment']);
 			}
