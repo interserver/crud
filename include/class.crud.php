@@ -156,9 +156,18 @@
 				$table->add_header_field($field_data['Comment']);
 			}
 			$db = $this->db;
-			$db->query("select count(*) from {$this->table}");
-			$db->next_record(MYSQL_NUM);
-			$count = $db->f(0);
+			if ($this->type == 'table') {
+				$db->query("select count(*) from {$this->table}");
+				$db->next_record(MYSQL_NUM);
+				$count = $db->f(0);
+			} else {
+				if (preg_match('/^.*( from .*)$/', $this->query, $matches)) {
+					$from = $matches[1];
+					$db->query("select count(*) {$from}", __LINE__, __FILE__);
+					$db->next_record(MYSQL_NUM);
+					$count = $db->f(0);
+				}
+			}
 			$page_limit = 10;
 			$page_offset = 0;
 			$db->query("select * from {$this->table} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
