@@ -8,7 +8,7 @@
 {if isset($title)}
 						<tr>
 							<th><input type="checkbox" id="checkall" /></th>
-							<th style="text-align:center;" colspan={$titcolspan}>
+							<th style="text-align:center;" colspan={$titcolspan + 3}>
 								{$title}
 							</th>
 						</tr>
@@ -20,8 +20,9 @@
 {section name=itemcol loop=$table_headers[itemrow].cols}
 							<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
 								{$table_headers[itemrow].cols[itemcol].text}
-											</th>
+							</th>
 {/section}
+							<th colspan=2>&nbsp;</th>
 						</tr>
 {/section}
 {/if}

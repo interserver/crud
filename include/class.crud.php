@@ -152,9 +152,6 @@
 				$table->set_title($this->table . ' Records');
 			else
 				$table->set_title($this->title);
-			foreach ($this->tables[$this->table] as $field => $field_data) {
-				$table->add_header_field($field_data['Comment']);
-			}
 			$db = $this->db;
 			if ($this->type == 'table') {
 				$db->query("select count(*) from {$this->table}");
@@ -170,8 +167,22 @@
 			}
 			$page_limit = 10;
 			$page_offset = 0;
-			$db->query("select * from {$this->table} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+			if ($this->type == 'table')
+				$db->query("select * from {$this->table} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+			else
+				$db->query("{$this->query} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+			$header_shown = false;
 			while ($db->next_record(MYSQL_ASSOC)) {
+				if ($header_shown == false) {
+					$header_shown = true;
+					if ($this->type == 'table')
+						foreach ($this->tables[$this->table] as $field => $field_data)
+							$table->add_header_field($field_data['Comment']);
+					else
+						foreach (array_keys($db->Record) as $field)
+							$table->add_header_field($this->tables[$this->table][$field]['Comment']);
+					$table->add_header_row();
+				}
 				foreach ($db->Record as $field =>$value)
 					$table->add_field($value);
 				$table->add_row();
@@ -192,7 +203,6 @@
 			//$table->set_filename('../crud/table3.tpl');
 			//$table->set_filename('../crud/table4.tpl');
 			$table->set_filename('../crud/table5.tpl');
-			$table->add_header_row();
 			add_output($table->get_table());
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
