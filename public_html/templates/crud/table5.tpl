@@ -43,10 +43,14 @@
 							</td>
 {/section}
 							<td>
-								<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" title="Edit" data-title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
+								<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" title="Edit" data-title="Edit">
+									<i class="fa fa-fw fa-pencil"></i>
+								</button>
 							</td>
 							<td>
-								<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteModal" title="Delete" data-title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+								<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteModal" title="Delete" data-title="Delete">
+									<i class="fa fa-fw fa-trash"></i>
+								</button>
 							</td>
 						</tr>
 {/section}
