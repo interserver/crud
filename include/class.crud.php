@@ -326,7 +326,6 @@
 		}
 
 		public function validate_order() {
-			$this->ensure_custid();
 			$this->continue = true;
 			$anything_set = false;
 			foreach ($this->fields as $idx => $field) {
@@ -405,10 +404,6 @@
 		}
 
 		public function confirm_order() {
-			if ($this->ensure_custid() === false) {
-				$this->error('No Client To Register Purchase With');
-				return false;
-			}
 			$this->confirm = true;
 			add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
 			$table = new TFTable;
@@ -515,7 +510,6 @@
 		}
 
 		public function order_form() {
-			$this->ensure_custid();
 			if ($this->stage == 2) {
 				$table = new TFTable;
 				$table->hide_table();
