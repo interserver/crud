@@ -154,7 +154,7 @@
 				$table->set_title($this->title);
 			$db = $this->db;
 			if ($this->type == 'table') {
-				$db->query("select count(*) from {$this->table}");
+				$db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
 				$db->next_record(MYSQL_NUM);
 				$count = $db->f(0);
 			} else {
@@ -572,7 +572,7 @@
 						$this->db = get_module_db($this->module);
 						$penny_names = array();
 						$penny_ids = array();
-						$this->db->query("select * from coupons where module='{$this->module}' and onetime=1 and amount=0.01 and type=3 and usable=1 and name != ''");
+						$this->db->query("select * from coupons where module='{$this->module}' and onetime=1 and amount=0.01 and type=3 and usable=1 and name != ''", __LINE__, __FILE__);
 						if ($this->db->num_rows() > 0) {
 							while ($this->db->next_record(MYSQL_ASSOC)) {
 								$penny_names[] = strtolower($this->db->Record['name']);
@@ -581,8 +581,7 @@
 						}
 						if (in_array(strtolower($this->coupon), $penny_names)) {
 							$defaultdb = clone $GLOBALS['tf']->db;
-							$defaultdb->query("select * from paypal where (payer_id='" . $defaultdb->real_escape($res['PAYERID']) . "' or payer_email='" . $defaultdb->real_escape($res['EMAIL']) . "') and txn_id != '" . $transactionId .
-								"'");
+							$defaultdb->query("select * from paypal where (payer_id='" . $defaultdb->real_escape($res['PAYERID']) . "' or payer_email='" . $defaultdb->real_escape($res['EMAIL']) . "') and txn_id != '" . $transactionId . "'", __LINE__, __FILE__);
 							if ($defaultdb->num_rows() == 0) {
 								$this->paid = true;
 							} else {
