@@ -329,6 +329,9 @@
 		public function parse_tables() {
 			foreach ($this->tables as $table => $fields) {
 				foreach ($fields as $field => $data) {
+					$input_type = 'input';
+					$input_data = false;
+					$validations = array();
 					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
 						$type = $matches['type'];
 						switch ($type) {
@@ -338,6 +341,7 @@
 										$types = $types['types'];
 									}
 								}
+								$input_type = 'select';
 								break;
 							case 'tinyint':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -347,6 +351,7 @@
 									$min = -128;
 									$max = 127;
 								}
+								$validations[] = 'int';
 								break;
 							case 'smallint':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -356,6 +361,7 @@
 									$min = -32768;
 									$max = 32767;
 								}
+								$validations[] = 'int';
 								break;
 							case 'mediumint':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -365,6 +371,7 @@
 									$min = -8388608;
 									$max = 8388607;
 								}
+								$validations[] = 'int';
 								break;
 							case 'bigint':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -374,6 +381,7 @@
 									$min = -9223372036854775808;
 									$max = 9223372036854775807;
 								}
+								$validations[] = 'int';
 								break;
 							case 'int':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -386,6 +394,7 @@
 								if (isset($matches['size']) && $matches['size'] != '') {
 
 								}
+								$validations[] = 'int';
 								break;
 							case 'float':
 								if (isset($matches['size']) && $matches['size'] != '') {
@@ -413,8 +422,10 @@
 								break;
 						}
 					} else {
+						$type = $data['Type'];
 						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
+					$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
 				}
 			}
 		}
