@@ -69,6 +69,7 @@
 				$this->type = 'table';
 				$this->tables[$this->table] = $this->get_table_details($this->table);
 			}
+			$this->parse_tables();
 			$this->choice = $GLOBALS['tf']->variables->request['choice'];
 		}
 
@@ -323,6 +324,99 @@
 				'type' => $type,
 				'data' => $data,
 			);
+		}
+
+		public function parse_tables() {
+			foreach ($this->tables as $table => $fields) {
+				foreach ($fields as $field => $data) {
+					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+						$type = $matches['type'];
+						switch ($type) {
+							case 'enum':
+								if (isset($matches['types']) && $matches['types'] != '') {
+									if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types)) {
+										$types = $types['types'];
+									}
+								}
+								break;
+							case 'tinyint':
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+									$min = 0;
+									$max = 255;
+								} else {
+									$min = -128;
+									$max = 127;
+								}
+								break;
+							case 'smallint':
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+									$min = 0;
+									$max = 65535;
+								} else {
+									$min = -32768;
+									$max = 32767;
+								}
+								break;
+							case 'mediumint':
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+									$min = 0;
+									$max = 16777215;
+								} else {
+									$min = -8388608;
+									$max = 8388607;
+								}
+								break;
+							case 'bigint':
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+									$min = 0;
+									$max = 18446744073709551615;
+								} else {
+									$min = -9223372036854775808;
+									$max = 9223372036854775807;
+								}
+								break;
+							case 'int':
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+									$min = 0;
+									$max = 4294967295;
+								} else {
+									$min = -2147483648;
+									$max = 2147483647;
+								}
+								if (isset($matches['size']) && $matches['size'] != '') {
+
+								}
+								break;
+							case 'float':
+								if (isset($matches['size']) && $matches['size'] != '') {
+
+								}
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned')
+									$unsigned = true;
+								else
+									$unsigned = false;
+								break;
+							case 'char':
+								if (isset($matches['size']) && $matches['size'] != '') {
+
+								}
+								break;
+							case 'varchar':
+								if (isset($matches['size']) && $matches['size'] != '') {
+
+								}
+								break;
+							case 'text':
+								break;
+							default:
+								billingd_log("CRUD class Found Field Type '{$type}' from {$data['Type']} it Doesnt Understand", __LINE__, __FILE__);
+								break;
+						}
+					} else {
+						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
+					}
+				}
+			}
 		}
 
 		public function validate_order() {
