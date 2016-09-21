@@ -342,6 +342,7 @@
 									}
 								}
 								$input_type = 'select';
+								$validations[] = array('in_array' => $types);
 								break;
 							case 'tinyint':
 								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
