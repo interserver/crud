@@ -527,9 +527,6 @@
 					$this->set_vars[$field] = $this->values[$field];
 					$anything_set = true;
 				}
-				if ($this->use_coupon === true && isset($this->set_vars[$this->coupon_field])) {
-					$this->coupon = $this->set_vars[$this->coupon_field];
-				}
 				if (isset($this->validations[$field])) {
 					foreach ($this->validations[$field] as $validation) {
 						if (!is_array($validation)) {
@@ -728,6 +725,29 @@
 							case 'input':
 								$value = $this->values[$field];
 								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								$t = '
+<div class="row form-group">
+	<label class="col-md-7 control-label optional" style="padding-left: 0px;margin-bottom: 0px;padding-right: 0px;margin-top: 6px;" for="'.$field.'">Enter a '.$label.'</label>
+	<div class="input-group col-md-5 has-feedback">
+		<span class="input-group-addon">
+			<i class="icon-'.$field.' fa fa-fw"></i>
+		</span>
+		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" placeholder="'.$label.'" autocomplete="off" onkeyup="update_'.$field.'();" onchange="update_'.$field.'();" style="border-right: 0px;">
+		<a id="popover-'.$field.'" class="input-group-addon btn btn-default" data-toggle="popover" data-container="body" data-html="true" data-content="
+			<i class=&quot;fa icon-'.$field.' fa-fw fa-back&quot;></i>
+			<div id=&quot;block-block-'.$field.'&quot; class=&quot;block block-block&quot;>
+				<div class=&quot;block-inner&quot;>
+					<div class=&quot;content&quot;>
+						<h2>'.$label.'</h2>
+						<p>If you have a coupon you would like to use with this order, enter it now.</p>
+					</div>
+				</div>
+			</div>
+		" title="" style="float: none;" data-original-title="'.$label.'"><i class="fa text-info fa-question"></i></a>
+	</div>
+	<span class="help-block"></span>
+</div>
+';
 								break;
 							case 'select':
 								$field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
@@ -822,7 +842,7 @@
 			$table->add_hidden('pp_token', '');
 			$table->add_hidden('pp_payerid', '');
 			$this->returnURL = 'choice=' . urlencode($this->choice);
-			$payment_method_table_fields = array($this->custid, $this->coupon);
+			$payment_method_table_fields = array($this->custid);
 			foreach ($this->set_vars as $field => $value) {
 				$this->returnURL .= '&' . $field . '=' . urlencode($value);
 				$table->add_hidden($field, $value);

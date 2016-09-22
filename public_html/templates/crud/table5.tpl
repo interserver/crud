@@ -83,7 +83,6 @@
 					<input class="form-control " type="text" placeholder="Mohsin">
 				</div>
 				<div class="form-group">
-
 					<input class="form-control " type="text" placeholder="Irshad">
 				</div>
 				<div class="form-group">
