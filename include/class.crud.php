@@ -35,8 +35,11 @@
 		public $admin_confirm_fields = array();
 		public $price_align = 'r';
 		public $price_text_align = 'r';
+		// from the sql query parser
 		public $queries = null;
 		public $query_fields = array();
+		// temp fields maybe from buy service class i think
+		public $stage = 1;
 
 		public function __construct($table_or_query, $module = 'default') {
 			add_js('bootstrap');
@@ -158,6 +161,9 @@
 
 		public function go() {
 			$this->list_records();
+			$this->order_form();
+			$this->stage = 2;
+			$this->order_form();
 		}
 
 		public function list_records() {
@@ -650,11 +656,7 @@
 				//$table->set_options('width="500" cellpadding=5');
 				$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
 				$table->set_title($this->title);
-				if ($GLOBALS['tf']->ima == 'admin') {
-					$table->add_hidden('custid', $this->custid);
-				}
 				$table->csrf('crud_order_form');
-				$table->add_hidden('module', $this->module);
 				$table_pos = 0;
 				foreach ($this->fields as $idx => $field) {
 					if (isset($this->set_vars[$field]) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
@@ -762,16 +764,6 @@
 					$table->add_row();
 					$table_pos = 0;
 				}
-				$table->add_field('<b>CPU Cores</b>', 'l');
-				$table->add_field(ceil($this->values['slices'] / 4), 'l');
-				$table->add_field('<b>Memory</b>', 'l');
-				$table->add_field(VPS_SLICE_RAM * $this->values['slices'] . ' MB Ram', 'l');
-				$table->add_row();
-				$table->add_field('<b>HD Space</b>', 'l');
-				$table->add_field(VPS_SLICE_HD * $this->values['slices'] . ' GBytes', 'l');
-				$table->add_field('<b>Bandwidth</b>', 'l');
-				$table->add_field(get_vps_bw_text($this->values['slices']), 'l');
-				$table->add_row();
 				$table->set_colspan(4);
 				$table->add_field($table->make_submit('Continue'));
 				$table->add_row();
@@ -782,10 +774,6 @@
 				$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
 				$table->hide_table();
 				$table->hide_title();
-				if ($GLOBALS['tf']->ima == 'admin') {
-					$table->add_hidden('custid', $this->custid);
-				}
-				$table->add_hidden('module', $this->module);
 				foreach ($this->fields as $idx => $field) {
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
@@ -863,28 +851,6 @@
 						$table->set_row_options();
 					}
 				}
-				if ($this->use_period === true) {
-					$table->set_colspan($this->columns - 1);
-					$table->set_row_options('style="display: none;padding: 5px;" id="cyclediscountrow"');
-					$table->set_col_options('style="padding: 5px;"');
-					$table->add_field('<h3>Cycle Discount:</h3>', $this->price_text_align);
-					$table->add_field('<h3 id="cyclediscount"></h3>', $this->price_align);
-					$table->add_row();
-				}
-				if ($this->use_coupon === true) {
-					$table->set_colspan($this->columns - 1);
-					$table->set_row_options('style="display:none; padding: 5px;" id="couponpricerow"');
-					$table->set_col_options('style="padding: 5px;"');
-					$table->add_field('<h3 id="couponpricetext">Coupon Discount:</h3>', $this->price_text_align);
-					$table->add_field('<h3 id="couponprice">$0</h3>', $this->price_align);
-					$table->add_row();
-				}
-				$table->set_row_options('style="display:none; padding: 5px;" id="ssdpricerow"');
-				$table->set_col_options('style="padding: 5px;"');
-				$table->set_colspan($this->columns - 1);
-				$table->add_field('<h3 id="ssdpricetext">SSD Drive:</h3>', $this->price_text_align);
-				$table->add_field('<h3 id="ssdprice">$' . (VPS_SLICE_SSD_OVZ_COST - VPS_SLICE_OVZ_COST) . ' per slice</h3>', $this->price_align);
-				$table->add_row();
 				$table->set_row_options('');
 				$table->set_colspan($this->columns - 1);
 				$table->add_field('<h3>Total</h3>', $this->price_text_align);
@@ -899,24 +865,6 @@
 				$GLOBALS['tf']->history->restore_db();
 				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
-				$smarty = new TFSmarty;
-				$smarty->assign('module', $this->module);
-				$smarty->assign('use_size', $this->use_size);
-				if ($this->use_size == true) {
-					$smarty->assign('size_field', $this->size_field);
-				}
-				$smarty->assign('use_service_select', $this->use_service_select);
-				if ($this->use_service_select) {
-					$smarty->assign('service_type_field', $this->service_select_field);
-				} else {
-					$smarty->assign('service_type_function', $this->service_select_function);
-				}
-				$service_prices = array();
-				foreach ($this->service_types as $service_type => $service_data)
-					$service_prices[$service_type] = $service_data['services_cost'];
-				$smarty->assign('service_prices', json_encode($service_prices));
-				$GLOBALS['tf']->add_html_head_js($smarty->fetch('buy_service.js.tpl'));
-				$GLOBALS['tf']->add_html_head_css('<link rel=stylesheet href="templates/buy_service.css" type="text/css">');
 			}
 		}
 	}
