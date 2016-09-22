@@ -542,112 +542,6 @@
 				$this->continue = false;
 		}
 
-		public function confirm_order() {
-			$this->confirm = true;
-			add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
-			$table = new TFTable;
-			$table->hide_table();
-			$table->set_method('get');
-			$table->set_options('width="500" cellpadding=5');
-			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
-			$table->set_title($this->settings['TITLE'] . ' Order Summary');
-			if ($GLOBALS['tf']->ima == 'admin') {
-				$table->add_hidden('custid', $this->custid);
-			}
-			$table->add_hidden('module', $this->module);
-			$table->add_hidden('pp_token', '');
-			$table->add_hidden('pp_payerid', '');
-			$this->returnURL = 'choice=' . urlencode($this->choice);
-			$payment_method_table_fields = array($this->custid, $this->coupon);
-			foreach ($this->set_vars as $field => $value) {
-				$this->returnURL .= '&' . $field . '=' . urlencode($value);
-				$table->add_hidden($field, $value);
-				$label = $value;
-				$olabel = "";
-				if (is_numeric($value) && isset($this->labels[$field . '_i']) && isset($this->labels[$field . '_i'][$value])) {
-					$label = $this->labels[$field . '_i'][$value];
-					$olabel = $label;
-				} elseif (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
-					$label = $this->labels[$field . '_a'][$value];
-					$olabel = $label;
-				}
-				if (isset($this->input_types[$field])) {
-					$input_type = $this->input_types[$field][0];
-					$data = $this->input_types[$field][1];
-					switch ($input_type) {
-						case 'select':
-							$label = $this->input_types[$field][1]['labels'][array_search($this->values[$field], $this->input_types[$field][1]['values'])];
-							break;
-					}
-				}
-				if ($label != '') {
-					$table->add_field('<b>' . $this->label($field) . '</b>', 'l');
-					$table->add_field($label, 'l');
-					$table->add_row();
-				}
-				if (!in_array($field, array('custid'))) {
-					$payment_method_table_fields[] = $value;
-				}
-			}
-			if (SESSION_COOKIES == false) {
-				$this->returnURL .= '&sessionid=' . urlencode($GLOBALS['tf']->session->sessionid);
-			}
-			if ($GLOBALS['tf']->ima == 'admin') {
-				foreach ($this->admin_confirm_fields as $field => $data) {
-					switch ($data['type']) {
-						case 'select':
-							$field_text = make_select($field, $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['data']['extra']) ? $data['data']['extra'] : ''));
-							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
-							$table->add_field($field_text, 'l');
-							$table->add_row();
-							break;
-						case 'input':
-							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
-							$table->add_field($table->make_input($field, $data['value'], (isset($data['data']['length']) ? $data['data']['length'] : 30)), 'l');
-							$table->add_row();
-							break;
-						case 'func':
-							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
-							$func = $data['data'];
-							$table->add_field($this->$func(), 'l');
-							$table->add_row();
-							break;
-					}
-				}
-			}
-			if ($this->coupon != '') {
-				$table->add_field('<b>Coupon</b>', 'l');
-				$table->add_field($this->coupon, 'l');
-				$table->add_row();
-			}
-			$table->add_field('<b>CPU Cores</b>', 'l');
-			$table->add_field(ceil($this->values['slices'] / 4), 'l');
-			$table->add_row();
-			$table->add_field('<b>Memory</b>', 'l');
-			$table->add_field(VPS_SLICE_RAM * $this->values['slices'] . ' MB Ram', 'l');
-			$table->add_row();
-			$table->add_field('<b>HD Space</b>', 'l');
-			$table->add_field(VPS_SLICE_HD * $this->values['slices'] . ' GBytes', 'l');
-			$table->add_row();
-			$table->add_field('<b>Bandwidth</b>', 'l');
-			$table->add_field(get_vps_bw_text($this->values['slices']), 'l');
-			$table->add_row();
-
-			$table->add_field('<b>Total Cost</b>', 'l');
-			$table->add_field('<b>$' . number_format($this->total_cost, 2) . '<b>', 'l');
-			$table->add_row();
-			add_output(order_payment_methods_table_new($table, 2, $this->data, $this->returnURL, $this->total_cost, $this->checkout_items, $this->choice, $payment_method_table_fields, $this->values['period'], $this->repeat_service_cost, $this->module));
-			$this->db = get_module_db($this->module);
-			$this->db->query(make_insert_query('pending_orders', array(
-				'pend_id' => NULL,
-				'pend_choice' => $this->choice,
-				'pend_timestamp' => mysql_now(),
-				'pend_custid' => $this->custid,
-				'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
-			//				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
-			$this->continue = false;
-		}
-
 		public function order_form() {
 			if ($this->stage == 2) {
 				$table = new TFTable;
@@ -867,5 +761,112 @@
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 			}
 		}
+
+		public function confirm_order() {
+			$this->confirm = true;
+			add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
+			$table = new TFTable;
+			$table->hide_table();
+			$table->set_method('get');
+			$table->set_options('width="500" cellpadding=5');
+			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
+			$table->set_title($this->settings['TITLE'] . ' Order Summary');
+			if ($GLOBALS['tf']->ima == 'admin') {
+				$table->add_hidden('custid', $this->custid);
+			}
+			$table->add_hidden('module', $this->module);
+			$table->add_hidden('pp_token', '');
+			$table->add_hidden('pp_payerid', '');
+			$this->returnURL = 'choice=' . urlencode($this->choice);
+			$payment_method_table_fields = array($this->custid, $this->coupon);
+			foreach ($this->set_vars as $field => $value) {
+				$this->returnURL .= '&' . $field . '=' . urlencode($value);
+				$table->add_hidden($field, $value);
+				$label = $value;
+				$olabel = "";
+				if (is_numeric($value) && isset($this->labels[$field . '_i']) && isset($this->labels[$field . '_i'][$value])) {
+					$label = $this->labels[$field . '_i'][$value];
+					$olabel = $label;
+				} elseif (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
+					$label = $this->labels[$field . '_a'][$value];
+					$olabel = $label;
+				}
+				if (isset($this->input_types[$field])) {
+					$input_type = $this->input_types[$field][0];
+					$data = $this->input_types[$field][1];
+					switch ($input_type) {
+						case 'select':
+							$label = $this->input_types[$field][1]['labels'][array_search($this->values[$field], $this->input_types[$field][1]['values'])];
+							break;
+					}
+				}
+				if ($label != '') {
+					$table->add_field('<b>' . $this->label($field) . '</b>', 'l');
+					$table->add_field($label, 'l');
+					$table->add_row();
+				}
+				if (!in_array($field, array('custid'))) {
+					$payment_method_table_fields[] = $value;
+				}
+			}
+			if (SESSION_COOKIES == false) {
+				$this->returnURL .= '&sessionid=' . urlencode($GLOBALS['tf']->session->sessionid);
+			}
+			if ($GLOBALS['tf']->ima == 'admin') {
+				foreach ($this->admin_confirm_fields as $field => $data) {
+					switch ($data['type']) {
+						case 'select':
+							$field_text = make_select($field, $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['data']['extra']) ? $data['data']['extra'] : ''));
+							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
+							$table->add_field($field_text, 'l');
+							$table->add_row();
+							break;
+						case 'input':
+							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
+							$table->add_field($table->make_input($field, $data['value'], (isset($data['data']['length']) ? $data['data']['length'] : 30)), 'l');
+							$table->add_row();
+							break;
+						case 'func':
+							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
+							$func = $data['data'];
+							$table->add_field($this->$func(), 'l');
+							$table->add_row();
+							break;
+					}
+				}
+			}
+			if ($this->coupon != '') {
+				$table->add_field('<b>Coupon</b>', 'l');
+				$table->add_field($this->coupon, 'l');
+				$table->add_row();
+			}
+			$table->add_field('<b>CPU Cores</b>', 'l');
+			$table->add_field(ceil($this->values['slices'] / 4), 'l');
+			$table->add_row();
+			$table->add_field('<b>Memory</b>', 'l');
+			$table->add_field(VPS_SLICE_RAM * $this->values['slices'] . ' MB Ram', 'l');
+			$table->add_row();
+			$table->add_field('<b>HD Space</b>', 'l');
+			$table->add_field(VPS_SLICE_HD * $this->values['slices'] . ' GBytes', 'l');
+			$table->add_row();
+			$table->add_field('<b>Bandwidth</b>', 'l');
+			$table->add_field(get_vps_bw_text($this->values['slices']), 'l');
+			$table->add_row();
+
+			$table->add_field('<b>Total Cost</b>', 'l');
+			$table->add_field('<b>$' . number_format($this->total_cost, 2) . '<b>', 'l');
+			$table->add_row();
+			add_output(order_payment_methods_table_new($table, 2, $this->data, $this->returnURL, $this->total_cost, $this->checkout_items, $this->choice, $payment_method_table_fields, $this->values['period'], $this->repeat_service_cost, $this->module));
+			$this->db = get_module_db($this->module);
+			$this->db->query(make_insert_query('pending_orders', array(
+				'pend_id' => NULL,
+				'pend_choice' => $this->choice,
+				'pend_timestamp' => mysql_now(),
+				'pend_custid' => $this->custid,
+				'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
+			//				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+			$this->continue = false;
+		}
+
 	}
 ?>
