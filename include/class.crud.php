@@ -35,6 +35,8 @@
 		public $admin_confirm_fields = array();
 		public $price_align = 'r';
 		public $price_text_align = 'r';
+		public $queries = null;
+		public $query_fields = array();
 
 		public function __construct($table_or_query, $module = 'default') {
 			add_js('bootstrap');
@@ -64,6 +66,7 @@
 				$this->type = 'query';
 				//$this->load_tables();
 				$this->get_tables_from_query();
+				$this->parse_query();
 			} else {
 				$this->table = $table_or_query;
 				$this->type = 'table';
@@ -89,9 +92,33 @@
 			//require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/SQLParser.php');
 			require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/autoload.php');
 			$parser = new SQLParser;
-			$queries = $parser->parse($query);
+			$this->queries = $parser->parse($query);
+			$this->parse_query_fields();
 			//_debug_array($queries);
-			add_output('<pre style="text-align: left;">' . print_r($queries, true) . '</pre>');
+			//add_output('<pre style="text-align: left;">' . print_r($queries, true) . '</pre>');
+		}
+
+		public function parse_query_fields($queries = false) {
+			if ($queries == false)
+				$queries = $this->queries;
+			foreach ($queries[0]->getColumns() as $col => $col_arr) {
+				$field_arr = $col_arr[0]->getMembers();
+				if (sizeof($field_arr) > 1) {
+					$table = $field_arr[0];
+					$orig_field = $field_arr[1];
+				} else {
+					$table = false;
+					$orig_field = $field_arr[0];
+				}
+				if (sizeof($col_arr) > 1) {
+					$field = $col_arr[1];
+				} else {
+					$field = $orig_field;
+				}
+				$fields[$orig_field] = $field;
+			}
+			$this->query_fields = $fields;
+			//add_output('<pre style="text-align: left;">' . print_r($fields, true) . '</pre>');
 		}
 
 		public function get_tables_from_query($query = false) {
