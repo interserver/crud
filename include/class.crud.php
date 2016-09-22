@@ -41,45 +41,55 @@
 		// temp fields maybe from buy service class i think
 		public $stage = 1;
 
-		public function __construct($table_or_query, $module = 'default') {
+		public function __construct() {
+			return $this;
+		}
+
+		public static function init($table_or_query, $module = 'default') {
+			$static = !(isset($this) && $this instanceof self);
+			if ($static == true)
+				$crud = new crud();
+			else
+				$crud = &$this;
 			add_js('bootstrap');
 			add_js('font-awesome');
 			if ($module != 'default') {
 				if (isset($GLOBALS['modules'][$module])) {
-					$this->module = get_module_name($module);
-					$this->settings = get_module_settings($this->module);
-					$this->db = get_module_db($this->module);
+					$crud->module = get_module_name($module);
+					$crud->settings = get_module_settings($crud->module);
+					$crud->db = get_module_db($crud->module);
 				} elseif (isset($GLOBALS[$module.'_dbh'])) {
-					$this->module = $module;
-					$this->settings = null;
-					$this->db = get_module_db($this->module);
+					$crud->module = $module;
+					$crud->settings = null;
+					$crud->db = get_module_db($crud->module);
 				} else {
-					$this->module = get_module_name($module);
-					$this->settings = get_module_settings($this->module);
-					$this->db = get_module_db($this->module);
+					$crud->module = get_module_name($module);
+					$crud->settings = get_module_settings($crud->module);
+					$crud->db = get_module_db($crud->module);
 				}
 			} else {
-				$this->module = get_module_name($module);
-				$this->settings = get_module_settings($this->module);
-				$this->db = get_module_db($this->module);
+				$crud->module = get_module_name($module);
+				$crud->settings = get_module_settings($crud->module);
+				$crud->db = get_module_db($crud->module);
 			}
-			$this->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
-			$this->column_templates[] = array('text' => '%field%', 'align' => 'r');
-			$this->column_templates[] = array('text' => '', 'align' => 'r');
-			$this->set_title();
+			$crud->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
+			$crud->column_templates[] = array('text' => '%field%', 'align' => 'r');
+			$crud->column_templates[] = array('text' => '', 'align' => 'r');
+			$crud->set_title();
+			$crud->choice = $GLOBALS['tf']->variables->request['choice'];
 			if (strpos($table_or_query, ' ')) {
-				$this->query = $table_or_query;
-				$this->type = 'query';
-				//$this->load_tables();
-				$this->parse_query();
-				$this->get_tables_from_query();
+				$crud->query = $table_or_query;
+				$crud->type = 'query';
+				//$crud->load_tables();
+				$crud->parse_query();
+				$crud->get_tables_from_query();
 			} else {
-				$this->table = $table_or_query;
-				$this->type = 'table';
-				$this->tables[$this->table] = $this->get_table_details($this->table);
+				$crud->table = $table_or_query;
+				$crud->type = 'table';
+				$crud->tables[$crud->table] = $crud->get_table_details($crud->table);
 			}
-			$this->parse_tables();
-			$this->choice = $GLOBALS['tf']->variables->request['choice'];
+			$crud->parse_tables();
+			return $crud;
 		}
 
 		public function go() {
@@ -87,6 +97,7 @@
 			$this->order_form();
 			//$this->stage = 2;
 			//$this->order_form();
+			return $this;
 		}
 
 		public function load_tables() {
@@ -269,6 +280,7 @@
 				$title = 'Purchase ' . $this->settings['TITLE'];
 			}
 			$this->title = $title;
+			return $this;
 		}
 
 		public function add_field_validations($field, $validations) {
@@ -310,6 +322,7 @@
 				$this->add_field_validations($field, $validations);
 			if ($input_type !== false)
 				$this->add_input_type_field($field, $input_type, $input_data);
+			return $this;
 		}
 
 		public function add_fields($fields) {
