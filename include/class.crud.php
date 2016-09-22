@@ -85,8 +85,8 @@
 		public function go() {
 			$this->list_records();
 			$this->order_form();
-			$this->stage = 2;
-			$this->order_form();
+			//$this->stage = 2;
+			//$this->order_form();
 		}
 
 		public function load_tables() {
