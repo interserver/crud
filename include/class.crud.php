@@ -71,8 +71,8 @@
 				$this->query = $table_or_query;
 				$this->type = 'query';
 				//$this->load_tables();
-				$this->get_tables_from_query();
 				$this->parse_query();
+				$this->get_tables_from_query();
 			} else {
 				$this->table = $table_or_query;
 				$this->type = 'table';
@@ -80,6 +80,13 @@
 			}
 			$this->parse_tables();
 			$this->choice = $GLOBALS['tf']->variables->request['choice'];
+		}
+
+		public function go() {
+			$this->list_records();
+			$this->order_form();
+			$this->stage = 2;
+			$this->order_form();
 		}
 
 		public function load_tables() {
@@ -112,6 +119,7 @@
 				if (sizeof($field_arr) > 1) {
 					$table = $field_arr[0];
 					$orig_field = $field_arr[1];
+					$orig_field = $table.'.'.$orig_field;
 				} else {
 					$table = false;
 					$orig_field = $field_arr[0];
@@ -160,13 +168,6 @@
 				$fields[$db->Record['Field']] = $db->Record;
 			}
 			return $fields;
-		}
-
-		public function go() {
-			$this->list_records();
-			$this->order_form();
-			$this->stage = 2;
-			$this->order_form();
 		}
 
 		public function list_records() {
@@ -462,7 +463,8 @@
 						$type = $data['Type'];
 						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
-					$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
+					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields))
+						$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
 				}
 			}
 		}
