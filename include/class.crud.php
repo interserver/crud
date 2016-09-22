@@ -21,6 +21,14 @@
 	 * ideal way to do it taking the best of what ive found in other CRUD classes but requiring less code
 	 * to set it up.
 	 *
+	 * since the HTML part is all handled within the templates and the class generates things like validations
+	 * and field information, its easy to setup several alternate layouts and easily choose an alternate one
+	 * when you don't want to use the default layout.  it also makes it easy to setup things like alternate
+	 * interfaces such as a CLI or ANSI Terminal GUI, Windows/OS Native programs, and even various API
+	 * interfaces with relative ease only having to add the code for basic components of each once. Although
+	 * I do have several table alternate layouts already, I have no plans to setup additional templates
+	 * until everything else with it is working and getting widely implemented.
+	 *
 	 * Last Changed: $LastChangedDate$
 	 * @author detain
 	 * @version $Revision$
