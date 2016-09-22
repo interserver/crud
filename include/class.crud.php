@@ -63,6 +63,9 @@
 				$this->settings = get_module_settings($this->module);
 				$this->db = get_module_db($this->module);
 			}
+			$this->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
+			$this->column_templates[] = array('text' => '%field%', 'align' => 'r');
+			$this->column_templates[] = array('text' => '', 'align' => 'r');
 			$this->set_title();
 			if (strpos($table_or_query, ' ')) {
 				$this->query = $table_or_query;
@@ -755,8 +758,6 @@
 				$table->add_row();
 				$table->set_method('get');
 				add_output($table->get_table());
-				$GLOBALS['tf']->accounts->restore_db();
-				$GLOBALS['tf']->history->restore_db();
 				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 			}
