@@ -755,11 +755,6 @@
 						$table->set_row_options();
 					}
 				}
-				$table->set_row_options('');
-				$table->set_colspan($this->columns - 1);
-				$table->add_field('<h3>Total</h3>', $this->price_text_align);
-				$table->add_field('<h3 id="totalcost">$6</h3>', $this->price_align);
-				$table->add_row();
 				$table->set_colspan($this->columns);
 				$table->add_field($table->make_submit('Continue to next step', false, true));
 				$table->add_row();
@@ -843,28 +838,6 @@
 					}
 				}
 			}
-			if ($this->coupon != '') {
-				$table->add_field('<b>Coupon</b>', 'l');
-				$table->add_field($this->coupon, 'l');
-				$table->add_row();
-			}
-			$table->add_field('<b>CPU Cores</b>', 'l');
-			$table->add_field(ceil($this->values['slices'] / 4), 'l');
-			$table->add_row();
-			$table->add_field('<b>Memory</b>', 'l');
-			$table->add_field(VPS_SLICE_RAM * $this->values['slices'] . ' MB Ram', 'l');
-			$table->add_row();
-			$table->add_field('<b>HD Space</b>', 'l');
-			$table->add_field(VPS_SLICE_HD * $this->values['slices'] . ' GBytes', 'l');
-			$table->add_row();
-			$table->add_field('<b>Bandwidth</b>', 'l');
-			$table->add_field(get_vps_bw_text($this->values['slices']), 'l');
-			$table->add_row();
-
-			$table->add_field('<b>Total Cost</b>', 'l');
-			$table->add_field('<b>$' . number_format($this->total_cost, 2) . '<b>', 'l');
-			$table->add_row();
-			add_output(order_payment_methods_table_new($table, 2, $this->data, $this->returnURL, $this->total_cost, $this->checkout_items, $this->choice, $payment_method_table_fields, $this->values['period'], $this->repeat_service_cost, $this->module));
 			$this->db = get_module_db($this->module);
 			$this->db->query(make_insert_query('pending_orders', array(
 				'pend_id' => NULL,
