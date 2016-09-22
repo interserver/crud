@@ -726,6 +726,16 @@
 								$value = $this->values[$field];
 								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								$t = '
+<div class="form-group">
+	<label class="col-md-3 control-label" for="'.$field.'">'.$label.'</label>
+	<div class="form-group input-group col-md-8">
+		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
+		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
+	</div>
+	<span class="help-block"></span>
+</div>
+';
+								$t = '
 <div class="row form-group">
 	<label class="col-md-7 control-label optional" style="padding-left: 0px;margin-bottom: 0px;padding-right: 0px;margin-top: 6px;" for="'.$field.'">Enter a '.$label.'</label>
 	<div class="input-group col-md-5 has-feedback">
