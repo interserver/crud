@@ -43,7 +43,7 @@
 							</td>
 {/section}
 							<td>
-								<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editModal" title="Edit" data-title="Edit">
+								<button type="button" class="btn btn-primary btn-xs" onclick="edit_form(this);" title="Edit">
 									<i class="fa fa-fw fa-pencil"></i>
 								</button>
 							</td>

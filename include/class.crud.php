@@ -249,6 +249,7 @@
 			else
 				$db->query("{$this->query} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
 			$header_shown = false;
+			$idx = 0;
 			while ($db->next_record(MYSQL_ASSOC)) {
 				if ($header_shown == false) {
 					$header_shown = true;
@@ -264,9 +265,13 @@
 					}
 					$table->add_header_row();
 				}
-				foreach ($db->Record as $field =>$value)
+				$rows[] = $db->Record;
+				$table->set_row_options('id="itemrow'.$idx.'"');
+				foreach ($db->Record as $field =>$value) {
 					$table->add_field($value);
+				}
 				$table->add_row();
+				$idx++;
 			}
 			$table->smarty->assign('label_rep', array(
 				'active' => 'success',
@@ -286,6 +291,17 @@
 			$table->set_filename('../crud/table5.tpl');
 			$table->smarty->assign('edit_form', $this->order_form());
 			add_output($table->get_table());
+			$GLOBALS['tf']->add_html_head_js('
+<script type="text/javascript">
+var crud_rows = ' . json_encode($rows) . '
+function edit_form(that) {
+	jQuery("#editModal").modal("show");
+	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+	var row = crud_rows[parent];
+	console.log(row);
+	//jQuery("#editModal input").focus();
+}
+</script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
 		}
