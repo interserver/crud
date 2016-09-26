@@ -295,12 +295,16 @@
 <script type="text/javascript">
 var crud_rows = ' . json_encode($rows) . '
 function edit_form(that) {
-	jQuery("#editModal").modal("show");
 	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
 	var row = crud_rows[parent];
 	console.log(row);
-	//jQuery("#editModal input").focus();
+	jQuery("#editModal").modal("show");
 }
+jQuery(document).ready(function () {
+	jQuery("#editModal").on("shown.bs.modal", function(e) {
+		jQuery("#editModal input").focus();
+	});
+});
 </script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
