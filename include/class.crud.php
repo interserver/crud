@@ -296,8 +296,12 @@
 var crud_rows = ' . json_encode($rows) . '
 function edit_form(that) {
 	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
-	var row = crud_rows[parent];
+	var row = crud_rows[parent], field, value;
 	console.log(row);
+	for (field in row) {
+		value = row[field];
+		jQuery("#"+field).val(value);
+	}
 	jQuery("#editModal").modal("show");
 }
 jQuery(document).ready(function () {
