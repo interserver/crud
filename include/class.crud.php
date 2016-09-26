@@ -122,7 +122,7 @@
 
 		public function go() {
 			$this->list_records();
-			$this->order_form();
+			//$this->order_form();
 			//$this->stage = 2;
 			//$this->order_form();
 			return $this;
