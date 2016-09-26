@@ -509,6 +509,11 @@
 						$type = $data['Type'];
 						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
+					if ($data['Key'] == 'PRI') {
+						$input_type = 'label';
+					} elseif ($data['Key'] == 'MUL') {
+						$input_type = 'label';
+					}
 					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields))
 						$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
 				}
@@ -725,6 +730,16 @@
 						$data = $this->input_types[$field][1];
 						$label = $this->label($field);
 						switch ($input_type) {
+							case 'label':
+								$value = $this->values[$field];
+								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+<div class="form-group">
+	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
+	<div class="input-group col-md-6" id="'.$field.'">&nbsp;</div>
+</div>
+' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								break;
 							case 'input':
 								$value = $this->values[$field];
 								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
