@@ -645,6 +645,7 @@
 									break;
 							}
 							//for ($x = 0; $x < $this->columns; ++$x)
+							/*
 							for ($x = 0; $x < 2; ++$x) {
 								$text = '';
 								$align = 'c';
@@ -693,6 +694,8 @@
 								$table->add_field($text, $align);
 								$table_pos++;
 							}
+							*/
+							add_output($field_text);
 						}
 					}
 					if ($table_pos >= 4) {
@@ -724,43 +727,28 @@
 						switch ($input_type) {
 							case 'input':
 								$value = $this->values[$field];
-								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-								$t = '
+								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
-	<label class="col-md-3 control-label" for="'.$field.'">'.$label.'</label>
-	<div class="form-group input-group col-md-8">
+	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
+	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
 		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 	</div>
-	<span class="help-block"></span>
 </div>
-';
-								$t = '
-<div class="row form-group">
-	<label class="col-md-7 control-label optional" style="padding-left: 0px;margin-bottom: 0px;padding-right: 0px;margin-top: 6px;" for="'.$field.'">Enter a '.$label.'</label>
-	<div class="input-group col-md-5 has-feedback">
-		<span class="input-group-addon">
-			<i class="icon-'.$field.' fa fa-fw"></i>
-		</span>
-		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" placeholder="'.$label.'" autocomplete="off" onkeyup="update_'.$field.'();" onchange="update_'.$field.'();" style="border-right: 0px;">
-		<a id="popover-'.$field.'" class="input-group-addon btn btn-default" data-toggle="popover" data-container="body" data-html="true" data-content="
-			<i class=&quot;fa icon-'.$field.' fa-fw fa-back&quot;></i>
-			<div id=&quot;block-block-'.$field.'&quot; class=&quot;block block-block&quot;>
-				<div class=&quot;block-inner&quot;>
-					<div class=&quot;content&quot;>
-						<h2>'.$label.'</h2>
-						<p>If you have a coupon you would like to use with this order, enter it now.</p>
-					</div>
-				</div>
-			</div>
-		" title="" style="float: none;" data-original-title="'.$label.'"><i class="fa text-info fa-question"></i></a>
-	</div>
-	<span class="help-block"></span>
-</div>
-';
+' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								break;
 							case 'select':
-								$field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
+								// $field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
+								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+<div class="form-group">
+	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
+	<div class="form-group input-group col-md-6">
+		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
+		'.make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '')).'
+	</div>
+</div>
+' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								break;
 							case 'raw':
 								$field_text = $data;
@@ -774,6 +762,7 @@
 								$field_text = $this->$func();
 								break;
 						}
+						/*
 						for ($x = 0; $x < $this->columns; ++$x) {
 							$text = '';
 							$align = 'c';
@@ -824,8 +813,11 @@
 						$table->set_row_options('id="' . $field . 'row"');
 						$table->add_row();
 						$table->set_row_options();
+						*/
+						add_output($field_text);
 					}
 				}
+				/*
 				$table->set_colspan($this->columns);
 				$table->add_field($table->make_submit('Continue to next step', false, true));
 				$table->add_row();
@@ -833,6 +825,7 @@
 				add_output($table->get_table());
 				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
+				*/
 			}
 		}
 
