@@ -79,15 +79,7 @@
 				<h4 class="modal-title custom_align" id="editModalLabel">Edit Your Detail</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
-					<input class="form-control " type="text" placeholder="Mohsin">
-				</div>
-				<div class="form-group">
-					<input class="form-control " type="text" placeholder="Irshad">
-				</div>
-				<div class="form-group">
-					<textarea rows="2" class="form-control" placeholder="CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan"></textarea>
-				</div>
+				{$edit_form}
 			</div>
 			<div class="modal-footer ">
 				<button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>

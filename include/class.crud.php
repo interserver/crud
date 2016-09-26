@@ -284,6 +284,7 @@
 			//$table->set_filename('../crud/table3.tpl');
 			//$table->set_filename('../crud/table4.tpl');
 			$table->set_filename('../crud/table5.tpl');
+			$table->smarty->assign('edit_form', $this->order_form());
 			add_output($table->get_table());
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
@@ -512,7 +513,7 @@
 					if ($data['Key'] == 'PRI') {
 						$input_type = 'label';
 					} elseif ($data['Key'] == 'MUL') {
-						$input_type = 'label';
+						//$input_type = 'label';
 					}
 					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields))
 						$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
@@ -596,6 +597,7 @@
 		}
 
 		public function order_form() {
+			$edit_form = '';
 			if ($this->stage == 2) {
 				$table = new TFTable;
 				$table->hide_table();
@@ -720,10 +722,6 @@
 				add_output($table->get_table());
 				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			} else {
-				$table = new TFTable;
-				$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
-				$table->hide_table();
-				$table->hide_title();
 				foreach ($this->fields as $idx => $field) {
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
@@ -842,7 +840,7 @@
 						$table->add_row();
 						$table->set_row_options();
 						*/
-						add_output($field_text);
+						$edit_form .= $field_text;
 					}
 				}
 				/*
@@ -855,6 +853,7 @@
 				$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 				*/
 			}
+			return $edit_form;
 		}
 
 		public function confirm_order() {
