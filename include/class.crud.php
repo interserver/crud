@@ -758,7 +758,10 @@ jQuery(document).ready(function () {
 								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
-	<div class="input-group col-md-6" id="'.$field.'">&nbsp;</div>
+	<div class="form-group input-group col-md-6">
+		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
+		<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
+	</div>
 </div>
 ' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								break;
