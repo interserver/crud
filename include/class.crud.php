@@ -753,6 +753,19 @@
 </div>
 ' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								break;
+							case 'textarea':
+								$value = $this->values[$field];
+								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+<div class="form-group">
+	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
+	<div class="form-group input-group col-md-6">
+		<textarea rows="2" class="form-control" placeholder="'.$label.'"></textarea>
+	</div>
+</div>
+' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								break;
+
 							case 'select':
 								// $field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
 								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
