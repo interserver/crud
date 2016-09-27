@@ -139,6 +139,32 @@
 			return $this;
 		}
 
+		/**
+		 * if called via an ajax request the processing is passed off to this handler, which takes care of ajax listing updates, adding, editing, deleting, searching, and exporting records
+		 *
+		 */
+		public function ajax_handler() {
+			$action = $GLOBALS['tf']->variables->request['action'];
+			billingd_log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			switch ($action) {
+				case 'edit':
+					break;
+				case 'list':
+					break;
+				case 'add':
+					break;
+				case 'delete':
+					break;
+				case 'search':
+					break;
+				case 'export':
+					break;
+				default:
+					billingd_log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
+					break;
+			}
+		}
+
 		public function load_tables() {
 			$db = clone $this->db;
 			$db->query("show full tables where Table_Type = 'BASE TABLE'", __LINE__, __FILE__);
@@ -307,50 +333,10 @@
 			$GLOBALS['tf']->add_html_head_js('
 <script type="text/javascript">
 var crud_rows = ' . json_encode($rows) . '
-function edit_form(that) {
-	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
-	var row = crud_rows[parent], field, value;
-	console.log(row);
-	for (field in row) {
-		value = row[field];
-		jQuery("#"+field).val(value);
-	}
-	jQuery("#editModal").modal("show");
-}
-jQuery(document).ready(function () {
-	jQuery("#editModal").on("shown.bs.modal", function(e) {
-		jQuery("#editModal input").focus();
-	});
-});
 </script>');
+			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')
-		}
-
-		/**
-		 * if called via an ajax request the processing is passed off to this handler, which takes care of ajax listing updates, adding, editing, deleting, searching, and exporting records
-		 *
-		 */
-		public function ajax_handler() {
-			$action = $GLOBALS['tf']->variables->request['action'];
-			billingd_log("CRUD {$this->name} {$action} Handling", __LINE__, __FILE__);
-			switch ($action) {
-				case 'edit':
-					break;
-				case 'list':
-					break;
-				case 'add':
-					break;
-				case 'delete':
-					break;
-				case 'search':
-					break;
-				case 'export':
-					break;
-				default:
-					billingd_log("Invalid Crud Action {$action}", __LINE__, __FILE__);
-					break;
-			}
 		}
 
 		public function error($message) {
