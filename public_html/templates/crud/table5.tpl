@@ -1,3 +1,10 @@
+{literal}
+<style type="text/css">
+	ul.pagination li a {
+		height: 30px;
+	}
+</style>
+{/literal}
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
@@ -65,6 +72,9 @@
 					<li><a href="#">4</a></li>
 					<li><a href="#">5</a></li>
 					<li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+{if $ima == 'admin'}
+					<li>&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output"><i class="fa fa-fw fa-2x fa-bug"></i></button></li>
+{/if}
 				</ul>
 			</div>
 		</div>
@@ -117,8 +127,27 @@
 		</div>
 		</form>
 	</div>
-	<!-- /.modal-dialog -->
 </div>
+{if $ima == 'admin'}
+<div class="modal fade" id="debugModal" tabindex="-1" role="dialog" aria-labelledby="debugModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+				<h4 class="modal-title custom_align" id="debugModalLabel">Debug Output</h4>
+			</div>
+			<div class="modal-body">
+				<pre style="text-align: left;">
+				{$debug_output}
+				</pre>
+			</div>
+			<div class="modal-footer ">
+				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
 {literal}
 <script type="text/javascript">
 	$(document).ready(function(){

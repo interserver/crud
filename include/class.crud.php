@@ -466,6 +466,12 @@
 			$table->set_filename('../crud/table5.tpl');
 			$table->smarty->assign('primary_key', $this->primary_key);
 			$table->smarty->assign('choice', $this->choice);
+			$table->smarty->assign('ima', $GLOBALS['tf']->ima);
+			if ($GLOBALS['tf']->ima == 'admin') {
+				$debug = $this;
+				unset($debug->db);
+				$table->smarty->assign('debug_output', print_r($debug, true));
+			}
 			$table->hide_form();
 			$table->smarty->assign('edit_form', $this->order_form());
 			add_output($table->get_table());
