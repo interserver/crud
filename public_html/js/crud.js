@@ -151,12 +151,12 @@ function get_order_row(order) {
 function approval_list(status, offset, limit) {
 	if (typeof jQuery('#order_status_grp .btn.active').attr('data-target') != "undefined" && typeof status == "undefined")
 		status = jQuery('#order_status_grp .btn.active').attr('data-target');
-	var options = "ajax_pending_approval.php?action=list&status="+status;
+	var url = "ajax_pending_approval.php?action=list&status="+status;
 	if (typeof offset != "undefined")
-		options = options+"&offset="+offset;
-	options = options + "&limit=" + document.getElementById('pending_approval_limit').value;
-	options = options + "&module=" + document.getElementById('pending_approval_module').value;
-	$.getJSON(options, { }, function(json) {
+		url = url+"&offset="+offset;
+	url = url + "&limit=" + document.getElementById('pending_approval_limit').value;
+	url = url + "&module=" + document.getElementById('pending_approval_module').value;
+	$.getJSON(url, { }, function(json) {
 		jQuery('table.orders tbody').html('');
 		//console.log(json);
 		for (var x = 0; x < json.orders.length; x++)
@@ -166,9 +166,49 @@ function approval_list(status, offset, limit) {
 	return false;
 }
 
-function approval_handler(action, id, module) {
+function submit_handler(what, that) {
+	var disabled = jQuery("#"+what+"ModalForm input[disabled], #"+what+"ModalForm select[disabled]");
+	disabled.removeAttr("disabled");
+	var url = jQuery("#"+what+"ModalForm").attr("action");
+	var data = jQuery(that).serialize();
+	console.log("calling "+url+" with post data "+data);
+	disabled.attr("disabled", "disabled");
+	$.ajax({
+		type: 'POST',
+		url: url,
+		data: data,
+		success: function(html){
+			//console.log("handler returned html: "+html);
+			jQuery('#approvalmessage').html('');
+			if(html.substring(0, 4)=='true') {
+				jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Redirecting</span><div>');
+				if (html.length == 4) {
+					window.location="index.php";
+				} else {
+					window.location=html.substring(4);
+				}
+			} else if (html == 'error') {
+				$('#'+what+'Modal .btn').attr('disabled', false);
+				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Credit-Card</div>");
+			} else if (html == 'ok') {
+				$('#'+what+'Modal .btn').attr('disabled', false);
+			} else {
+				$('#'+what+'Modal .btn').attr('disabled', false);
+				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
+			}
+		},
+		error : function() {
+			$('#'+what+'Modal .btn').attr('disabled', false);
+			jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
+		},
+		beforeSend:function()
+		{
+			$('#'+what+'Modal .btn').attr('disabled', true);
+			jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing "+what+"</span><div>');
+		}
+	});
+	return false;
 }
-
 function edit_form(that) {
 	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
 	var row = crud_rows[parent], field, value;
@@ -195,87 +235,11 @@ jQuery(document).ready(function () {
 	});
 	jQuery("#editModal form").on("submit", function(event) {
 		event.preventDefault();
-		var disabled = jQuery("#editModalForm input[disabled], #editModalForm select[disabled]");
-		disabled.removeAttr("disabled");
-		var options = jQuery("#editModalForm").attr("action") + "&" + jQuery(this).serialize();
-		console.log("calling "+options);
-		disabled.attr("disabled", "disabled");
-		$.ajax({
-			type: 'GET',
-			url: options,
-			success: function(html){
-				//console.log("handler returned html: "+html);
-				jQuery('#approvalmessage').html('');
-				if(html.substring(0, 4)=='true') {
-					jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Redirecting</span><div>');
-					if (html.length == 4) {
-						window.location="index.php";
-					} else {
-						window.location=html.substring(4);
-					}
-				} else if (html == 'error') {
-					$('#editModal .btn').attr('disabled', false);
-					jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Credit-Card</div>");
-				} else if (html == 'ok') {
-					$('#editModal .btn').attr('disabled', false);
-				} else {
-					$('#editModal .btn').attr('disabled', false);
-					jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
-				}
-			},
-			error : function() {
-				$('#editModal .btn').attr('disabled', false);
-				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
-			},
-			beforeSend:function()
-			{
-				$('#editModal .btn').attr('disabled', true);
-				jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing Edit</span><div>');
-			}
-		});
-		return false;
+		submit_handler('edit', this);
 	});
 	jQuery("#deleteModal form").on("submit", function(event) {
 		event.preventDefault();
-		var disabled = jQuery("#deleteModalForm input[disabled], #deleteModalForm select[disabled]");
-		disabled.removeAttr("disabled");
-		var options = jQuery("#deleteModalForm").attr("action") + "&" + jQuery(this).serialize();
-		console.log("calling "+options);
-		disabled.attr("disabled", "disabled");
-		$.ajax({
-			type: 'GET',
-			url: options,
-			success: function(html){
-				//console.log("handler returned html: "+html);
-				jQuery('#approvalmessage').html('');
-				if(html.substring(0, 4)=='true') {
-					jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Redirecting</span><div>');
-					if (html.length == 4) {
-						window.location="index.php";
-					} else {
-						window.location=html.substring(4);
-					}
-				} else if (html == 'error') {
-					$('#deleteModal .btn').attr('disabled', false);
-					jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Crdelete-Card</div>");
-				} else if (html == 'ok') {
-					$('#deleteModal .btn').attr('disabled', false);
-				} else {
-					$('#deleteModal .btn').attr('disabled', false);
-					jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
-				}
-			},
-			error : function() {
-				$('#deleteModal .btn').attr('disabled', false);
-				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
-			},
-			beforeSend:function()
-			{
-				$('#deleteModal .btn').attr('disabled', true);
-				jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing Delete</span><div>');
-			}
-		});
-		return false;
+		submit_handler('delete', this);
 	});
 });
 

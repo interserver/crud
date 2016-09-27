@@ -149,6 +149,8 @@
 			billingd_log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
 			switch ($action) {
 				case 'edit':
+					billingd_log(print_r($_GET, true), __LINE__, __FILE__);
+					billingd_log(print_r($_POST, true), __LINE__, __FILE__);
 					break;
 				case 'list':
 					break;
