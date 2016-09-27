@@ -167,12 +167,9 @@ function approval_list(status, offset, limit) {
 }
 
 function approval_handler(action, id, module) {
-	var options = "ajax_pending_approval.php?action="+action;
-	if (typeof module != "undefined")
-		options = options + "&module=" + module;
-	else
-		options = options + "&module=" + document.getElementById('pending_approval_module').value;
+	var options = jQuery("#editModalForm").attr("action");
 	options = options + "&limit=" + document.getElementById('pending_approval_limit').value;
+	options = options + "&" & jQuery("#editModalForm input, #editModalForm select").serialize();
 	if (typeof id != "undefined")
 		options = options+"&id="+id;
 	//console.log("calling "+options);
@@ -239,6 +236,10 @@ function edit_form(that) {
 jQuery(document).ready(function () {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
+	});
+	jQuery("#editModal form").on("submit", function(event) {
+		event.preventDefault();
+		console.log(jQuery(this).serialize());
 	});
 });
 
