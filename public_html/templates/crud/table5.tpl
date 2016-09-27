@@ -81,6 +81,7 @@
 			</div>
 			<div class="modal-body">
 				{$edit_form}
+				<div class="error_message" style="text-align: left;"></div>
 			</div>
 			<div class="modal-footer ">
 				<button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
@@ -106,8 +107,8 @@
 						<input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
 					</div>
 				</div>
+				<div class="error_message" style="text-align: left;"></div>
 				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
-
 			</div>
 			<div class="modal-footer ">
 				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>

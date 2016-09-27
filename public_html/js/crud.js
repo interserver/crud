@@ -179,9 +179,9 @@ function submit_handler(what, that) {
 		data: data,
 		success: function(html){
 			//console.log("handler returned html: "+html);
-			jQuery('#approvalmessage').html('');
+			jQuery('#'+what+'Modal .error_message').html('');
 			if(html.substring(0, 4)=='true') {
-				jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Redirecting</span><div>');
+				jQuery('#'+what+'Modal .error_message').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Redirecting</span><div>');
 				if (html.length == 4) {
 					window.location="index.php";
 				} else {
@@ -189,22 +189,22 @@ function submit_handler(what, that) {
 				}
 			} else if (html == 'error') {
 				$('#'+what+'Modal .btn').attr('disabled', false);
-				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Credit-Card</div>");
+				jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Credit-Card</div>");
 			} else if (html == 'ok') {
 				$('#'+what+'Modal .btn').attr('disabled', false);
 			} else {
 				$('#'+what+'Modal .btn').attr('disabled', false);
-				jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
+				jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
 			}
 		},
 		error : function() {
 			$('#'+what+'Modal .btn').attr('disabled', false);
-			jQuery('#approvalmessage').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
+			jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
 		},
 		beforeSend:function()
 		{
 			$('#'+what+'Modal .btn').attr('disabled', true);
-			jQuery('#approvalmessage').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing "+what+"</span><div>');
+			jQuery('#'+what+'Modal .error_message').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing "+what+"</span><div>');
 		}
 	});
 	return false;

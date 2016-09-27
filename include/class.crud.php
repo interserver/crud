@@ -147,11 +147,11 @@
 		public function ajax_handler() {
 			$action = $GLOBALS['tf']->variables->request['action'];
 			billingd_log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			// generic data to get us here is in _GET, while the specific fields are all in _POST
+			//billingd_log(print_r($_GET, true), __LINE__, __FILE__);
+			//billingd_log(print_r($_POST, true), __LINE__, __FILE__);
 			switch ($action) {
 				case 'edit':
-					// generic data to get us here is in _GET, while the specific fields are all in _POST
-					//billingd_log(print_r($_GET, true), __LINE__, __FILE__);
-					//billingd_log(print_r($_POST, true), __LINE__, __FILE__);
 					$fields = $_POST;
 					$query_fields = array();
 					$query_where = array();
@@ -249,11 +249,11 @@
 						//$this->db->query($query, __LINE__, __FILE__);
 						// send response for js handler
 						echo "ok";
-						echo "i want to run query {$query}";
+						echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
 					} else {
 						billingd_log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
 						// send response for js handler
-						echo "There was an error with validation";
+						echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
 					}
 					break;
 				case 'list':
