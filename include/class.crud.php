@@ -42,6 +42,7 @@
 
 	class Crud
 	{
+		public $ajax = false;
 		public $debug = false;
 		public $module;
 		public $choice;
@@ -105,6 +106,12 @@
 			$crud->column_templates[] = array('text' => '', 'align' => 'r');
 			$crud->set_title();
 			$crud->choice = $GLOBALS['tf']->variables->request['choice'];
+			if ($crud->choice == 'crud') {
+				$crud->ajax = true;
+				$crud->choice = $GLOBALS['tf']->variables->request['crud'];
+			}
+			if (substr($crud->choice, 0, 5) == 'none.')
+				$crud->choice = substr($crud->choice, 5);
 			if (strpos($table_or_query, ' ')) {
 				$crud->query = $table_or_query;
 				$crud->type = 'query';
@@ -121,7 +128,7 @@
 		}
 
 		public function go() {
-			if ($this->choice == 'crud') {
+			if ($this->ajax == true) {
 				$this->ajax_handler();
 			} else {
 				$this->list_records();
@@ -293,6 +300,8 @@
 			//$table->set_filename('../crud/table3.tpl');
 			//$table->set_filename('../crud/table4.tpl');
 			$table->set_filename('../crud/table5.tpl');
+			$table->smarty->assign('choice', $this->choice);
+			$table->hide_form();
 			$table->smarty->assign('edit_form', $this->order_form());
 			add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js('
