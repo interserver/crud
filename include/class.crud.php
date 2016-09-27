@@ -162,9 +162,9 @@
 						// build query
 						$safe_value = $this->db->real_escape($value);
 						if ($field == $this->primary_key)
-							$query_fields[] = "{$field}='{$safe_value}'";
-						else
 							$query_where[] = "{$field}='{$safe_value}'";
+						else
+							$query_fields[] = "{$field}='{$safe_value}'";
 					}
 					// update database
 					$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
