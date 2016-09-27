@@ -155,9 +155,13 @@
 					$fields = $_POST;
 					$query_fields = array();
 					$query_where = array();
+					$valid = true;
+					$errors = array();
+					$error_fields = array();
 					foreach ($fields as $field => $value) {
 						// match up fields
 						if (isset($this->query_fields[$field])) {
+							$orig_field = $field;
 							$field = $this->query_fields[$field];
 							if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
 								$field = $matches['field'];
@@ -178,6 +182,56 @@
 								}
 							}
 							// validate fields
+							foreach ($this->validations[$orig_field] as $validation) {
+								if (!is_array($validation)) {
+									switch ($validation) {
+										case 'abs':
+											$value = abs($value);
+											break;
+										case 'int':
+											// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
+											if (isset($value) && $value != intval($value)) {
+												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+												$error_fields[] = $field;
+												$valid = false;
+											}
+											break;
+										case 'notags':
+											if ($value != strip_tags($value)) {
+												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+												$error_fields[] = $field;
+												$valid = false;
+											}
+											break;
+										case 'trim':
+											if (isset($value)) {
+												$value = trim($value);
+											}
+											break;
+										case 'lower':
+											if (isset($value)) {
+												$value = strtolower($value);
+											}
+											break;
+										case 'in_array':
+											if (isset($value) && !in_array($value, $this->labels[$field])) {
+												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+												$error_fields[] = $field;
+												$valid = false;
+											}
+											break;
+									}
+								} else {
+									if (isset($validation['in_array'])) {
+										if (isset($value) && !in_array($value, $validation['in_array'])) {
+											$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+											$error_fields[] = $field;
+											$valid = false;
+										}
+									}
+								}
+
+							}
 							// build query
 							$safe_value = $this->db->real_escape($value);
 							if ($field == $this->primary_key)
@@ -190,10 +244,17 @@
 					}
 					// update database
 					$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
-					billingd_log("i want to run query {$query}", __LINE__, __FILE__);
-					//$this->db->query($query, __LINE__, __FILE__);
-					// send response for js handler
-					echo "ok";
+					if ($valid == true) {
+						billingd_log("i want to run query {$query}", __LINE__, __FILE__);
+						//$this->db->query($query, __LINE__, __FILE__);
+						// send response for js handler
+						echo "ok";
+						echo "i want to run query {$query}";
+					} else {
+						billingd_log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
+						// send response for js handler
+						echo "There was an error with validation";
+					}
 					break;
 				case 'list':
 					// apply pagination
