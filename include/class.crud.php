@@ -156,15 +156,36 @@
 					$query_fields = array();
 					$query_where = array();
 					foreach ($fields as $field => $value) {
-						// match up fields
 						// see which fields are editable
-						// validate fields
-						// build query
-						$safe_value = $this->db->real_escape($value);
-						if ($field == $this->primary_key)
-							$query_where[] = "{$field}='{$safe_value}'";
-						else
-							$query_fields[] = "{$field}='{$safe_value}'";
+						// match up fields
+						if (isset($this->query_fields[$field])) {
+							$field = $this->query_fields[$field];
+							if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
+								$field = $matches['field'];
+								if (isset($matches['table']) && $matches['table'] != '') {
+									$tables = array($matches['table'] => $this->tables[$matches['table']]);
+									$query_table = $matches['table'];
+								} else {
+									$tables = $this->tables;
+								}
+								$field = $matches['field'];
+							} else {
+								$tables = $this->tables;
+							}
+							foreach ($tables as $t_table => $t_fields) {
+								if (isset($t_fields[$field])) {
+									$query_table = $t_table;
+									break;
+								}
+							}
+							// validate fields
+							// build query
+							$safe_value = $this->db->real_escape($value);
+							if ($field == $this->primary_key)
+								$query_where[] = "{$field}='{$safe_value}'";
+							else
+								$query_fields[] = "{$field}='{$safe_value}'";
+						}
 					}
 					// update database
 					$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
@@ -242,7 +263,7 @@
 				if (sizeof($field_arr) > 1) {
 					$table = $field_arr[0];
 					$orig_field = $field_arr[1];
-					$orig_field = $table.'.'.$orig_field;
+					//$orig_field = $table.'.'.$orig_field;
 				} else {
 					$table = false;
 					$orig_field = $field_arr[0];
@@ -252,7 +273,7 @@
 				} else {
 					$field = $orig_field;
 				}
-				$fields[$orig_field] = $field;
+				$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
 			}
 			$this->query_fields = $fields;
 			//add_output('<pre style="text-align: left;">' . print_r($fields, true) . '</pre>');
@@ -609,7 +630,7 @@ var primary_key = "' . $this->primary_key . '";
 						$type = $data['Type'];
 						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
-					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields)) {
+					if ($this->type == 'table' || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
 							$input_type = 'label';
