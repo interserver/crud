@@ -48,6 +48,7 @@
 		public $choice;
 		public $table;
 		public $query;
+		public $primary_key;
 		public $db;
 		public $settings;
 		public $tables = array();
@@ -303,7 +304,7 @@
 					$table->add_header_row();
 				}
 				$rows[] = $db->Record;
-				$table->set_row_options('id="itemrow'.$idx.'"');
+				//$table->set_row_options('id="itemrow'.$idx.'"');
 				foreach ($db->Record as $field =>$value) {
 					$table->add_field($value);
 				}
@@ -326,6 +327,7 @@
 			//$table->set_filename('../crud/table3.tpl');
 			//$table->set_filename('../crud/table4.tpl');
 			$table->set_filename('../crud/table5.tpl');
+			$table->smarty->assign('primary_key', $this->primary_key);
 			$table->smarty->assign('choice', $this->choice);
 			$table->hide_form();
 			$table->smarty->assign('edit_form', $this->order_form());
@@ -560,13 +562,15 @@ var crud_rows = ' . json_encode($rows) . '
 						$type = $data['Type'];
 						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
-					if ($data['Key'] == 'PRI') {
-						$input_type = 'label';
-					} elseif ($data['Key'] == 'MUL') {
-						//$input_type = 'label';
-					}
-					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields))
+					if ($this->type == 'table' || in_array($field, $this->query_fields) || in_array($table.'.'.$field, $this->query_fields)) {
+						if ($data['Key'] == 'PRI') {
+							$this->primary_key = $field;
+							$input_type = 'label';
+						} elseif ($data['Key'] == 'MUL') {
+							//$input_type = 'label';
+						}
 						$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
+					}
 				}
 			}
 		}
