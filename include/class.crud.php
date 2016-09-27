@@ -152,12 +152,26 @@
 					// generic data to get us here is in _GET, while the specific fields are all in _POST
 					//billingd_log(print_r($_GET, true), __LINE__, __FILE__);
 					//billingd_log(print_r($_POST, true), __LINE__, __FILE__);
-					// match up fields
-					// see which fields are editable
-					// validate fields
-					// build query
+					$fields = $_POST;
+					$query_fields = array();
+					$query_where = array();
+					foreach ($fields as $field => $value) {
+						// match up fields
+						// see which fields are editable
+						// validate fields
+						// build query
+						$safe_value = $this->db->real_escape($value);
+						if ($field == $this->primary_key)
+							$query_fields[] = "{$field}='{$safe_value}'";
+						else
+							$query_where[] = "{$field}='{$safe_value}'";
+					}
 					// update database
+					$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
+					billingd_log("i want to run query {$query}", __LINE__, __FILE__);
+					//$this->db->query($query, __LINE__, __FILE__);
 					// send response for js handler
+					echo "ok";
 					break;
 				case 'list':
 					// apply pagination
