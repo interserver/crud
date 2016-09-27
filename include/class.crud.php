@@ -149,18 +149,48 @@
 			billingd_log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
 			switch ($action) {
 				case 'edit':
-					billingd_log(print_r($_GET, true), __LINE__, __FILE__);
-					billingd_log(print_r($_POST, true), __LINE__, __FILE__);
+					// generic data to get us here is in _GET, while the specific fields are all in _POST
+					//billingd_log(print_r($_GET, true), __LINE__, __FILE__);
+					//billingd_log(print_r($_POST, true), __LINE__, __FILE__);
+					// match up fields
+					// see which fields are editable
+					// validate fields
+					// build query
+					// update database
+					// send response for js handler
 					break;
 				case 'list':
+					// apply pagination
+					// apply sorting
+					// send reseponse for js handler
 					break;
 				case 'add':
+					// generic data to get us here is in _GET, while the specific fields are all in _POST
+					// match up fields
+					// see which fields are editable
+					// validate fields
+					// build query
+					// update database
+					// send response for js handler
 					break;
 				case 'delete':
+					// match up row
+					// build query
+					// update db
+					// send resposne for js handler
 					break;
 				case 'search':
+					// get fields
+					// validate data
+					// build search query
+					// run query
+					// send response for js handler
 					break;
 				case 'export':
+					// get export type
+					// get data
+					// convert data
+					// send data
 					break;
 				default:
 					billingd_log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
