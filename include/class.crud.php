@@ -156,7 +156,6 @@
 					$query_fields = array();
 					$query_where = array();
 					foreach ($fields as $field => $value) {
-						// see which fields are editable
 						// match up fields
 						if (isset($this->query_fields[$field])) {
 							$field = $this->query_fields[$field];
@@ -183,8 +182,10 @@
 							$safe_value = $this->db->real_escape($value);
 							if ($field == $this->primary_key)
 								$query_where[] = "{$field}='{$safe_value}'";
-							else
+							else {
+								// see which fields are editable
 								$query_fields[] = "{$field}='{$safe_value}'";
+							}
 						}
 					}
 					// update database
