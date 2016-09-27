@@ -304,7 +304,7 @@
 					$table->add_header_row();
 				}
 				$rows[] = $db->Record;
-				//$table->set_row_options('id="itemrow'.$idx.'"');
+				$table->set_row_options('id="itemrow'.$idx.'"');
 				foreach ($db->Record as $field =>$value) {
 					$table->add_field($value);
 				}
@@ -334,7 +334,8 @@
 			add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js('
 <script type="text/javascript">
-var crud_rows = ' . json_encode($rows) . '
+var crud_rows = ' . json_encode($rows) . ';
+var primary_key = "' . $this->primary_key . '";
 </script>');
 			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');

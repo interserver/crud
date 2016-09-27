@@ -99,7 +99,13 @@
 				<h4 class="modal-title custom_align" id="deleteModalLabel">Delete this entry</h4>
 			</div>
 			<div class="modal-body">
-
+				<div class="form-group">
+					<label class="col-md-offset-1 col-md-4 control-label" for="primary_key">ID</label>
+					<div class="form-group input-group col-md-6">
+						<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
+						<input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
+					</div>
+				</div>
 				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
 
 			</div>
