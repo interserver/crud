@@ -241,5 +241,9 @@ jQuery(document).ready(function () {
 		event.preventDefault();
 		console.log(jQuery(this).serialize());
 	});
+	jQuery("#deleteModal form").on("submit", function(event) {
+		event.preventDefault();
+		console.log(jQuery(this).serialize());
+	});
 });
 
