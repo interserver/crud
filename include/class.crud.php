@@ -57,6 +57,7 @@
 		public $columns = 3;
 		public $column_templates = array();
 		public $fields = array();
+		public $disabled_fields = array();
 		public $values = array();
 		public $labels = array();
 		public $defaults = array();
@@ -238,22 +239,29 @@
 								$query_where[] = "{$field}='{$safe_value}'";
 							else {
 								// see which fields are editable
-								$query_fields[] = "{$field}='{$safe_value}'";
+								if (!in_array($field, $this->disabled_fields))
+									$query_fields[] = "{$field}='{$safe_value}'";
 							}
 						}
 					}
-					// update database
-					$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
-					if ($valid == true) {
-						billingd_log("i want to run query {$query}", __LINE__, __FILE__);
-						//$this->db->query($query, __LINE__, __FILE__);
-						// send response for js handler
-						echo "ok";
-						echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
+					if (sizeof($query_fields) > 0) {
+						// update database
+						$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
+						if ($valid == true) {
+							billingd_log("i want to run query {$query}", __LINE__, __FILE__);
+							//$this->db->query($query, __LINE__, __FILE__);
+							// send response for js handler
+							echo "ok";
+							echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
+						} else {
+							billingd_log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
+							// send response for js handler
+							echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
+						}
 					} else {
-						billingd_log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
+						billingd_log("crud error nothing to update ", __LINE__, __FILE__);
 						// send response for js handler
-						echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
+						echo "There was nothing to update";
 					}
 					break;
 				case 'list':
@@ -498,7 +506,9 @@ var primary_key = "' . $this->primary_key . '";
 			if (!isset($this->validations[$field])) {
 				$this->validations[$field] = array();
 			}
-			$this->validations[$field] = array_merge($this->validations[$field], $validations);
+			foreach ($validations as $validation)
+				if (!in_array($validation, $this->validations[$field]))
+					$this->validations[$field] = array_merge($this->validations[$field], $validations);
 		}
 
 		public function add_validations($validations) {
@@ -1041,6 +1051,18 @@ var primary_key = "' . $this->primary_key . '";
 				*/
 			}
 			return $edit_form;
+		}
+
+		public function disable_field($field) {
+			if (!in_array($field, $this->disabled_fields))
+				$this->disabled_fields[] = $field;
+			return $this;
+		}
+
+		public function disable_fields($fields) {
+			foreach ($fields as $field)
+				$this->disable_field($field);
+			return $this;
 		}
 
 		public function confirm_order() {
