@@ -233,6 +233,17 @@ function edit_form(that) {
 	jQuery("#editModal").modal("show");
 }
 
+function delete_form(that) {
+	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+	var row = crud_rows[parent], field, value;
+	console.log(row);
+	for (field in row) {
+		value = row[field];
+		jQuery("#"+field).val(value);
+	}
+	jQuery("#deleteModal").modal("show");
+}
+
 jQuery(document).ready(function () {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();

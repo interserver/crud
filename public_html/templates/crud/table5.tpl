@@ -48,7 +48,7 @@
 								</button>
 							</td>
 							<td>
-								<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteModal" title="Delete" data-title="Delete">
+								<button type="button" class="btn btn-danger btn-xs" onclick="delete_form(this);" title="Delete">
 									<i class="fa fa-fw fa-trash"></i>
 								</button>
 							</td>
