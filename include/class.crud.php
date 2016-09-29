@@ -147,10 +147,10 @@
 		 */
 		public function ajax_handler() {
 			$action = $GLOBALS['tf']->variables->request['action'];
-			billingd_log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
 			// generic data to get us here is in _GET, while the specific fields are all in _POST
-			//billingd_log(print_r($_GET, true), __LINE__, __FILE__);
-			//billingd_log(print_r($_POST, true), __LINE__, __FILE__);
+			//$this->log(print_r($_GET, true), __LINE__, __FILE__);
+			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
 			switch ($action) {
 				case 'edit':
 					$fields = $_POST;
@@ -248,18 +248,18 @@
 						// update database
 						$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
 						if ($valid == true) {
-							billingd_log("i want to run query {$query}", __LINE__, __FILE__);
+							$this->log("i want to run query {$query}", __LINE__, __FILE__);
 							//$this->db->query($query, __LINE__, __FILE__);
 							// send response for js handler
 							echo "ok";
 							echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
 						} else {
-							billingd_log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
+							$this->log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
 							// send response for js handler
 							echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
 						}
 					} else {
-						billingd_log("crud error nothing to update ", __LINE__, __FILE__);
+						$this->log("crud error nothing to update ", __LINE__, __FILE__);
 						// send response for js handler
 						echo "There was nothing to update";
 					}
@@ -298,7 +298,7 @@
 					// send data
 					break;
 				default:
-					billingd_log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
+					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
 					break;
 			}
 		}
@@ -493,7 +493,7 @@ var primary_key = "' . $this->primary_key . '";
 			if (!$line !== false && $file !== false)
 				billingd_log($message, $line, $file);
 			elseif ($line !== false)
-				billingd_log($message, $line);
+				billingd_log($message, $line, __FILE__);
 			elseif ($file !== false)
 				billingd_log($message, false, $file);
 			else
@@ -701,12 +701,12 @@ var primary_key = "' . $this->primary_key . '";
 							case 'text':
 								break;
 							default:
-								billingd_log("CRUD class Found Field Type '{$type}' from {$data['Type']} it Doesnt Understand", __LINE__, __FILE__);
+								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it Doesnt Understand", __LINE__, __FILE__);
 								break;
 						}
 					} else {
 						$type = $data['Type'];
-						billingd_log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
+						$this->log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
 					}
 					if ($this->type == 'table' || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
@@ -895,7 +895,7 @@ var primary_key = "' . $this->primary_key . '";
 									//echo "<br>";
 								}
 								if (!isset($field_text)) {
-									billingd_log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
+									$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
 								}
 								$text = str_replace(array('%title%','%field%'), array($label, $field_text), $text);
 								$table->add_field($text, $align);
@@ -1034,7 +1034,7 @@ var primary_key = "' . $this->primary_key . '";
 								//echo "<br>";
 							}
 							if (!isset($field_text)) {
-								billingd_log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
+								$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
 							}
 							$text = str_replace(array('%title%','%field%'), array($label, $field_text), $text);
 							$table->add_field($text, $align);
