@@ -182,6 +182,7 @@
 									break;
 								}
 							}
+							$already_safe = false;
 							// validate fields
 							foreach ($this->validations[$orig_field] as $validation) {
 								if (!is_array($validation)) {
@@ -215,26 +216,51 @@
 											}
 											break;
 										case 'in_array':
-											if (isset($value) && !in_array($value, $this->labels[$field])) {
-												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
-												$error_fields[] = $field;
-												$valid = false;
+											if (isset($value)) {
+												$values = array();
+												if (!is_array($value))
+													$value = array($value);
+												foreach ($value as $t_value) {
+													if (!in_array($value, $this->labels[$field])) {
+														$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+														$error_fields[] = $field;
+														$valid = false;
+													}
+													$values[] = $this->db->real_escape($t_value);
+												}
+												$value = implode("','", $values);
+												unset($values);
+												$already_safe = true;
 											}
 											break;
 									}
 								} else {
 									if (isset($validation['in_array'])) {
-										if (isset($value) && !in_array($value, $validation['in_array'])) {
-											$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
-											$error_fields[] = $field;
-											$valid = false;
+										if (isset($value)) {
+											$values = array();
+											if (!is_array($value))
+												$value = array($value);
+											foreach ($value as $t_value) {
+												if (!in_array($t_value, $validation['in_array'])) {
+													$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
+													$error_fields[] = $field;
+													$valid = false;
+												}
+												$values[] = $this->db->real_escape($t_value);
+											}
+											$value = implode(',', $values);
+											unset($values);
+											$already_safe = true;
 										}
 									}
 								}
 
 							}
 							// build query
-							$safe_value = $this->db->real_escape($value);
+							if ($already_safe != true)
+								$safe_value = $this->db->real_escape($value);
+							else
+								$safe_value = $value;
 							if ($field == $this->primary_key)
 								$query_where[] = "{$field}='{$safe_value}'";
 							else {
@@ -527,7 +553,7 @@ var primary_key = "' . $this->primary_key . '";
 			//echo "Got here $field $input_type <pre>" . print_r($data, true) . "</pre><br>\n";
 			// FIXME get in_arary working properly / add validations based on this
 			$this->input_types[$field] = array($input_type, $data);
-			if ($this->input_types[$field][0] == 'select') {
+			if (in_array($this->input_types[$field][0], array('select', 'select_multiple'))) {
 				$this->add_field_validations($field, array('in_array' => $this->input_types[$field][1]['values']));
 			}
 		}
@@ -817,6 +843,7 @@ var primary_key = "' . $this->primary_key . '";
 							$input_type = $this->input_types[$field][0];
 							$data = $this->input_types[$field][1];
 							switch ($input_type) {
+								case 'select_multiple':
 								case 'select':
 									$value = $this->input_types[$field][1]['labels'][array_search($this->values[$field], $this->input_types[$field][1]['values'])];
 									break;
@@ -837,8 +864,9 @@ var primary_key = "' . $this->primary_key . '";
 									$value = $this->values[$field];
 									$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 									break;
+								case 'select_multiple':
 								case 'select':
-									$field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
+									$field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 									break;
 								case 'raw':
 									$field_text = $data;
@@ -966,15 +994,15 @@ var primary_key = "' . $this->primary_key . '";
 </div>
 ' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 								break;
-
+							case 'select_multiple':
 							case 'select':
-								// $field_text = make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : ''));
+								// $field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-		'.make_select($field, $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '')).'
+		'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : '')).'
 	</div>
 </div>
 ' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -1104,6 +1132,7 @@ var primary_key = "' . $this->primary_key . '";
 					$input_type = $this->input_types[$field][0];
 					$data = $this->input_types[$field][1];
 					switch ($input_type) {
+						case 'select_multple':
 						case 'select':
 							$label = $this->input_types[$field][1]['labels'][array_search($this->values[$field], $this->input_types[$field][1]['values'])];
 							break;
@@ -1124,8 +1153,9 @@ var primary_key = "' . $this->primary_key . '";
 			if ($GLOBALS['tf']->ima == 'admin') {
 				foreach ($this->admin_confirm_fields as $field => $data) {
 					switch ($data['type']) {
+						case 'select_multiple':
 						case 'select':
-							$field_text = make_select($field, $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['data']['extra']) ? $data['data']['extra'] : ''));
+							$field_text = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
 							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
 							$table->add_field($field_text, 'l');
 							$table->add_row();
