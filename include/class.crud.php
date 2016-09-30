@@ -49,28 +49,29 @@
 		public $table;
 		public $query;
 		public $primary_key;
-		public $db;
-		public $settings;
-		public $tables = array();
 		public $type = '';
 		public $title = '';
 		public $columns = 3;
-		public $column_templates = array();
+		public $price_align = 'r';
+		public $price_text_align = 'r';
+		public $stage = 1;
+		public $query_where = array();
+		public $admin_confirm_fields = array();
 		public $fields = array();
+		public $query_fields = array();
+		// temp fields maybe from buy service class i think
 		public $disabled_fields = array();
 		public $values = array();
 		public $labels = array();
 		public $defaults = array();
 		public $validations = array();
 		public $input_types = array();
-		public $admin_confirm_fields = array();
-		public $price_align = 'r';
-		public $price_text_align = 'r';
+		public $column_templates = array();
+		public $tables = array();
 		// from the sql query parser
 		public $queries = null;
-		public $query_fields = array();
-		// temp fields maybe from buy service class i think
-		public $stage = 1;
+		public $db;
+		public $settings;
 
 		public function __construct() {
 			return $this;
@@ -271,8 +272,10 @@
 						}
 					}
 					if (sizeof($query_fields) > 0) {
+						//billingd_log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
+						$query_where = array_merge($query_where, $this->query_where[$query_table]);
 						// update database
-						$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(', ', $query_where);
+						$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(' and ', $query_where);
 						if ($valid == true) {
 							$this->log("i want to run query {$query}", __LINE__, __FILE__);
 							//$this->db->query($query, __LINE__, __FILE__);
@@ -354,6 +357,66 @@
 		public function parse_query_fields($queries = false) {
 			if ($queries == false)
 				$queries = $this->queries;
+			foreach ($queries[0]->getJoins() as $join => $join_arr) {
+				$table = $join_arr->getTable();											// accounts_ext
+				$join_type = $join_arr->getType();										// LEFT JOIN
+				foreach ($join_arr->getCondition()->getMembers() as $member => $member_arr) {
+					$type = $member_arr->getType();										// =
+					$member_1_type = $member_arr->getMembers()[0]->getType();			// COLUMN
+					$member_1_members = $member_arr->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
+					if ($member_1_type == 'COLUMN') {
+						if (sizeof($member_1_members) == 1) {
+							$member_1_table = $table;
+							$member_1_field = $member_1_members[0];
+						} else {
+							$member_1_table = $member_1_members[0];
+							$member_1_field = $member_1_members[1];
+						}
+						//add_output("adding table {$member_1_table}");
+						if (!isset($this->query_where[$member_1_table]))
+							$this->query_where[$member_1_table] = array();
+					}
+					$member_2_type = $member_arr->getMembers()[1]->getType();			// COLUMN or VALUE
+					$member_2_members = $member_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
+					if ($member_2_type == 'COLUMN') {
+						if (sizeof($member_2_members) == 1) {
+							$member_2_table = $table;
+							$member_2_field = $member_2_members[0];
+						} else {
+							$member_2_table = $member_2_members[0];
+							$member_2_field = $member_2_members[1];
+						}
+					} elseif ($member_2_type == 'VALUE') {
+						$member_2_value = $member_2_members[0];
+						//$this->query_where[$member_1_table][] =  "{$member_1_table}.{$member_1_field} {$type} '{$member_2_value}'";
+						$this->query_where[$member_1_table][] =  "{$member_1_field}{$type}'{$member_2_value}'";
+					}
+				}
+			}
+			// accounts_ext
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getTable(), true) . '</pre>');
+			// LEFT JOIN
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getType(), true) . '</pre>');
+			// =
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getType(), true) . '</pre>');
+			// COLUMN
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getType(), true) . '</pre>');
+			// array('accounts', 'account_id')
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getMembers(), true) . '</pre>');
+			// COLUMN
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getType(), true) . '</pre>');
+			// array('accounts_ext', 'account_id')
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getMembers(), true) . '</pre>');
+			// =
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getType(), true) . '</pre>');
+			// COLUMN
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getType(), true) . '</pre>');
+			// array('accounts_ext', 'account_key')
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getMembers(), true) . '</pre>');
+			// VALUE
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), true) . '</pre>');
+			// array('roles', '2')
+			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), true) . '</pre>');
 			foreach ($queries[0]->getColumns() as $col => $col_arr) {
 				$field_arr = $col_arr[0]->getMembers();
 				if (sizeof($field_arr) > 1) {
