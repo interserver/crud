@@ -217,6 +217,7 @@ function edit_form(that) {
 		value = row[field];
 		jQuery("#"+field).val(value);
 	}
+	jQuery('#editModal .error_message').html();
 	jQuery("#editModal").modal("show");
 }
 
@@ -226,6 +227,7 @@ function delete_form(that) {
 	console.log(row);
 	console.log(row[primary_key]);
 	jQuery("#primary_key").val(row[primary_key]);
+	jQuery('#editModal .error_message').html();
 	jQuery("#deleteModal").modal("show");
 }
 
