@@ -529,11 +529,13 @@
 					}
 					$table->add_header_row();
 				}
-				$rows[] = $db->Record;
 				$table->set_row_options('id="itemrow'.$idx.'"');
 				foreach ($db->Record as $field =>$value) {
 					$table->add_field($value);
+					if ($this->input_types[$field][0] == 'select_multiple')
+						$db->Record[$field] = explode(',', $value);
 				}
+				$rows[] = $db->Record;
 				$table->add_row();
 				$idx++;
 			}
