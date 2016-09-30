@@ -1028,6 +1028,8 @@ var primary_key = "' . $this->primary_key . '";
 							$input_type = 'label';
 						$data = $this->input_types[$field][1];
 						$label = $this->label($field);
+						if (!isset($this->values[$field]))
+							$this->values[$field] = '';
 						switch ($input_type) {
 							case 'label':
 								$value = $this->values[$field];
