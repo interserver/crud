@@ -3,7 +3,7 @@
 	 * CRUD Class
 	 *
 	 * its got a very customizable output and customizable field handling ,  but aiming for it to automatically
-	 * generate an optiomal page w/out the need for customizing in most cases
+	 * generate an optimal page w/out the need for customizing in most cases
 	 *
 	 * i figure most all pages in my are based around a single query/table , each page just having basically a
 	 * different query, but essentially all doing the same basic things with it, building a list of records, a
@@ -77,7 +77,6 @@
 		public $settings;
 
 		public function __construct() {
-			return $this;
 		}
 
 		public static function init($table_or_query, $module = 'default') {
@@ -89,11 +88,11 @@
 			add_js('bootstrap');
 			add_js('font-awesome');
 			if ($module != 'default') {
-				if (isset($GLOBALS['modules'][$module])) {
+				if (array_key_exists($module, $GLOBALS['modules'])) {
 					$crud->module = get_module_name($module);
 					$crud->settings = get_module_settings($crud->module);
 					$crud->db = get_module_db($crud->module);
-				} elseif (isset($GLOBALS[$module.'_dbh'])) {
+				} elseif (array_key_exists($module.'_dbh', $GLOBALS)) {
 					$crud->module = $module;
 					$crud->settings = null;
 					$crud->db = get_module_db($crud->module);
@@ -165,12 +164,12 @@
 					$error_fields = array();
 					foreach ($fields as $field => $value) {
 						// match up fields
-						if (isset($this->query_fields[$field])) {
+						if (array_key_exists($field, $this->query_fields)) {
 							$orig_field = $field;
 							$field = $this->query_fields[$field];
 							if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
 								$field = $matches['field'];
-								if (isset($matches['table']) && $matches['table'] != '') {
+								if (array_key_exists('table', $matches) && $matches['table'] != '') {
 									$tables = array($matches['table'] => $this->tables[$matches['table']]);
 									$query_table = $matches['table'];
 								} else {
@@ -181,7 +180,7 @@
 								$tables = $this->tables;
 							}
 							foreach ($tables as $t_table => $t_fields) {
-								if (isset($t_fields[$field])) {
+								if (array_key_exists($field, $t_fields)) {
 									$query_table = $t_table;
 									break;
 								}
@@ -196,7 +195,7 @@
 											break;
 										case 'int':
 											// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
-											if (isset($value) && $value != intval($value)) {
+											if (isset($value) && $value != (int)$value) {
 												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
 												$error_fields[] = $field;
 												$valid = false;
@@ -225,8 +224,8 @@
 												if (!is_array($value))
 													$value = array($value);
 												foreach ($value as $t_value) {
-													if (!in_array($value, $this->labels[$field])) {
-														$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+													if (!in_array($t_value, $this->labels[$field])) {
+														$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
 														$error_fields[] = $field;
 														$valid = false;
 													}
@@ -239,7 +238,7 @@
 											break;
 									}
 								} else {
-									if (isset($validation['in_array'])) {
+									if (array_key_exists('in_array', $validation)) {
 										if (isset($value)) {
 											$values = array();
 											if (!is_array($value))
@@ -274,7 +273,7 @@
 							}
 						}
 					}
-					if (sizeof($query_fields) > 0) {
+					if (count($query_fields) > 0) {
 						//billingd_log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
 						$query_where = array_merge($query_where, $this->query_where[$query_table]);
 						// update database
@@ -286,7 +285,7 @@
 							echo "ok";
 							echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
 						} else {
-							$this->log("error validating so couldnt run query {$query}", __LINE__, __FILE__);
+							$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
 							// send response for js handler
 							echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
 						}
@@ -299,7 +298,7 @@
 				case 'list':
 					// apply pagination
 					// apply sorting
-					// send reseponse for js handler
+					// send response for js handler
 					break;
 				case 'add':
 					// generic data to get us here is in _GET, while the specific fields are all in _POST
@@ -314,7 +313,7 @@
 					// match up row
 					// build query
 					// update db
-					// send resposne for js handler
+					// send response for js handler
 					break;
 				case 'search':
 					// get fields
@@ -368,7 +367,7 @@
 					$member_1_type = $member_arr->getMembers()[0]->getType();			// COLUMN
 					$member_1_members = $member_arr->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
 					if ($member_1_type == 'COLUMN') {
-						if (sizeof($member_1_members) == 1) {
+						if (count($member_1_members) == 1) {
 							$member_1_table = $table;
 							$member_1_field = $member_1_members[0];
 						} else {
@@ -376,13 +375,13 @@
 							$member_1_field = $member_1_members[1];
 						}
 						//add_output("adding table {$member_1_table}");
-						if (!isset($this->query_where[$member_1_table]))
+						if (!array_key_exists($member_1_table, $this->query_where))
 							$this->query_where[$member_1_table] = array();
 					}
 					$member_2_type = $member_arr->getMembers()[1]->getType();			// COLUMN or VALUE
 					$member_2_members = $member_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
 					if ($member_2_type == 'COLUMN') {
-						if (sizeof($member_2_members) == 1) {
+						if (count($member_2_members) == 1) {
 							$member_2_table = $table;
 							$member_2_field = $member_2_members[0];
 						} else {
@@ -422,7 +421,7 @@
 			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), true) . '</pre>');
 			foreach ($queries[0]->getColumns() as $col => $col_arr) {
 				$field_arr = $col_arr[0]->getMembers();
-				if (sizeof($field_arr) > 1) {
+				if (count($field_arr) > 1) {
 					$table = $field_arr[0];
 					$orig_field = $field_arr[1];
 					//$orig_field = $table.'.'.$orig_field;
@@ -430,7 +429,7 @@
 					$table = false;
 					$orig_field = $field_arr[0];
 				}
-				if (sizeof($col_arr) > 1) {
+				if (count($col_arr) > 1) {
 					$field = $col_arr[1];
 				} else {
 					$field = $orig_field;
@@ -451,7 +450,7 @@
 				while ($this->db->next_record(MYSQL_ASSOC)) {
 					if ($table === false)
 						$table = $this->db->Record['table'];
-					if (!isset($tables[$this->db->Record['table']])) {
+					if (!array_key_exists('table', $tables[$this->db->Record])) {
 						$tables[$this->db->Record['table']] = null;
 						$tables[$this->db->Record['table']] = $this->get_table_details($this->db->Record['table']);
 					}
@@ -525,7 +524,7 @@
 							$table->add_header_field($field_data['Comment']);
 					} else {
 						foreach (array_keys($db->Record) as $field)
-							if (isset($this->tables[$this->table][$field]))
+							if (array_key_exists($field, $this->tables[$this->table]))
 								$table->add_header_field($this->tables[$this->table][$field]['Comment']);
 							else
 								$table->add_header_field($this->label($field));
@@ -589,14 +588,18 @@ var primary_key = "' . $this->primary_key . '";
 		public function log($message, $line = false, $file = false) {
 			if (!$line !== false && $file !== false)
 				billingd_log($message, $line, $file);
-			elseif ($line !== false)
+			elseif ($line !== false && $file == false)
 				billingd_log($message, $line, __FILE__);
-			elseif ($file !== false)
+			elseif ($line == false && $file !== false)
 				billingd_log($message, false, $file);
 			else
 				billingd_log($message, __LINE__, __FILE__);
 		}
 
+		/**
+		 * @param bool|string $title
+		 * @return $this
+		 */
 		public function set_title($title = false) {
 			if ($title === false) {
 				$title = 'Purchase ' . $this->settings['TITLE'];
@@ -606,7 +609,7 @@ var primary_key = "' . $this->primary_key . '";
 		}
 
 		public function add_field_validations($field, $validations) {
-			if (!isset($this->validations[$field])) {
+			if (!array_key_exists($field, $this->validations)) {
 				$this->validations[$field] = array();
 			}
 			foreach ($validations as $validation)
@@ -622,7 +625,7 @@ var primary_key = "' . $this->primary_key . '";
 
 		public function add_input_type_field($field, $input_type, $data = false) {
 			//echo "Got here $field $input_type <pre>" . print_r($data, true) . "</pre><br>\n";
-			// FIXME get in_arary working properly / add validations based on this
+			// FIXME get in_array working properly / add validations based on this
 			$this->input_types[$field] = array($input_type, $data);
 			if (in_array($this->input_types[$field][0], array('select', 'select_multiple'))) {
 				$this->add_field_validations($field, array('in_array' => $this->input_types[$field][1]['values']));
@@ -680,7 +683,7 @@ var primary_key = "' . $this->primary_key . '";
 		}
 
 		public function label($field) {
-			if (isset($this->labels[$field])) {
+			if (array_key_exists($field, $this->labels)) {
 				return $this->labels[$field];
 			} else {
 				return ucwords(str_replace(array(
@@ -710,7 +713,7 @@ var primary_key = "' . $this->primary_key . '";
 						$type = $matches['type'];
 						switch ($type) {
 							case 'enum':
-								if (isset($matches['types']) && $matches['types'] != '') {
+								if (array_key_exists('types', $matches) && $matches['types'] != '') {
 									if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types)) {
 										$types = $types['types'];
 									}
@@ -724,7 +727,7 @@ var primary_key = "' . $this->primary_key . '";
 								);
 								break;
 							case 'tinyint':
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned') {
 									$min = 0;
 									$max = 255;
 								} else {
@@ -734,7 +737,7 @@ var primary_key = "' . $this->primary_key . '";
 								$validations[] = 'int';
 								break;
 							case 'smallint':
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned') {
 									$min = 0;
 									$max = 65535;
 								} else {
@@ -744,7 +747,7 @@ var primary_key = "' . $this->primary_key . '";
 								$validations[] = 'int';
 								break;
 							case 'mediumint':
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned') {
 									$min = 0;
 									$max = 16777215;
 								} else {
@@ -754,7 +757,7 @@ var primary_key = "' . $this->primary_key . '";
 								$validations[] = 'int';
 								break;
 							case 'bigint':
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned') {
 									$min = 0;
 									$max = 18446744073709551615;
 								} else {
@@ -764,48 +767,47 @@ var primary_key = "' . $this->primary_key . '";
 								$validations[] = 'int';
 								break;
 							case 'int':
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned') {
 									$min = 0;
 									$max = 4294967295;
 								} else {
 									$min = -2147483648;
 									$max = 2147483647;
 								}
-								if (isset($matches['size']) && $matches['size'] != '') {
+								if (array_key_exists('size', $matches) && $matches['size'] != '') {
 
 								}
 								$validations[] = 'int';
 								break;
 							case 'float':
-								if (isset($matches['size']) && $matches['size'] != '') {
+								if (array_key_exists('size', $matches) && $matches['size'] != '') {
 
 								}
-								if (isset($matches['signed']) && $matches['signed'] == 'unsigned')
+								if (array_key_exists('signed', $matches) && $matches['signed'] == 'unsigned')
 									$unsigned = true;
 								else
 									$unsigned = false;
 								break;
 							case 'char':
-								if (isset($matches['size']) && $matches['size'] != '') {
+								if (array_key_exists('size', $matches) && $matches['size'] != '') {
 
 								}
 								break;
 							case 'varchar':
-								if (isset($matches['size']) && $matches['size'] != '') {
+								if (array_key_exists('size', $matches) && $matches['size'] != '') {
 
 								}
 								break;
 							case 'text':
 								break;
 							default:
-								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it Doesnt Understand", __LINE__, __FILE__);
+								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it does not Understand", __LINE__, __FILE__);
 								break;
 						}
 					} else {
-						$type = $data['Type'];
-						$this->log("CRUD class Found Field Type {$data['Type']} it Couldnt Parse", __LINE__, __FILE__);
+						$this->log("CRUD class Found Field Type {$data['Type']} it could not Parse", __LINE__, __FILE__);
 					}
-					if ($this->type == 'table' || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
+					if ($this->type == 'table' || array_key_exists($field, $this->query_fields) || array_key_exists($table.'.'.$field, $this->query_fields)) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
 							$input_type = 'label';
@@ -822,15 +824,15 @@ var primary_key = "' . $this->primary_key . '";
 			$this->continue = true;
 			$anything_set = false;
 			foreach ($this->fields as $idx => $field) {
-				if (isset($this->defaults[$field])) {
+				if (array_key_exists($field, $this->defaults)) {
 					$this->values[$field] = $this->defaults[$field];
 				}
-				if (isset($GLOBALS['tf']->variables->request[$field])) {
+				if (array_key_exists($field, $GLOBALS['tf']->variables->request)) {
 					$this->values[$field] = $GLOBALS['tf']->variables->request[$field];
 					$this->set_vars[$field] = $this->values[$field];
 					$anything_set = true;
 				}
-				if (isset($this->validations[$field])) {
+				if (array_key_exists($field, $this->validations)) {
 					foreach ($this->validations[$field] as $validation) {
 						if (!is_array($validation)) {
 							switch ($validation) {
@@ -839,10 +841,10 @@ var primary_key = "' . $this->primary_key . '";
 									break;
 								case 'int':
 									// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
-									if (isset($this->values[$field]) && $this->values[$field] != intval($this->values[$field])) {
+									if (array_key_exists($field, $this->values) && $this->values[$field] != (int)$this->values[$field]) {
 										$this->errors[] = 'Invalid ' . $this->label($field) . ' "' . $this->values[$field] . '"';
 										$this->error_fields[] = $field;
-										$this->values[$field] = intval($this->values[$field]);
+										$this->values[$field] = (int)$this->values[$field];
 										$this->continue = false;
 									}
 									break;
@@ -855,17 +857,17 @@ var primary_key = "' . $this->primary_key . '";
 									}
 									break;
 								case 'trim':
-									if (isset($this->values[$field])) {
+									if (array_key_exists($field, $this->values)) {
 										$this->values[$field] = trim($this->values[$field]);
 									}
 									break;
 								case 'lower':
-									if (isset($this->values[$field])) {
+									if (array_key_exists($field, $this->values)) {
 										$this->values[$field] = strtolower($this->values[$field]);
 									}
 									break;
 								case 'in_array':
-									if (isset($this->values[$field]) && !in_array($this->values[$field], $this->labels[$field])) {
+									if (array_key_exists($field, $this->values) && !in_array($this->values[$field], $this->labels[$field])) {
 										$this->errors[] = 'Invalid ' . $this->label($field) . ' "' . $this->values[$field] . '"';
 										$this->error_fields[] = $field;
 										$this->continue = false;
@@ -874,8 +876,8 @@ var primary_key = "' . $this->primary_key . '";
 									break;
 							}
 						} else {
-							if (isset($validation['in_array'])) {
-								if (isset($this->values[$field]) && !in_array($this->values[$field], $validation['in_array'])) {
+							if (array_key_exists('in_array', $validation)) {
+								if (array_key_exists($field, $this->values) && !in_array($this->values[$field], $validation['in_array'])) {
 									$this->errors[] = 'Invalid ' . $this->label($field) . ' "' . $this->values[$field] . '"';
 									$this->error_fields[] = $field;
 									$this->continue = false;
@@ -899,20 +901,18 @@ var primary_key = "' . $this->primary_key . '";
 				$table = new TFTable;
 				$table->hide_table();
 				$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
-				//$table->set_options('width="500" cellpadding=5');
 				$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
 				$table->set_title($this->title);
 				$table->csrf('crud_order_form');
 				$table_pos = 0;
 				foreach ($this->fields as $idx => $field) {
-					if (isset($this->set_vars[$field]) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
+					if (array_key_exists($field, $this->set_vars) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
 						$value = $this->values[$field];
 						if (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
 							$value = $this->labels[$field . '_a'][$value];
 						}
-						if (isset($this->input_types[$field])) {
+						if (array_key_exists($field, $this->input_types)) {
 							$input_type = $this->input_types[$field][0];
-							$data = $this->input_types[$field][1];
 							switch ($input_type) {
 								case 'select_multiple':
 								case 'select':
@@ -926,18 +926,18 @@ var primary_key = "' . $this->primary_key . '";
 						$table->add_field($value);
 						$table_pos++;
 					} else {
-						if (isset($this->input_types[$field])) {
+						if (array_key_exists($field, $this->input_types)) {
 							$input_type = $this->input_types[$field][0];
 							$data = $this->input_types[$field][1];
 							$label = $this->label($field);
 							switch ($input_type) {
 								case 'input':
 									$value = $this->values[$field];
-									$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+									$field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (array_key_exists('length', $data) ? $data['length'] : 30), false, (array_key_exists('extra', $data) ? $data['extra'] : '')) . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
 									break;
 								case 'select_multiple':
 								case 'select':
-									$field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+									$field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (array_key_exists($field, $this->set_vars) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (array_key_exists('extra', $data) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 									break;
 								case 'raw':
 									$field_text = $data;
@@ -955,28 +955,28 @@ var primary_key = "' . $this->primary_key . '";
 							for ($x = 0; $x < 2; ++$x) {
 								$text = '';
 								$align = 'c';
-								if (isset($this->column_templates[$x]) && is_array($this->column_templates[$x])) {
-									if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
-										if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
+								if (array_key_exists($x, $this->column_templates) && is_array($this->column_templates[$x])) {
+									if (array_key_exists('fields', $this->column_templates[$x]) && array_key_exists($field, $this->column_templates[$x]['fields'])) {
+										if (array_key_exists('text', $this->column_templates[$x]['fields'][$field])) {
 											$text = $this->column_templates[$x]['fields'][$field]['text'];
 											if ($this->debug === true) {
 												//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, true) . "<br>";
 											}
 										}
-										if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
+										if (array_key_exists('align', $this->column_templates[$x]['fields'][$field])) {
 											$align = $this->column_templates[$x]['fields'][$field]['align'];
 											if ($this->debug === true) {
 												//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, true) . "<br>";
 											}
 										}
 									} else {
-										if (isset($this->column_templates[$x]['text'])) {
+										if (array_key_exists('text', $this->column_templates[$x])) {
 											$text = $this->column_templates[$x]['text'];
 											if ($this->debug === true) {
 												//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, true) . "<br>";
 											}
 										}
-										if (isset($this->column_templates[$x]['align'])) {
+										if (array_key_exists('align', $this->column_templates[$x])) {
 											$align = $this->column_templates[$x]['align'];
 											if ($this->debug === true) {
 												//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, true) . "<br>";
@@ -1022,65 +1022,65 @@ var primary_key = "' . $this->primary_key . '";
 				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			} else {
 				foreach ($this->fields as $idx => $field) {
-					if (isset($this->input_types[$field])) {
+					if (array_key_exists($field, $this->input_types)) {
 						$input_type = $this->input_types[$field][0];
 						if (in_array($field, $this->disabled_fields))
 							$input_type = 'label';
 						$data = $this->input_types[$field][1];
 						$label = $this->label($field);
-						if (!isset($this->values[$field]))
+						if (!array_key_exists($field, $this->values))
 							$this->values[$field] = '';
 						switch ($input_type) {
 							case 'label':
 								$value = $this->values[$field];
-								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+								// $field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (array_key_exists('length', $data) ? $data['length'] : 30), false, (array_key_exists('extra', $data) ? $data['extra'] : '')) . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
+								$field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-		<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
+		<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="' . $value . '" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 	</div>
 </div>
-' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+' . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
 								break;
 							case 'input':
 								$value = $this->values[$field];
-								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+								// $field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (array_key_exists('length', $data) ? $data['length'] : 30), false, (array_key_exists('extra', $data) ? $data['extra'] : '')) . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
+								$field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
+		<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="'.$value.'" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 	</div>
 </div>
-' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+' . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
 								break;
 							case 'textarea':
 								$value = $this->values[$field];
-								// $field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+								// $field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (array_key_exists('length', $data) ? $data['length'] : 30), false, (array_key_exists('extra', $data) ? $data['extra'] : '')) . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
+								$field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
-		<textarea rows="2" class="form-control" placeholder="'.$label.'"></textarea>
+		<textarea rows="2" class="form-control" placeholder="'.$label.'">' . $value . '</textarea>
 	</div>
 </div>
-' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+' . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
 								break;
 							case 'select_multiple':
 							case 'select':
-								// $field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
-								$field_text = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+								// $field_text = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (array_key_exists($field, $this->set_vars) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (array_key_exists('extra', $data) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+								$field_text = (array_key_exists('prefixhtml', $data) ? $data['prefixhtml'] : '') . '
 <div class="form-group">
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-		'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : '')).'
+		'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (array_key_exists($field, $this->set_vars) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (array_key_exists('extra', $data) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : '')).'
 	</div>
 </div>
-' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+' . (array_key_exists('extrahtml', $data) ? $data['extrahtml'] : '');
 								break;
 							case 'raw':
 								$field_text = $data;
@@ -1098,28 +1098,28 @@ var primary_key = "' . $this->primary_key . '";
 						for ($x = 0; $x < $this->columns; ++$x) {
 							$text = '';
 							$align = 'c';
-							if (isset($this->column_templates[$x]) && is_array($this->column_templates[$x])) {
-								if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
-									if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
+							if (array_key_exists($x, $this->column_templates) && is_array($this->column_templates[$x])) {
+								if (array_key_exists('fields', $this->column_templates[$x]) && array_key_exists($field, $this->column_templates[$x]['fields'])) {
+									if (array_key_exists('text', $this->column_templates[$x]['fields'][$field])) {
 										$text = $this->column_templates[$x]['fields'][$field]['text'];
 										if ($this->debug === true) {
 											//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, true) . "<br>";
 										}
 									}
-									if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
+									if (array_key_exists('align', $this->column_templates[$x]['fields'][$field])) {
 										$align = $this->column_templates[$x]['fields'][$field]['align'];
 										if ($this->debug === true) {
 											//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, true) . "<br>";
 										}
 									}
 								} else {
-									if (isset($this->column_templates[$x]['text'])) {
+									if (array_key_exists('text', $this->column_templates[$x])) {
 										$text = $this->column_templates[$x]['text'];
 										if ($this->debug === true) {
 											//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, true) . "<br>";
 										}
 									}
-									if (isset($this->column_templates[$x]['align'])) {
+									if (array_key_exists('align', $this->column_templates[$x])) {
 										$align = $this->column_templates[$x]['align'];
 										if ($this->debug === true) {
 											//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, true) . "<br>";
@@ -1210,19 +1210,15 @@ var primary_key = "' . $this->primary_key . '";
 				$this->returnURL .= '&' . $field . '=' . urlencode($value);
 				$table->add_hidden($field, $value);
 				$label = $value;
-				$olabel = "";
 				if (is_numeric($value) && isset($this->labels[$field . '_i']) && isset($this->labels[$field . '_i'][$value])) {
 					$label = $this->labels[$field . '_i'][$value];
-					$olabel = $label;
 				} elseif (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
 					$label = $this->labels[$field . '_a'][$value];
-					$olabel = $label;
 				}
-				if (isset($this->input_types[$field])) {
+				if (array_key_exists($field, $this->input_types)) {
 					$input_type = $this->input_types[$field][0];
-					$data = $this->input_types[$field][1];
 					switch ($input_type) {
-						case 'select_multple':
+						case 'select_multiple':
 						case 'select':
 							$label = $this->input_types[$field][1]['labels'][array_search($this->values[$field], $this->input_types[$field][1]['values'])];
 							break;
@@ -1233,9 +1229,6 @@ var primary_key = "' . $this->primary_key . '";
 					$table->add_field($label, 'l');
 					$table->add_row();
 				}
-				if (!in_array($field, array('custid'))) {
-					$payment_method_table_fields[] = $value;
-				}
 			}
 			if (SESSION_COOKIES == false) {
 				$this->returnURL .= '&sessionid=' . urlencode($GLOBALS['tf']->session->sessionid);
@@ -1245,14 +1238,14 @@ var primary_key = "' . $this->primary_key . '";
 					switch ($data['type']) {
 						case 'select_multiple':
 						case 'select':
-							$field_text = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
+							$field_text = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (array_key_exists($field, $this->set_vars) ? $this->set_vars[$field] : $data['data']['default']), 'id="' . $field . '" class="customsel" onChange="update_service_choices();" ' . (array_key_exists('extra', $data['data']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
 							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
 							$table->add_field($field_text, 'l');
 							$table->add_row();
 							break;
 						case 'input':
 							$table->add_field('<b>' . $data['label'] . '</b>', 'l');
-							$table->add_field($table->make_input($field, $data['value'], (isset($data['data']['length']) ? $data['data']['length'] : 30)), 'l');
+							$table->add_field($table->make_input($field, $data['value'], (array_key_exists('length', $data['data']) ? $data['data']['length'] : 30)), 'l');
 							$table->add_row();
 							break;
 						case 'func':
