@@ -15,7 +15,13 @@
 {if isset($title)}
 						<tr>
 							<th><input type="checkbox" id="checkall" /></th>
+{if $edit_row == true && $delete_row == true}
 							<th style="text-align:center;" colspan={$titcolspan + 3}>
+{else if $edit_row == true || $delete_row == true}
+							<th style="text-align:center;" colspan={$titcolspan + 2}>
+{else}
+							<th style="text-align:center;" colspan={$titcolspan + 1}>
+{/if}
 								{$title}
 							</th>
 						</tr>
@@ -29,7 +35,12 @@
 								{$table_headers[itemrow].cols[itemcol].text}
 							</th>
 {/section}
-							<th colspan=2>&nbsp;</th>
+{if $edit_row == true}
+							<th></th>
+{/if}
+{if $delete_row == true}
+							<th></th>
+{/if}
 						</tr>
 {/section}
 {/if}
@@ -49,16 +60,20 @@
 {/if}
 							</td>
 {/section}
+{if $edit_row == true}
 							<td>
 								<button type="button" class="btn btn-primary btn-xs" onclick="edit_form(this);" title="Edit">
 									<i class="fa fa-fw fa-pencil"></i>
 								</button>
 							</td>
+{/if}
+{if $delete_row == true}
 							<td>
 								<button type="button" class="btn btn-danger btn-xs" onclick="delete_form(this);" title="Delete">
 									<i class="fa fa-fw fa-trash"></i>
 								</button>
 							</td>
+{/if}
 						</tr>
 {/section}
 					</tbody>
