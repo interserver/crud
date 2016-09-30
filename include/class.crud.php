@@ -1018,6 +1018,8 @@ var primary_key = "' . $this->primary_key . '";
 				foreach ($this->fields as $idx => $field) {
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
+						if (in_array($field, $this->disabled_fields))
+							$input_type = 'label';
 						$data = $this->input_types[$field][1];
 						$label = $this->label($field);
 						switch ($input_type) {
