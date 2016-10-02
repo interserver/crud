@@ -64,6 +64,7 @@
 		public $query_fields = array();
 		// temp fields maybe from buy service class i think
 		public $disabled_fields = array();
+		public $filters = array();
 		public $values = array();
 		public $labels = array();
 		public $defaults = array();
@@ -129,6 +130,7 @@
 				$crud->tables[$crud->table] = $crud->get_table_details($crud->table);
 			}
 			$crud->parse_tables();
+			$crud->default_filters();
 			return $crud;
 		}
 
@@ -533,7 +535,7 @@
 				}
 				$table->set_row_options('id="itemrow'.$idx.'"');
 				foreach ($db->Record as $field =>$value) {
-					$table->add_field($value);
+					$table->add_field($this->decorate_field($field, $db->Record));
 					if ($this->input_types[$field][0] == 'select_multiple')
 						$db->Record[$field] = explode(',', $value);
 				}
@@ -1266,6 +1268,111 @@ var primary_key = "' . $this->primary_key . '";
 				'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
 			//				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			$this->continue = false;
+		}
+
+		/**
+		 * handles any type of special formatting that has been setup for that field , such as
+		 * displaying a specific field as a link to edit_customer3 or something like that
+		 *
+		 * @param string $field the name of the field
+		 * @param array $row associative array of field =>value pairs
+		 * @return string the $value formatted for display
+		 */
+		public function decorate_field($field, $row) {
+			$value = $row[$field];
+			$search = array('%field%', '%value%');
+			$replace = array($field, $value);
+			foreach ($row as $row_field => $row_value) {
+				$search[] = '%'.$row_field.'%';
+				$replace[] = $row_value;
+			}
+			if (isset($this->filters[$field])) {
+				foreach ($this->filters[$field] as $idx => $filter) {
+					if ($filter['type'] == 'string') {
+						$value = str_replace($search, $replace, $filter['value']);
+					} elseif ($filter['type'] == 'function') {
+						eval('$value = '.$filter['value'].'($field, $value);');
+					}
+				}
+			}
+			return $value;
+		}
+
+		/**
+		 * adds a field display fitler
+		 *
+		 * @param string $field the name of the field
+		 * @param string $type type of filter, can be string, function,
+		 * @param mixed $value the string pattern to use to replace
+		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
+		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
+		 */
+		public function add_filter($field, $value = '%value%', $type = 'string',$acl = false, $bad_acl_test = '%value%') {
+			billingd_log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			function_requirements('has_acl');
+			if (!isset($this->filters[$field]))
+				$this->filters[$field] = array();
+			if (!has_acl($acl)) {
+				$type = 'string';
+				$value = $bad_acl_test;
+			}
+			$output = array(
+				'type' => $type,
+				'value' => $value,
+				'acl' => $acl,
+			);
+			$this->filters[$field][] = $output;
+		}
+
+		/**
+		 * adds a field filter that replaces the value with an a href link and optional tooltip title.
+		 * if you specify an acl permission, then when the user fails that permission, they will just
+		 * be shown the normal value instead of wrapping it in a link.   You can also optionally specify
+		 * a failed acl string so when it fails the acl check instead of just displaying the plain value,
+		 * you can specify a string filter to get applied to the value if it fails instead
+		 *
+		 * The filters have special strings that are automatically replaced with data, the current
+		 * fields supported are:
+
+		 *     %field%	      - replaced with the field name, ie account_lid
+		 * 	   %value%	      - replaced with the fields value, ie username@email.com
+		 *
+		 * you can also include any field names to have them automatically replaced w/ their value, ie:
+		 *
+		 *     %account_id%   - if there is a field in the result row called 'account_id', then
+		 *                      this is replaced w/ the value of that field
+		 *
+		 * @param string $field the field name
+		 * @param string $link url, it can be a full url or just like a 'choice=none.blah' type url
+		 * @param false|string $title optionally specify a title/tooltip to be shown when you hover the link, defauls to false , or no title/tooltip
+		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
+		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
+		 */
+		public function add_filter_link($field, $link, $title = false,$acl = false, $bad_acl_test = '%value%') {
+			billingd_log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			// $link = 'choice=none.edit_customer&customer=%field%'
+			$this->add_filter($field,'<a href="' . $link . '" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
+		}
+
+		/**
+		 * processeds the standard/default set of filters, either adding all the filters or adding
+		 * them for the specific fields you tell it to
+		 *
+		 * @param false|string|array $fields
+		 */
+		public function default_filters($fields = false) {
+			if ($fields == false)
+				$fields = array_values($this->query_fields);
+			elseif (!is_array($fields))
+				$fields = array($fields);
+			foreach ($fields as $field) {
+				switch ($field) {
+					case 'account_lid':
+						$this->add_filter_link($field, 'choice=none.edit_customer3&customer=%account_id%', 'Edit Customer','view_customer');
+						break;
+				}
+			}
+
 		}
 
 	}
