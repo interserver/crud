@@ -81,11 +81,13 @@
 		}
 
 		public static function init($table_or_query, $module = 'default') {
+			// @codingStandardsIgnoreStart
 			$static = !(isset($this) && $this instanceof self);
 			if ($static == true)
 				$crud = new crud();
 			else
 				$crud = &$this;
+			// @codingStandardsIgnoreEnd
 			add_js('bootstrap');
 			add_js('font-awesome');
 			if ($module != 'default') {
