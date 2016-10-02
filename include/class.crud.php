@@ -1376,4 +1376,3 @@ var primary_key = "' . $this->primary_key . '";
 		}
 
 	}
-?>
