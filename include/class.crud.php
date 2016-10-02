@@ -1261,7 +1261,7 @@ var primary_key = "' . $this->primary_key . '";
 			}
 			$this->db = get_module_db($this->module);
 			$this->db->query(make_insert_query('pending_orders', array(
-				'pend_id' => NULL,
+				'pend_id' => null,
 				'pend_choice' => $this->choice,
 				'pend_timestamp' => mysql_now(),
 				'pend_custid' => $this->custid,
