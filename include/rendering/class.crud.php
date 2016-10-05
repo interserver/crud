@@ -55,6 +55,7 @@
 		public $price_align = 'r';
 		public $price_text_align = 'r';
 		public $stage = 1;
+		public $select_multiple = false;
 		public $delete_row = true;
 		public $edit_row = true;
 		public $add_row = true;
@@ -593,6 +594,7 @@
 			}
 			$table->hide_form();
 			$table->smarty->assign('edit_form', $this->order_form());
+			$table->smarty->assign('select_multiple', $this->select_multiple);
 			$table->smarty->assign('delete_row', $this->delete_row);
 			$table->smarty->assign('edit_row', $this->edit_row);
 			$table->smarty->assign('add_row', $this->add_row);
@@ -1193,6 +1195,11 @@ var primary_key = "' . $this->primary_key . '";
 			return $this;
 		}
 
+		public function disable_select_multiple() {
+			$this->select_multiple = false;
+			return $this;
+		}
+
 		public function disable_edit() {
 			$this->edit_row = false;
 			return $this;
@@ -1200,6 +1207,26 @@ var primary_key = "' . $this->primary_key . '";
 
 		public function disable_add() {
 			$this->add_row = false;
+			return $this;
+		}
+
+		public function enable_delete() {
+			$this->delete_row = true;
+			return $this;
+		}
+
+		public function enable_select_multiple() {
+			$this->select_multiple = true;
+			return $this;
+		}
+
+		public function enable_edit() {
+			$this->edit_row = true;
+			return $this;
+		}
+
+		public function enable_add() {
+			$this->add_row = true;
 			return $this;
 		}
 
