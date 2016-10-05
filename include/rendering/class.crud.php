@@ -360,16 +360,18 @@
 			//add_output('<pre style="text-align: left;">' . print_r($queries, true) . '</pre>');
 		}
 
-		public function parse_query_fields($queries = false) {
-			if ($queries == false)
-				$queries = $this->queries;
-			foreach ($queries[0]->getJoins() as $join => $join_arr) {
-				$table = $join_arr->getTable();											// accounts_ext
-				$join_type = $join_arr->getType();										// LEFT JOIN
-				foreach ($join_arr->getCondition()->getMembers() as $member => $member_arr) {
-					$type = $member_arr->getType();										// =
-					$member_1_type = $member_arr->getMembers()[0]->getType();			// COLUMN
-					$member_1_members = $member_arr->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
+		public function join_handler($table, $join_arr) {
+				$condition_type = $join_arr->getType();					// AND, =
+				if ($condition_type == 'AND') {
+					foreach ($join_arr->GetMembers() as $member => $member_arr) {
+						$this->join_handler($table, $member_arr);
+					}
+				} elseif ($condition_type == '=') {
+					//echo print_r($member_arr,true)."<br>";
+					//echo "Type:$type<br>";
+					//echo print_r($member_arr->getMembers(), true)."<br>";
+					$member_1_type = $join_arr->getMembers()[0]->getType();			// COLUMN
+					$member_1_members = $join_arr->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
 					if ($member_1_type == 'COLUMN') {
 						if (count($member_1_members) == 1) {
 							$member_1_table = $table;
@@ -382,8 +384,8 @@
 						if (!isset($this->query_where[$member_1_table]))
 							$this->query_where[$member_1_table] = array();
 					}
-					$member_2_type = $member_arr->getMembers()[1]->getType();			// COLUMN or VALUE
-					$member_2_members = $member_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
+					$member_2_type = $join_arr->getMembers()[1]->getType();			// COLUMN or VALUE
+					$member_2_members = $join_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
 					if ($member_2_type == 'COLUMN') {
 						if (count($member_2_members) == 1) {
 							$member_2_table = $table;
@@ -395,8 +397,28 @@
 					} elseif ($member_2_type == 'VALUE') {
 						$member_2_value = $member_2_members[0];
 						//$this->query_where[$member_1_table][] =  "{$member_1_table}.{$member_1_field} {$type} '{$member_2_value}'";
-						$this->query_where[$member_1_table][] =  "{$member_1_field}{$type}'{$member_2_value}'";
+						$this->query_where[$member_1_table][] =  "{$member_1_field}{$condition_type}'{$member_2_value}'";
 					}
+				} else {
+					$this->log("Dont know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__);
+				}
+				//echo _debug_array($join_arr->getCondition()->getType(), true)."<br>";
+				//echo _debug_array($join_arr->getCondition(), true)."<br>";
+				//echo _debug_array($join_arr->getCondition()->getMembers(), true)."<br>";
+		}
+
+		public function parse_query_fields($queries = false) {
+			if ($queries == false)
+				$queries = $this->queries;
+			//echo _debug_array($queries[0]->getJoins(), true);
+			foreach ($queries[0]->getJoins() as $join => $join_arr) {
+				$table = $join_arr->getTable();											// accounts_ext, vps_masters
+				$join_type = $join_arr->getType();										// LEFT JOIN
+				//echo "Table {$table} Join Type {$join_type}<br>";
+				if ($join_type != 'LEFT JOIN') {
+					$this->log("Dont know how to handle Join Type {$join_type}", __LINE__, __FILE__);
+				} else {
+					$this->join_handler($table, $join_arr->getCondition());
 				}
 			}
 			// accounts_ext
