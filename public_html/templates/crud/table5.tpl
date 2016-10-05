@@ -5,23 +5,25 @@
 	}
 </style>
 {/literal}
+{if $select_multiple == true}
+	{assign var=titcolspan value=$titcolspan + 1}
+{/if}
+{if $edit_row == true}
+	{assign var=titcolspan value=$titcolspan + 1}
+{/if}
+{if $delete_row == true}
+	{assign var=titcolspan value=$titcolspan + 1}
+{/if}
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
 				<table id="mytable" class="table table-bordred table-striped table-hover table-condensed">
 {if isset($title) || isset($table_headers)}
-					<thead class=">
+					<thead class="">
 {if isset($title)}
 						<tr>
-							<th><input type="checkbox" id="checkall" /></th>
-{if $edit_row == true && $delete_row == true}
-							<th style="text-align:center;" colspan={$titcolspan + 3}>
-{else if $edit_row == true || $delete_row == true}
-							<th style="text-align:center;" colspan={$titcolspan + 2}>
-{else}
-							<th style="text-align:center;" colspan={$titcolspan + 1}>
-{/if}
+							<th style="text-align:center;" colspan="{$titcolspan}">
 								{$title}
 							</th>
 						</tr>
@@ -29,7 +31,9 @@
 {if isset($table_headers)}
 {section name=itemrow loop=$table_headers}
 						<tr {$table_headers[itemrow].rowopts}>
+{if $select_multiple == true}
 							<th><input type="checkbox" id="checkall" /></th>
+{/if}
 {section name=itemcol loop=$table_headers[itemrow].cols}
 							<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
 								{$table_headers[itemrow].cols[itemcol].text}
@@ -49,7 +53,9 @@
 					<tbody>
 {section name=itemrow loop=$table_rows}
 						<tr {$table_rows[itemrow].rowopts}>
+{if $select_multiple == true}
 							<td><input type="checkbox" class="checkthis" /></td>
+{/if}
 {section name=itemcol loop=$table_rows[itemrow].cols}
 							<td colspan="{$table_rows[itemrow].cols[itemcol].colspan}" bgcolor="{$table_rows[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_rows[itemrow].cols[itemcol].colalign};" {if isset($table_rows[itemrow].cols[itemcol].colopts)}{$table_rows[itemrow].cols[itemcol].colopts}{/if}>
 {assign var=value value=$table_rows[itemrow].cols[itemcol].text}
