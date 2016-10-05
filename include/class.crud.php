@@ -1081,7 +1081,7 @@ var primary_key = "' . $this->primary_key . '";
 	<label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 	<div class="form-group input-group col-md-6">
 		<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-		'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : '')).'
+		'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="' . $field . '" class="form-control customsel" onChange="update_service_choices();" ' . (isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*sizeof($data['values']))). 'px;"' : '')).'
 	</div>
 </div>
 ' . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
