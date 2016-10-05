@@ -612,7 +612,7 @@ var primary_key = "' . $this->primary_key . '";
 		}
 
 		public function log($message, $line = false, $file = false) {
-			if (!$line !== false && $file !== false)
+			if ($line !== false && $file !== false)
 				billingd_log($message, $line, $file);
 			elseif ($line !== false && $file == false)
 				billingd_log($message, $line, __FILE__);
