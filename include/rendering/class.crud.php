@@ -740,7 +740,7 @@ var primary_key = "' . $this->primary_key . '";
 					$input_type = 'input';
 					$input_data = false;
 					$validations = array();
-					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|timestamp|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
 						$type = $matches['type'];
 						switch ($type) {
 							case 'enum':
@@ -830,6 +830,9 @@ var primary_key = "' . $this->primary_key . '";
 								}
 								break;
 							case 'text':
+								break;
+							case 'timestamp':
+								$validations[] = 'timestamp';
 								break;
 							default:
 								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it does not Understand", __LINE__, __FILE__);
