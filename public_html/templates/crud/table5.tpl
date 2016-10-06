@@ -87,6 +87,7 @@
 			</div>
 		</div>
 	</div>
+{if $total_pages > 1}
 	<div class="row">
 		<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list" autocomplete="on" method="GET">
 		<div class="col-md-12" style="display: table;">
@@ -140,10 +141,12 @@
 					<input class="crud-searchdata crud-datepicker-to  input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
 					<select class="crud-data crud-columns-select input-small form-control" name="column">
 						<option value="">All fields</option>
-						<option value="payments.customerNumber" data-type="int">Customernumber</option>
-						<option value="payments.checkNumber" data-type="text">Checknumber</option>
-						<option value="payments.paymentDate" data-type="datetime">Paymentdate</option>
-						<option value="payments.amount" data-type="float">Amount</option>
+{foreach from=$labels key=idx item=value}
+						<option value="{$idx}" data-type="int">{$value}</option>
+{/foreach}
+<!--						<option value="{$idx}" data-type="text">Checknumber</option>
+						<option value="{$idx}" data-type="datetime">Paymentdate</option>
+						<option value="{$idx}" data-type="float">Amount</option> -->
 					</select>
 					<span class="btn-group">
 						<a class="btn btn-primary" href="" data-search="1">Go</a>
@@ -161,6 +164,7 @@
 		</form>
 	</div>
 </div>
+{/if}
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">

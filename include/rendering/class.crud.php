@@ -666,6 +666,7 @@
 			$table->smarty->assign('delete_row', $this->delete_row);
 			$table->smarty->assign('edit_row', $this->edit_row);
 			$table->smarty->assign('add_row', $this->add_row);
+			$table->smarty->assign('labels', $this->labels);
 			add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js('
 <script type="text/javascript">
