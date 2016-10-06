@@ -55,7 +55,7 @@
 		public $price_align = 'r';
 		public $price_text_align = 'r';
 		public $stage = 1;
-		public $page_limits = array(5, 10, 15, 20, 25, 40, 50, 75, 100, 150, 200, 250, 300, 500, 750, 100);
+		public $page_limits = array(10, 25, 100, -1);
 		public $page_limit = 10;
 		public $page_offset = 0;
 		public $initial_populate = true;
@@ -620,6 +620,27 @@
 				$table->smarty->assign('debug_output', print_r($debug, true));
 			}
 			$table->hide_form();
+			$page_links = array(1);
+			$page = ($this->page_offset / $this->page_limit) + 1;
+			$total_pages = ceil($count / $this->page_limit);
+
+			$first = $page - 2;
+			if ($first < 2)
+				$first = 2;
+			for ($x = 0; $x < 4; $x++) {
+				if (!in_array($first + $x, $page_links) && $first + $x < $total_pages) {
+					$page_links[] = $first + $x;
+				}
+			}
+			if (!in_array($total_pages, $page_links))
+				$page_links[] = $total_pages;
+			$table->smarty->assign('page_links', $page_links);
+			$table->smarty->assign('total_rows', $count);
+			$table->smarty->assign('total_pages', $total_pages);
+			$table->smarty->assign('page_limits', $this->page_limits);
+			$table->smarty->assign('page_limit', $this->page_limit);
+			$table->smarty->assign('page', $page);
+			$table->smarty->assign('page_offset', $this->page_offset);
 			$table->smarty->assign('edit_form', $this->order_form());
 			$table->smarty->assign('select_multiple', $this->select_multiple);
 			$table->smarty->assign('delete_row', $this->delete_row);

@@ -91,15 +91,21 @@
 		<div class="col-md-12" style="display: table;">
 			<div class="nav-crud" style="display: table-row; vertical-align: top;">
 				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
+{if $page > 1}
+					<li class=""><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+{else}
 					<li class="disabled"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
-					<li class="active"><span>1</span></li>
-					<li class=""><a href="" class="" data-start="10">2</a></li>
-					<li class=""><a href="" class="" data-start="20">3</a></li>
-					<li class=""><a href="" class="" data-start="30">4</a></li>
-					<li class="active"><span>…</span></li>
-					<li class=""><a href="" class="" data-start="260">27</a></li>
-					<li class=""><a href="" class="" data-start="270">28</a></li>
+{/if}
+{foreach item=pager from=$page_links}
+{if $pager == $page}
+					<li class="active"><span>{$pager}</span></li>
+{else}
+					<li class=""><a href="" class="" data-start="{$pager * $page_limit}">{$pager}</a></li>
+{/if}
+{/foreach}
+{if $page < $total_pages}
 					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+{/if}
 				</ul>
 				<div class="btn-group nav-rows " data-toggle="buttons-radio" style="display: table-cell; vertical-align: top;">
 					<button type="button" class="btn btn-default active" data-limit="10">10</button>
