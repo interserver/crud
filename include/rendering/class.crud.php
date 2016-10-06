@@ -525,6 +525,7 @@
 		}
 
 		public function ajax_list_handler() {
+			sleep(5);
 			// apply pagination
 			// apply sorting
 			// send response for js handler

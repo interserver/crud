@@ -14,7 +14,7 @@
 {if $delete_row == true}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-<div class="container" style="margin-bottom: 10px;">
+<div class="crud container" style="margin-bottom: 10px;">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
@@ -89,6 +89,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12" style="display: table;">
+			<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list" autocomplete="on" method="GET">
 			<div class="nav-crud" style="display: table-row; vertical-align: top;">
 				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
 {if $page > 1}
@@ -100,14 +101,14 @@
 {if $pager == $page}
 					<li class="active"><span>{$pager}</span></li>
 {else}
-					<li class=""><a href="" class="" data-start="{$pager * $page_limit}">{$pager}</a></li>
+					<li class=""><a href="" class="" data-offset="{$pager * $page_limit}">{$pager}</a></li>
 {/if}
 {/foreach}
 {if $page < $total_pages}
 					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 {/if}
 				</ul>
-				<div class="btn-group nav-rows " data-toggle="buttons-radio" style="display: table-cell; vertical-align: top;">
+				<div class="btn-group row-counts nav-rows " data-toggle="buttons-radio" style="display: table-cell; vertical-align: top;">
 					<button type="button" class="btn btn-default active" data-limit="10">10</button>
 					<button type="button" class="btn btn-default" data-limit="25">25</button>
 					<button type="button" class="btn btn-default" data-limit="50">50</button>
@@ -156,6 +157,7 @@
 				</span>
 {/if}
 			</div>
+			</form>
 		</div>
 	</div>
 </div>

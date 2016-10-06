@@ -148,24 +148,6 @@ function get_order_row(order) {
 	return html;
 }
 
-function approval_list(status, offset, limit) {
-	if (typeof jQuery('#order_status_grp .btn.active').attr('data-target') != "undefined" && typeof status == "undefined")
-		status = jQuery('#order_status_grp .btn.active').attr('data-target');
-	var url = "ajax_pending_approval.php?action=list&status="+status;
-	if (typeof offset != "undefined")
-		url = url+"&offset="+offset;
-	url = url + "&limit=" + document.getElementById('pending_approval_limit').value;
-	url = url + "&module=" + document.getElementById('pending_approval_module').value;
-	$.getJSON(url, { }, function(json) {
-		jQuery('table.orders tbody').html('');
-		//console.log(json);
-		for (var x = 0; x < json.orders.length; x++)
-			jQuery('table.orders tbody').append(get_order_row(json.orders[x]));
-		$('.section a[title]').tooltip();
-	});
-	return false;
-}
-
 function submit_handler(what, that) {
 	var disabled = jQuery("#"+what+"ModalForm input[disabled], #"+what+"ModalForm select[disabled]");
 	disabled.removeAttr("disabled");
@@ -231,6 +213,34 @@ function delete_form(that) {
 	jQuery("#deleteModal").modal("show");
 }
 
+function approval_list(status, offset, limit) {
+	if (typeof jQuery('#order_status_grp .btn.active').attr('data-target') != "undefined" && typeof status == "undefined")
+		status = jQuery('#order_status_grp .btn.active').attr('data-target');
+	var url = "ajax_pending_approval.php?action=list&status="+status;
+	if (typeof offset != "undefined")
+		url = url+"&offset="+offset;
+	url = url + "&limit=" + document.getElementById('pending_approval_limit').value;
+	url = url + "&module=" + document.getElementById('pending_approval_module').value;
+	$.getJSON(url, { }, function(json) {
+		jQuery('table.orders tbody').html('');
+		//console.log(json);
+		for (var x = 0; x < json.orders.length; x++)
+			jQuery('table.orders tbody').append(get_order_row(json.orders[x]));
+		$('.section a[title]').tooltip();
+	});
+	return false;
+}
+
+function load_page(offset, limit) {
+	var url = jQuery("#paginationForm").attr("action");
+	if (typeof offset != "undefined")
+		url = url+"&offset="+offset;
+	if (typeof limit != "undefined")
+		url = url+"&limit="+limit;
+	$.getJSON(url, { }, function(json) {
+	});
+}
+
 jQuery(document).ready(function () {
 	jQuery(document).on('click', 'a#crud-search', function(event) {
 		event.preventDefault();
@@ -242,6 +252,10 @@ jQuery(document).ready(function () {
 	});
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
+	});
+	jQuery(document).on('click', '.crud .pagination a', function(event) {
+		event.preventDefault();
+		load_page(jQuery(this).attr('data-offset'), jQuery(".crud .row-counts .active").attr('data-limit'));
 	});
 	jQuery("#editModal form").on("submit", function(event) {
 		event.preventDefault();
