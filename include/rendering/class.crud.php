@@ -550,9 +550,15 @@
 
 		public function run_list_query() {
 			if ($this->type == 'table')
-				$this->db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+				if ($this->page_limit < 1)
+					$this->db->query("select * from {$this->table}", __LINE__, __FILE__);
+				else
+					$this->db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 			else
-				$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+				if ($this->page_limit < 1)
+					$this->db->query("{$this->query}", __LINE__, __FILE__);
+				else
+					$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 		}
 
 		public function ajax_list_handler() {
