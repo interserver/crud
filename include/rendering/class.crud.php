@@ -1546,9 +1546,16 @@
 			elseif (!is_array($fields))
 				$fields = array($fields);
 			foreach ($fields as $field) {
+				billingd_log($field);
 				switch ($field) {
 					case 'account_lid':
-						$this->add_filter_link($field, 'choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+						$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+						break;
+					case 'vps_name':
+						$this->add_filter_link($field, '?choice=none.view_host_server&module=vps&name=%vps_name%', 'View Host Server', 'view_service');
+						break;
+					case 'vps_hostname':
+						$this->add_filter_link($field, '?choice=none.view_vps3&id=%vps_id%', 'View VPS', 'view_service');
 						break;
 				}
 			}
