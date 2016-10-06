@@ -524,11 +524,35 @@
 			return $fields;
 		}
 
+		function get_count() {
+			$db = $this->db;
+			if ($this->type == 'table') {
+				$db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
+				$db->next_record(MYSQL_NUM);
+				$count = $db->f(0);
+			} else {
+				if (preg_match('/^.*( from .*)$/', $this->query, $matches)) {
+					$from = $matches[1];
+					$db->query("select count(*) {$from}", __LINE__, __FILE__);
+					$db->next_record(MYSQL_NUM);
+					$count = $db->f(0);
+				}
+			}
+			$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
+			return $count;
+		}
+
 		public function ajax_list_handler() {
-			sleep(5);
 			// apply pagination
 			// apply sorting
 			// send response for js handler
+		}
+
+		public function run_list_query() {
+			if ($this->type == 'table')
+				$this->db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+			else
+				$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 		}
 
 		public function list_records() {
@@ -551,48 +575,43 @@
 				$table->set_title($this->table . ' Records');
 			else
 				$table->set_title($this->title);
-			$db = $this->db;
-			if ($this->type == 'table') {
-				$db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
-				$db->next_record(MYSQL_NUM);
-				$count = $db->f(0);
-			} else {
-				if (preg_match('/^.*( from .*)$/', $this->query, $matches)) {
-					$from = $matches[1];
-					$db->query("select count(*) {$from}", __LINE__, __FILE__);
-					$db->next_record(MYSQL_NUM);
-					$count = $db->f(0);
-				}
-			}
-			$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
-			if ($this->type == 'table')
-				$db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
-			else
-				$db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+			$count = $this->get_count();
+			$this->run_list_query();
 			$header_shown = false;
 			$idx = 0;
-			while ($db->next_record(MYSQL_ASSOC)) {
+			while ($this->db->next_record(MYSQL_ASSOC)) {
 				if ($header_shown == false) {
 					$header_shown = true;
+					$empty_record = array();
 					if ($this->type == 'table') {
-						foreach ($this->tables[$this->table] as $field => $field_data)
+						foreach (array_keys($this->tables[$this->table]) as $field)
+							$empty_record[$field] = "%{$field}%";
+						foreach ($this->tables[$this->table] as $field => $field_data) {
 							$table->add_header_field($field_data['Comment']);
+						}
 					} else {
-						foreach (array_keys($db->Record) as $field)
+						foreach (array_keys($this->db->Record) as $field)
+							$empty_record[$field] = "%{$field}%";
+						foreach (array_keys($this->db->Record) as $field) {
 							if (isset($this->tables[$this->table][$field]))
 								$table->add_header_field($this->tables[$this->table][$field]['Comment']);
 							else
 								$table->add_header_field($this->label($field));
+						}
 					}
 					$table->add_header_row();
+					$table->set_row_options('id="itemrowempty" style="display: none;"');
+					foreach ($empty_record as $field => $value)
+						$table->add_field($this->decorate_field($field, $empty_record));
+					$table->add_row();
 				}
 				$table->set_row_options('id="itemrow'.$idx.'"');
-				foreach ($db->Record as $field =>$value) {
-					$table->add_field($this->decorate_field($field, $db->Record));
+				foreach ($this->db->Record as $field =>$value) {
+					$table->add_field($this->decorate_field($field, $this->db->Record));
 					if ($this->input_types[$field][0] == 'select_multiple')
-						$db->Record[$field] = explode(',', $value);
+						$this->db->Record[$field] = explode(',', $value);
 				}
-				$rows[] = $db->Record;
+				$rows[] = $this->db->Record;
 				$table->add_row();
 				$idx++;
 			}
