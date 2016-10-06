@@ -1,8 +1,8 @@
 {literal}
 <style type="text/css">
-	ul.pagination li a {
+/*	ul.pagination li a {
 		height: 30px;
-	}
+	}*/
 </style>
 {/literal}
 {if $select_multiple == true}
@@ -14,7 +14,7 @@
 {if $delete_row == true}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-<div class="container">
+<div class="container" style="margin-bottom: 10px;">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
@@ -84,19 +84,71 @@
 {/section}
 					</tbody>
 				</table>
-				<div class="clearfix"></div>
-				<ul class="pagination pull-right">
-					<li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
-					<li class="active"><a href="#">1</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
-{if $ima == 'admin'}
-					<li>&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output"><i class="fa fa-fw fa-2x fa-bug"></i></button></li>
-{/if}
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12" style="display: table;">
+			<div class="nav-crud" style="display: table-row; vertical-align: top;">
+				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
+					<li class="disabled"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+					<li class="active"><span>1</span></li>
+					<li class=""><a href="" class="" data-start="10">2</a></li>
+					<li class=""><a href="" class="" data-start="20">3</a></li>
+					<li class=""><a href="" class="" data-start="30">4</a></li>
+					<li class="active"><span>…</span></li>
+					<li class=""><a href="" class="" data-start="260">27</a></li>
+					<li class=""><a href="" class="" data-start="270">28</a></li>
+					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
+				<div class="btn-group nav-rows " data-toggle="buttons-radio" style="display: table-cell; vertical-align: top;">
+					<button type="button" class="btn btn-default active" data-limit="10">10</button>
+					<button type="button" class="btn btn-default" data-limit="25">25</button>
+					<button type="button" class="btn btn-default" data-limit="50">50</button>
+					<button type="button" class="btn btn-default" data-limit="100">100</button>
+					<button type="button" class="btn btn-default" data-limit="all">All</button>
+				</div>
+				<a id="crud-search" class="btn btn-primary crud-search" href="" style="vertical-align: top;" title="Search" data-tile="Search">
+					<i class="fa fa-search fa-lg"></i> Search
+				</a>
+				<span id="crud-search-more" class="crud-search form-inline" style="display: none;">
+					<input class="crud-searchdata crud-search-active input-small form-control" name="search" data-type="text" style="" type="text" value="">
+					<select class="crud-daterange crud-searchdata input-small form-control" name="range" data-fieldtype="date" style="display:none">
+						<option value="">- choose range -</option>
+						<option value="next_year" data-from="" data-to="">Next Year</option>
+						<option value="next_month" data-from="" data-to="">Next Month</option>
+						<option value="today" data-from="" data-to="">Today</option>
+						<option value="this_week_today" data-from="" data-to="">This Week up to today</option>
+						<option value="this_week_full" data-from="" data-to="">This full Week</option>
+						<option value="last_week" data-from="" data-to="">Last Week</option>
+						<option value="last_2weeks" data-from="" data-to="">Last two Weeks</option>
+						<option value="this_month" data-from="" data-to="">This Month</option>
+						<option value="last_month" data-from="" data-to="">Last Month</option>
+						<option value="last_3months" data-from="" data-to="">Last 3 Months</option>
+						<option value="last_6months" data-from="" data-to="">Last 6 Months</option>
+						<option value="this_year" data-from="" data-to="">This Year</option>
+						<option value="last_year" data-from="" data-to="">Last Year</option>
+					</select>
+					<input class="crud-searchdata crud-datepicker-from  input-small form-control" name="date_from" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
+					<input class="crud-searchdata crud-datepicker-to  input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
+					<select class="crud-data crud-columns-select input-small form-control" name="column">
+						<option value="">All fields</option>
+						<option value="payments.customerNumber" data-type="int">Customernumber</option>
+						<option value="payments.checkNumber" data-type="text">Checknumber</option>
+						<option value="payments.paymentDate" data-type="datetime">Paymentdate</option>
+						<option value="payments.amount" data-type="float">Amount</option>
+					</select>
+					<span class="btn-group">
+						<a class="btn btn-primary" href="" data-search="1">Go</a>
+					</span>
+				</span>
+{if $ima == 'admin'}
+				<span class="btn-group nav-rows" style=" display: table-cell; vertical-align: top;">
+					<a class="btn btn-info" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
+						<i class="fa fa-bug" style="font-size: 20px;"></i>
+					</a>
+				</span>
+{/if}
 			</div>
 		</div>
 	</div>

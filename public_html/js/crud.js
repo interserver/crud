@@ -232,6 +232,14 @@ function delete_form(that) {
 }
 
 jQuery(document).ready(function () {
+	jQuery(document).on('click', 'a#crud-search', function(event) {
+		event.preventDefault();
+		jQuery('#crud-search').hide();
+		jQuery('#crud-search-more').show();
+	});
+	jQuery("#editModal").on("shown.bs.modal", function(e) {
+		jQuery("#editModal input").focus();
+	});
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
