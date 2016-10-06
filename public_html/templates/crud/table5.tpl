@@ -8,13 +8,10 @@
 {if $select_multiple == true}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-{if $edit_row == true}
+{if isset($row_buttons)}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-{if $delete_row == true}
-	{assign var=titcolspan value=$titcolspan + 1}
-{/if}
-<div class="crud container" style="margin-bottom: 10px;">
+<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}" style="margin-bottom: 10px;">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
@@ -39,10 +36,7 @@
 								{$table_headers[itemrow].cols[itemcol].text}
 							</th>
 {/section}
-{if $edit_row == true}
-							<th></th>
-{/if}
-{if $delete_row == true}
+{if isset($row_buttons)}
 							<th></th>
 {/if}
 						</tr>
@@ -66,18 +60,11 @@
 {/if}
 							</td>
 {/section}
-{if $edit_row == true}
+{if isset($row_buttons)}
 							<td>
-								<button type="button" class="btn btn-primary btn-xs" onclick="edit_form(this);" title="Edit">
-									<i class="fa fa-fw fa-pencil"></i>
-								</button>
-							</td>
-{/if}
-{if $delete_row == true}
-							<td>
-								<button type="button" class="btn btn-danger btn-xs" onclick="delete_form(this);" title="Delete">
-									<i class="fa fa-fw fa-trash"></i>
-								</button>
+{foreach item=button_row from=$row_buttons}
+								{$button_row}
+{/foreach}
 							</td>
 {/if}
 						</tr>

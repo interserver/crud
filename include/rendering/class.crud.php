@@ -81,6 +81,10 @@
 		public $queries = null;
 		public $db;
 		public $settings;
+		public $buttons = array();
+		public $fluid_container = false;
+		public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
+		public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
 
 		public function __construct() {
 		}
@@ -156,6 +160,16 @@
 				//$this->stage = 2;
 				//$this->order_form();
 			}
+			return $this;
+		}
+
+		public function enable_fluid_container() {
+			$this->fluid_container = true;
+			return $this;
+		}
+
+		public function disable_fluid_container() {
+			$this->fluid_container = true;
 			return $this;
 		}
 
@@ -561,6 +575,11 @@
 					$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 		}
 
+		public function add_row_button($button) {
+			$this->buttons[] = $button;
+			return $this;
+		}
+
 		public function ajax_list_handler() {
 			// apply pagination
 			// apply sorting
@@ -673,6 +692,7 @@
 			}
 			if (!in_array($total_pages, $page_links))
 				$page_links[] = $total_pages;
+			$table->smarty->assign('fluid_container', $this->fluid_container);
 			$table->smarty->assign('page_links', $page_links);
 			$table->smarty->assign('total_rows', $count);
 			$table->smarty->assign('total_pages', $total_pages);
@@ -682,8 +702,12 @@
 			$table->smarty->assign('page_offset', $this->page_offset);
 			$table->smarty->assign('edit_form', $this->order_form());
 			$table->smarty->assign('select_multiple', $this->select_multiple);
-			$table->smarty->assign('delete_row', $this->delete_row);
-			$table->smarty->assign('edit_row', $this->edit_row);
+			if ($this->edit_row == true)
+				$this->buttons[] = $this->edit_button;
+			if ($this->delete_row == true)
+				$this->buttons[] = $this->delete_button;
+			if (sizeof($this->buttons) > 0)
+				$table->smarty->assign('row_buttons', $this->buttons);
 			$table->smarty->assign('add_row', $this->add_row);
 			$table->smarty->assign('labels', $this->labels);
 			add_output($table->get_table());

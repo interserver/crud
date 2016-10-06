@@ -192,7 +192,7 @@ function submit_handler(what, that) {
 	return false;
 }
 function edit_form(that) {
-	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+	var parent = get_crud_row_id(that);
 	var row = crud_rows[parent], field, value;
 	console.log(row);
 	for (field in row) {
@@ -204,7 +204,7 @@ function edit_form(that) {
 }
 
 function delete_form(that) {
-	var parent = jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+	var parent = get_crud_row_id(that);
 	var row = crud_rows[parent], field, value;
 	console.log(row);
 	console.log(row[primary_key]);
@@ -231,9 +231,19 @@ function approval_list(status, offset, limit) {
 	return false;
 }
 
+function get_crud_row_idx(that) {
+	return jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+}
+
+function get_crud_row_id(that) {
+	var parent = get_crud_row_idx(that);
+	var row = crud_rows[parent], field, value;
+	return row[primary_key];
+}
+
 function load_page(offset, limit) {
 	$.getJSON(jQuery("#paginationForm").attr("action")+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
-		crud_json = json;
+		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
 		var x, row;
 		jQuery('#mytable tbody').html('');
@@ -316,8 +326,6 @@ function setup_binds() {
 		submit_handler('delete', this);
 	});
 }
-
-var crud_json;
 
 jQuery(document).ready(function () {
 	setup_binds();
