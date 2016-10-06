@@ -99,11 +99,7 @@
 					<li class="disabled"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
 {/if}
 {foreach item=pager from=$page_links}
-{if $pager == $page}
-					<li class="active"><span>{$pager}</span></li>
-{else}
-					<li class=""><a href="" class="" data-offset="{$pager * $page_limit}">{$pager}</a></li>
-{/if}
+					<li class="{if $pager == $page}active{/if}"><a href="" class="" data-offset="{$pager * $page_limit}">{$pager}</a></li>
 {/foreach}
 {if $page < $total_pages}
 					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>

@@ -265,8 +265,8 @@ function setup_binds() {
 	jQuery(document).on('click', '.crud .pagination a', function(event) {
 		event.preventDefault();
 		page_offset = jQuery(this).attr('data-offset');
-		jQuery('.crud .pagination a').removeClass('active');
-		jQuery(this).addClass('active');
+		jQuery('.crud .pagination li ').removeClass('active');
+		jQuery(this).parent().addClass('active');
 		load_page();
 	});
 	jQuery(document).on('click', '.crud .row-counts button', function(event) {
