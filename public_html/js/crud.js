@@ -246,8 +246,25 @@ function load_page(offset, limit) {
 			}
 			jQuery('#mytable tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
 		}
+		update_pager();
 		//console.log(json);
 	});
+}
+
+function update_pager() {
+	page = (page_offset / page_limit) + 1;
+	//console.log("Offset "+page_offset+" Limit "+page_limit+" Page "+page);
+	if (page > 1)
+		jQuery('#crud-pager-prev').removeClass('disabled');
+	else
+		jQuery('#crud-pager-prev').addClass('disabled');
+	if (page < total_pages)
+		jQuery('#crud-pager-next').removeClass('disabled');
+	else
+		jQuery('#crud-pager-next').addClass('disabled');
+	jQuery('.crud .pagination li.crud-page').removeClass('active');
+	jQuery('.crud .pagination li.crud-page a[data-offset="'+page_offset+'"]').parent().addClass('active');
+
 }
 
 function setup_binds() {
@@ -262,11 +279,25 @@ function setup_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
-	jQuery(document).on('click', '.crud .pagination a', function(event) {
+	jQuery(document).on('click', '.crud .pagination .crud-page a', function(event) {
 		event.preventDefault();
 		page_offset = jQuery(this).attr('data-offset');
 		jQuery('.crud .pagination li ').removeClass('active');
 		jQuery(this).parent().addClass('active');
+		load_page();
+	});
+	jQuery(document).on('click', '#crud-pager-prev a', function(event) {
+		event.preventDefault();
+		page_offset = page_offset - page_limit;
+		if (page_offset < 0)
+			page_offset = 0;
+		load_page();
+	});
+	jQuery(document).on('click', '#crud-pager-next a', function(event) {
+		event.preventDefault();
+		page_offset = page_offset + page_limit;
+		if ((page_offset / page_limit) + 1 >  total_pages)
+			page_offset = (total_pages - 1 ) * page_limit;
 		load_page();
 	});
 	jQuery(document).on('click', '.crud .row-counts button', function(event) {
