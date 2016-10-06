@@ -153,6 +153,179 @@
 			return $this;
 		}
 
+		public function ajax_edit_handler() {
+			$fields = $_POST;
+			$query_fields = array();
+			$query_where = array();
+			$valid = true;
+			$errors = array();
+			$error_fields = array();
+			foreach ($fields as $field => $value) {
+				// match up fields
+				if (isset($this->query_fields[$field])) {
+					$orig_field = $field;
+					$field = $this->query_fields[$field];
+					if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
+						$field = $matches['field'];
+						if (isset($matches['table']) && $matches['table'] != '') {
+							$tables = array($matches['table'] => $this->tables[$matches['table']]);
+							$query_table = $matches['table'];
+						} else {
+							$tables = $this->tables;
+						}
+						$field = $matches['field'];
+					} else {
+						$tables = $this->tables;
+					}
+					foreach ($tables as $t_table => $t_fields) {
+						if (isset($t_fields[$field])) {
+							$query_table = $t_table;
+							break;
+						}
+					}
+					$already_safe = false;
+					// validate fields
+					foreach ($this->validations[$orig_field] as $validation) {
+						if (!is_array($validation)) {
+							switch ($validation) {
+								case 'abs':
+									$value = abs($value);
+									break;
+								case 'int':
+									// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
+									if (isset($value) && $value != (int)$value) {
+										$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+										$error_fields[] = $field;
+										$valid = false;
+									}
+									break;
+								case 'notags':
+									if ($value != strip_tags($value)) {
+										$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
+										$error_fields[] = $field;
+										$valid = false;
+									}
+									break;
+								case 'trim':
+									if (isset($value)) {
+										$value = trim($value);
+									}
+									break;
+								case 'lower':
+									if (isset($value)) {
+										$value = strtolower($value);
+									}
+									break;
+								case 'in_array':
+									if (isset($value)) {
+										$values = array();
+										if (!is_array($value))
+											$value = array($value);
+										foreach ($value as $t_value) {
+											if (!in_array($t_value, $this->labels[$field])) {
+												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
+												$error_fields[] = $field;
+												$valid = false;
+											}
+											$values[] = $this->db->real_escape($t_value);
+										}
+										$value = implode("','", $values);
+										unset($values);
+										$already_safe = true;
+									}
+									break;
+							}
+						} else {
+							if (isset($validation['in_array'])) {
+								if (isset($value)) {
+									$values = array();
+									if (!is_array($value))
+										$value = array($value);
+									foreach ($value as $t_value) {
+										if (!in_array($t_value, $validation['in_array'])) {
+											$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
+											$error_fields[] = $field;
+											$valid = false;
+										}
+										$values[] = $this->db->real_escape($t_value);
+									}
+									$value = implode(',', $values);
+									unset($values);
+									$already_safe = true;
+								}
+							}
+						}
+
+					}
+					// build query
+					if ($already_safe != true)
+						$safe_value = $this->db->real_escape($value);
+					else
+						$safe_value = $value;
+					if ($field == $this->primary_key)
+						$query_where[] = "{$field}='{$safe_value}'";
+					else {
+						// see which fields are editable
+						if (!in_array($field, $this->disabled_fields))
+							$query_fields[] = "{$field}='{$safe_value}'";
+					}
+				}
+			}
+			if (count($query_fields) > 0) {
+				//billingd_log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
+				$query_where = array_merge($query_where, $this->query_where[$query_table]);
+				// update database
+				$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(' and ', $query_where);
+				if ($valid == true) {
+					$this->log("i want to run query {$query}", __LINE__, __FILE__);
+					//$this->db->query($query, __LINE__, __FILE__);
+					// send response for js handler
+					echo "ok";
+					echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
+				} else {
+					$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
+					// send response for js handler
+					echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
+				}
+			} else {
+				$this->log("crud error nothing to update ", __LINE__, __FILE__);
+				// send response for js handler
+				echo "There was nothing to update";
+			}
+		}
+
+		public function ajax_search_handler() {
+			// get fields
+			// validate data
+			// build search query
+			// run query
+			// send response for js handler
+		}
+
+		public function ajax_add_handler() {
+			// generic data to get us here is in _GET, while the specific fields are all in _POST
+			// match up fields
+			// see which fields are editable
+			// validate fields
+			// build query
+			// update database
+			// send response for js handler
+		}
+
+		public function ajax_delete_handler() {
+			// match up row
+			// build query
+			// update db
+			// send response for js handler
+		}
+
+		public function ajax_export_handler() {
+			// get export type
+			// get data
+			// convert data
+			// send data
+		}
+
 		/**
 		 * if called via an ajax request the processing is passed off to this handler, which takes care of ajax listing updates, adding, editing, deleting, searching, and exporting records
 		 *
@@ -165,177 +338,22 @@
 			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
 			switch ($action) {
 				case 'edit':
-					$fields = $_POST;
-					$query_fields = array();
-					$query_where = array();
-					$valid = true;
-					$errors = array();
-					$error_fields = array();
-					foreach ($fields as $field => $value) {
-						// match up fields
-						if (isset($this->query_fields[$field])) {
-							$orig_field = $field;
-							$field = $this->query_fields[$field];
-							if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
-								$field = $matches['field'];
-								if (isset($matches['table']) && $matches['table'] != '') {
-									$tables = array($matches['table'] => $this->tables[$matches['table']]);
-									$query_table = $matches['table'];
-								} else {
-									$tables = $this->tables;
-								}
-								$field = $matches['field'];
-							} else {
-								$tables = $this->tables;
-							}
-							foreach ($tables as $t_table => $t_fields) {
-								if (isset($t_fields[$field])) {
-									$query_table = $t_table;
-									break;
-								}
-							}
-							$already_safe = false;
-							// validate fields
-							foreach ($this->validations[$orig_field] as $validation) {
-								if (!is_array($validation)) {
-									switch ($validation) {
-										case 'abs':
-											$value = abs($value);
-											break;
-										case 'int':
-											// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
-											if (isset($value) && $value != (int)$value) {
-												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
-												$error_fields[] = $field;
-												$valid = false;
-											}
-											break;
-										case 'notags':
-											if ($value != strip_tags($value)) {
-												$errors[] = 'Invalid ' . $this->label($field) . ' "' . $value . '"';
-												$error_fields[] = $field;
-												$valid = false;
-											}
-											break;
-										case 'trim':
-											if (isset($value)) {
-												$value = trim($value);
-											}
-											break;
-										case 'lower':
-											if (isset($value)) {
-												$value = strtolower($value);
-											}
-											break;
-										case 'in_array':
-											if (isset($value)) {
-												$values = array();
-												if (!is_array($value))
-													$value = array($value);
-												foreach ($value as $t_value) {
-													if (!in_array($t_value, $this->labels[$field])) {
-														$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
-														$error_fields[] = $field;
-														$valid = false;
-													}
-													$values[] = $this->db->real_escape($t_value);
-												}
-												$value = implode("','", $values);
-												unset($values);
-												$already_safe = true;
-											}
-											break;
-									}
-								} else {
-									if (isset($validation['in_array'])) {
-										if (isset($value)) {
-											$values = array();
-											if (!is_array($value))
-												$value = array($value);
-											foreach ($value as $t_value) {
-												if (!in_array($t_value, $validation['in_array'])) {
-													$errors[] = 'Invalid ' . $this->label($field) . ' "' . $t_value . '"';
-													$error_fields[] = $field;
-													$valid = false;
-												}
-												$values[] = $this->db->real_escape($t_value);
-											}
-											$value = implode(',', $values);
-											unset($values);
-											$already_safe = true;
-										}
-									}
-								}
-
-							}
-							// build query
-							if ($already_safe != true)
-								$safe_value = $this->db->real_escape($value);
-							else
-								$safe_value = $value;
-							if ($field == $this->primary_key)
-								$query_where[] = "{$field}='{$safe_value}'";
-							else {
-								// see which fields are editable
-								if (!in_array($field, $this->disabled_fields))
-									$query_fields[] = "{$field}='{$safe_value}'";
-							}
-						}
-					}
-					if (count($query_fields) > 0) {
-						//billingd_log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
-						$query_where = array_merge($query_where, $this->query_where[$query_table]);
-						// update database
-						$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(' and ', $query_where);
-						if ($valid == true) {
-							$this->log("i want to run query {$query}", __LINE__, __FILE__);
-							//$this->db->query($query, __LINE__, __FILE__);
-							// send response for js handler
-							echo "ok";
-							echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
-						} else {
-							$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
-							// send response for js handler
-							echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
-						}
-					} else {
-						$this->log("crud error nothing to update ", __LINE__, __FILE__);
-						// send response for js handler
-						echo "There was nothing to update";
-					}
+					$this->ajax_edit_handler();
 					break;
 				case 'list':
-					// apply pagination
-					// apply sorting
-					// send response for js handler
+					$this->ajax_list_handler();
 					break;
 				case 'add':
-					// generic data to get us here is in _GET, while the specific fields are all in _POST
-					// match up fields
-					// see which fields are editable
-					// validate fields
-					// build query
-					// update database
-					// send response for js handler
+					$this->ajax_add_handler();
 					break;
 				case 'delete':
-					// match up row
-					// build query
-					// update db
-					// send response for js handler
+					$this->ajax_delete_handler();
 					break;
 				case 'search':
-					// get fields
-					// validate data
-					// build search query
-					// run query
-					// send response for js handler
+					$this->ajax_search_handler();
 					break;
 				case 'export':
-					// get export type
-					// get data
-					// convert data
-					// send data
+					$this->ajax_export_handler();
 					break;
 				default:
 					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
@@ -504,6 +522,12 @@
 				$fields[$db->Record['Field']] = $db->Record;
 			}
 			return $fields;
+		}
+
+		public function ajax_list_handler() {
+			// apply pagination
+			// apply sorting
+			// send response for js handler
 		}
 
 		public function list_records() {
@@ -1195,6 +1219,7 @@ var primary_key = "' . $this->primary_key . '";
 			}
 			return $edit_form;
 		}
+
 		public function disable_initial_populate() {
 			$this->initial_populate = false;
 			return $this;
