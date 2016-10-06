@@ -93,17 +93,11 @@
 		<div class="col-md-12" style="display: table;">
 			<div class="nav-crud" style="display: table-row; vertical-align: top;">
 				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
-{if $page > 1}
-					<li class=""><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
-{else}
-					<li class="disabled"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
-{/if}
+					<li class="{if $page == 1}disabled{/if}"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
 {foreach item=pager from=$page_links}
-					<li class="{if $pager == $page}active{/if}"><a href="" class="" data-offset="{$pager * $page_limit}">{$pager}</a></li>
+					<li class="{if $pager == $page}active{/if}"><a href="" class="" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
 {/foreach}
-{if $page < $total_pages}
-					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
-{/if}
+					<li class="{if $page >= $total_pages}disabled{/if}"><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
 				<div class="btn-group row-counts nav-rows " role="group" style="display: table-cell; vertical-align: top;" aria-label="Rows Per Page">
 {foreach from=$page_limits item=$limit}
