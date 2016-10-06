@@ -109,12 +109,12 @@
 					<li><a href="#" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 {/if}
 				</ul>
-				<div class="btn-group row-counts nav-rows " data-toggle="buttons-radio" style="display: table-cell; vertical-align: top;">
-					<button type="button" class="btn btn-default active" data-limit="10">10</button>
-					<button type="button" class="btn btn-default" data-limit="25">25</button>
-					<button type="button" class="btn btn-default" data-limit="50">50</button>
-					<button type="button" class="btn btn-default" data-limit="100">100</button>
-					<button type="button" class="btn btn-default" data-limit="all">All</button>
+				<div class="btn-group row-counts nav-rows " role="group" style="display: table-cell; vertical-align: top;" aria-label="Rows Per Page">
+{foreach from=$page_limits item=$limit}
+{if $limit <= $total_rows}
+					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}All{else}{$limit}{/if}</button>
+{/if}
+{/foreach}
 				</div>
 				<a id="crud-search" class="btn btn-primary crud-search" href="" style="vertical-align: top;" title="Search" data-tile="Search">
 					<i class="fa fa-search fa-lg"></i> Search

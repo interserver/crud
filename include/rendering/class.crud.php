@@ -672,6 +672,9 @@
 <script type="text/javascript">
 var crud_rows = ' . json_encode($rows) . ';
 var primary_key = "' . $this->primary_key . '";
+var page_offset = ' . $this->page_offset . ';
+var page_limit = ' . $this->page_limit . ';
+var page = ' . $page. ';
 </script>');
 			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');

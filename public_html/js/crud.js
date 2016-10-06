@@ -232,16 +232,12 @@ function approval_list(status, offset, limit) {
 }
 
 function load_page(offset, limit) {
-	var url = jQuery("#paginationForm").attr("action");
-	if (typeof offset != "undefined")
-		url = url+"&offset="+offset;
-	if (typeof limit != "undefined")
-		url = url+"&limit="+limit;
-	$.getJSON(url, { }, function(json) {
+	$.getJSON(jQuery("#paginationForm").attr("action")+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
+
 	});
 }
 
-jQuery(document).ready(function () {
+function setup_binds() {
 	jQuery(document).on('click', 'a#crud-search', function(event) {
 		event.preventDefault();
 		jQuery('#crud-search').hide();
@@ -255,7 +251,17 @@ jQuery(document).ready(function () {
 	});
 	jQuery(document).on('click', '.crud .pagination a', function(event) {
 		event.preventDefault();
-		load_page(jQuery(this).attr('data-offset'), jQuery(".crud .row-counts .active").attr('data-limit'));
+		page_offset = jQuery(this).attr('data-offset');
+		jQuery('.crud .pagination a').removeClass('active');
+		jQuery(this).addClass('active');
+		load_page();
+	});
+	jQuery(document).on('click', '.crud .row-counts button', function(event) {
+		var obj = jQuery(this);
+		page_limit = obj.attr('data-limit');
+		jQuery('.crud .row-counts button').removeClass('active');
+		obj.addClass('active');
+		load_page();
 	});
 	jQuery("#editModal form").on("submit", function(event) {
 		event.preventDefault();
@@ -265,5 +271,9 @@ jQuery(document).ready(function () {
 		event.preventDefault();
 		submit_handler('delete', this);
 	});
+}
+
+jQuery(document).ready(function () {
+	setup_binds();
 });
 
