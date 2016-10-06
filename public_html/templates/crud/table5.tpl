@@ -88,8 +88,8 @@
 		</div>
 	</div>
 	<div class="row">
+		<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list" autocomplete="on" method="GET">
 		<div class="col-md-12" style="display: table;">
-			<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list" autocomplete="on" method="GET">
 			<div class="nav-crud" style="display: table-row; vertical-align: top;">
 				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
 {if $page > 1}
@@ -157,8 +157,8 @@
 				</span>
 {/if}
 			</div>
-			</form>
 		</div>
+		</form>
 	</div>
 </div>
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
