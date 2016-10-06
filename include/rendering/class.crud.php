@@ -123,6 +123,12 @@
 				$crud->ajax = true;
 				$crud->choice = $GLOBALS['tf']->variables->request['crud'];
 			}
+			if (isset($GLOBALS['tf']->variables->request['offset'])) {
+				$crud->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
+			}
+			if (isset($GLOBALS['tf']->variables->request['limit'])) {
+				$crud->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
+			}
 			if (substr($crud->choice, 0, 5) == 'none.')
 				$crud->choice = substr($crud->choice, 5);
 			if (strpos($table_or_query, ' ')) {
@@ -542,17 +548,24 @@
 			return $count;
 		}
 
-		public function ajax_list_handler() {
-			// apply pagination
-			// apply sorting
-			// send response for js handler
-		}
-
 		public function run_list_query() {
 			if ($this->type == 'table')
 				$this->db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 			else
 				$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+		}
+
+		public function ajax_list_handler() {
+			// apply pagination
+			// apply sorting
+			$this->run_list_query();
+			$json = array();
+			while ($this->db->next_record(MYSQL_ASSOC)) {
+				$json[] = $this->db->Record;
+			}
+			// send response for js handler
+			header("Content-type: application/json");
+			echo json_encode($json);
 		}
 
 		public function list_records() {

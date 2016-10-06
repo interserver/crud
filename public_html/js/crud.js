@@ -233,7 +233,20 @@ function approval_list(status, offset, limit) {
 
 function load_page(offset, limit) {
 	$.getJSON(jQuery("#paginationForm").attr("action")+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
-
+		crud_json = json;
+		var empty = document.getElementById('itemrowempty').innerHTML;
+		var x, row;
+		jQuery('#mytable tbody').html('');
+		jQuery('#mytable tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
+		for(var x = 0; x < json.length; x++) {
+			//row = empty.replace('display: none;','');
+			row = empty;
+			for (var field in json[x]) {
+				row = row.replace('%'+field+'%', json[x][field]);
+			}
+			jQuery('#mytable tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
+		}
+		//console.log(json);
 	});
 }
 
@@ -272,6 +285,8 @@ function setup_binds() {
 		submit_handler('delete', this);
 	});
 }
+
+var crud_json;
 
 jQuery(document).ready(function () {
 	setup_binds();
