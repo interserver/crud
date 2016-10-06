@@ -55,6 +55,10 @@
 		public $price_align = 'r';
 		public $price_text_align = 'r';
 		public $stage = 1;
+		public $page_limits = array(5, 10, 15, 20, 25, 40, 50, 75, 100, 150, 200, 250, 300, 500, 750, 100);
+		public $page_limit = 10;
+		public $page_offset = 0;
+		public $initial_populate = true;
 		public $select_multiple = false;
 		public $delete_row = true;
 		public $edit_row = true;
@@ -535,12 +539,11 @@
 					$count = $db->f(0);
 				}
 			}
-			$page_limit = 10;
-			$page_offset = 0;
+			$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
 			if ($this->type == 'table')
-				$db->query("select * from {$this->table} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+				$db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 			else
-				$db->query("{$this->query} limit {$page_offset}, {$page_limit}", __LINE__, __FILE__);
+				$db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 			$header_shown = false;
 			$idx = 0;
 			while ($db->next_record(MYSQL_ASSOC)) {
@@ -1189,6 +1192,10 @@ var primary_key = "' . $this->primary_key . '";
 			}
 			return $edit_form;
 		}
+		public function disable_initial_populate() {
+			$this->initial_populate = false;
+			return $this;
+		}
 
 		public function disable_delete() {
 			$this->delete_row = false;
@@ -1207,6 +1214,11 @@ var primary_key = "' . $this->primary_key . '";
 
 		public function disable_add() {
 			$this->add_row = false;
+			return $this;
+		}
+
+		public function enable_initial_populate() {
+			$this->initial_populate = true;
 			return $this;
 		}
 
