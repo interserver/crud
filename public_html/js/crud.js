@@ -191,6 +191,7 @@ function submit_handler(what, that) {
 	});
 	return false;
 }
+
 function edit_form(that) {
 	var parent = get_crud_row_id(that);
 	var row = crud_rows[parent], field, value;
@@ -232,13 +233,17 @@ function approval_list(status, offset, limit) {
 }
 
 function get_crud_row_idx(that) {
-	return jQuery(that).parent().parent().attr("id").replace("itemrow", "");
+	return replaceAll(jQuery(that).parent().parent().attr("id"), "itemrow", "");
 }
 
 function get_crud_row_id(that) {
 	var parent = get_crud_row_idx(that);
 	var row = crud_rows[parent], field, value;
 	return row[primary_key];
+}
+
+function replaceAll(str, find, replace) {
+	return str.replace(new RegExp(find, 'g'), replace);
 }
 
 function load_page(offset, limit) {
@@ -249,10 +254,10 @@ function load_page(offset, limit) {
 		jQuery('#mytable tbody').html('');
 		jQuery('#mytable tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
 		for(var x = 0; x < json.length; x++) {
-			//row = empty.replace('display: none;','');
+			//row = replaceAll(empty, 'display: none;','');
 			row = empty;
 			for (var field in json[x]) {
-				row = row.replace('%'+field+'%', json[x][field]);
+				row = replaceAll(row, '%'+field+'%', json[x][field]);
 			}
 			jQuery('#mytable tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
 		}
