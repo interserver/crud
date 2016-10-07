@@ -242,7 +242,7 @@ function get_crud_row_id(that) {
 }
 
 function load_page(offset, limit) {
-	$.getJSON(jQuery("#paginationForm").attr("action")+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
+	$.getJSON(jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
 		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
 		var x, row;
@@ -289,12 +289,13 @@ function setup_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
-	jQuery(document).on('click', '.crud #itemrowheader th', function(event) {
-		event.preventDefault();
-		var crud_order_dir = jQuery(this).attr('data-order-dir');
-		var crud_order_by = jQuery(this).attr('data-order-by');
-		jQuery('.crud .pagination li ').removeClass('active');
-		jQuery(this).parent().addClass('active');
+	jQuery(document).on('click', '.crud #itemrowheader .link', function(event) {
+		var crud_order_dir = jQuery(this).parent().attr('data-order-dir');
+		var crud_order_by = jQuery(this).parent().attr('data-order-by');
+		//jQuery('.crud #itemrowheader th').removeClass('active');
+		jQuery('.crud #itemrowheader .link i').css('opacity', '0.3');
+		//jQuery(this).parent().addClass('active');
+		jQuery(this).find('i').css('opacity', '1');
 		load_page();
 	});
 	jQuery(document).on('click', '.crud .pagination .crud-page a', function(event) {

@@ -129,12 +129,14 @@
 				$crud->ajax = true;
 				$crud->choice = $GLOBALS['tf']->variables->request['crud'];
 			}
-			if (isset($GLOBALS['tf']->variables->request['offset'])) {
+			if (isset($GLOBALS['tf']->variables->request['order_by']))
+				$crud->order_by = $GLOBALS['tf']->variables->request['order_by'];
+			if (isset($GLOBALS['tf']->variables->request['order_dir']) && in_array($GLOBALS['tf']->variables->request['order_dir'], array('asc','desc')))
+				$crud->order_dir = $GLOBALS['tf']->variables->request['order_dir'];
+			if (isset($GLOBALS['tf']->variables->request['offset']))
 				$crud->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
-			}
-			if (isset($GLOBALS['tf']->variables->request['limit'])) {
+			if (isset($GLOBALS['tf']->variables->request['limit']))
 				$crud->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
-			}
 			if (substr($crud->choice, 0, 5) == 'none.')
 				$crud->choice = substr($crud->choice, 5);
 			if (strpos($table_or_query, ' ')) {
@@ -565,16 +567,19 @@
 		}
 
 		public function run_list_query() {
+			billingd_log("Order by {$this->order_by}", __LINE__, __FILE__);
+			if (!in_array($this->order_by, $this->fields))
+				$this->order_by = $this->primary_key;
 			if ($this->type == 'table')
 				if ($this->page_limit < 1)
 					$this->db->query("select * from {$this->table}", __LINE__, __FILE__);
 				else
-					$this->db->query("select * from {$this->table} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+					$this->db->query("select * from {$this->table} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 			else
 				if ($this->page_limit < 1)
 					$this->db->query("{$this->query}", __LINE__, __FILE__);
 				else
-					$this->db->query("{$this->query} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+					$this->db->query("{$this->query} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
 		}
 
 		public function add_row_button($button) {
@@ -593,6 +598,17 @@
 			// send response for js handler
 			header("Content-type: application/json");
 			echo json_encode($json);
+		}
+
+		public function get_sort_icon($field) {
+			if ($field == $this->order_by) {
+				$opacity = 1;
+				$icon = 'sort-'.$this->order_dir;
+			} else {
+				$opacity = 0.3;
+				$icon = 'sort';
+			}
+			return "<i class=\"sort-arrow fa fa-{$icon}\" style=\"padding-left: 5px; opacity: {$opacity};\"></i>";
 		}
 
 		public function list_records() {
@@ -628,7 +644,7 @@
 							$empty_record[$field] = "%{$field}%";
 						foreach ($this->tables[$this->table] as $field => $field_data) {
 							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
-							$table->add_header_field($field_data['Comment'].'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
+							$table->add_header_field($field_data['Comment'].$this->get_sort_icon($field));
 						}
 					} else {
 						foreach (array_keys($this->db->Record) as $field)
@@ -636,9 +652,9 @@
 						foreach (array_keys($this->db->Record) as $field) {
 							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
 							if (isset($this->tables[$this->table][$field]))
-								$table->add_header_field($this->tables[$this->table][$field]['Comment'].'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
+								$table->add_header_field($this->tables[$this->table][$field]['Comment'].$this->get_sort_icon($field));
 							else
-								$table->add_header_field($this->label($field).'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
+								$table->add_header_field($this->label($field).$this->get_sort_icon($field));
 						}
 					}
 					$table->set_col_options('');
@@ -965,6 +981,8 @@
 					if ($this->type == 'table' || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
+							if ($this->order_by == '')
+								$this->order_by = $this->primary_key;
 							$input_type = 'label';
 						} elseif ($data['Key'] == 'MUL') {
 							//$input_type = 'label';
