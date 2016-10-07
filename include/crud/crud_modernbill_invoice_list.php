@@ -13,7 +13,7 @@ function crud_modernbill_invoice_list() {
 	 , client_invoice.invoice_subtotal FROM
   client_invoice
 LEFT OUTER JOIN client_info
-ON client_invoice.client_id = client_info.client_id")
+ON client_invoice.client_id = client_info.client_id", 'mb')
 		->set_title("Modernbill Invoice List")
 		->go();
 }

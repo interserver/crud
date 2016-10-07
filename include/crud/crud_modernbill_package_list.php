@@ -14,7 +14,7 @@ ON client_package.client_id = client_info.client_id
 LEFT JOIN package_type
 ON client_package.pack_id = package_type.pack_id
 WHERE
-  cp_status = 2")
+  cp_status = 2", 'mb')
 		->set_title("Modernbill Package Listing")
 		->go();
 }
