@@ -567,7 +567,7 @@
 		}
 
 		public function run_list_query() {
-			billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
+			//billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'table') {

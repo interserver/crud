@@ -11,7 +11,7 @@
 {if isset($row_buttons)}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}" style="margin-bottom: 10px;">
+<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}" style="margin-bottom: 10px; max-width: 1300px;">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
