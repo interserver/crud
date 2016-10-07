@@ -289,6 +289,14 @@ function setup_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
+	jQuery(document).on('click', '.crud #itemrowheader th', function(event) {
+		event.preventDefault();
+		var crud_order_dir = jQuery(this).attr('data-order-dir');
+		var crud_order_by = jQuery(this).attr('data-order-by');
+		jQuery('.crud .pagination li ').removeClass('active');
+		jQuery(this).parent().addClass('active');
+		load_page();
+	});
 	jQuery(document).on('click', '.crud .pagination .crud-page a', function(event) {
 		event.preventDefault();
 		page_offset = jQuery(this).attr('data-offset');

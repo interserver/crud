@@ -58,6 +58,8 @@
 		public $page_limits = array(10, 25, 100, -1);
 		public $page_limit = 10;
 		public $page_offset = 0;
+		public $order_by = '';
+		public $order_dir = 'desc';
 		public $initial_populate = true;
 		public $select_multiple = false;
 		public $delete_row = true;
@@ -625,18 +627,22 @@
 						foreach (array_keys($this->tables[$this->table]) as $field)
 							$empty_record[$field] = "%{$field}%";
 						foreach ($this->tables[$this->table] as $field => $field_data) {
-							$table->add_header_field($field_data['Comment']);
+							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
+							$table->add_header_field($field_data['Comment'].'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
 						}
 					} else {
 						foreach (array_keys($this->db->Record) as $field)
 							$empty_record[$field] = "%{$field}%";
 						foreach (array_keys($this->db->Record) as $field) {
+							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
 							if (isset($this->tables[$this->table][$field]))
-								$table->add_header_field($this->tables[$this->table][$field]['Comment']);
+								$table->add_header_field($this->tables[$this->table][$field]['Comment'].'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
 							else
-								$table->add_header_field($this->label($field));
+								$table->add_header_field($this->label($field).'<i class="sort-arrow fa fa-sort" style="padding-left: 5px; opacity: 0.3;"></i>');
 						}
 					}
+					$table->set_col_options('');
+					$table->set_row_options('id="itemrowheader"');
 					$table->add_header_row();
 					$table->set_row_options('id="itemrowempty" style="display: none;"');
 					foreach ($empty_record as $field => $value)
@@ -717,6 +723,8 @@
 	var primary_key = "' . $this->primary_key . '";
 	var page_offset = ' . $this->page_offset . ';
 	var page_limit = ' . $this->page_limit . ';
+	var crud_order_dir = "' . $this->order_dir . '";
+	var crud_order_by = "' . $this->order_by . '";
 	var total_pages = ' . $total_pages . ';
 	var page = ' . $page. ';
 </script>');
