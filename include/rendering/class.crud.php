@@ -560,7 +560,7 @@
 					$count = $db->f(0);
 				}
 			}
-			$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
+			//$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
 			return $count;
 		}
 
@@ -1496,7 +1496,7 @@
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter($field, $value = '%value%', $type = 'string', $acl = false, $bad_acl_test = '%value%') {
-			billingd_log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//billingd_log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
 			function_requirements('has_acl');
 			if (!isset($this->filters[$field]))
 				$this->filters[$field] = array();
@@ -1537,7 +1537,7 @@
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter_link($field, $link, $title = false, $acl = false, $bad_acl_test = '%value%') {
-			billingd_log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//billingd_log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
 			// $link = 'choice=none.edit_customer&customer=%field%'
 			$this->add_filter($field, '<a href="' . $link . '" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
 		}
@@ -1554,7 +1554,7 @@
 			elseif (!is_array($fields))
 				$fields = array($fields);
 			foreach ($fields as $field) {
-				billingd_log($field);
+				//billingd_log($field);
 				switch ($field) {
 					case 'account_lid':
 						$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
