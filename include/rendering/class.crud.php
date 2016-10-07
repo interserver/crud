@@ -567,19 +567,20 @@
 		}
 
 		public function run_list_query() {
-			billingd_log("Order by {$this->order_by}", __LINE__, __FILE__);
+			billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
-			if ($this->type == 'table')
+			if ($this->type == 'table') {
 				if ($this->page_limit < 1)
 					$this->db->query("select * from {$this->table}", __LINE__, __FILE__);
 				else
 					$this->db->query("select * from {$this->table} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
-			else
+			} else {
 				if ($this->page_limit < 1)
 					$this->db->query("{$this->query}", __LINE__, __FILE__);
 				else
 					$this->db->query("{$this->query} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+			}
 		}
 
 		public function add_row_button($button) {

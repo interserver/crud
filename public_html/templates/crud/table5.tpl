@@ -33,9 +33,9 @@
 {/if}
 {section name=itemcol loop=$table_headers[itemrow].cols}
 							<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
-								<div class="link">
+								<span class="header_link">
 									{$table_headers[itemrow].cols[itemcol].text}
-								</div>
+								</span>
 							</th>
 {/section}
 {if isset($row_buttons)}

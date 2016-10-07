@@ -278,53 +278,8 @@ function update_pager() {
 }
 
 function setup_binds() {
-	jQuery(document).on('click', 'a#crud-search', function(event) {
-		event.preventDefault();
-		jQuery('#crud-search').hide();
-		jQuery('#crud-search-more').show();
-	});
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
-	});
-	jQuery("#editModal").on("shown.bs.modal", function(e) {
-		jQuery("#editModal input").focus();
-	});
-	jQuery(document).on('click', '.crud #itemrowheader .link', function(event) {
-		var crud_order_dir = jQuery(this).parent().attr('data-order-dir');
-		var crud_order_by = jQuery(this).parent().attr('data-order-by');
-		//jQuery('.crud #itemrowheader th').removeClass('active');
-		jQuery('.crud #itemrowheader .link i').css('opacity', '0.3');
-		//jQuery(this).parent().addClass('active');
-		jQuery(this).find('i').css('opacity', '1');
-		load_page();
-	});
-	jQuery(document).on('click', '.crud .pagination .crud-page a', function(event) {
-		event.preventDefault();
-		page_offset = jQuery(this).attr('data-offset');
-		jQuery('.crud .pagination li ').removeClass('active');
-		jQuery(this).parent().addClass('active');
-		load_page();
-	});
-	jQuery(document).on('click', '#crud-pager-prev a', function(event) {
-		event.preventDefault();
-		page_offset = page_offset - page_limit;
-		if (page_offset < 0)
-			page_offset = 0;
-		load_page();
-	});
-	jQuery(document).on('click', '#crud-pager-next a', function(event) {
-		event.preventDefault();
-		page_offset = page_offset + page_limit;
-		if ((page_offset / page_limit) + 1 >  total_pages)
-			page_offset = (total_pages - 1 ) * page_limit;
-		load_page();
-	});
-	jQuery(document).on('click', '.crud .row-counts button', function(event) {
-		var obj = jQuery(this);
-		page_limit = obj.attr('data-limit');
-		jQuery('.crud .row-counts button').removeClass('active');
-		obj.addClass('active');
-		load_page();
 	});
 	jQuery("#editModal form").on("submit", function(event) {
 		event.preventDefault();
@@ -333,6 +288,53 @@ function setup_binds() {
 	jQuery("#deleteModal form").on("submit", function(event) {
 		event.preventDefault();
 		submit_handler('delete', this);
+	});
+	jQuery('a#crud-search').on('click', function(event) {
+		event.preventDefault();
+		jQuery('#crud-search').hide();
+		jQuery('#crud-search-more').show();
+	});
+	jQuery('#itemrowheader .header_link').on('click', function(event) {
+		crud_order_dir = jQuery(this).parent().attr('data-order-dir');
+		crud_order_by = jQuery(this).parent().attr('data-order-by');
+		//console.log("got a click on "+crud_order_by+" dir "+crud_order_dir);
+		if (crud_order_dir == 'asc')
+			jQuery(this).parent().attr('data-order-dir', 'desc');
+		else
+			jQuery(this).parent().attr('data-order-dir', 'asc');
+		//jQuery('.crud #itemrowheader th').removeClass('active');
+		jQuery('.crud #itemrowheader .header_link i').css('opacity', '0.3').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort');
+		//jQuery(this).parent().addClass('active');
+		jQuery(this).find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-'+jQuery(this).parent().attr('data-order-dir')).addClass('fa-sort-'+crud_order_dir);
+		load_page();
+	});
+	jQuery('.crud .pagination .crud-page a').on('click', function(event) {
+		event.preventDefault();
+		page_offset = jQuery(this).attr('data-offset');
+		jQuery('.crud .pagination li ').removeClass('active');
+		jQuery(this).parent().addClass('active');
+		load_page();
+	});
+	jQuery('#crud-pager-prev a').on('click', function(event) {
+		event.preventDefault();
+		page_offset = page_offset - page_limit;
+		if (page_offset < 0)
+			page_offset = 0;
+		load_page();
+	});
+	jQuery('#crud-pager-next a').on('click', function(event) {
+		event.preventDefault();
+		page_offset = page_offset + page_limit;
+		if ((page_offset / page_limit) + 1 >  total_pages)
+			page_offset = (total_pages - 1 ) * page_limit;
+		load_page();
+	});
+	jQuery('.crud .row-counts button').on('click', function(event) {
+		var obj = jQuery(this);
+		page_limit = obj.attr('data-limit');
+		jQuery('.crud .row-counts button').removeClass('active');
+		obj.addClass('active');
+		load_page();
 	});
 }
 
