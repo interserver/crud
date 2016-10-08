@@ -21,14 +21,14 @@ function cruds() {
 </style>");
 	add_output("
 <div class='cruds list-group'>
-	<a href='#' class='list-group-item active'>
+	<div class='list-group-item active'>
 		CRUD Page Links
 		<span class='pull-right label label-danger' style='margin-left: 10px;'>Not Working Yet</span>
 		<span class='pull-right label label-warning' style='margin-left: 10px;'>Loads</span>
 		<span class='pull-right label label-info' style='margin-left: 10px;'>Almost Done</span>
 		<span class='pull-right label label-success' style='margin-left: 10px;'>Ready</span>
 		<span class='pull-right'>Key:</span>
-	</a>");
+	</div>");
 	foreach ($functions as $level => $functions_arr) {
 		foreach ($functions_arr as $orig_function => $function_data) {
 			add_output("
