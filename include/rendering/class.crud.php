@@ -42,13 +42,14 @@
 
 	class Crud
 	{
+		public $custid;
 		public $ajax = false;
 		public $debug = false;
 		public $module;
 		public $choice;
 		public $table;
 		public $query;
-		public $primary_key;
+		public $primary_key = '';
 		public $type = '';
 		public $title = '';
 		public $columns = 3;
@@ -142,7 +143,7 @@
 				$crud->choice = substr($crud->choice, 5);
 			if (strpos($table_or_query, ' ')) {
 				$crud->all_fields = false;
-				$crud->query = $table_or_query;
+				$crud->query = $crud->decorate_query($table_or_query);
 				$crud->type = 'query';
 				$crud->parse_query();
 				$crud->get_tables_from_query();
@@ -155,6 +156,10 @@
 			}
 			$crud->parse_tables();
 			$crud->default_filters();
+			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
+				$crud->custid = $GLOBALS['tf']->variables->request['custid'];
+			else
+				$crud->custid = $GLOBALS['tf']->session->account_id;
 			return $crud;
 		}
 
@@ -517,9 +522,7 @@
 			foreach ($queries[0]->getColumns() as $col => $col_arr) {
 				$c_type = $col_arr[0]->getType();
 				$field_arr = $col_arr[0]->getMembers();
-				if ($c_type != 'COLUMN') {
-					billingd_log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
-				} else {
+				if ($c_type == 'COLUMN') {
 					if (is_object($field_arr[0])) {
 						$f_type = $field_arr[0]->getType();
 						$f_members = $field_arr[0]->getMembers();
@@ -544,9 +547,37 @@
 							$field = $orig_field;
 						}
 						$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
-
 					}
-
+				} elseif ($c_type == 'CALL') {
+					// if sizeof col_arr is 2  then [0] expr  and [1] is  the alias for field, like 'field as name'
+					$call = $field_arr[0];
+					$exprs = $field_arr[1]->getExprs();
+					foreach ($exprs as $e_idx => $expr) {
+						$e_type = $expr->getType();
+						$e_members = $expr->getMembers();
+						if (is_object($e_members[0])) {
+							$f_type = $e_members[0]->getType();
+							$f_members = $e_members[0]->getMembers();
+						} else {
+							if (count($f_members) > 1) {
+								$f_table = $f_members[0];
+								$f_orig_field = $f_members[1];
+								//$orig_field = $table.'.'.$orig_field;
+							} else {
+								$f_table = false;
+								$f_orig_field = $f_members[0];
+							}
+							if (count($col_arr) > 1) {
+								$field = $col_arr[1];
+							} else {
+								$field = $orig_field;
+							}
+							$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
+						}
+					}
+					//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
+				} else {
+					billingd_log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
 				}
 			}
 			if (isset($fields))
@@ -596,7 +627,7 @@
 				$db->next_record(MYSQL_NUM);
 				$count = $db->f(0);
 			} else {
-				if (preg_match('/^.*( from .*)$/', $this->query, $matches)) {
+				if (preg_match('/^.*( from .*)$/i', str_replace("\n", " ", $this->query), $matches)) {
 					$from = $matches[1];
 					$db->query("select count(*) {$from}", __LINE__, __FILE__);
 					$db->next_record(MYSQL_NUM);
@@ -914,6 +945,7 @@
 		}
 
 		public function parse_tables() {
+			$first_field = false;
 			foreach ($this->tables as $table => $fields) {
 				foreach ($fields as $field => $data) {
 					$input_type = 'input';
@@ -1020,6 +1052,8 @@
 					} else {
 						$this->log("CRUD class Found Field Type {$data['Type']} it could not Parse", __LINE__, __FILE__);
 					}
+					if ($first_field == false)
+						$first_field = $field;
 					//billingd_log(print_r($this->query_fields, true));
 					if ($this->type == 'table' || $this->all_fields == true || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
@@ -1030,8 +1064,13 @@
 						} elseif ($data['Key'] == 'MUL') {
 							//$input_type = 'label';
 						}
+
 						$this->add_field($field, $data['Comment'], false, $validations, $input_type, $input_data);
 					}
+				}
+				if ($this->primary_key == '') {
+					//billingd_log("Genreatig Primary Key to {$first_field}", __LINE__, __FILE__);
+					$this->primary_key = $first_field;
 				}
 			}
 		}
@@ -1517,6 +1556,32 @@
 				'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
 			//				$GLOBALS['tf']->add_html_head_js('<script src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 			$this->continue = false;
+		}
+
+		public function decorate_query($query) {
+			return str_replace(
+				array(
+					'__MODULE__',
+					'__TITLE__',
+					'__CUSTID__',
+					'__LOGIN__',
+					'__TBLNAME__',
+					'__TABLE__',
+					'__PREFIX__',
+					'__TITLE_FIELD__',
+				),
+				array(
+					$this->module,
+					$this->settings['TITLE'],
+					$this->custid,
+					$GLOBALS['tf']->accounts->cross_reference($this->custid),
+					$this->settings['TBLNAME'],
+					$this->settings['TABLE'],
+					$this->settings['PREFIX'],
+					$this->settings['TITLE_FIELD'],
+				),
+				$query
+			);
 		}
 
 		/**
