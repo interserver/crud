@@ -60,6 +60,7 @@
 		public $page_offset = 0;
 		public $order_by = '';
 		public $order_dir = 'desc';
+		public $all_fields = false;
 		public $initial_populate = true;
 		public $select_multiple = false;
 		public $delete_row = true;
@@ -140,12 +141,14 @@
 			if (substr($crud->choice, 0, 5) == 'none.')
 				$crud->choice = substr($crud->choice, 5);
 			if (strpos($table_or_query, ' ')) {
+				$crud->all_fields = false;
 				$crud->query = $table_or_query;
 				$crud->type = 'query';
-				//$crud->load_tables();
 				$crud->parse_query();
 				$crud->get_tables_from_query();
 			} else {
+				$crud->all_fields = true;
+				//$crud->load_tables();
 				$crud->table = $table_or_query;
 				$crud->type = 'table';
 				$crud->tables[$crud->table] = $crud->get_table_details($crud->table);
@@ -457,17 +460,20 @@
 		public function parse_query_fields($queries = false) {
 			if ($queries == false)
 				$queries = $this->queries;
+			//echo _debug_array($this->queries, true);
 			//echo _debug_array($queries[0]->getJoins(), true);
-			foreach ($queries[0]->getJoins() as $join => $join_arr) {
-				$table = $join_arr->getTable();											// accounts_ext, vps_masters
-				$join_type = $join_arr->getType();										// LEFT JOIN
-				//echo "Table {$table} Join Type {$join_type}<br>";
-				if ($join_type != 'LEFT JOIN') {
-					$this->log("Dont know how to handle Join Type {$join_type}", __LINE__, __FILE__);
-				} else {
-					$this->join_handler($table, $join_arr->getCondition());
+			$joins = $queries[0]->getJoins();
+			if (sizeof($joins) > 0)
+				foreach ($joins as $join => $join_arr) {
+					$table = $join_arr->getTable();											// accounts_ext, vps_masters
+					$join_type = $join_arr->getType();										// LEFT JOIN
+					//echo "Table {$table} Join Type {$join_type}<br>";
+					if ($join_type != 'LEFT JOIN') {
+						$this->log("Dont know how to handle Join Type {$join_type}", __LINE__, __FILE__);
+					} else {
+						$this->join_handler($table, $join_arr->getCondition());
+					}
 				}
-			}
 			// accounts_ext
 			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getTable(), true) . '</pre>');
 			// LEFT JOIN
@@ -492,24 +498,59 @@
 			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), true) . '</pre>');
 			// array('roles', '2')
 			//add_output('<pre style="text-align: left;">' . print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), true) . '</pre>');
-			foreach ($queries[0]->getColumns() as $col => $col_arr) {
-				$field_arr = $col_arr[0]->getMembers();
-				if (count($field_arr) > 1) {
-					$table = $field_arr[0];
-					$orig_field = $field_arr[1];
-					//$orig_field = $table.'.'.$orig_field;
-				} else {
-					$table = false;
-					$orig_field = $field_arr[0];
-				}
-				if (count($col_arr) > 1) {
-					$field = $col_arr[1];
-				} else {
-					$field = $orig_field;
-				}
-				$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
+			/*
+			$columns = $queries[0]->getColumns();
+			echo '<pre style="text-align: left;">';
+			echo "<br>Columns:";var_dump($columns, true);
+			echo "<br>Columns[0][0]:";var_dump($columns[0][0]);
+			echo "<br>Type:";var_dump($columns[0][0]->getType());
+			$members = $columns[0][0]->getMembers();
+			echo "<br>Members:";var_dump($members);
+			if (is_object($members[0])) {
+				echo "<br>Type:"._debug_array($members[0]->getType(), true);
+				echo "<br>Members:"._debug_array($members[0]->getMembers(), true);
+			} else {
+				echo "<br>Members:"._debug_array($members, true);
 			}
-			$this->query_fields = $fields;
+			echo '</pre>';
+			*/
+			foreach ($queries[0]->getColumns() as $col => $col_arr) {
+				$c_type = $col_arr[0]->getType();
+				$field_arr = $col_arr[0]->getMembers();
+				if ($c_type != 'COLUMN') {
+					billingd_log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
+				} else {
+					if (is_object($field_arr[0])) {
+						$f_type = $field_arr[0]->getType();
+						$f_members = $field_arr[0]->getMembers();
+						if ($f_type != 'ALL') {
+							billingd_log("Dont know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
+						} else {
+							// Setup all the columns
+							$this->all_fields = true;
+						}
+					} else {
+						if (count($field_arr) > 1) {
+							$table = $field_arr[0];
+							$orig_field = $field_arr[1];
+							//$orig_field = $table.'.'.$orig_field;
+						} else {
+							$table = false;
+							$orig_field = $field_arr[0];
+						}
+						if (count($col_arr) > 1) {
+							$field = $col_arr[1];
+						} else {
+							$field = $orig_field;
+						}
+						$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
+
+					}
+
+				}
+			}
+			if (isset($fields))
+				$this->query_fields = $fields;
 			//add_output('<pre style="text-align: left;">' . print_r($fields, true) . '</pre>');
 		}
 
@@ -979,7 +1020,8 @@
 					} else {
 						$this->log("CRUD class Found Field Type {$data['Type']} it could not Parse", __LINE__, __FILE__);
 					}
-					if ($this->type == 'table' || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
+					//billingd_log(print_r($this->query_fields, true));
+					if ($this->type == 'table' || $this->all_fields == true || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
 							if ($this->order_by == '')
@@ -1487,6 +1529,7 @@
 		 */
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
+			$value = htmlspecialchars($value);
 			$search = array('%field%', '%value%');
 			$replace = array($field, $value);
 			foreach ($row as $row_field => $row_value) {
