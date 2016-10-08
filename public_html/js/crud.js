@@ -193,7 +193,8 @@ function submit_handler(what, that) {
 }
 
 function edit_form(that) {
-	var parent = get_crud_row_id(that);
+	var parent = get_crud_row_idx(that);
+	//console.log(get_crud_row_id(that));
 	var row = crud_rows[parent], field, value;
 	console.log(row);
 	for (field in row) {
