@@ -279,6 +279,7 @@ function crud_load_page() {
 		}
 		crud_update_pager();
 		//console.log(json);
+		jQuery("[data-toggle=tooltip]").tooltip();
 	});
 }
 
