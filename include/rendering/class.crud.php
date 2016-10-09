@@ -768,7 +768,7 @@
 				$opacity = 0.3;
 				$icon = 'sort';
 			}
-			return "<i class=\"sort-arrow fa fa-{$icon}\" style=\"padding-left: 5px; opacity: {$opacity};\"></i>";
+			return "<i class=\"sort-arrow fa fa-{$icon}\" style=\"padding-left: 5px; opacity: {$opacity}; position: absolute;\"></i>";
 		}
 
 		public function list_records() {
