@@ -733,7 +733,7 @@
 				$db->next_record(MYSQL_NUM);
 				$count = $db->f(0);
 			} else {
-				if (preg_match('/^.*( from .*)$/i', str_replace("\n", " ", $this->query), $matches)) {
+				if (preg_match('/^.*( from .*)$/iU', str_replace("\n", " ", $this->query), $matches)) {
 					$from = $matches[1];
 					$db->query("select count(*) {$from}", __LINE__, __FILE__);
 					$db->next_record(MYSQL_NUM);
