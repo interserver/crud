@@ -1770,7 +1770,7 @@
 						$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
 						break;
 					case $this->settings['TITLE_FIELD']:
-						if ($module != 'webhosting')
+						if ($this->module != 'webhosting')
 							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 						elseif ($GLOBALS['tf']->ima == 'admin')
 							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'2&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
