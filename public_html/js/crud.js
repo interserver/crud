@@ -284,6 +284,7 @@ function crud_load_page() {
 }
 
 function crud_update_pager() {
+	var x, first, page_links = [], page_html = '';
 	crud_page = (crud_page_offset / crud_page_limit) + 1;
 	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+crud_page);
 	if (crud_page > 1)
@@ -294,12 +295,30 @@ function crud_update_pager() {
 		jQuery('#crud-pager-next').removeClass('disabled');
 	else
 		jQuery('#crud-pager-next').addClass('disabled');
-	jQuery('.crud .pagination li.crud-page').removeClass('active');
-	jQuery('.crud .pagination li.crud-page a[data-offset="'+crud_page_offset+'"]').parent().addClass('active');
-
+	page_links[0] = 1;
+	first = crud_page - 2;
+	if (first < 2)
+		first = 2;
+	for (x = 0; x < 4; x++)
+		if (page_links.indexOf(first + x) == -1 && first + x < crud_total_pages)
+			page_links[page_links.length] = first + x;
+	page_links[page_links.length] = crud_total_pages;
+	var page_html = '', page_offset;
+	for (x = 0; x < page_links.length; x++) {
+		page_html = page_html + '<li class="crud-page';
+		page_offset = ((page_links[x] - 1) * crud_page_limit);
+		if (crud_page_offset == page_offset)
+			page_html = page_html + ' active';
+		page_html = page_html + '"><a href="" class="" data-offset="'+page_offset+'">'+page_links[x]+'</a></li>';
+	}
+	jQuery('.crud .pagination li.crud-page').remove();
+	jQuery('.crud .pagination #crud-pager-prev').after(page_html);
+	//jQuery('.crud .pagination li.crud-page').removeClass('active');
+	//jQuery('.crud .pagination li.crud-page a[data-offset="'+crud_page_offset+'"]').parent().addClass('active');
+	crud_setup_pager_binds();
 }
 
-function crud_setup_binds() {
+function crud_setup_edit_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
@@ -307,10 +326,16 @@ function crud_setup_binds() {
 		event.preventDefault();
 		crud_submit_handler('edit', this);
 	});
+}
+
+function crud_setup_delete_binds() {
 	jQuery("#deleteModal form").on("submit", function(event) {
 		event.preventDefault();
 		crud_submit_handler('delete', this);
 	});
+}
+
+function crud_setup_search_binds() {
 	jQuery('#crud-search').on('click', function(event) {
 		event.preventDefault();
 		jQuery('#crud-search').hide();
@@ -320,6 +345,9 @@ function crud_setup_binds() {
 		event.preventDefault();
 		crud_search(this, [jQuery('#crud_search_column').val(),'=',jQuery('.crud-searchdata.crud-search-active').val()]);
 	});
+}
+
+function crud_setup_sort_binds() {
 	jQuery('#itemrowheader .header_link').on('click', function(event) {
 		crud_order_dir = jQuery(this).parent().attr('data-order-dir');
 		crud_order_by = jQuery(this).parent().attr('data-order-by');
@@ -334,6 +362,9 @@ function crud_setup_binds() {
 		jQuery(this).find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-'+jQuery(this).parent().attr('data-order-dir')).addClass('fa-sort-'+crud_order_dir);
 		crud_load_page();
 	});
+}
+
+function crud_setup_pager_binds() {
 	jQuery('.crud .pagination .crud-page a').on('click', function(event) {
 		event.preventDefault();
 		crud_page_offset = jQuery(this).attr('data-offset');
@@ -355,13 +386,9 @@ function crud_setup_binds() {
 			crud_page_offset = (crud_total_pages - 1 ) * crud_page_limit;
 		crud_load_page();
 	});
-	jQuery('.crud .row-counts button').on('click', function(event) {
-		var obj = jQuery(this);
-		crud_page_limit = obj.attr('data-limit');
-		jQuery('.crud .row-counts button').removeClass('active');
-		obj.addClass('active');
-		crud_load_page();
-	});
+}
+
+function crud_setup_mass_binds() {
 	jQuery("#crud-table #checkall").click(function () {
 		if (jQuery("#crud-table #checkall").is(':checked')) {
 			jQuery("#crud-table input[type=checkbox]").each(function () {
@@ -373,6 +400,26 @@ function crud_setup_binds() {
 			});
 		}
 	});
+}
+
+function crud_setup_limit_binds() {
+	jQuery('.crud .row-counts button').on('click', function(event) {
+		var obj = jQuery(this);
+		crud_page_limit = obj.attr('data-limit');
+		jQuery('.crud .row-counts button').removeClass('active');
+		obj.addClass('active');
+		crud_load_page();
+	});
+}
+
+function crud_setup_binds() {
+	crud_setup_edit_binds();
+	crud_setup_delete_binds();
+	crud_setup_search_binds();
+	crud_setup_sort_binds();
+	crud_setup_pager_binds();
+	crud_setup_limit_binds();
+	crud_setup_mass_binds();
 }
 
 jQuery(document).ready(function () {
