@@ -22,9 +22,11 @@
 							<th colspan="{$titcolspan}" style="text-align:center;">
 {if sizeof($header_buttons) > 0}
 								<div class="crud-header-buttons pull-left" style="position: absolute;">
+									<div class="btn-group">
 {foreach item=button from=$header_buttons}
-									{$button}
+										{$button}
 {/foreach}
+									</div>
 								</div>
 {/if}
 								<span style="font-size: 22px;">{$title}</span>
