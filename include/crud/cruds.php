@@ -77,6 +77,7 @@ function get_crud_funcs() {
 			'active_packages' => array('function' => 'crud_active_packages', 'title' => 'Active Packages'),
 			'backups' => array('function' => 'crud_backups', 'title' => 'Backups'),
 			'dedicated_list' => array('function' => 'crud_dedicated_list', 'title' => 'Dedicated List'),
+			'dns_manager' => array('function' => 'crud_dns_manager', 'title' => 'DNS Manager'),
 			'domains' => array('function' => 'crud_domains', 'title' => 'Domains'),
 			'form_manager' => array('function' => 'crud_form_manager', 'title' => 'Form Manager'),
 			'history_log' => array('function' => 'crud_history_log', 'title' => 'History Log'),
@@ -104,7 +105,6 @@ function get_crud_funcs() {
 		'danger' => array(
 			'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
 			'admin_tickets_widget' => array('function' => 'crud_admin_tickets_widget', 'title' => 'Admin Tickets'),
-			'dns_manager' => array('function' => 'crud_dns_manager', 'title' => 'DNS Manager'),
 			'fantastico_list' => array('function' => 'crud_fantastico_list', 'title' => 'Fantastico License List'),
 			'forum_rss' => array('function' => 'crud_forum_rss', 'title' => 'Latest Forum Posts'),
 			'innertell_pending_orders' => array('function' => 'crud_innertell_pending_orders', 'title' => 'Pending Dedicated Server Orders'),
