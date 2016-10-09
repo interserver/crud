@@ -273,13 +273,13 @@ function crud_load_page() {
 }
 
 function crud_update_pager() {
-	page = (crud_page_offset / crud_page_limit) + 1;
-	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+page);
-	if (page > 1)
+	crud_page = (crud_page_offset / crud_page_limit) + 1;
+	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+crud_page);
+	if (crud_page > 1)
 		jQuery('#crud-pager-prev').removeClass('disabled');
 	else
 		jQuery('#crud-pager-prev').addClass('disabled');
-	if (page < total_pages)
+	if (crud_page < crud_total_pages)
 		jQuery('#crud-pager-next').removeClass('disabled');
 	else
 		jQuery('#crud-pager-next').addClass('disabled');
@@ -340,8 +340,8 @@ function crud_setup_binds() {
 	jQuery('#crud-pager-next a').on('click', function(event) {
 		event.preventDefault();
 		crud_page_offset = crud_page_offset + crud_page_limit;
-		if ((crud_page_offset / crud_page_limit) + 1 >  total_pages)
-			crud_page_offset = (total_pages - 1 ) * crud_page_limit;
+		if ((crud_page_offset / crud_page_limit) + 1 >  crud_total_pages)
+			crud_page_offset = (crud_total_pages - 1 ) * crud_page_limit;
 		crud_load_page();
 	});
 	jQuery('.crud .row-counts button').on('click', function(event) {
