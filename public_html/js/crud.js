@@ -209,8 +209,8 @@ function delete_form(that) {
 	var parent = get_crud_row_id(that);
 	var row = crud_rows[parent], field, value;
 	console.log(row);
-	console.log(row[primary_key]);
-	jQuery("#primary_key").val(row[primary_key]);
+	console.log(row[crud_primary_key]);
+	jQuery("#primary_key").val(row[crud_primary_key]);
 	jQuery('#editModal .error_message').html();
 	jQuery("#deleteModal").modal("show");
 }
@@ -240,7 +240,7 @@ function get_crud_row_idx(that) {
 function get_crud_row_id(that) {
 	var parent = get_crud_row_idx(that);
 	var row = crud_rows[parent], field, value;
-	return row[primary_key];
+	return row[crud_primary_key];
 }
 
 function replaceAll(str, find, replace) {
@@ -248,19 +248,19 @@ function replaceAll(str, find, replace) {
 }
 
 function load_page(offset, limit) {
-	$.getJSON(jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+page_offset+"&limit="+page_limit, { }, function(json) {
+	$.getJSON(jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit, { }, function(json) {
 		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
 		var x, row;
-		jQuery('#mytable tbody').html('');
-		jQuery('#mytable tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
+		jQuery('#crud-table tbody').html('');
+		jQuery('#crud-table tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
 		for(var x = 0; x < json.length; x++) {
 			//row = replaceAll(empty, 'display: none;','');
 			row = empty;
 			for (var field in json[x]) {
 				row = replaceAll(row, '%'+field+'%', json[x][field]);
 			}
-			jQuery('#mytable tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
+			jQuery('#crud-table tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
 		}
 		update_pager();
 		//console.log(json);
@@ -268,8 +268,8 @@ function load_page(offset, limit) {
 }
 
 function update_pager() {
-	page = (page_offset / page_limit) + 1;
-	//console.log("Offset "+page_offset+" Limit "+page_limit+" Page "+page);
+	page = (crud_page_offset / crud_page_limit) + 1;
+	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+page);
 	if (page > 1)
 		jQuery('#crud-pager-prev').removeClass('disabled');
 	else
@@ -279,7 +279,7 @@ function update_pager() {
 	else
 		jQuery('#crud-pager-next').addClass('disabled');
 	jQuery('.crud .pagination li.crud-page').removeClass('active');
-	jQuery('.crud .pagination li.crud-page a[data-offset="'+page_offset+'"]').parent().addClass('active');
+	jQuery('.crud .pagination li.crud-page a[data-offset="'+crud_page_offset+'"]').parent().addClass('active');
 
 }
 
@@ -295,10 +295,14 @@ function setup_binds() {
 		event.preventDefault();
 		submit_handler('delete', this);
 	});
-	jQuery('a#crud-search').on('click', function(event) {
+	jQuery('#crud-search').on('click', function(event) {
 		event.preventDefault();
 		jQuery('#crud-search').hide();
 		jQuery('#crud-search-more').show();
+	});
+	jQuery('#crud_search_button').on('click', function(event) {
+		event.preventDefault();
+		crud_search = [];
 	});
 	jQuery('#itemrowheader .header_link').on('click', function(event) {
 		crud_order_dir = jQuery(this).parent().attr('data-order-dir');
@@ -316,35 +320,47 @@ function setup_binds() {
 	});
 	jQuery('.crud .pagination .crud-page a').on('click', function(event) {
 		event.preventDefault();
-		page_offset = jQuery(this).attr('data-offset');
+		crud_page_offset = jQuery(this).attr('data-offset');
 		jQuery('.crud .pagination li ').removeClass('active');
 		jQuery(this).parent().addClass('active');
 		load_page();
 	});
 	jQuery('#crud-pager-prev a').on('click', function(event) {
 		event.preventDefault();
-		page_offset = page_offset - page_limit;
-		if (page_offset < 0)
-			page_offset = 0;
+		crud_page_offset = crud_page_offset - crud_page_limit;
+		if (crud_page_offset < 0)
+			crud_page_offset = 0;
 		load_page();
 	});
 	jQuery('#crud-pager-next a').on('click', function(event) {
 		event.preventDefault();
-		page_offset = page_offset + page_limit;
-		if ((page_offset / page_limit) + 1 >  total_pages)
-			page_offset = (total_pages - 1 ) * page_limit;
+		crud_page_offset = crud_page_offset + crud_page_limit;
+		if ((crud_page_offset / crud_page_limit) + 1 >  total_pages)
+			crud_page_offset = (total_pages - 1 ) * crud_page_limit;
 		load_page();
 	});
 	jQuery('.crud .row-counts button').on('click', function(event) {
 		var obj = jQuery(this);
-		page_limit = obj.attr('data-limit');
+		crud_page_limit = obj.attr('data-limit');
 		jQuery('.crud .row-counts button').removeClass('active');
 		obj.addClass('active');
 		load_page();
+	});
+	jQuery("#crud-table #checkall").click(function () {
+		if (jQuery("#crud-table #checkall").is(':checked')) {
+			jQuery("#crud-table input[type=checkbox]").each(function () {
+				jQuery(this).prop("checked", true);
+			});
+		} else {
+			jQuery("#crud-table input[type=checkbox]").each(function () {
+				jQuery(this).prop("checked", false);
+			});
+		}
 	});
 }
 
 jQuery(document).ready(function () {
 	setup_binds();
+	jQuery("[data-toggle=tooltip]").tooltip();
 });
 

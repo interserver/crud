@@ -86,9 +86,14 @@
 		public $db;
 		public $settings;
 		public $buttons = array();
+		public $header_buttons = array();
 		public $fluid_container = false;
 		public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
 		public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
+		/**
+		 * @var false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
+		 */
+		public $auto_update = false;
 
 		public function __construct() {
 		}
@@ -163,16 +168,34 @@
 			return $crud;
 		}
 
-		public function go() {
-			if ($this->ajax == true) {
-				$this->ajax_handler();
-			} else {
-				$this->list_records();
-				//$this->order_form();
-				//$this->stage = 2;
-				//$this->order_form();
+		public function go($view = 'list') {
+			if ($this->ajax == true)
+				$view = 'ajax';
+			switch ($view) {
+				case 'ajax':
+					$this->ajax_handler();
+					break;
+				case 'list':
+					$this->list_records();
+					break;
+				case 'add':
+					$this->order_form();
+					break;
 			}
 			return $this;
+		}
+
+		public function add_header_button() {
+
+		}
+
+		/**
+		 * sets the interval in which the list of records will automatically update itself
+		 *
+		 * @param false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
+		 */
+		public function set_auto_update($auto_update = false) {
+			$this->auto_update = $auto_update;
 		}
 
 		public function enable_fluid_container() {
@@ -792,9 +815,11 @@
 			$table->smarty->assign('total_rows', $count);
 			$table->smarty->assign('total_pages', $total_pages);
 			$table->smarty->assign('page_limits', $this->page_limits);
-			$table->smarty->assign('page_limit', $this->page_limit);
 			$table->smarty->assign('page', $page);
+			$table->smarty->assign('page_limit', $this->page_limit);
 			$table->smarty->assign('page_offset', $this->page_offset);
+			$table->smarty->assign('order_by', $this->order_by);
+			$table->smarty->assign('order_dir', $this->order_dir);
 			$table->smarty->assign('edit_form', $this->order_form());
 			$table->smarty->assign('select_multiple', $this->select_multiple);
 			if ($this->edit_row == true)
@@ -805,18 +830,8 @@
 				$table->smarty->assign('row_buttons', $this->buttons);
 			$table->smarty->assign('add_row', $this->add_row);
 			$table->smarty->assign('labels', $this->labels);
+			$table->smarty->assign('rows', $rows);
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('
-<script type="text/javascript">
-	var crud_rows = ' . json_encode($rows) . ';
-	var primary_key = "' . $this->primary_key . '";
-	var page_offset = ' . $this->page_offset . ';
-	var page_limit = ' . $this->page_limit . ';
-	var crud_order_dir = "' . $this->order_dir . '";
-	var crud_order_by = "' . $this->order_by . '";
-	var total_pages = ' . $total_pages . ';
-	var page = ' . $page. ';
-</script>');
 			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
 			//$smarty->assign('')

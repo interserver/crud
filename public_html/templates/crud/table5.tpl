@@ -15,7 +15,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
-				<table id="mytable" class="table table-bordred table-striped table-hover table-condensed">
+				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
 {if isset($title) || isset($table_headers)}
 					<thead class="">
 {if isset($title)}
@@ -116,9 +116,9 @@
 						<option value="this_year" data-from="" data-to="">This Year</option>
 						<option value="last_year" data-from="" data-to="">Last Year</option>
 					</select>
-					<input class="crud-searchdata crud-datepicker-from  input-small form-control" name="date_from" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
-					<input class="crud-searchdata crud-datepicker-to  input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
-					<select class="crud-data crud-columns-select input-small form-control" name="column">
+					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
+					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
+					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_csearch_column">
 						<option value="">All fields</option>
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
@@ -128,7 +128,7 @@
 						<option value="{$idx}" data-type="float">Amount</option> -->
 					</select>
 					<span class="btn-group">
-						<a class="btn btn-primary" href="" data-search="1">Go</a>
+						<a class="btn btn-primary" href="" data-search="1" id="crud_search_button">Go</a>
 					</span>
 				</span>
 {if $ima == 'admin'}
@@ -212,23 +212,15 @@
 	</div>
 </div>
 {/if}
-{literal}
 <script type="text/javascript">
-	$(document).ready(function(){
-		$("#mytable #checkall").click(function () {
-			if ($("#mytable #checkall").is(':checked')) {
-				$("#mytable input[type=checkbox]").each(function () {
-					$(this).prop("checked", true);
-				});
-
-			} else {
-				$("#mytable input[type=checkbox]").each(function () {
-					$(this).prop("checked", false);
-				});
-			}
-		});
-
-		$("[data-toggle=tooltip]").tooltip();
-	});
+	var crud_rows = {$rows|json_encode};
+	var crud_primary_key = "{$primary_key}";
+	var crud_page_offset = {$page_offset};
+	var crud_page_limit = {$page_limit};
+	var crud_order_dir = "{$order_dir}";
+	var crud_order_by = "{$order_by}";
+	var crud_total_pages = {$total_pages};
+	var crud_page = {$page};
+	var crud_search = [];
 </script>
-{/literal}
+<script type="text/javascript" src="/js/crud.js"></script>
