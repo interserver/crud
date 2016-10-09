@@ -1,4 +1,4 @@
-function get_order_row(order) {
+function crud_get_order_row(order) {
 	var html;
 	html = '\
 		<tr data-module="'+order.module+'" data-id="'+order.order_id+'" data-status="'+order.order_status+'">\
@@ -148,7 +148,7 @@ function get_order_row(order) {
 	return html;
 }
 
-function submit_handler(what, that) {
+function crud_submit_handler(what, that) {
 	var disabled = jQuery("#"+what+"ModalForm input[disabled], #"+what+"ModalForm select[disabled]");
 	disabled.removeAttr("disabled");
 	var url = jQuery("#"+what+"ModalForm").attr("action");
@@ -192,7 +192,7 @@ function submit_handler(what, that) {
 	return false;
 }
 
-function edit_form(that) {
+function crud_edit_form(that) {
 	var parent = get_crud_row_idx(that);
 	//console.log(get_crud_row_id(that));
 	var row = crud_rows[parent], field, value;
@@ -205,7 +205,7 @@ function edit_form(that) {
 	jQuery("#editModal").modal("show");
 }
 
-function delete_form(that) {
+function crud_delete_form(that) {
 	var parent = get_crud_row_id(that);
 	var row = crud_rows[parent], field, value;
 	console.log(row);
@@ -215,7 +215,7 @@ function delete_form(that) {
 	jQuery("#deleteModal").modal("show");
 }
 
-function approval_list(status, offset, limit) {
+function crud_approval_list(status, offset, limit) {
 	if (typeof jQuery('#order_status_grp .btn.active').attr('data-target') != "undefined" && typeof status == "undefined")
 		status = jQuery('#order_status_grp .btn.active').attr('data-target');
 	var url = "ajax_pending_approval.php?action=list&status="+status;
@@ -227,7 +227,7 @@ function approval_list(status, offset, limit) {
 		jQuery('table.orders tbody').html('');
 		//console.log(json);
 		for (var x = 0; x < json.orders.length; x++)
-			jQuery('table.orders tbody').append(get_order_row(json.orders[x]));
+			jQuery('table.orders tbody').append(crud_get_order_row(json.orders[x]));
 		$('.section a[title]').tooltip();
 	});
 	return false;
@@ -247,7 +247,12 @@ function replaceAll(str, find, replace) {
 	return str.replace(new RegExp(find, 'g'), replace);
 }
 
-function load_page(offset, limit) {
+function crud_search(terms) {
+	crud_search = terms;
+	crud_load_page();
+}
+
+function crud_load_page() {
 	$.getJSON(jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit, { }, function(json) {
 		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
@@ -262,12 +267,12 @@ function load_page(offset, limit) {
 			}
 			jQuery('#crud-table tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
 		}
-		update_pager();
+		crud_update_pager();
 		//console.log(json);
 	});
 }
 
-function update_pager() {
+function crud_update_pager() {
 	page = (crud_page_offset / crud_page_limit) + 1;
 	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+page);
 	if (page > 1)
@@ -283,17 +288,17 @@ function update_pager() {
 
 }
 
-function setup_binds() {
+function crud_setup_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
 	});
 	jQuery("#editModal form").on("submit", function(event) {
 		event.preventDefault();
-		submit_handler('edit', this);
+		crud_submit_handler('edit', this);
 	});
 	jQuery("#deleteModal form").on("submit", function(event) {
 		event.preventDefault();
-		submit_handler('delete', this);
+		crud_submit_handler('delete', this);
 	});
 	jQuery('#crud-search').on('click', function(event) {
 		event.preventDefault();
@@ -316,35 +321,35 @@ function setup_binds() {
 		jQuery('.crud #itemrowheader .header_link i').css('opacity', '0.3').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort');
 		//jQuery(this).parent().addClass('active');
 		jQuery(this).find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-'+jQuery(this).parent().attr('data-order-dir')).addClass('fa-sort-'+crud_order_dir);
-		load_page();
+		crud_load_page();
 	});
 	jQuery('.crud .pagination .crud-page a').on('click', function(event) {
 		event.preventDefault();
 		crud_page_offset = jQuery(this).attr('data-offset');
 		jQuery('.crud .pagination li ').removeClass('active');
 		jQuery(this).parent().addClass('active');
-		load_page();
+		crud_load_page();
 	});
 	jQuery('#crud-pager-prev a').on('click', function(event) {
 		event.preventDefault();
 		crud_page_offset = crud_page_offset - crud_page_limit;
 		if (crud_page_offset < 0)
 			crud_page_offset = 0;
-		load_page();
+		crud_load_page();
 	});
 	jQuery('#crud-pager-next a').on('click', function(event) {
 		event.preventDefault();
 		crud_page_offset = crud_page_offset + crud_page_limit;
 		if ((crud_page_offset / crud_page_limit) + 1 >  total_pages)
 			crud_page_offset = (total_pages - 1 ) * crud_page_limit;
-		load_page();
+		crud_load_page();
 	});
 	jQuery('.crud .row-counts button').on('click', function(event) {
 		var obj = jQuery(this);
 		crud_page_limit = obj.attr('data-limit');
 		jQuery('.crud .row-counts button').removeClass('active');
 		obj.addClass('active');
-		load_page();
+		crud_load_page();
 	});
 	jQuery("#crud-table #checkall").click(function () {
 		if (jQuery("#crud-table #checkall").is(':checked')) {
@@ -360,7 +365,7 @@ function setup_binds() {
 }
 
 jQuery(document).ready(function () {
-	setup_binds();
+	crud_setup_binds();
 	jQuery("[data-toggle=tooltip]").tooltip();
 });
 

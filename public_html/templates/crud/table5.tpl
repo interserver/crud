@@ -1,8 +1,7 @@
 {literal}
 <style type="text/css">
-/*	ul.pagination li a {
-		height: 30px;
-	}*/
+	/* ul.pagination li a { height: 30px; } */
+	a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover { font-size: 12px; }
 </style>
 {/literal}
 {if $select_multiple == true}
@@ -20,8 +19,15 @@
 					<thead class="">
 {if isset($title)}
 						<tr>
-							<th style="text-align:center;" colspan="{$titcolspan}">
-								{$title}
+							<th colspan="{$titcolspan}" style="text-align:center;">
+{if sizeof($header_buttons) > 0}
+								<div class="crud-header-buttons pull-left" style="position: absolute;">
+{foreach item=button from=$header_buttons}
+									{$button}
+{/foreach}
+								</div>
+{/if}
+								<span style="font-size: 22px;">{$title}</span>
 							</th>
 						</tr>
 {/if}
