@@ -99,13 +99,19 @@
 		public function __construct() {
 		}
 
+		/**
+		 * initializes the crud system around the given query table or function.
+		 *
+		 * @param string $table_or_query the table name or sql query or function to use in the result
+		 * @param string $module optional module to associate w/ this query
+		 * @return {Crud|crud} an instance of the crud system.
+		 */
 		public static function init($table_or_query, $module = 'default') {
 			// @codingStandardsIgnoreStart
-			$static = !(isset($this) && $this instanceof self);
-			if ($static == true)
-				$crud = new crud();
-			else
+			if (isset($this) && $this instanceof self)
 				$crud = &$this;
+			else
+				$crud = new crud();
 			// @codingStandardsIgnoreEnd
 			add_js('bootstrap');
 			add_js('font-awesome');
@@ -171,6 +177,12 @@
 			return $crud;
 		}
 
+		/**
+		 * starts/displays the crud interface handler
+		 *
+		 * @param string $view optional default view, this defaults to the list view if not specified.  alternatively you can pass 'add' for the add interface
+		 * @return Crud
+		 */
 		public function go($view = 'list') {
 			if ($this->ajax == true)
 				$view = 'ajax';
@@ -210,16 +222,27 @@
 			$this->auto_update = $auto_update;
 		}
 
+		/**
+		 * enables the fluid table view which is a 100% wide table
+		 * @return Crud
+		 */
 		public function enable_fluid_container() {
 			$this->fluid_container = true;
 			return $this;
 		}
 
+		/**
+		 * disables the fluid table view which is a 100% wide table
+		 * @return Crud
+		 */
 		public function disable_fluid_container() {
 			$this->fluid_container = true;
 			return $this;
 		}
 
+		/**
+		 * handler function to process the ajax edit requests
+		 */
 		public function ajax_edit_handler() {
 			$fields = $_POST;
 			$query_fields = array();
@@ -361,14 +384,9 @@
 			}
 		}
 
-		public function ajax_search_handler() {
-			// get fields
-			// validate data
-			// build search query
-			// run query
-			// send response for js handler
-		}
-
+		/**
+		 * handler function to process the ajax add requests
+		 */
 		public function ajax_add_handler() {
 			// generic data to get us here is in _GET, while the specific fields are all in _POST
 			// match up fields
@@ -379,6 +397,9 @@
 			// send response for js handler
 		}
 
+		/**
+		 * handler function to process the ajax delete requests
+		 */
 		public function ajax_delete_handler() {
 			// match up row
 			// build query
@@ -386,11 +407,31 @@
 			// send response for js handler
 		}
 
+		/**
+		 * handler function to process the ajax export requests
+		 */
 		public function ajax_export_handler() {
 			// get export type
 			// get data
 			// convert data
 			// send data
+		}
+
+		/**
+		 * handles the ajax request to get a list of records
+		 *
+		 */
+		public function ajax_list_handler() {
+			// apply pagination
+			// apply sorting
+			$this->run_list_query();
+			$json = array();
+			while ($this->db->next_record(MYSQL_ASSOC)) {
+				$json[] = $this->db->Record;
+			}
+			// send response for js handler
+			header("Content-type: application/json");
+			echo json_encode($json);
 		}
 
 		/**
@@ -434,6 +475,12 @@
 			}
 		}
 
+		/**
+		 * parses a query using crodas/sql-parser giving structured detailed information about the query
+		 * and then parses that information to use in the crud system
+		 *
+		 * @param false|string $query optional query to parse, if false or not passed it uses the one associated w/ the crud request
+		 */
 		public function parse_query($query = false) {
 			if ($query == false)
 				$query = $this->query;
@@ -447,6 +494,12 @@
 			//add_output('<pre style="text-align: left;">' . print_r($queries, true) . '</pre>');
 		}
 
+		/**
+		 * handles joins from the query parser results determining what fields and such are used in the join
+		 *
+		 * @param string $table the main table from the query
+		 * @param mixed $join_arr the join array
+		 */
 		public function join_handler($table, $join_arr) {
 				$condition_type = $join_arr->getType();					// AND, =
 				if ($condition_type == 'AND') {
@@ -494,6 +547,11 @@
 				//echo _debug_array($join_arr->getCondition()->getMembers(), true)."<br>";
 		}
 
+		/**
+		 * parses the query fields from the SQLParser response to use in the crud system
+		 *
+		 * @param mixed $queries optional queries to parse, if left blank/false uses the crud associated parsed queries
+		 */
 		public function parse_query_fields($queries = false) {
 			if ($queries == false)
 				$queries = $this->queries;
@@ -617,6 +675,11 @@
 			//add_output('<pre style="text-align: left;">' . print_r($fields, true) . '</pre>');
 		}
 
+		/**
+		 * gets the sql tables associated with the sql query.
+		 *
+		 * @param false|string $query optional query to use to get information from,if blank or false it uses the query associated with the crud instance
+		 */
 		public function get_tables_from_query($query = false) {
 			if ($query == false)
 				$query = $this->query;
@@ -637,6 +700,12 @@
 			$this->tables = $tables;
 		}
 
+		/**
+		 * gets detailed information about the sql table.
+		 *
+		 * @param string $table the table name to get informatoin about.
+		 * @return array an array of information about the table
+		 */
 		public function get_table_details($table) {
 			$db = clone $this->db;
 			$db->query("show full columns from {$table}", __LINE__, __FILE__);
@@ -652,6 +721,11 @@
 			return $fields;
 		}
 
+		/**
+		 * gets the total record count associated w/ the cruds table/query to be used w/ pagination
+		 *
+		 * @return int the number of total records for the query
+		 */
 		function get_count() {
 			$db = $this->db;
 			if ($this->type == 'table') {
@@ -670,6 +744,12 @@
 			return $count;
 		}
 
+		/**
+		 * builds up the query and sends it to the sql server to run i.  if there are any search terms
+		 * setup then they are automatically added onto the query as well as current order field, order
+		 * direction, result limit, and result offset.
+		 *
+		 */
 		public function run_list_query() {
 			//billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
@@ -722,6 +802,11 @@
 			}
 		}
 
+		/**
+		 * converts the searchs setup into an sql string to be appened to the normal query
+		 *
+		 * @return string the sql string to add to the query
+		 */
 		public function search_to_sql() {
 			$search = array();
 			$valid_opers = array('=', 'in');
@@ -742,24 +827,23 @@
 			return $search;
 		}
 
+		/**
+		 * adds a button to the list of buttons shown with each record
+		 *
+		 * @param string $button the html for the button to add
+		 * @return Crud
+		 */
 		public function add_row_button($button) {
 			$this->buttons[] = $button;
 			return $this;
 		}
 
-		public function ajax_list_handler() {
-			// apply pagination
-			// apply sorting
-			$this->run_list_query();
-			$json = array();
-			while ($this->db->next_record(MYSQL_ASSOC)) {
-				$json[] = $this->db->Record;
-			}
-			// send response for js handler
-			header("Content-type: application/json");
-			echo json_encode($json);
-		}
-
+		/**
+		 * gets the sort icon html for the given field applying current order field and direction
+		 *
+		 * @param string $field the field to generate the icon html for
+		 * @return string the html of the icon to place with the header field names
+		 */
 		public function get_sort_icon($field) {
 			if ($field == $this->order_by) {
 				$opacity = 1;
@@ -771,6 +855,10 @@
 			return "<i class=\"sort-arrow fa fa-{$icon}\" style=\"padding-left: 5px; opacity: {$opacity}; position: absolute;\"></i>";
 		}
 
+		/**
+		 * runs the list query and builds up the interface to listing the records and sends it to the user
+		 *
+		 */
 		public function list_records() {
 			/*$this->tables = Array(
 				[accounts] => Array(
@@ -902,10 +990,22 @@
 			//$smarty->assign('')
 		}
 
+		/**
+		 * displays an error message ot the user
+		 *
+		 * @param string $message the text of the erro rmessage
+		 */
 		public function error($message) {
 			dialog('Error', $message);
 		}
 
+		/**
+		 * logs a message
+		 *
+		 * @param string $message message to log
+		 * @param false|int $line optional line your calling from to track down where the log messages originates easily to send w/ the log message
+		 * @param false|string $file optional file your calling from to track down where the log messages originates easily to send w/ the log message
+		 */
 		public function log($message, $line = false, $file = false) {
 			if ($line !== false && $file !== false)
 				billingd_log($message, $line, $file);
@@ -918,17 +1018,25 @@
 		}
 
 		/**
-		 * @param bool|string $title
-		 * @return $this
+		 * sets the title for the crud page setting both the web page title and the table title
+		 *
+		 * @param bool|string $title text of the title
+		 * @return Crud
 		 */
 		public function set_title($title = false) {
 			if ($title === false) {
-				$title = 'Purchase ' . $this->settings['TITLE'];
+				$title = 'View ' . $this->settings['TITLE'];
 			}
 			$this->title = $title;
 			return $this;
 		}
 
+		/**
+		 * adds validations to the given field
+		 *
+		 * @param string $field name of the field to associate these validations with
+		 * @param array $validations an array of validations to apply
+		 */
 		public function add_field_validations($field, $validations) {
 			if (!isset($this->validations[$field])) {
 				$this->validations[$field] = array();
@@ -938,12 +1046,24 @@
 					$this->validations[$field] = array_merge($this->validations[$field], $validations);
 		}
 
+		/**
+		 * adds validations for multiple fields
+		 *
+		 * @param array $validations an array with each element containing a $field => $validations  where $validatoins is an array of validatoins to apply and $field is the field name
+		 */
 		public function add_validations($validations) {
 			foreach ($validations as $field => $field_validations) {
 				$this->add_field_validations($field, $field_validations);
 			}
 		}
 
+		/**
+		 * adds an input type fieeld into the array of input types
+		 *
+		 * @param string $field the field name
+		 * @param string $input_type the input type to use for the field
+		 * @param false|array $data optoinal data to use along with the input type
+		 */
 		public function add_input_type_field($field, $input_type, $data = false) {
 			//echo "Got here $field $input_type <pre>" . print_r($data, true) . "</pre><br>\n";
 			// FIXME get in_array working properly / add validations based on this
@@ -953,12 +1073,28 @@
 			}
 		}
 
+		/**
+		 * directs adds an array of input types
+		 *
+		 * @param mixed $fields
+		 */
 		public function add_input_type_fields($fields) {
 			foreach ($fields as $field => $data) {
 				$this->input_types[$field] = $data;
 			}
 		}
 
+		/**
+		 * adds a field to the system
+		 *
+		 * @param string $field the field name
+		 * @param false|string $label label for the field
+		 * @param mixed $default default value
+		 * @param mixed $validations validations to apply
+		 * @param string $input_type type of input
+		 * @param mixed $input_data data to use forpopulating theinput type
+		 * @return Crud
+		 */
 		public function add_field($field, $label = false, $default = false, $validations = false, $input_type = false, $input_data = false) {
 			if (!in_array($field, $this->fields))
 				$this->fields[] = $field;
@@ -973,36 +1109,75 @@
 			return $this;
 		}
 
+		/**
+		 * adds multiple fields to the sytsem
+		 *
+		 * @param array $fields an array of fields t oadd
+		 */
 		public function add_fields($fields) {
 			foreach ($fields as $field) {
 				$this->add_field($field);
 			}
 		}
 
+		/**
+		 * sets the default value for a field
+		 *
+		 * @param string $field the field name to set the default value of
+		 * @param string $value the default value for the field
+		 */
 		public function set_default($field, $value) {
 			$this->defaults[$field] = $value;
 		}
 
+		/**
+		 * sets default values for multiple fields
+		 *
+		 * @param array $defaults an array of    field => value
+		 */
 		public function set_defaults($defaults) {
 			foreach ($defaults as $field => $value) {
 				$this->set_default($field, $value);
 			}
 		}
 
+		/**
+		 * sets the label for a field
+		 *
+		 * @param string $field field name
+		 * @param string $label label to apply to the field
+		 */
 		public function set_label($field, $label) {
 			$this->labels[$field] = $label;
 		}
 
+		/**
+		 * sets the labels for an array of fields
+		 *
+		 * @param array $labels array with elements in the form of  field => label
+		 */
 		public function set_labels($labels) {
 			foreach ($labels as $field => $label) {
 				$this->set_label($field, $label);
 			}
 		}
 
+		/**
+		 * alias function for label()
+		 *
+		 * @param string $field field to get the labe for
+		 * @return string the label
+		 */
 		public function get_label($field) {
 			return $this->label($field);
 		}
 
+		/**
+		 * gets the label for a field
+		 *
+		 * @param string $field field to get the labe for
+		 * @return string the label
+		 */
 		public function label($field) {
 			if (isset($this->labels[$field])) {
 				return $this->labels[$field];
@@ -1015,6 +1190,15 @@
 			}
 		}
 
+		/**
+		 * adds an admin confirmatoin field
+		 *
+		 * @param mixed $field
+		 * @param mixed $label
+		 * @param mixed $default
+		 * @param mixed $type
+		 * @param mixed $data
+		 */
 		public function add_admin_confirmation_field($field, $label, $default, $type, $data = false) {
 			$this->admin_confirm_fields[$field] = array(
 				'label' => $label,
@@ -1024,6 +1208,10 @@
 			);
 		}
 
+		/**
+		 * parse the table results looking at each field and getting usefulr information from it and creating input types fbasedonwhat it finds.
+		 *
+		 */
 		public function parse_tables() {
 			$first_field = false;
 			foreach ($this->tables as $table => $fields) {
@@ -1155,6 +1343,10 @@
 			}
 		}
 
+		/**
+		 * old carried over function used to validate a form submissoin
+		 *
+		 */
 		public function validate_order() {
 			$this->continue = true;
 			$anything_set = false;
@@ -1230,6 +1422,10 @@
 				$this->continue = false;
 		}
 
+		/**
+		 * displays an add/order form for the crud
+		 *
+		 */
 		public function order_form() {
 			$edit_form = '';
 			if ($this->stage == 2) {
@@ -1497,68 +1693,133 @@
 			return $edit_form;
 		}
 
+		/**
+		 * disables initially populating the table with results and loads it from ajax instead
+		 *
+		 */
 		public function disable_initial_populate() {
 			$this->initial_populate = false;
 			return $this;
 		}
 
+		/**
+		 * disables the delete button next to each row
+		 *
+		 * @return Crud
+		 */
 		public function disable_delete() {
 			$this->delete_row = false;
 			return $this;
 		}
 
+		/**
+		 * disables the checkboxs to the left of the rows for bulk actions
+		 *
+		 * @return Crud
+		 */
 		public function disable_select_multiple() {
 			$this->select_multiple = false;
 			return $this;
 		}
 
+		/**
+		 * disables the edit button next to each row
+		 *
+		 * @return Crud
+		 */
 		public function disable_edit() {
 			$this->edit_row = false;
 			return $this;
 		}
 
+		/**
+		 * disables the add record button
+		 *
+		 * @return Crud
+		 */
 		public function disable_add() {
 			$this->add_row = false;
 			return $this;
 		}
 
+		/**
+		 * disables the delete button next to each row
+		 *
+		 * @return Crud
+		 */
 		public function enable_initial_populate() {
 			$this->initial_populate = true;
 			return $this;
 		}
 
+		/**
+		 * disables the delete button next to each row
+		 *
+		 * @return Crud
+		 */
 		public function enable_delete() {
 			$this->delete_row = true;
 			return $this;
 		}
 
+		/**
+		 * enables the checkboxs to the left of the rows for bulk actions
+		 *
+		 * @return Crud
+		 */
 		public function enable_select_multiple() {
 			$this->select_multiple = true;
 			return $this;
 		}
 
+		/**
+		 * enables the edit button next to each row
+		 *
+		 * @return Crud
+		 */
 		public function enable_edit() {
 			$this->edit_row = true;
 			return $this;
 		}
 
+		/**
+		 * enables the add record button
+		 *
+		 * @return Crud
+		 */
 		public function enable_add() {
 			$this->add_row = true;
 			return $this;
 		}
 
+		/**
+		 * disables a field from being edited
+		 *
+		 * @param string $field field name
+		 * @return Crud
+		 */
 		public function disable_field($field) {
 			if (!in_array($field, $this->disabled_fields))
 				$this->disabled_fields[] = $field;
 			return $this;
 		}
 
+		/**
+		 * disables an array of fields from the edit function
+		 *
+		 * @param array $fields an array of fields
+		 * @return Crud
+		 */
 		public function disable_fields($fields) {
 			foreach ($fields as $field)
 				$this->disable_field($field);
 			return $this;
 		}
 
+		/**
+		 * displays a confirmatoin type page for the add/order form
+		 *
+		 */
 		public function confirm_order() {
 			$this->confirm = true;
 			add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
@@ -1638,6 +1899,12 @@
 			$this->continue = false;
 		}
 
+		/**
+		 * performs standard string replacements in queries replacing things like __MODULE__ with the module name
+		 *
+		 * @param string $query the sql query to change
+		 * @return string the modified sql query
+		 */
 		public function decorate_query($query) {
 			return str_replace(
 				array(
@@ -1769,6 +2036,8 @@
 					case $this->settings['PREFIX'].'_name':
 						$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
 						break;
+					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doin this
+					//case $this->settings['PREFIX'].'_id':
 					case $this->settings['TITLE_FIELD']:
 						if ($this->module != 'webhosting')
 							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
