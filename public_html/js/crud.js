@@ -247,8 +247,11 @@ function replaceAll(str, find, replace) {
 	return str.replace(new RegExp(find, 'g'), replace);
 }
 
-function crud_search(terms) {
+function crud_search(that, terms) {
 	crud_search_terms = terms;
+	jQuery('.crud-header-buttons a').removeClass('active');
+	if (jQuery(that).attr('id') != 'crud_search_button')
+		jQuery(that).addClass('active');
 	crud_load_page();
 }
 
@@ -314,7 +317,7 @@ function crud_setup_binds() {
 	});
 	jQuery('#crud_search_button').on('click', function(event) {
 		event.preventDefault();
-		crud_search([jQuery('#crud_search_column').val(),'=',jQuery('.crud-searchdata.crud-search-active').val()]);
+		crud_search(this, [jQuery('#crud_search_column').val(),'=',jQuery('.crud-searchdata.crud-search-active').val()]);
 	});
 	jQuery('#itemrowheader .header_link').on('click', function(event) {
 		crud_order_dir = jQuery(this).parent().attr('data-order-dir');

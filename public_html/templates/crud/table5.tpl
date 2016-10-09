@@ -2,6 +2,7 @@
 <style type="text/css">
 	/* ul.pagination li a { height: 30px; } */
 	a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover { font-size: 12px; }
+	#crud-table tr th { vertical-align: top; }
 </style>
 {/literal}
 {if $select_multiple == true}

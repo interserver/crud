@@ -194,10 +194,10 @@
 		 * @param array $terms array of search terms earch term an array in the form of array($field, $operator, $value)
 		 * @param string $label optional text label for the button
 		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
-		 * @param false|string $icon optional fontawesome icon name or false to disable
+		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
 		 */
 		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : "") . "{$label}</a>";
+			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : "") . "{$label}</a>";
 			return $this;
 		}
 
