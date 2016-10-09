@@ -15,7 +15,7 @@
  */
 function crud_reusable_fantastico() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select  get_reusable_fantastico", 'licenses')
+	crud::init("get_reusable_fantastico", 'licenses')
 		->set_title("Reusable Fantastico")
 		->go();
 }
