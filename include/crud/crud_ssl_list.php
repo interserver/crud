@@ -1,15 +1,23 @@
 <?php
 function crud_ssl_list() {
+	function_requirements('has_acl');
+	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
+		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
+		return false;
+	}
+	$module = 'ssl';
+	$settings = get_module_settings($module);
+	page_title($settings['TITLE'] . ' List');
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select ssl_id, ssl_hostname, services_name, ssl_status, ssl_company from orders left join services on ssl_type=services_id", 'ssl')
-		->set_title("SSL Certificates")
-		->add_header_button(array(array('ssl_status','=','active')),'Active','info')
-		->add_header_button(array(array('ssl_status','in',array('pending','pending-setup','pend-approval'))),'Pending','info')
-		->add_header_button(array(array('ssl_status','in',array('canceled','expired'))),'Expired','info')
+	crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from orders left join services on {$settings['PREFIX']}_type=services_id", $module)
+		->set_title($settings['TITLE'] . ' List')
+		->add_header_button(array(array($settings['PREFIX'].'_status','=','active')),'Active','info')
+		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))),'Pending','info')
+		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('canceled','expired'))),'Expired','info')
 		->add_header_button(array(),'All','info active')
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
-		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.view_ssl&id=\'+get_crud_row_id(this);" title="View SSL Certificate" data-title="View SSL Certificate"><i class="fa fa-fw fa-cog"></i></button>')
+		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.view_'.$settings['PREFIX'].($module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=\'+get_crud_row_id(this);" title="View '.$settings['TITLE'].'" data-title="View '.$settings['TITLE'].'"><i class="fa fa-fw fa-cog"></i></button>')
 		->go();
 }
