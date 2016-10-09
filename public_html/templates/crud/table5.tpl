@@ -2,7 +2,10 @@
 <style type="text/css">
 	/* ul.pagination li a { height: 30px; } */
 	a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover { font-size: 12px; }
-	#crud-table tr th { vertical-align: top; }
+	#crud-table tr th { vertical-align: top; text-align:center; }
+	.crud { margin-bottom: 10px; max-width: 1400px; }
+	.crud-header-buttons { position: absolute; }
+	.crud-title { font-size: 22px; }
 </style>
 {/literal}
 {if $select_multiple == true}
@@ -11,7 +14,7 @@
 {if isset($row_buttons)}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}" style="margin-bottom: 10px; max-width: 1300px;">
+<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="table-responsive">
@@ -20,9 +23,9 @@
 					<thead class="">
 {if isset($title)}
 						<tr>
-							<th colspan="{$titcolspan}" style="text-align:center;">
+							<th colspan="{$titcolspan}">
 {if sizeof($header_buttons) > 0}
-								<div class="crud-header-buttons pull-left" style="position: absolute;">
+								<div class="crud-header-buttons pull-left">
 									<div class="btn-group">
 {foreach item=button from=$header_buttons}
 										{$button}
@@ -30,7 +33,7 @@
 									</div>
 								</div>
 {/if}
-								<span style="font-size: 22px;">{$title}</span>
+								<span class="crud-title">{$title}</span>
 							</th>
 						</tr>
 {/if}
