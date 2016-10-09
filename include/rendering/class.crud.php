@@ -856,6 +856,49 @@
 		}
 
 		/**
+		 * gets the current page number for paginated results based on offset and limit
+		 *
+		 * @return int the page number you are currently on
+		 */
+		public function get_page() {
+			$page = ($this->page_offset / $this->page_limit) + 1;
+			return $page;
+		}
+
+		/**
+		 * gets the total number of pages for paginated results based on the current page limit and record count
+		 *
+		 * @param int $count number of total records/rows
+		 * @return int total number of pages of results
+		 */
+		public function get_total_pages($count) {
+			$total_pages = ceil($count / $this->page_limit);
+			return $total_pages;
+		}
+
+		/**
+		 * gets the pagination links for the current page
+		 *
+		 * @param int $page current page we're on
+		 * @param int $total_pages totalnumber of pages
+		 * @return array an array of page numbers to link to for the paginatoin
+		 */
+		public function get_page_links($page, $total_pages) {
+			$page_links = array(1);
+			$first = $page - 2;
+			if ($first < 2)
+				$first = 2;
+			for ($x = 0; $x < 4; $x++) {
+				if (!in_array($first + $x, $page_links) && $first + $x < $total_pages) {
+					$page_links[] = $first + $x;
+				}
+			}
+			if (!in_array($total_pages, $page_links))
+				$page_links[] = $total_pages;
+			return $page_links;
+		}
+
+		/**
 		 * runs the list query and builds up the interface to listing the records and sends it to the user
 		 *
 		 */
@@ -948,20 +991,9 @@
 				$table->smarty->assign('debug_output', print_r($debug, true));
 			}
 			$table->hide_form();
-			$page_links = array(1);
-			$page = ($this->page_offset / $this->page_limit) + 1;
-			$total_pages = ceil($count / $this->page_limit);
-
-			$first = $page - 2;
-			if ($first < 2)
-				$first = 2;
-			for ($x = 0; $x < 4; $x++) {
-				if (!in_array($first + $x, $page_links) && $first + $x < $total_pages) {
-					$page_links[] = $first + $x;
-				}
-			}
-			if (!in_array($total_pages, $page_links))
-				$page_links[] = $total_pages;
+			$page = $this->get_page();
+			$total_pages = $this->get_total_pages($count);
+			$page_links = $this->get_page_links($page, $total_pages);
 			$table->smarty->assign('fluid_container', $this->fluid_container);
 			$table->smarty->assign('page_links', $page_links);
 			$table->smarty->assign('total_rows', $count);
