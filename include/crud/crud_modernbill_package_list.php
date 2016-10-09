@@ -1,7 +1,7 @@
 <?php
 function crud_modernbill_package_list() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	$crud = crud::init("select  package_type.pack_id
+	crud::init("select  package_type.pack_id
      , package_type.pack_name
      , client_package.pack_price
      , client_package.client_id

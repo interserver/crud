@@ -1,7 +1,7 @@
 <?php
 function crud_admin_tickets_widget() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	$crud = crud::init("select swtickets.subject
+	crud::init("select swtickets.subject
 , swtickets.ticketid
 , swtickets.ticketmaskid
 , swtickets.lastreplier

@@ -1,7 +1,7 @@
 <?php
 function crud_modernbill_invoice_list() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	$crud = crud::init("select client_info.client_email
+	crud::init("select client_info.client_email
 	 , client_invoice.client_id
 	 , client_invoice.invoice_id
 	 , client_invoice.invoice_amount

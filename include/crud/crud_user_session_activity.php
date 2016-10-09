@@ -1,7 +1,7 @@
 <?php
 function crud_user_session_activity() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	$crud = crud::init("select      session_log.history_id
+	crud::init("select      session_log.history_id
      , accounts.account_id
      , accounts.account_lid
      , accounts.account_ima

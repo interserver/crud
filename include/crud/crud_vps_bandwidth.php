@@ -1,7 +1,7 @@
 <?php
 function crud_vps_bandwidth() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	$crud = crud::init("select vps.vps_hostname AS host
+	crud::init("select vps.vps_hostname AS host
      , inet_ntoa(bandwidth.ip) AS ip
      , vps_masters.vps_name AS master
      , sum(bandwidth.`in`) AS `in`
