@@ -1251,7 +1251,7 @@
 					$input_type = 'input';
 					$input_data = false;
 					$validations = array();
-					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|timestamp|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+					if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|double|timestamp|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
 						$type = $matches['type'];
 						switch ($type) {
 							case 'enum':
@@ -1320,6 +1320,15 @@
 
 								}
 								$validations[] = 'int';
+								break;
+							case 'double':
+								if (isset($matches['size']) && $matches['size'] != '') {
+
+								}
+								if (isset($matches['signed']) && $matches['signed'] == 'unsigned')
+									$unsigned = true;
+								else
+									$unsigned = false;
 								break;
 							case 'float':
 								if (isset($matches['size']) && $matches['size'] != '') {
