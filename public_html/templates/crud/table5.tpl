@@ -126,7 +126,7 @@
 					</select>
 					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
 					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
-					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_csearch_column">
+					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_search_column">
 						<option value="">All fields</option>
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
@@ -229,6 +229,6 @@
 	var crud_order_by = "{$order_by}";
 	var crud_total_pages = {$total_pages};
 	var crud_page = {$page};
-	var crud_search = [];
+	var crud_search_terms = [];
 </script>
 <script type="text/javascript" src="/js/crud.js"></script>

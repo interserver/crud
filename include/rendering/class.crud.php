@@ -71,6 +71,7 @@
 		public $admin_confirm_fields = array();
 		public $fields = array();
 		public $query_fields = array();
+		public $search_terms = array();
 		// temp fields maybe from buy service class i think
 		public $disabled_fields = array();
 		public $filters = array();
@@ -140,6 +141,8 @@
 				$crud->order_by = $GLOBALS['tf']->variables->request['order_by'];
 			if (isset($GLOBALS['tf']->variables->request['order_dir']) && in_array($GLOBALS['tf']->variables->request['order_dir'], array('asc','desc')))
 				$crud->order_dir = $GLOBALS['tf']->variables->request['order_dir'];
+			if (isset($GLOBALS['tf']->variables->request['search']))
+				$crud->search_terms = json_decode(html_entity_decode($GLOBALS['tf']->variables->request['search']));
 			if (isset($GLOBALS['tf']->variables->request['offset']))
 				$crud->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
 			if (isset($GLOBALS['tf']->variables->request['limit']))
@@ -396,7 +399,7 @@
 		 */
 		public function ajax_handler() {
 			$action = $GLOBALS['tf']->variables->request['action'];
-			$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			//$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
 			// generic data to get us here is in _GET, while the specific fields are all in _POST
 			//$this->log(print_r($_GET, true), __LINE__, __FILE__);
 			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
@@ -412,9 +415,6 @@
 					break;
 				case 'delete':
 					$this->ajax_delete_handler();
-					break;
-				case 'search':
-					$this->ajax_search_handler();
 					break;
 				case 'export':
 					$this->ajax_export_handler();
@@ -675,16 +675,71 @@
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'table') {
-				if ($this->page_limit < 1)
-					$this->db->query("select * from {$this->table}", __LINE__, __FILE__);
-				else
-					$this->db->query("select * from {$this->table} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+				$query = "select * from {$this->table}";
+				if (sizeof($this->search_terms) > 0)
+					$query .= " where " . $this->search_to_sql();
 			} else {
-				if ($this->page_limit < 1)
-					$this->db->query("{$this->query}", __LINE__, __FILE__);
-				else
-					$this->db->query("{$this->query} order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}", __LINE__, __FILE__);
+				$query = $this->query;
+				if (sizeof($this->search_terms) > 0)
+					if ($this->queries[0]->hasWhere() == false)
+						$query .= " where " . $this->search_to_sql();
+					else
+						$query .= " and " . $this->search_to_sql();
 			}
+			if ($this->page_limit > 0)
+				$query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
+			//$this->log("Running Query: {$query}", __LINE__, __FILE__);
+			$this->db->query($query, __LINE__, __FILE__);
+		}
+
+
+		/**
+		 * json_search_tosql()
+		 * converts a JSON search request to an sql query.
+		 *
+		 * @todo we need here more advanced checking using the type of the field - i.e. integer, string, float
+		 * @param string $field field name
+		 * @param string $oper search operation
+		 * @param string $val search string
+		 * @return string the mysql safe search tag
+		 */
+		public function json_search_tosql($field, $oper, $val) {
+			//$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+			switch ($oper) {
+				case '=':
+					return $field.$oper."'".$GLOBALS['tf']->db->real_escape($val)."'";
+					break;
+				case 'in':
+					$val_arr = array();
+					foreach ($val as $value) {
+						$val_arr[] = "'".$GLOBALS['tf']->db->real_escape($value)."'";
+					}
+					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
+					break;
+				default:
+					$this->log("Dont konw how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+					break;
+			}
+		}
+
+		public function search_to_sql() {
+			$search = array();
+			$valid_opers = array('=', 'in');
+			if (sizeof($this->search_terms) > 0) {
+				foreach ($this->search_terms as $search_term) {
+					list($field, $oper, $value) = $search_term;
+					if (!in_array($field, $this->fields)) {
+						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__);
+					} elseif (!in_array($oper, $valid_opers)) {
+						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__);
+					} else {
+						$search[] = $this->json_search_tosql($field, $oper, $value);
+					}
+				}
+			}
+			$search = implode(" and ", $search);
+			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__);
+			return $search;
 		}
 
 		public function add_row_button($button) {

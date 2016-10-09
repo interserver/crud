@@ -248,12 +248,19 @@ function replaceAll(str, find, replace) {
 }
 
 function crud_search(terms) {
-	crud_search = terms;
+	crud_search_terms = terms;
 	crud_load_page();
 }
 
+function get_crud_url() {
+	var url = jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit;
+	if (crud_search_terms.length > 0)
+		url = url + "&search=" + JSON.stringify(crud_search_terms)
+	return url;
+}
+
 function crud_load_page() {
-	$.getJSON(jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit, { }, function(json) {
+	$.getJSON(get_crud_url(), { }, function(json) {
 		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
 		var x, row;
@@ -307,7 +314,7 @@ function crud_setup_binds() {
 	});
 	jQuery('#crud_search_button').on('click', function(event) {
 		event.preventDefault();
-		crud_search = [];
+		crud_search([jQuery('#crud_search_column').val(),'=',jQuery('.crud-searchdata.crud-search-active').val()]);
 	});
 	jQuery('#itemrowheader .header_link').on('click', function(event) {
 		crud_order_dir = jQuery(this).parent().attr('data-order-dir');
