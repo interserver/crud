@@ -49,15 +49,15 @@ function get_crud_funcs() {
 	$functions = array(
 		'success' => array(
 			'admins' => array('function' => 'admins', 'title' => 'Administrator Role Assignments'),
+			'backups_list' => array('function' => 'crud_backups_list', 'title' => 'Backup List'),
+			'domains_list' => array('function' => 'crud_domains_list', 'title' => 'Domains'),
+			'ssl_list' => array('function' => 'crud_ssl_list', 'title' => 'SSL Certificates'),
 			'vps_list' => array('function' => 'vps_list', 'title' => 'VPS List'),
 		),
 		'info' => array(
-			'backups_list' => array('function' => 'crud_backups_list', 'title' => 'Backup List'),
 			'coupons' => array('function' => 'crud_coupons', 'title' => 'Coupons'),
 			'customers' => array('function' => 'crud_customers', 'title' => 'Customers'),
-			'domains_list' => array('function' => 'crud_domains_list', 'title' => 'Domains'),
 			'last_logins' => array('function' => 'crud_last_logins', 'title' => 'Last Logn Locations'),
-			'ssl_list' => array('function' => 'crud_ssl_list', 'title' => 'SSL Certificates'),
 		),
 		'warning' => array(
 			'abuse' => array('function' => 'crud_abuse', 'title' => 'Abuse'),
@@ -113,7 +113,6 @@ function get_crud_funcs() {
 			'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
 			'vps_list_free_ips2' => array('function' => 'crud_vps_list_free_ips2', 'title' => 'Free/Available IPs For VPs Servers'),
 			'vps_list_free_ips' => array('function' => 'crud_vps_list_free_ips', 'title' => 'Free/Available IPs For VPs Servers'),
-			'vps_list' => array('function' => 'crud_vps_list', 'title' => 'Virtual Private Servers (VPS)'),
 			'vps_next_servers' => array('function' => 'crud_vps_next_servers', 'title' => 'VPS Next Setup Servers'),
 			'webhosting_list' => array('function' => 'crud_webhosting_list', 'title' => 'Website List'),
 			'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
