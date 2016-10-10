@@ -45,6 +45,7 @@
 		public $custid;
 		public $ajax = false;
 		public $debug = false;
+		public $refresh_button = true;
 		public $module;
 		public $choice;
 		public $table;
@@ -892,6 +893,24 @@
 		}
 
 		/**
+		 * enables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function enable_refresh_button() {
+			$this->refresh_button = true;
+			return $this;
+		}
+
+		/**
+		 * disables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function disable_refresh_button() {
+			$this->refresh_button = true;
+			return $this;
+		}
+
+		/**
 		 * adds a button to the list of buttons shown with each record
 		 *
 		 * @param string $button the html for the button to add
@@ -1061,6 +1080,7 @@
 			$total_pages = $this->get_total_pages($count);
 			$page_links = $this->get_page_links($page, $total_pages);
 			$table->smarty->assign('fluid_container', $this->fluid_container);
+			$table->smarty->assign('refresh_button', $this->refresh_button);
 			$table->smarty->assign('page_links', $page_links);
 			$table->smarty->assign('total_rows', $count);
 			$table->smarty->assign('total_pages', $total_pages);

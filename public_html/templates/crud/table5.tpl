@@ -1,11 +1,57 @@
 {literal}
 <style type="text/css">
+	.panel-refresh {
+		height:250px;
+		position:relative;
+	}
+	.refresh-container {
+		position:absolute;
+		top:30%;
+		right:0;
+		background:rgba(200,200,200,0.25);
+		width:100%;
+		height:100%;
+		display: none;
+		text-align:center;
+		z-index:4;
+	}
+	.refresh-spinner {
+		padding: 30px;
+		opacity: 0.9;
+	}
 	/* ul.pagination li a { height: 30px; } */
-	a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover { font-size: 12px; }
-	#crud-table tr th { vertical-align: top; text-align:center; }
-	.crud { margin-bottom: 10px; max-width: 1400px; }
-	.crud-header-buttons { position: absolute; }
-	.crud-title { font-size: 22px; }
+	a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
+		font-size: 12px;
+	}
+	#crud-table tr th {
+		vertical-align: top;
+		text-align:center;
+	}
+	.crud {
+		margin-bottom: 10px;
+		max-width: 1400px;
+	}
+	.crud-header-buttons {
+		position: absolute;
+	}
+	.crud-title {
+		font-size: 22px;
+	}
+	.crud .nav-crud a.btn, .crud .nav-crud a.btn span.fa, .crud .nav-crud a.btn i.fa {
+		font-size: 18px;
+	}
+	.crud .nav-crud,
+	.crud .nav-crud ul,
+	.crud .nav-crud ul li,
+	.crud .nav-crud ul li a,
+	.crud .nav-crud .btn-group button,
+	.crud .nav-crud a.crud-search,
+	.crud #crud-search-more input,
+	.crud #crud-search-more select,
+	.crud #crud-search-more span,
+	.crud #crud-search-more a {
+		height: 30px;
+	}
 </style>
 {/literal}
 {if $select_multiple == true}
@@ -17,6 +63,9 @@
 <div class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
 	<div class="row">
 		<div class="col-md-12">
+{if $refresh_button == true}
+			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-5x"></i></div>
+{/if}
 			<div class="table-responsive">
 				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
 {if isset($title) || isset($table_headers)}
@@ -92,27 +141,27 @@
 	<div class="row">
 		<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
 		<div class="col-md-12" style="display: table;">
-			<div class="nav-crud" style="display: table-row; vertical-align: top;">
-				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top;">
-					<li id="crud-pager-prev" class="{if $page == 1}disabled{/if}"><a href="" style="height: 36px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+			<div class="nav-crud" style="display: table-row; vertical-align: top; ">
+				<ul class="pagination " style="margin: 0px; display: table-cell; vertical-align: top; ">
+					<li id="crud-pager-prev" class="{if $page == 1}disabled{/if}"><a href="" style="padding-top: 4px;"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
 {foreach item=pager from=$page_links}
-					<li class="crud-page {if $pager == $page}active{/if}"><a href="" class="" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
+					<li class="crud-page {if $pager == $page}active{/if}"><a href="" class="" data-offset="{($pager - 1) * $page_limit}" style="padding-top: 4px;">{$pager}</a></li>
 {/foreach}
-					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href="" style="height: 36px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href="" style="padding-top: 4px;"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
-				<div class="btn-group row-counts nav-rows " role="group" style="display: table-cell; vertical-align: top;" aria-label="Rows Per Page">
+				<div class="btn-group row-counts nav-rows " role="group" style="display: table-cell; vertical-align: top; padding-top: 0px;" aria-label="Rows Per Page">
 {foreach from=$page_limits item=$limit}
 {if $limit <= $total_rows}
-					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}All{else}{$limit}{/if}</button>
+					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}" style="vertical-align: top; padding-top: 4px;">{if $limit == -1}All{else}{$limit}{/if}</button>
 {/if}
 {/foreach}
 				</div>
-				<a id="crud-search" class="btn btn-primary crud-search" href="" style="vertical-align: top;" title="Search" data-tile="Search">
-					<i class="fa fa-search fa-lg"></i> Search
+				<a id="crud-search" class="btn btn-sm btn-primary crud-search" href="" style="vertical-align: top; font-size: 14px; " title="Search" data-tile="Search">
+					<span class="fa fa-search fa-fw"></span> Search
 				</a>
 				<span id="crud-search-more" class="crud-search form-inline" style="display: none;">
 					<input class="crud-searchdata crud-search-active input-small form-control" name="search" data-type="text" style="" type="text" value="">
-					<select class="crud-daterange crud-searchdata input-small form-control" name="range" data-fieldtype="date" style="display:none">
+					<select class="crud-daterange crud-searchdata input-small form-control" name="range" data-fieldtype="date" style="display:none; ">
 						<option value="">- choose range -</option>
 						<option value="next_year" data-from="" data-to="">Next Year</option>
 						<option value="next_month" data-from="" data-to="">Next Month</option>
@@ -128,9 +177,9 @@
 						<option value="this_year" data-from="" data-to="">This Year</option>
 						<option value="last_year" data-from="" data-to="">Last Year</option>
 					</select>
-					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
-					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none" data-type="datetime" data-fieldtype="date" type="text" value="">
-					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_search_column">
+					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_search_column" style="">
 						<option value="">All fields</option>
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
@@ -139,15 +188,22 @@
 						<option value="{$idx}" data-type="datetime">Paymentdate</option>
 						<option value="{$idx}" data-type="float">Amount</option> -->
 					</select>
-					<span class="btn-group">
-						<a class="btn btn-primary" href="" data-search="1" id="crud_search_button">Go</a>
+					<span class="btn-group" style="">
+						<a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button" style="padding-top: 2px;">Go</a>
 					</span>
 				</span>
-{if $ima == 'admin'}
+{if $ima == 'admin' || $refresh_button == true}
 				<span class="btn-group nav-rows" style=" display: table-cell; vertical-align: top;">
-					<a class="btn btn-info" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
-						<i class="fa fa-bug" style="font-size: 20px;"></i>
+{if $ima == 'admin'}
+					<a class="btn btn-sm btn-danger" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
+						<span class="fa fa-bug fa-fw"></span>
 					</a>
+{/if}
+{if $refresh_button == true}
+					<a class="btn btn-sm btn-info refresh" href="" title="Refresh Table" data-title="Refresh Table" >
+						<span class="fa fa-refresh fa-fw"></span>
+					</a>
+{/if}
 				</span>
 {/if}
 			</div>

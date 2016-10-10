@@ -1,3 +1,4 @@
+
 /**
  * processing submit buttons and handles the responses
  *
@@ -122,7 +123,7 @@ function get_crud_url() {
 	return url;
 }
 
-function crud_load_page() {
+function crud_load_page(callback) {
 	$.getJSON(get_crud_url(), { }, function(json) {
 		crud_rows = json;
 		var empty = document.getElementById('itemrowempty').innerHTML;
@@ -140,6 +141,10 @@ function crud_load_page() {
 		crud_update_pager();
 		//console.log(json);
 		jQuery("[data-toggle=tooltip]").tooltip();
+		console.log("page finished loading "+crud_rows.length+" rows");
+		if (typeof callback != "undefined") {
+			callback();
+		}
 	});
 }
 
@@ -283,8 +288,48 @@ function crud_setup_binds() {
 	crud_setup_mass_binds();
 }
 
+$.fn.refreshMe = function(opts){
+	var $this = this,
+	defaults = {
+		panel:'.crud',
+		refreshcontainer:'.refresh-container',
+		started:function(){},
+		completed:function(){}
+	},
+	settings = $.extend(defaults, opts);
+
+	var panelToRefresh = $this.parents(settings.panel).find(settings.refreshcontainer);
+	//var dataToRefresh = $this.parents(settings.panel).find('.refresh-data');
+	var started = settings.started;		//function before timeout
+	var completed = settings.completed;	//function after timeout
+
+	$this.click(function(event){
+		$this.find('.fa').addClass("fa-spin");
+		panelToRefresh.show();
+		started($this, panelToRefresh);
+		/*
+		completed(dataToRefresh);
+		panelToRefresh.fadeOut(800);
+		$this.removeClass("fa-spin");
+		*/
+		return false;
+	})
+}
+
+function crud_setup_refresh() {
+	$('.refresh').refreshMe({
+		started:function(refreshobj, panel){
+			crud_load_page(function(){
+				panel.fadeOut(800);
+				refreshobj.find('.fa').removeClass('fa-spin');
+			});
+		}
+	});
+}
+
 jQuery(document).ready(function () {
 	crud_setup_binds();
+	crud_setup_refresh();
 	jQuery("[data-toggle=tooltip]").tooltip();
 });
 
