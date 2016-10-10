@@ -34,15 +34,18 @@ function cruds() {
 .cruds.list-group .list-group-item.active {
 	display: block;
 }
+.cruds.list-group .list-group-item.active span {
+	margin-left: 10px;
+}
 </style>");
 	add_output("
 <div class='cruds list-group'>
 	<div class='list-group-item active'>
 		CRUD Page Links
-		<span class='pull-right label label-danger' style='margin-left: 10px;'>Not Working Yet ({$sizes['danger']})</span>
-		<span class='pull-right label label-warning' style='margin-left: 10px;'>Loads ({$sizes['warning']})</span>
-		<span class='pull-right label label-info' style='margin-left: 10px;'>Almost Done ({$sizes['info']})</span>
-		<span class='pull-right label label-success' style='margin-left: 10px;'>Ready ({$sizes['success']})</span>
+		<span class='pull-right label label-danger'>Not Working Yet ({$sizes['danger']})</span>
+		<span class='pull-right label label-warning'>Loads ({$sizes['warning']})</span>
+		<span class='pull-right label label-info'>Almost Done ({$sizes['info']})</span>
+		<span class='pull-right label label-success'>Ready ({$sizes['success']})</span>
 		<span class='pull-right'>Key:</span>
 	</div>");
 	foreach ($functions as $level => $functions_arr) {
@@ -102,6 +105,7 @@ function get_crud_funcs() {
 			'user_log' => array('function' => 'crud_user_log', 'title' => 'User Log'),
 			'view_invoices' => array('function' => 'crud_view_invoices', 'title' => 'View Invoices List'),
 			'view_invoices2' => array('function' => 'crud_view_invoices2', 'title' => 'View Invoices List'),
+			'vlans' => array('function' => 'crud_vlans', 'title' => 'IP VLAN Manager'),
 			'vps' => array('function' => 'crud_vps', 'title' => 'Virtual Private Servers'),
 			'vps_masters' => array('function' => 'crud_vps_masters', 'title' => 'VPS Host Servers'),
 			'whos_online' => array('function' => 'crud_whos_online', 'title' => 'Whos Online'),
@@ -122,7 +126,6 @@ function get_crud_funcs() {
 			'server_billing_stats' => array('function' => 'crud_server_billing_stats', 'title' => 'Server Billing Stats'),
 			'templates' => array('function' => 'crud_templates', 'title' => 'Templates'),
 			'user_session_activity' => array('function' => 'crud_user_session_activity', 'title' => 'User Session Activity'),
-			'vlans' => array('function' => 'crud_vlans', 'title' => 'IP VLAN Manager'),
 			'vps_bandwidth' => array('function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'),
 			'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
 			'vps_list_free_ips2' => array('function' => 'crud_vps_list_free_ips2', 'title' => 'Free/Available IPs For VPs Servers'),
