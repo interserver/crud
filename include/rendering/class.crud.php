@@ -442,44 +442,16 @@
 		/**
 		 * handler function to process the ajax export requests
 		 *
+		 * Export in these formats:
+		 * 		JSON, XML, SQL, PHP,
+		 * 		Markdown, Wiki markup, BBcode,
+		 * 		BIFF XLS, Excel XLSX, PDF,
+		 * 		ODS, CSV, TXT
+		 *
 		 * Print
 		 * 		http://stackoverflow.com/questions/10174412/print-php-table-with-print-function-via-printer
 		 * 		http://jsfiddle.net/hBCgA/
 		 * 		https://www.sitepoint.com/community/t/printing-in-javascript-and-php/42638/2
-		 * Markdown -
-		 * 		https://en.wikipedia.org/wiki/Markdown
-		 * 		http://www.tablesgenerator.com/markdown_tables
-		 * 		https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-		 * 		https://github.com/erusev/parsedown
-		 * Wiki markup -
-		 * 		https://en.wikipedia.org/wiki/Help:Wiki_markup
-		 * 		https://www.mediawiki.org/wiki/Help:Tables
-		 *
-		 * BBcode - https://en.wikipedia.org/wiki/BBCode
-		 * 		https://xenforo.com/community/resources/cta-table-bb-code.2847/
-		 * Excel
-		 * 		https://github.com/PHPOffice/PHPExcel
-		 * ODS
-		 * 		https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
-		 * CSV
-		 * 		http://php.net/manual/en/function.fputcsv.php
-		 * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
-		 * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
-		 * JSON
-		 * 		http://php.net/manual/en/function.json-encode.php
-		 * XML
-		 * 		http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
-		 * 		http://www.redips.net/php/convert-array-to-xml/
-		 * 		http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
-		 * 		https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
-		 * SQL
-		 * PHP
-		 * 		http://php.net/manual/en/function.var-export.php
-		 * PDF
-		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
-		 * 		http://php.net/manual/en/ref.pdf.php
-		 * 		http://phptopdf.com/
-		 * 		https://github.com/tecnickcom/tcpdf
 		 */
 		public function ajax_export_handler() {
 			// get export type
@@ -505,6 +477,8 @@
 		/**
 		 * Exports the table data in xlsx format
 		 *
+		 * 		https://github.com/PHPOffice/PHPExcel
+		 *
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xlsx() {
@@ -527,6 +501,8 @@
 		/**
 		 * Exports the table data in ods format
 		 *
+		 * 		https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
+		 *
 		 * @return string the exported data stored as a string
 		 */
 		public function export_ods() {
@@ -537,6 +513,11 @@
 
 		/**
 		 * Exports the table data in xml format
+		 *
+		 * 		http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
+		 * 		http://www.redips.net/php/convert-array-to-xml/
+		 * 		http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+		 * 		https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
 		 *
 		 * @return string the exported data stored as a string
 		 */
@@ -549,6 +530,10 @@
 		/**
 		 * Exports the table data in csv format
 		 *
+		 * 		http://php.net/manual/en/function.fputcsv.php
+		 * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
+		 * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
+		 *
 		 * @return string the exported data stored as a string
 		 */
 		public function export_csv() {
@@ -559,6 +544,8 @@
 
 		/**
 		 * Exports the table data in php format
+		 *
+		 * 		http://php.net/manual/en/function.var-export.php
 		 *
 		 * @return string the exported data stored as a string
 		 */
@@ -582,6 +569,11 @@
 		/**
 		 * Exports the table data in markdown format
 		 *
+		 * 		https://en.wikipedia.org/wiki/Markdown
+		 * 		http://www.tablesgenerator.com/markdown_tables
+		 * 		https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+		 * 		https://github.com/erusev/parsedown
+		 *
 		 * @return string the exported data stored as a string
 		 */
 		public function export_markdown() {
@@ -592,6 +584,9 @@
 
 		/**
 		 * Exports the table data in bbcode format
+		 *
+		 * 		https://en.wikipedia.org/wiki/BBCode
+		 * 		https://xenforo.com/community/resources/cta-table-bb-code.2847/
 		 *
 		 * @return string the exported data stored as a string
 		 */
@@ -604,6 +599,9 @@
 		/**
 		 * Exports the table data in wiki format
 		 *
+		 * 		https://en.wikipedia.org/wiki/Help:Wiki_markup
+		 * 		https://www.mediawiki.org/wiki/Help:Tables
+		 *
 		 * @return string the exported data stored as a string
 		 */
 		public function export_wiki() {
@@ -614,6 +612,11 @@
 
 		/**
 		 * Exports the table data in pdf format
+		 *
+		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
+		 * 		http://php.net/manual/en/ref.pdf.php
+		 * 		http://phptopdf.com/
+		 * 		https://github.com/tecnickcom/tcpdf
 		 *
 		 * @return string the exported data stored as a string
 		 */
@@ -629,6 +632,19 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_txt() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in json format
+		 *
+		 * 		http://php.net/manual/en/function.json-encode.php
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_json() {
 			$return = '';
 
 			return $return;
@@ -655,6 +671,10 @@
 				'csv' => array(
 					'name' => 'Comma-Seperated Values',
 					'type' => 'text/csv',
+				),
+				'json' => array(
+					'name' => 'JSON',
+					'type' => 'application/json',
 				),
 				'php' => array(
 					'name' => 'PHP Array',
