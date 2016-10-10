@@ -57,6 +57,7 @@
 		public $price_align = 'r';
 		public $price_text_align = 'r';
 		public $stage = 1;
+		public $rows = array();
 		public $page_limits = array(10, 25, 100, -1);
 		public $page_limit = 10;
 		public $page_offset = 0;
@@ -467,11 +468,25 @@
 			$info = $formats[$format];
 			$filename = slugify($this->title).'.'.$format;
 			$function = 'export_'.$format;
+			$this->get_all_rows();
 			$data = $this->$function();
 			header('Content-Type: '.$info['type']);
 			header('Content-Disposition: inline;filename=' . $filename);
 			echo $data;
 			return true;
+		}
+
+		/**
+		 * runs thorugh al the query rows and bulids up an array for use with other functions like export
+		 *
+		 * @return void
+		 */
+		public function get_all_rows() {
+			$this->run_list_query();
+			$this->rows = array();
+			while ($this->next_record(MYSQL_ASSOC)) {
+				$this->rows[] = $this->get_record();
+			}
 		}
 
 		/**
@@ -2373,9 +2388,8 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_csv() {
-			$return = '';
-
-			return $return;
+			function_requirements('array2Csv');
+			return array2Csv($this->rows);
 		}
 
 		/**
@@ -2386,9 +2400,7 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_php() {
-			$return = '';
-
-			return $return;
+			return '<'.'?'.'php'."\n".'$data = '.var_export($this->rows, true).";\n";
 		}
 
 		/**
@@ -2481,9 +2493,7 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_json() {
-			$return = '';
-
-			return $return;
+			return json_encode($this->rows);
 		}
 
 	}
