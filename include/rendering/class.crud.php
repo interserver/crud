@@ -82,7 +82,7 @@
 		public $input_types = array();
 		public $column_templates = array();
 		public $tables = array();
-		// from the sql query parser
+		// from the SQLParser or CrudFunctionIterator
 		public $queries = null;
 		public $db;
 		public $settings;
@@ -728,7 +728,10 @@
 		function get_count() {
 			$db = $this->db;
 			if ($this->type == 'function') {
-				$count = 0;
+				if (!method_exists('CrudFunctionIterator', 'run') || $this->queries->ran == false)
+					$count = 0;
+				else
+					$count = $this->queries->size;
 			} elseif ($this->type == 'table') {
 				$db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
 				$db->next_record(MYSQL_NUM);
@@ -750,30 +753,33 @@
 		 * setup then they are automatically added onto the query as well as current order field, order
 		 * direction, result limit, and result offset.
 		 *
+		 * @return void
 		 */
 		public function run_list_query() {
 			//billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'function') {
-				function_requirements($this>query);
-				$result = call_user_func($this->query);
-			} elseif ($this->type == 'table') {
-				$query = "select * from {$this->table}";
-				if (sizeof($this->search_terms) > 0)
-					$query .= " where " . $this->search_to_sql();
+				$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__);
+				$this->queries = new CrudFunctionIterator($this->query);
 			} else {
-				$query = $this->query;
-				if (sizeof($this->search_terms) > 0)
-					if ($this->queries[0]->hasWhere() == false)
+				if ($this->type == 'table') {
+					$query = "select * from {$this->table}";
+					if (sizeof($this->search_terms) > 0)
 						$query .= " where " . $this->search_to_sql();
-					else
-						$query .= " and " . $this->search_to_sql();
+				} else {
+					$query = $this->query;
+					if (sizeof($this->search_terms) > 0)
+						if ($this->queries[0]->hasWhere() == false)
+							$query .= " where " . $this->search_to_sql();
+						else
+							$query .= " and " . $this->search_to_sql();
+				}
+				if ($this->page_limit > 0)
+					$query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
+				//$this->log("Running Query: {$query}", __LINE__, __FILE__);
+				$this->db->query($query, __LINE__, __FILE__);
 			}
-			if ($this->page_limit > 0)
-				$query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
-			//$this->log("Running Query: {$query}", __LINE__, __FILE__);
-			$this->db->query($query, __LINE__, __FILE__);
 		}
 
 
@@ -979,12 +985,12 @@
 				$table->set_title($this->table . ' Records');
 			else
 				$table->set_title($this->title);
-			$count = $this->get_count();
 			$this->run_list_query();
 			$header_shown = false;
 			$idx = 0;
 			$rows = array();
-			while ($this->db->next_record(MYSQL_ASSOC)) {
+			while ($this->next_record(MYSQL_ASSOC)) {
+				$record = $this->get_record();
 				if ($header_shown == false) {
 					$header_shown = true;
 					$empty_record = array();
@@ -996,9 +1002,9 @@
 							$table->add_header_field($field_data['Comment'].$this->get_sort_icon($field));
 						}
 					} else {
-						foreach (array_keys($this->db->Record) as $field)
+						foreach (array_keys($record) as $field)
 							$empty_record[$field] = "%{$field}%";
-						foreach (array_keys($this->db->Record) as $field) {
+						foreach (array_keys($record) as $field) {
 							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
 							if (isset($this->tables[$this->table][$field]))
 								$table->add_header_field($this->tables[$this->table][$field]['Comment'].$this->get_sort_icon($field));
@@ -1015,15 +1021,16 @@
 					$table->add_row();
 				}
 				$table->set_row_options('id="itemrow'.$idx.'"');
-				foreach ($this->db->Record as $field =>$value) {
-					$table->add_field($this->decorate_field($field, $this->db->Record));
+				foreach ($record as $field =>$value) {
+					$table->add_field($this->decorate_field($field, $record));
 					if ($this->input_types[$field][0] == 'select_multiple')
-						$this->db->Record[$field] = explode(',', $value);
+						$record[$field] = explode(',', $value);
 				}
-				$rows[] = $this->db->Record;
+				$rows[] = $record;
 				$table->add_row();
 				$idx++;
 			}
+			$count = $this->get_count();
 			$table->smarty->assign('label_rep', array(
 				'active' => 'success',
 				'pending' => 'info',
@@ -1078,6 +1085,33 @@
 			$this->add_js_headers();
 			add_output($table->get_table());
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
+		}
+
+		/**
+		 * goes to the next record in the result set
+		 *
+		 * @param mixed $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @return bool returns true if it was able to get a record and we have an array result, otherwise returns false
+		 */
+		public function next_record($result_type) {
+			if ($this->type == 'function') {
+				$ran = $this->queries->ran ;
+				$return = $this->queries->next_record();
+				if ($ran == false)
+					foreach (array_keys($this->queries->Record) as $field => $value)
+						$this->add_field($field, $field, false, false, 'input');
+			} else
+				$return = $this->db->next_record(MYSQL_ASSOC);
+			return $return;
+		}
+
+		/**
+		 * returns the record for the current row wether its an sql or function type
+		 *
+		 * @return array the result row
+		 */
+		public function get_record() {
+			return ($this->type == 'function' ? $this->queries->Record : $this->db->Record);
 		}
 
 		/**
@@ -2148,6 +2182,51 @@
 				}
 			}
 
+		}
+
+	}
+
+
+	/**
+	 *Crud class to handle iterating over the output of a local function and give an interface similar to the db class
+	 */
+	Class CrudFunctionIterator {
+		public $function;
+		public $result;
+		public $size;
+		public $idx = -1;
+		public $ran = false;
+		public $Record;
+		public $keys;
+
+		public function __construct($function) {
+			$this->function = $function;
+		}
+
+		/**
+		 * runs the function and grabs the output from it aplying it usully
+		 *
+		 * @eturn void
+		 */
+		public function run() {
+			function_requirements($this->function);
+			$this->result = call_user_func($this->function);
+			$this->ran = true;
+			$this->size = sizeof($this->result);
+			$this->keys = array_keys($this->result);
+		}
+
+		/**
+		 * grabs the next record in the curent row if there is one.
+		 */
+		 public function next_record() {
+			if ($this->ran == false)
+				$this->run();
+			$this->idx++;
+			if ($this->idx >= $this->size)
+				return false;
+			$this->Record = $this->result[$this->keys[$this->idx]];
+			return is_array($this->Record);
 		}
 
 	}
