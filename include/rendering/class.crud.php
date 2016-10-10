@@ -494,10 +494,144 @@
 			}
 			$info = $formats[$format];
 			$filename = slugify($this->title).'.'.$format;
-
-
+			$function = 'export_'.$format;
+			$data = $this->$function();
 			header('Content-Type: '.$info['type']);
 			header('Content-Disposition: inline;filename=' . $filename);
+			echo $data;
+			return true;
+		}
+
+		/**
+		 * Exports the table data in xlsx format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xlsx() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in xls format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xls() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in ods format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_ods() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in xml format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xml() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in csv format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_csv() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in php format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_php() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in sql format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_sql() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in markdown format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_markdown() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in bbcode format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_bbcode() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in wiki format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_wiki() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in pdf format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_pdf() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in txt format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_txt() {
+			$return = '';
+
+			return $return;
 		}
 
 		public function get_export_formats() {
