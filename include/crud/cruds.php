@@ -9,6 +9,103 @@
  * @category Admin
  */
 
+function get_crud_tables() {
+	$return = array(
+		'modules' => array(),
+		'tables' => array(),
+	);
+	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
+		if (isset($GLOBALS[$module.'_dbh'])) {
+			$dbh = $GLOBALS[$module.'_dbh'];
+			$db_name = $dbh->Database;
+			$return['modules'][$module] = $dbh;
+			$return['tables'][$module] = array();
+			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
+			while ($dbh->next_record(MYSQL_ASSOC)) {
+				$table = $dbh->Record['Tables_in_'.$db_name];
+				$type = $dbh->Record['Table_type'];
+				$return['tables'][$module][] = $table;
+			}
+		}
+	return $return;
+}
+
+function get_crud_funcs() {
+	$functions = array(
+		'success' => array(
+			'admins' => array('function' => 'admins', 'title' => 'Administrator Role Assignments'),
+			'backups_list' => array('function' => 'crud_backups_list', 'title' => 'Backup List'),
+			'domains_list' => array('function' => 'crud_domains_list', 'title' => 'Domains'),
+			'quickservers_list' => array('function' => 'crud_quickservers_list', 'title' => 'QuickServers'),
+			'ssl_list' => array('function' => 'crud_ssl_list', 'title' => 'SSL Certificates'),
+			'vps_list' => array('function' => 'vps_list', 'title' => 'VPS List'),
+			'webhosting_list' => array('function' => 'crud_webhosting_list', 'title' => 'Website List'),
+		),
+		'info' => array(
+			'coupons' => array('function' => 'crud_coupons', 'title' => 'Coupons'),
+			'customers' => array('function' => 'crud_customers', 'title' => 'Customers'),
+			'licenses_list' => array('function' => 'crud_licenses_list', 'title' => 'License List'),
+			'last_logins' => array('function' => 'crud_last_logins', 'title' => 'Last Logn Locations'),
+			'dns_manager' => array('function' => 'crud_dns_manager', 'title' => 'DNS Manager'),
+		),
+		'warning' => array(
+			'abuse' => array('function' => 'crud_abuse', 'title' => 'Abuse'),
+			'active_packages' => array('function' => 'crud_active_packages', 'title' => 'Active Packages'),
+			'backups' => array('function' => 'crud_backups', 'title' => 'Backups'),
+			'dedicated_list' => array('function' => 'crud_dedicated_list', 'title' => 'Dedicated List'),
+			'domains' => array('function' => 'crud_domains', 'title' => 'Domains'),
+			'fantastico_list' => array('function' => 'crud_fantastico_list', 'title' => 'Fantastico License List'),
+			'forum_rss' => array('function' => 'crud_forum_rss', 'title' => 'Latest Forum Posts'),
+			'form_manager' => array('function' => 'crud_form_manager', 'title' => 'Form Manager'),
+			'history_log' => array('function' => 'crud_history_log', 'title' => 'History Log'),
+			'innertell_orders' => array('function' => 'crud_innertell_orders', 'title' => 'Dedicated Server Orders'),
+			'innertell_search' => array('function' => 'crud_innertell_search', 'title' => 'Search Results'),
+			'invoices' => array('function' => 'crud_invoices', 'title' => 'Invoices'),
+			'licenses' => array('function' => 'crud_licenses', 'title' => 'Licenses'),
+			'modernbill_client_list' => array('function' => 'crud_modernbill_client_list', 'title' => 'Modernbill Client List'),
+			'modernbill_invoice_list' => array('function' => 'crud_modernbill_invoice_list', 'title' => 'Modernbill Invoice List'),
+			'modernbill_package_list' => array('function' => 'crud_modernbill_package_list', 'title' => 'Modernbill Package Listing'),
+			'monitoring_list' => array('function' => 'crud_monitoring_list', 'title' => 'Monitored Systems'),
+			'month_payment_totals' => array('function' => 'crud_month_payment_totals', 'title' => 'Payments This Month'),
+			'packages' => array('function' => 'crud_packages', 'title' => 'Your Packages'),
+			'paypal_transactions' => array('function' => 'crud_paypal_transactions', 'title' => 'Paypal Transactions'),
+			'queue_log' => array('function' => 'crud_queue_log', 'title' => 'Queue Log'),
+			'renewals' => array('function' => 'crud_renewals', 'title' => 'Renewals'),
+			'repeat_invoices' => array('function' => 'crud_repeat_invoices', 'title' => 'Repeat Invoices'),
+			'reusable_fantastico' => array('function' => 'crud_reusable_fantastico', 'title' => 'Reusable Fantastico'),
+			'server_billing_stats' => array('function' => 'crud_server_billing_stats', 'title' => 'Server Billing Stats'),
+			'server_actions' => array('function' => 'crud_server_actions', 'title' => 'Recent Server Commands'),
+			'session_log' => array('function' => 'crud_session_log', 'title' => 'session log'),
+			'ssl' => array('function' => 'crud_ssl', 'title' => 'SSL Certificates'),
+			'templates' => array('function' => 'crud_templates', 'title' => 'Templates'),
+			'user_log' => array('function' => 'crud_user_log', 'title' => 'User Log'),
+			'view_invoices' => array('function' => 'crud_view_invoices', 'title' => 'View Invoices List'),
+			'view_invoices2' => array('function' => 'crud_view_invoices2', 'title' => 'View Invoices List'),
+			'vlans' => array('function' => 'crud_vlans', 'title' => 'IP VLAN Manager'),
+			'vps' => array('function' => 'crud_vps', 'title' => 'Virtual Private Servers'),
+			'vps_list_free_ips2' => array('function' => 'crud_vps_list_free_ips2', 'title' => 'Free/Available IPs For VPs Servers'),
+			'vps_list_free_ips' => array('function' => 'crud_vps_list_free_ips', 'title' => 'Free/Available IPs For VPs Servers'),
+			'vps_masters' => array('function' => 'crud_vps_masters', 'title' => 'VPS Host Servers'),
+			'vps_next_servers' => array('function' => 'crud_vps_next_servers', 'title' => 'VPS Next Setup Servers'),
+			'whos_online' => array('function' => 'crud_whos_online', 'title' => 'Whos Online'),
+		),
+		'danger' => array(
+			'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
+			'admin_tickets_widget' => array('function' => 'crud_admin_tickets_widget', 'title' => 'Admin Tickets'),
+			'innertell_pending_orders' => array('function' => 'crud_innertell_pending_orders', 'title' => 'Pending Dedicated Server Orders'),
+			'innertell_pending_orders_new' => array('function' => 'crud_innertell_pending_orders_new', 'title' => 'Pending Server Orders'),
+			'new_vps' => array('function' => 'crud_new_vps', 'title' => 'Newest VPS Signups'),
+			'paypal_history' => array('function' => 'crud_paypal_history', 'title' => 'Paypal History'),
+			'pending_vps_list' => array('function' => 'crud_pending_vps_list', 'title' => 'Pending Virtual Private Servers (VPS)'),
+			'user_session_activity' => array('function' => 'crud_user_session_activity', 'title' => 'User Session Activity'),
+			'vps_bandwidth' => array('function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'),
+			'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
+			'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
+		),
+	);
+	return $functions;
+}
+
 /**
  * cruds()
  * @return void
@@ -113,101 +210,4 @@ function cruds() {
 		</div>
 	</div>
 </div>");
-}
-
-function get_crud_tables() {
-	$return = array(
-		'modules' => array(),
-		'tables' => array(),
-	);
-	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
-		if (isset($GLOBALS[$module.'_dbh'])) {
-			$dbh = $GLOBALS[$module.'_dbh'];
-			$db_name = $dbh->Database;
-			$return['modules'][$module] = $dbh;
-			$return['tables'][$module] = array();
-			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
-			while ($dbh->next_record(MYSQL_ASSOC)) {
-				$table = $dbh->Record['Tables_in_'.$db_name];
-				$type = $dbh->Record['Table_type'];
-				$return['tables'][$module][] = $table;
-			}
-		}
-	return $return;
-}
-
-function get_crud_funcs() {
-	$functions = array(
-		'success' => array(
-			'admins' => array('function' => 'admins', 'title' => 'Administrator Role Assignments'),
-			'backups_list' => array('function' => 'crud_backups_list', 'title' => 'Backup List'),
-			'domains_list' => array('function' => 'crud_domains_list', 'title' => 'Domains'),
-			'quickservers_list' => array('function' => 'crud_quickservers_list', 'title' => 'QuickServers'),
-			'ssl_list' => array('function' => 'crud_ssl_list', 'title' => 'SSL Certificates'),
-			'vps_list' => array('function' => 'vps_list', 'title' => 'VPS List'),
-			'webhosting_list' => array('function' => 'crud_webhosting_list', 'title' => 'Website List'),
-		),
-		'info' => array(
-			'coupons' => array('function' => 'crud_coupons', 'title' => 'Coupons'),
-			'customers' => array('function' => 'crud_customers', 'title' => 'Customers'),
-			'licenses_list' => array('function' => 'crud_licenses_list', 'title' => 'License List'),
-			'last_logins' => array('function' => 'crud_last_logins', 'title' => 'Last Logn Locations'),
-			'dns_manager' => array('function' => 'crud_dns_manager', 'title' => 'DNS Manager'),
-		),
-		'warning' => array(
-			'abuse' => array('function' => 'crud_abuse', 'title' => 'Abuse'),
-			'active_packages' => array('function' => 'crud_active_packages', 'title' => 'Active Packages'),
-			'backups' => array('function' => 'crud_backups', 'title' => 'Backups'),
-			'dedicated_list' => array('function' => 'crud_dedicated_list', 'title' => 'Dedicated List'),
-			'domains' => array('function' => 'crud_domains', 'title' => 'Domains'),
-			'form_manager' => array('function' => 'crud_form_manager', 'title' => 'Form Manager'),
-			'history_log' => array('function' => 'crud_history_log', 'title' => 'History Log'),
-			'innertell_orders' => array('function' => 'crud_innertell_orders', 'title' => 'Dedicated Server Orders'),
-			'innertell_search' => array('function' => 'crud_innertell_search', 'title' => 'Search Results'),
-			'invoices' => array('function' => 'crud_invoices', 'title' => 'Invoices'),
-			'licenses' => array('function' => 'crud_licenses', 'title' => 'Licenses'),
-			'modernbill_client_list' => array('function' => 'crud_modernbill_client_list', 'title' => 'Modernbill Client List'),
-			'modernbill_invoice_list' => array('function' => 'crud_modernbill_invoice_list', 'title' => 'Modernbill Invoice List'),
-			'modernbill_package_list' => array('function' => 'crud_modernbill_package_list', 'title' => 'Modernbill Package Listing'),
-			'month_payment_totals' => array('function' => 'crud_month_payment_totals', 'title' => 'Payments This Month'),
-			'packages' => array('function' => 'crud_packages', 'title' => 'Your Packages'),
-			'paypal_transactions' => array('function' => 'crud_paypal_transactions', 'title' => 'Paypal Transactions'),
-			'queue_log' => array('function' => 'crud_queue_log', 'title' => 'Queue Log'),
-			'repeat_invoices' => array('function' => 'crud_repeat_invoices', 'title' => 'Repeat Invoices'),
-			'server_actions' => array('function' => 'crud_server_actions', 'title' => 'Recent Server Commands'),
-			'session_log' => array('function' => 'crud_session_log', 'title' => 'session log'),
-			'ssl' => array('function' => 'crud_ssl', 'title' => 'SSL Certificates'),
-			'user_log' => array('function' => 'crud_user_log', 'title' => 'User Log'),
-			'view_invoices' => array('function' => 'crud_view_invoices', 'title' => 'View Invoices List'),
-			'view_invoices2' => array('function' => 'crud_view_invoices2', 'title' => 'View Invoices List'),
-			'vlans' => array('function' => 'crud_vlans', 'title' => 'IP VLAN Manager'),
-			'vps' => array('function' => 'crud_vps', 'title' => 'Virtual Private Servers'),
-			'vps_masters' => array('function' => 'crud_vps_masters', 'title' => 'VPS Host Servers'),
-			'whos_online' => array('function' => 'crud_whos_online', 'title' => 'Whos Online'),
-		),
-		'danger' => array(
-			'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
-			'admin_tickets_widget' => array('function' => 'crud_admin_tickets_widget', 'title' => 'Admin Tickets'),
-			'fantastico_list' => array('function' => 'crud_fantastico_list', 'title' => 'Fantastico License List'),
-			'forum_rss' => array('function' => 'crud_forum_rss', 'title' => 'Latest Forum Posts'),
-			'innertell_pending_orders' => array('function' => 'crud_innertell_pending_orders', 'title' => 'Pending Dedicated Server Orders'),
-			'innertell_pending_orders_new' => array('function' => 'crud_innertell_pending_orders_new', 'title' => 'Pending Server Orders'),
-			'monitoring_list' => array('function' => 'crud_monitoring_list', 'title' => 'Monitored Systems'),
-			'new_vps' => array('function' => 'crud_new_vps', 'title' => 'Newest VPS Signups'),
-			'paypal_history' => array('function' => 'crud_paypal_history', 'title' => 'Paypal History'),
-			'pending_vps_list' => array('function' => 'crud_pending_vps_list', 'title' => 'Pending Virtual Private Servers (VPS)'),
-			'renewals' => array('function' => 'crud_renewals', 'title' => 'Renewals'),
-			'reusable_fantastico' => array('function' => 'crud_reusable_fantastico', 'title' => 'Reusable Fantastico'),
-			'server_billing_stats' => array('function' => 'crud_server_billing_stats', 'title' => 'Server Billing Stats'),
-			'templates' => array('function' => 'crud_templates', 'title' => 'Templates'),
-			'user_session_activity' => array('function' => 'crud_user_session_activity', 'title' => 'User Session Activity'),
-			'vps_bandwidth' => array('function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'),
-			'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
-			'vps_list_free_ips2' => array('function' => 'crud_vps_list_free_ips2', 'title' => 'Free/Available IPs For VPs Servers'),
-			'vps_list_free_ips' => array('function' => 'crud_vps_list_free_ips', 'title' => 'Free/Available IPs For VPs Servers'),
-			'vps_next_servers' => array('function' => 'crud_vps_next_servers', 'title' => 'VPS Next Setup Servers'),
-			'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
-		),
-	);
-	return $functions;
 }
