@@ -52,13 +52,67 @@ function cruds() {
 		foreach ($functions_arr as $orig_function => $function_data) {
 			add_output("
 	<a href='?choice=none.{$function_data['function']}' class='list-group-item' target='_blank'>
-		<span class='label label-{$level}'>{$orig_function}</span> - {$function_data['title']}
+		<span class='label label-{$level}'>{$orig_function}</span> {$function_data['title']}
 	</a>");
 		}
 	}
 	add_output("
 </div>
 ");
+	$all_tables = get_crud_tables();
+	$levels = array('primary', 'info' , 'success', 'warning', 'danger');
+	$idx  = 0;
+	$key = array();
+	$rows = array();
+	foreach ($all_tables['tables'] as $module => $tables) {
+		$dbh = $all_tables['modules'][$module];
+		$db_name = $dbh->Database;
+		$level = $levels[$idx];
+		$size = sizeof($tables);
+		$key[] = "<span class='pull-right label label-{$level}'>{$db_name} ({$size})</span>";
+		foreach ($tables as $table) {
+			$rows[] = "
+	<a href='?choice=none.crud_table&db={$module}&table={$table}' class='list-group-item' target='_blank'>
+		<span class='label label-{$level}'>{$db_name}</span> {$table}
+	</a>";
+		}
+		$idx++;
+		if ($idx == sizeof($levels))
+			$idx = 0;
+	}
+	$key = array_reverse($key);
+	add_output("
+<div class='cruds list-group'>
+	<div class='list-group-item active'>
+		CRUD Table Links
+		" . implode("\n		", $key) . "
+		<span class='pull-right'>Key:</span>
+	</div>
+	" . implode("\n		", $rows) . "
+</div>
+");
+}
+
+function get_crud_tables() {
+	$return = array(
+		'modules' => array(
+		),
+		'tables' => array(),
+	);
+	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
+		if (isset($GLOBALS[$module.'_dbh'])) {
+			$dbh = $GLOBALS[$module.'_dbh'];
+			$db_name = $dbh->Database;
+			$return['modules'][$module] = $dbh;
+			$return['tables'][$module] = array();
+			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
+			while ($dbh->next_record(MYSQL_ASSOC)) {
+				$table = $dbh->Record['Tables_in_'.$db_name];
+				$type = $dbh->Record['Table_type'];
+				$return['tables'][$module][] = $table;
+			}
+		}
+	return $return;
 }
 
 function get_crud_funcs() {
