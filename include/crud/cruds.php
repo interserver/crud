@@ -117,8 +117,7 @@ function cruds() {
 
 function get_crud_tables() {
 	$return = array(
-		'modules' => array(
-		),
+		'modules' => array(),
 		'tables' => array(),
 	);
 	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
