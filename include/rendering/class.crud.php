@@ -2373,9 +2373,8 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xml() {
-			$return = '';
-
-			return $return;
+			function_requirements('array2Xml');
+			return array2Xml($this->rows);
 		}
 
 		/**
