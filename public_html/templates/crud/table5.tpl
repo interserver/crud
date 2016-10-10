@@ -1,5 +1,10 @@
 {literal}
 <style type="text/css">
+	.crud .export li a img {
+		height: 20px;
+		vertical-align: top;
+		padding-right: 10px;
+	}
 	.panel-refresh {
 		height:250px;
 		position:relative;
@@ -36,6 +41,9 @@
 	}
 	.crud-title {
 		font-size: 22px;
+	}
+	.crud .fa.crud-icon {
+		font-size: 16px;
 	}
 	.crud .nav-crud a.btn, .crud .nav-crud a.btn span.fa, .crud .nav-crud a.btn i.fa {
 		font-size: 18px;
@@ -83,6 +91,32 @@
 								</div>
 {/if}
 								<span class="crud-title">{$title}</span>
+								<div class="export btn-group pull-right">
+									<button class="btn btn-sm btn-default" type="button" title="Print">
+										<i class="fa fa-print crud-icon"></i>
+										Print
+									</button>
+									<button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-download crud-icon"></i>
+										Export
+										<span class="caret"></span>
+										<span class="sr-only">Toggle Dropdown</span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li role="presentation" data-type="md"><a href=""><img src="/images/crud/markdown.png" alt="">MarkDown</a></li>
+										<li role="presentation" data-type="wiki"><a href=""><img src="/images/crud/wiki.png" alt="">WikiCode</a></li>
+										<li role="presentation" data-type="bbcode"><a href=""><img src="/images/crud/bbcode.png" alt="">BB Code</a></li>
+										<li role="presentation" data-type="xml"><a href=""><img src="/images/crud/xml.png" alt="">XML</a></li>
+										<li role="presentation" data-type="csv"><a href=""><img src="/images/crud/csv.png" alt="">CSV</a></li>
+										<li role="presentation" data-type="pdf"><a href=""><img src="/images/crud/pdf.png" alt="">PDF </a></li>
+										<li role="presentation" data-type="json"><a href=""><img src="/images/crud/json.png" alt="">JSON</a></li>
+										<li role="presentation" data-type="sql"><a href=""><img src="/images/crud/sql.png" alt="">SQL Query</a></li>
+										<li role="presentation" data-type="php"><a href=""><img src="/images/crud/php.png" alt="">PHP Array</a></li>
+										<li role="presentation" data-type="ods"><a href=""><img src="/images/crud/ods.png" alt="">Libre/OO ODS</a></li>
+										<li role="presentation" data-type="xls"><a href=""><img src="/images/crud/xls.png" alt="">Excel XLS</a></li>
+									</ul>
+								</div>
+
 							</th>
 						</tr>
 {/if}
@@ -195,7 +229,7 @@
 {if $ima == 'admin' || $refresh_button == true}
 				<span class="btn-group nav-rows" style=" display: table-cell; vertical-align: top;">
 {if $ima == 'admin'}
-					<a class="btn btn-sm btn-danger" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
+					<a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
 						<span class="fa fa-bug fa-fw"></span>
 					</a>
 {/if}
