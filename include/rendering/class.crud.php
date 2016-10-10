@@ -475,240 +475,6 @@
 		}
 
 		/**
-		 * Exports the table data in xlsx format
-		 *
-		 * 		https://github.com/PHPOffice/PHPExcel
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_xlsx() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in xls format
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_xls() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in ods format
-		 *
-		 * 		https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_ods() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in xml format
-		 *
-		 * 		http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
-		 * 		http://www.redips.net/php/convert-array-to-xml/
-		 * 		http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
-		 * 		https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_xml() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in csv format
-		 *
-		 * 		http://php.net/manual/en/function.fputcsv.php
-		 * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
-		 * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_csv() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in php format
-		 *
-		 * 		http://php.net/manual/en/function.var-export.php
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_php() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in sql format
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_sql() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in markdown format
-		 *
-		 * 		https://en.wikipedia.org/wiki/Markdown
-		 * 		http://www.tablesgenerator.com/markdown_tables
-		 * 		https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-		 * 		https://github.com/erusev/parsedown
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_markdown() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in bbcode format
-		 *
-		 * 		https://en.wikipedia.org/wiki/BBCode
-		 * 		https://xenforo.com/community/resources/cta-table-bb-code.2847/
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_bbcode() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in wiki format
-		 *
-		 * 		https://en.wikipedia.org/wiki/Help:Wiki_markup
-		 * 		https://www.mediawiki.org/wiki/Help:Tables
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_wiki() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in pdf format
-		 *
-		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
-		 * 		http://php.net/manual/en/ref.pdf.php
-		 * 		http://phptopdf.com/
-		 * 		https://github.com/tecnickcom/tcpdf
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_pdf() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in txt format
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_txt() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in json format
-		 *
-		 * 		http://php.net/manual/en/function.json-encode.php
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_json() {
-			$return = '';
-
-			return $return;
-		}
-
-		public function get_export_formats() {
-			$formats = array(
-				'xlsx' => array(
-					'name' => 'Excel 2007+',
-					'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				),
-				'xls' => array(
-					'name' => 'BIFF / Excel 2003',
-					'type' => 'application/vnd.ms-excel',
-				),
-				'ods' => array(
-					'name' => 'OpenDocument SpreadSheet',
-					'type' => 'application/vnd.oasis.opendocument.spreadsheet',
-				),
-				'xml' => array(
-					'name' => 'Extensible Markup Language',
-					'type' => 'application/xml',
-				),
-				'csv' => array(
-					'name' => 'Comma-Seperated Values',
-					'type' => 'text/csv',
-				),
-				'json' => array(
-					'name' => 'JSON',
-					'type' => 'application/json',
-				),
-				'php' => array(
-					'name' => 'PHP Array',
-					'type' => 'text/x-php',
-				),
-				'sql' => array(
-					'name' => 'SQL Query',
-					'type' => 'text/x-sql',
-				),
-				'markdown' => array(
-					'name' => 'MarkDown',
-					'type' => 'text/x-markdown',
-				),
-				'bbcode' => array(
-					'name' => 'BBcode',
-					'type' => 'text/x-bbcode',
-				),
-				'wiki' => array(
-					'name' => 'WikiCode',
-					'type' => 'text/x-wikicode',
-				),
-				'pdf' => array(
-					'name' => 'Adobe Portable Document Format',
-					'type' => 'application/pdf',
-				),
-				'txt' => array(
-					'name' => 'Text File',
-					'type' => 'text/plain',
-				),
-			);
-			return $formats;
-		}
-
-		/**
 		 * handles the ajax request to get a list of records
 		 *
 		 */
@@ -2479,6 +2245,245 @@
 				}
 			}
 
+		}
+
+		/**
+		 * gets a list of all the export formats along with informatoin like tcontent ttpe to send accross the header
+		 *
+		 * @return array an array of the various formats and their information
+		 */
+		public function get_export_formats() {
+			$formats = array(
+				'xlsx' => array(
+					'name' => 'Excel 2007+',
+					'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				),
+				'xls' => array(
+					'name' => 'BIFF / Excel 2003',
+					'type' => 'application/vnd.ms-excel',
+				),
+				'ods' => array(
+					'name' => 'OpenDocument SpreadSheet',
+					'type' => 'application/vnd.oasis.opendocument.spreadsheet',
+				),
+				'xml' => array(
+					'name' => 'Extensible Markup Language',
+					'type' => 'application/xml',
+				),
+				'csv' => array(
+					'name' => 'Comma-Seperated Values',
+					'type' => 'text/csv',
+				),
+				'json' => array(
+					'name' => 'JSON',
+					'type' => 'application/json',
+				),
+				'php' => array(
+					'name' => 'PHP Array',
+					'type' => 'text/x-php',
+				),
+				'sql' => array(
+					'name' => 'SQL Query',
+					'type' => 'text/x-sql',
+				),
+				'markdown' => array(
+					'name' => 'MarkDown',
+					'type' => 'text/x-markdown',
+				),
+				'bbcode' => array(
+					'name' => 'BBcode',
+					'type' => 'text/x-bbcode',
+				),
+				'wiki' => array(
+					'name' => 'WikiCode',
+					'type' => 'text/x-wikicode',
+				),
+				'pdf' => array(
+					'name' => 'Adobe Portable Document Format',
+					'type' => 'application/pdf',
+				),
+				'txt' => array(
+					'name' => 'Text File',
+					'type' => 'text/plain',
+				),
+			);
+			return $formats;
+		}
+
+		/**
+		 * Exports the table data in xlsx format
+		 *
+		 * 		https://github.com/PHPOffice/PHPExcel
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xlsx() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in xls format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xls() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in ods format
+		 *
+		 * 		https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_ods() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in xml format
+		 *
+		 * 		http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
+		 * 		http://www.redips.net/php/convert-array-to-xml/
+		 * 		http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+		 * 		https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_xml() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in csv format
+		 *
+		 * 		http://php.net/manual/en/function.fputcsv.php
+		 * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
+		 * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_csv() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in php format
+		 *
+		 * 		http://php.net/manual/en/function.var-export.php
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_php() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in sql format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_sql() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in markdown format
+		 *
+		 * 		https://en.wikipedia.org/wiki/Markdown
+		 * 		http://www.tablesgenerator.com/markdown_tables
+		 * 		https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+		 * 		https://github.com/erusev/parsedown
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_markdown() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in bbcode format
+		 *
+		 * 		https://en.wikipedia.org/wiki/BBCode
+		 * 		https://xenforo.com/community/resources/cta-table-bb-code.2847/
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_bbcode() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in wiki format
+		 *
+		 * 		https://en.wikipedia.org/wiki/Help:Wiki_markup
+		 * 		https://www.mediawiki.org/wiki/Help:Tables
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_wiki() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in pdf format
+		 *
+		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
+		 * 		http://php.net/manual/en/ref.pdf.php
+		 * 		http://phptopdf.com/
+		 * 		https://github.com/tecnickcom/tcpdf
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_pdf() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in txt format
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_txt() {
+			$return = '';
+
+			return $return;
+		}
+
+		/**
+		 * Exports the table data in json format
+		 *
+		 * 		http://php.net/manual/en/function.json-encode.php
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_json() {
+			$return = '';
+
+			return $return;
 		}
 
 	}
