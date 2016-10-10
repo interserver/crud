@@ -42,6 +42,12 @@ function cruds() {
 .cruds.list-group .list-group-item.active span {
 	margin-left: 10px;
 }
+.cruds .panel-heading {
+	padding: 1px 0px;
+}
+.cruds .panel-body {
+	padding: 0px;
+}
 </style>");
 	add_output("
 <div class='panel-group' id='cruds-accordion' role='tablist' aria-multiselectable='true'>
