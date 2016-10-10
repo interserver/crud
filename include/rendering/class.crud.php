@@ -104,9 +104,10 @@
 		 *
 		 * @param string $table_or_query the table name or sql query or function to use in the result
 		 * @param string $module optional module to associate w/ this query
+		 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
 		 * @return {Crud|crud} an instance of the crud system.
 		 */
-		public static function init($table_or_query, $module = 'default') {
+		public static function init($table_or_query, $module = 'default', $type = 'sql') {
 			// @codingStandardsIgnoreStart
 			if (isset($this) && $this instanceof self)
 				$crud = &$this;
@@ -140,7 +141,7 @@
 			$crud->set_title();
 			$crud->choice = $GLOBALS['tf']->variables->request['choice'];
 			if ($crud->choice == 'crud') {
-				$crud->ajax = true;
+				$crud->ajax = $GLOBALS['tf']->variables->request['action'];
 				$crud->choice = $GLOBALS['tf']->variables->request['crud'];
 			}
 			if (isset($GLOBALS['tf']->variables->request['order_by']))
@@ -155,7 +156,16 @@
 				$crud->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
 			if (substr($crud->choice, 0, 5) == 'none.')
 				$crud->choice = substr($crud->choice, 5);
-			if (strpos($table_or_query, ' ')) {
+			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
+				$crud->custid = $GLOBALS['tf']->variables->request['custid'];
+			else
+				$crud->custid = $GLOBALS['tf']->session->account_id;
+			if ($type == 'function') {
+				$crud->all_fields = true;
+				$crud->type = $type;
+				$crud->table = $table_or_query;
+				$crud->query = $table_or_query;
+			} elseif (strpos($table_or_query, ' ')) {
 				$crud->all_fields = false;
 				$crud->query = $crud->decorate_query($table_or_query);
 				$crud->type = 'query';
@@ -170,10 +180,6 @@
 			}
 			$crud->parse_tables();
 			$crud->default_filters();
-			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
-				$crud->custid = $GLOBALS['tf']->variables->request['custid'];
-			else
-				$crud->custid = $GLOBALS['tf']->session->account_id;
 			return $crud;
 		}
 
@@ -184,7 +190,7 @@
 		 * @return Crud
 		 */
 		public function go($view = 'list') {
-			if ($this->ajax == true)
+			if ($this->ajax !== false)
 				$view = 'ajax';
 			switch ($view) {
 				case 'ajax':
@@ -201,43 +207,34 @@
 		}
 
 		/**
-		 * adds a quick-search button to the header of the table.
+		 * if called via an ajax request the processing is passed off to this handler, which takes care of ajax listing updates, adding, editing, deleting, searching, and exporting records
 		 *
-		 * @param array $terms array of search terms earch term an array in the form of array($field, $operator, $value)
-		 * @param string $label optional text label for the button
-		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
-		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
 		 */
-		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : "") . "{$label}</a>";
-			return $this;
-		}
-
-		/**
-		 * sets the interval in which the list of records will automatically update itself
-		 *
-		 * @param false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
-		 */
-		public function set_auto_update($auto_update = false) {
-			$this->auto_update = $auto_update;
-		}
-
-		/**
-		 * enables the fluid table view which is a 100% wide table
-		 * @return Crud
-		 */
-		public function enable_fluid_container() {
-			$this->fluid_container = true;
-			return $this;
-		}
-
-		/**
-		 * disables the fluid table view which is a 100% wide table
-		 * @return Crud
-		 */
-		public function disable_fluid_container() {
-			$this->fluid_container = true;
-			return $this;
+		public function ajax_handler() {
+			//$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			// generic data to get us here is in _GET, while the specific fields are all in _POST
+			//$this->log(print_r($_GET, true), __LINE__, __FILE__);
+			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
+			switch ($this->ajax) {
+				case 'edit':
+					$this->ajax_edit_handler();
+					break;
+				case 'list':
+					$this->ajax_list_handler();
+					break;
+				case 'add':
+					$this->ajax_add_handler();
+					break;
+				case 'delete':
+					$this->ajax_delete_handler();
+					break;
+				case 'export':
+					$this->ajax_export_handler();
+					break;
+				default:
+					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
+					break;
+			}
 		}
 
 		/**
@@ -432,38 +429,6 @@
 			// send response for js handler
 			header("Content-type: application/json");
 			echo json_encode($json);
-		}
-
-		/**
-		 * if called via an ajax request the processing is passed off to this handler, which takes care of ajax listing updates, adding, editing, deleting, searching, and exporting records
-		 *
-		 */
-		public function ajax_handler() {
-			$action = $GLOBALS['tf']->variables->request['action'];
-			//$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
-			// generic data to get us here is in _GET, while the specific fields are all in _POST
-			//$this->log(print_r($_GET, true), __LINE__, __FILE__);
-			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
-			switch ($action) {
-				case 'edit':
-					$this->ajax_edit_handler();
-					break;
-				case 'list':
-					$this->ajax_list_handler();
-					break;
-				case 'add':
-					$this->ajax_add_handler();
-					break;
-				case 'delete':
-					$this->ajax_delete_handler();
-					break;
-				case 'export':
-					$this->ajax_export_handler();
-					break;
-				default:
-					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
-					break;
-			}
 		}
 
 		public function load_tables() {
@@ -825,6 +790,46 @@
 			$search = implode(" and ", $search);
 			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__);
 			return $search;
+		}
+
+		/**
+		 * adds a quick-search button to the header of the table.
+		 *
+		 * @param array $terms array of search terms earch term an array in the form of array($field, $operator, $value)
+		 * @param string $label optional text label for the button
+		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
+		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
+		 */
+		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
+			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : "") . "{$label}</a>";
+			return $this;
+		}
+
+		/**
+		 * sets the interval in which the list of records will automatically update itself
+		 *
+		 * @param false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
+		 */
+		public function set_auto_update($auto_update = false) {
+			$this->auto_update = $auto_update;
+		}
+
+		/**
+		 * enables the fluid table view which is a 100% wide table
+		 * @return Crud
+		 */
+		public function enable_fluid_container() {
+			$this->fluid_container = true;
+			return $this;
+		}
+
+		/**
+		 * disables the fluid table view which is a 100% wide table
+		 * @return Crud
+		 */
+		public function disable_fluid_container() {
+			$this->fluid_container = true;
+			return $this;
 		}
 
 		/**
