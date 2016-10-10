@@ -393,7 +393,7 @@
 				}
 			}
 			if (count($query_fields) > 0) {
-				//billingd_log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
+				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
 				$query_where = array_merge($query_where, $this->query_where[$query_table]);
 				// update database
 				$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(' and ', $query_where);
@@ -616,7 +616,7 @@
 						$f_type = $field_arr[0]->getType();
 						$f_members = $field_arr[0]->getMembers();
 						if ($f_type != 'ALL') {
-							billingd_log("Dont know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
+							$this->log("Dont know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
 						} else {
 							// Setup all the columns
 							$this->all_fields = true;
@@ -666,7 +666,7 @@
 					}
 					//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
 				} else {
-					billingd_log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
+					$this->log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
 				}
 			}
 			if (isset($fields))
@@ -756,11 +756,12 @@
 		 * @return void
 		 */
 		public function run_list_query() {
-			//billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
+			//$this->log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'function') {
 				$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__);
+				function_requirements($this->query);
 				$this->queries = new CrudFunctionIterator($this->query);
 			} else {
 				if ($this->type == 'table') {
@@ -1097,12 +1098,12 @@
 			if ($this->type == 'function') {
 				if (!isset($this->tables[$this->query]))
 					$this->tables[$this->query] = array();
-				billingd_log("ran is " . var_export($this->queries->ran, true));
+				$this->log("ran is " . var_export($this->queries->ran, true));
 				$ran = $this->queries->ran ;
 				$return = $this->queries->next_record();
 				if ($ran == false) {
 
-					billingd_log("queries->Record is " . var_export($this->queries->Record, true));
+					$this->log("queries->Record is " . var_export($this->queries->Record, true));
 					foreach ($this->queries->Record as $field => $value) {
 						$comment = ucwords(str_replace(
 						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
@@ -1145,13 +1146,13 @@
 		 */
 		public function log($message, $line = false, $file = false) {
 			if ($line !== false && $file !== false)
-				billingd_log($message, $line, $file);
+				$this->log($message, $line, $file);
 			elseif ($line !== false && $file == false)
-				billingd_log($message, $line, __FILE__);
+				$this->log($message, $line, __FILE__);
 			elseif ($line == false && $file !== false)
-				billingd_log($message, false, $file);
+				$this->log($message, false, $file);
 			else
-				billingd_log($message, __LINE__, __FILE__);
+				$this->log($message, __LINE__, __FILE__);
 		}
 
 		/**
@@ -1468,7 +1469,7 @@
 					}
 					if ($first_field == false)
 						$first_field = $field;
-					//billingd_log(print_r($this->query_fields, true));
+					//$this->log(print_r($this->query_fields, true));
 					if ($this->type == 'table' || $this->all_fields == true || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
@@ -1483,7 +1484,7 @@
 					}
 				}
 				if ($this->primary_key == '') {
-					//billingd_log("Genreatig Primary Key to {$first_field}", __LINE__, __FILE__);
+					//$this->log("Genreatig Primary Key to {$first_field}", __LINE__, __FILE__);
 					$this->primary_key = $first_field;
 				}
 			}
@@ -2088,7 +2089,7 @@
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
 			if (is_array($value)) {
-				billingd_log("Field {$field} has array value " . str_replace("\n", " ", print_r($value, true)), __LINE__, __FILE__);
+				$this->log("Field {$field} has array value " . str_replace("\n", " ", print_r($value, true)), __LINE__, __FILE__);
 				return $value;
 			}
 			$value = htmlspecialchars($value);
@@ -2120,7 +2121,7 @@
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter($field, $value = '%value%', $type = 'string', $acl = false, $bad_acl_test = '%value%') {
-			//billingd_log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
 			function_requirements('has_acl');
 			if (!isset($this->filters[$field]))
 				$this->filters[$field] = array();
@@ -2161,7 +2162,7 @@
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter_link($field, $link, $title = false, $acl = false, $bad_acl_test = '%value%') {
-			//billingd_log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
 			// $link = 'choice=none.edit_customer&customer=%field%'
 			$this->add_filter($field, '<a href="' . $link . '" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
 		}
@@ -2178,7 +2179,7 @@
 			elseif (!is_array($fields))
 				$fields = array($fields);
 			foreach ($fields as $field) {
-				//billingd_log($field);
+				//$this->log($field);
 				switch ($field) {
 					case 'account_lid':
 						$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');

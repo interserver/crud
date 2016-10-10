@@ -89,6 +89,7 @@ function get_crud_funcs() {
 			'vps_masters' => array('function' => 'crud_vps_masters', 'title' => 'VPS Host Servers'),
 			'vps_next_servers' => array('function' => 'crud_vps_next_servers', 'title' => 'VPS Next Setup Servers'),
 			'whos_online' => array('function' => 'crud_whos_online', 'title' => 'Whos Online'),
+			'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
 		),
 		'danger' => array(
 			'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
@@ -100,7 +101,6 @@ function get_crud_funcs() {
 			'user_session_activity' => array('function' => 'crud_user_session_activity', 'title' => 'User Session Activity'),
 			'vps_bandwidth' => array('function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'),
 			'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
-			'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
 		),
 	);
 	return $functions;
