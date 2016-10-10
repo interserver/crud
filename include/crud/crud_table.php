@@ -24,6 +24,7 @@ function crud_table() {
 	page_title("{$module} {$table} Table Data Browser");
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	crud::init($table, $module)
+		->set_extra_url_args("&db={$module}&table={$table}")
 		->set_title("{$module} {$table} Table Data Browser")
 		->enable_fluid_container()
 		->go();

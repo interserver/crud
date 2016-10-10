@@ -91,6 +91,7 @@
 		public $fluid_container = false;
 		public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
 		public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
+		public $extra_url_args = '';
 		/**
 		 * @var false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
 		 */
@@ -806,12 +807,25 @@
 		}
 
 		/**
+		 * adds additional parameters to the URL string used by the various ajaxy requests
+		 *
+		 * @param string $args additional string to add to the urls in the form of like  '&who=detain&what=rocks'
+		 * @return Crud
+		 */
+		public function set_extra_url_args($args) {
+			$this->extra_url_args = $args;
+			return $this;
+		}
+
+		/**
 		 * sets the interval in which the list of records will automatically update itself
 		 *
 		 * @param false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
+		 * @return Crud
 		 */
 		public function set_auto_update($auto_update = false) {
 			$this->auto_update = $auto_update;
+			return $this;
 		}
 
 		/**
@@ -1013,6 +1027,7 @@
 			$table->smarty->assign('edit_form', $this->order_form());
 			$table->smarty->assign('select_multiple', $this->select_multiple);
 			$table->smarty->assign('header_buttons', $this->header_buttons);
+			$table->smarty->assign('extra_url_args', $this->extra_url_args);
 			if ($this->edit_row == true)
 				$this->buttons[] = $this->edit_button;
 			if ($this->delete_row == true)
