@@ -45,7 +45,7 @@
 {/if}
 {section name=itemcol loop=$table_headers[itemrow].cols}
 							<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
-								<span class="header_link">
+								<span role="button" class="header_link" onClick="crud_update_sort(this);">
 									{$table_headers[itemrow].cols[itemcol].text}
 								</span>
 							</th>

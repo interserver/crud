@@ -347,21 +347,24 @@ function crud_setup_search_binds() {
 	});
 }
 
-function crud_setup_sort_binds() {
-	jQuery('#itemrowheader .header_link').on('click', function(event) {
-		crud_order_dir = jQuery(this).parent().attr('data-order-dir');
-		crud_order_by = jQuery(this).parent().attr('data-order-by');
+function crud_update_sort(that) {
+	event.preventDefault();
+	var obj = jQuery(that);
+	var parent = obj.parent();
+	crud_order_dir = parent.attr('data-order-dir');
+	crud_order_by = parent.attr('data-order-by');
 		//console.log("got a click on "+crud_order_by+" dir "+crud_order_dir);
-		if (crud_order_dir == 'asc')
-			jQuery(this).parent().attr('data-order-dir', 'desc');
-		else
-			jQuery(this).parent().attr('data-order-dir', 'asc');
-		//jQuery('.crud #itemrowheader th').removeClass('active');
-		jQuery('.crud #itemrowheader .header_link i').css('opacity', '0.3').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort');
-		//jQuery(this).parent().addClass('active');
-		jQuery(this).find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-'+jQuery(this).parent().attr('data-order-dir')).addClass('fa-sort-'+crud_order_dir);
-		crud_load_page();
-	});
+	if (crud_order_dir == 'asc')
+		parent.attr('data-order-dir', 'desc');
+	else
+		parent.attr('data-order-dir', 'asc');
+	//jQuery('.crud #itemrowheader th').removeClass('active');
+	jQuery('.crud #itemrowheader .header_link i').css('opacity', '0.3').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort');
+	//jQuery(this).parent().addClass('active');
+	console.log("current classes "+obj.attr('class'));
+	console.log("setting to "+crud_order_dir);
+	obj.find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort-'+crud_order_dir);
+	crud_load_page();
 }
 
 function crud_setup_pager_binds() {
@@ -416,7 +419,6 @@ function crud_setup_binds() {
 	crud_setup_edit_binds();
 	crud_setup_delete_binds();
 	crud_setup_search_binds();
-	crud_setup_sort_binds();
 	crud_setup_pager_binds();
 	crud_setup_limit_binds();
 	crud_setup_mass_binds();
