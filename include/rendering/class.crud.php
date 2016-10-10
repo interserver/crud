@@ -97,6 +97,11 @@
 		 */
 		public $auto_update = false;
 
+		/**
+		 * constructor class
+		 *
+		 * @return void
+		 */
 		public function __construct() {
 		}
 
@@ -115,52 +120,12 @@
 			else
 				$crud = new crud();
 			// @codingStandardsIgnoreEnd
-			add_js('bootstrap');
-			add_js('font-awesome');
-			if ($module != 'default') {
-				if (isset($GLOBALS['modules'][$module])) {
-					$crud->module = get_module_name($module);
-					$crud->settings = get_module_settings($crud->module);
-					$crud->db = get_module_db($crud->module);
-				} elseif (isset($GLOBALS[$module.'_dbh'])) {
-					$crud->module = $module;
-					$crud->settings = null;
-					$crud->db = get_module_db($crud->module);
-				} else {
-					$crud->module = get_module_name($module);
-					$crud->settings = get_module_settings($crud->module);
-					$crud->db = get_module_db($crud->module);
-				}
-			} else {
-				$crud->module = get_module_name($module);
-				$crud->settings = get_module_settings($crud->module);
-				$crud->db = get_module_db($crud->module);
-			}
+			$crud->apply_module_info($module);
 			$crud->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
 			$crud->column_templates[] = array('text' => '%field%', 'align' => 'r');
 			$crud->column_templates[] = array('text' => '', 'align' => 'r');
 			$crud->set_title();
-			$crud->choice = $GLOBALS['tf']->variables->request['choice'];
-			if ($crud->choice == 'crud') {
-				$crud->ajax = $GLOBALS['tf']->variables->request['action'];
-				$crud->choice = $GLOBALS['tf']->variables->request['crud'];
-			}
-			if (isset($GLOBALS['tf']->variables->request['order_by']))
-				$crud->order_by = $GLOBALS['tf']->variables->request['order_by'];
-			if (isset($GLOBALS['tf']->variables->request['order_dir']) && in_array($GLOBALS['tf']->variables->request['order_dir'], array('asc','desc')))
-				$crud->order_dir = $GLOBALS['tf']->variables->request['order_dir'];
-			if (isset($GLOBALS['tf']->variables->request['search']))
-				$crud->search_terms = json_decode(html_entity_decode($GLOBALS['tf']->variables->request['search']));
-			if (isset($GLOBALS['tf']->variables->request['offset']))
-				$crud->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
-			if (isset($GLOBALS['tf']->variables->request['limit']))
-				$crud->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
-			if (substr($crud->choice, 0, 5) == 'none.')
-				$crud->choice = substr($crud->choice, 5);
-			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
-				$crud->custid = $GLOBALS['tf']->variables->request['custid'];
-			else
-				$crud->custid = $GLOBALS['tf']->session->account_id;
+			$crud->apply_request_data();
 			if ($type == 'function') {
 				$crud->all_fields = true;
 				$crud->type = $type;
@@ -182,6 +147,74 @@
 			$crud->parse_tables();
 			$crud->default_filters();
 			return $crud;
+		}
+
+		/**
+		 * applies the module info setting up the local module, settings, and db variables
+		 *
+		 * @param string $module module name to apply info with
+		 * @return void
+		 */
+		public function apply_module_info($module = 'default') {
+			if ($module != 'default') {
+				if (isset($GLOBALS['modules'][$module])) {
+					$this->module = get_module_name($module);
+					$this->settings = get_module_settings($this->module);
+					$this->db = get_module_db($this->module);
+				} elseif (isset($GLOBALS[$module.'_dbh'])) {
+					$this->module = $module;
+					$this->settings = null;
+					$this->db = get_module_db($this->module);
+				} else {
+					$this->module = get_module_name($module);
+					$this->settings = get_module_settings($this->module);
+					$this->db = get_module_db($this->module);
+				}
+			} else {
+				$this->module = get_module_name($module);
+				$this->settings = get_module_settings($this->module);
+				$this->db = get_module_db($this->module);
+			}
+		}
+
+		/**
+		 * checks for varoius request fields and applies them to their various crud settings
+		 *
+		 * @return void
+		 */
+		public function apply_request_data() {
+			$this->choice = $GLOBALS['tf']->variables->request['choice'];
+			if ($this->choice == 'crud') {
+				$this->ajax = $GLOBALS['tf']->variables->request['action'];
+				$this->choice = $GLOBALS['tf']->variables->request['crud'];
+			}
+			if (isset($GLOBALS['tf']->variables->request['order_by']))
+				$this->order_by = $GLOBALS['tf']->variables->request['order_by'];
+			if (isset($GLOBALS['tf']->variables->request['order_dir']) && in_array($GLOBALS['tf']->variables->request['order_dir'], array('asc','desc')))
+				$this->order_dir = $GLOBALS['tf']->variables->request['order_dir'];
+			if (isset($GLOBALS['tf']->variables->request['search']))
+				$this->search_terms = json_decode(html_entity_decode($GLOBALS['tf']->variables->request['search']));
+			if (isset($GLOBALS['tf']->variables->request['offset']))
+				$this->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
+			if (isset($GLOBALS['tf']->variables->request['limit']))
+				$this->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
+			if (substr($this->choice, 0, 5) == 'none.')
+				$this->choice = substr($this->choice, 5);
+			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
+				$this->custid = $GLOBALS['tf']->variables->request['custid'];
+			else
+				$this->custid = $GLOBALS['tf']->session->account_id;
+		}
+
+		/**
+		 * inserts the javascript sources required for the crud system into the html header
+		 *
+		 * @return void
+		 */
+		public function add_js_headers() {
+			add_js('bootstrap');
+			add_js('font-awesome');
+			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 		}
 
 		/**
@@ -694,7 +727,9 @@
 		 */
 		function get_count() {
 			$db = $this->db;
-			if ($this->type == 'table') {
+			if ($this->type == 'function') {
+				$count = 0;
+			} elseif ($this->type == 'table') {
 				$db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
 				$db->next_record(MYSQL_NUM);
 				$count = $db->f(0);
@@ -720,7 +755,10 @@
 			//billingd_log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
-			if ($this->type == 'table') {
+			if ($this->type == 'function') {
+				function_requirements($this>query);
+				$result = call_user_func($this->query);
+			} elseif ($this->type == 'table') {
 				$query = "select * from {$this->table}";
 				if (sizeof($this->search_terms) > 0)
 					$query .= " where " . $this->search_to_sql();
@@ -1037,10 +1075,9 @@
 			$table->smarty->assign('add_row', $this->add_row);
 			$table->smarty->assign('labels', $this->labels);
 			$table->smarty->assign('rows', $rows);
+			$this->add_js_headers();
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
 			//add_output('<pre style="text-align: left;">'. print_r($this->tables, true) . '</pre>');
-			//$smarty->assign('')
 		}
 
 		/**
