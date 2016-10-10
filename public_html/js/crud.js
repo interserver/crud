@@ -361,8 +361,7 @@ function crud_update_sort(that) {
 	//jQuery('.crud #itemrowheader th').removeClass('active');
 	jQuery('.crud #itemrowheader .header_link i').css('opacity', '0.3').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort');
 	//jQuery(this).parent().addClass('active');
-	console.log("current classes "+obj.attr('class'));
-	console.log("setting to "+crud_order_dir);
+	//console.log("current classes "+obj.attr('class')+" setting to "+crud_order_dir);
 	obj.find('i').css('opacity', '1').removeClass('fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc').addClass('fa-sort-'+crud_order_dir);
 	crud_load_page();
 }
