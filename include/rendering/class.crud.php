@@ -483,9 +483,75 @@
 		 */
 		public function ajax_export_handler() {
 			// get export type
+			$format = $GLOBALS['tf']->variables->request['format'];
+			$formats = $this->get_export_formats();
 			// get data
 			// convert data
 			// send data
+			if (!isset($formats[$format])) {
+				echo "Error";
+				return false;
+			}
+			$info = $formats[$format];
+			$filename = slugify($this->title).'.'.$format;
+
+
+			header('Content-Type: '.$info['type']);
+			header('Content-Disposition: inline;filename=' . $filename);
+		}
+
+		public function get_export_formats() {
+			$formats = array(
+				'xlsx' => array(
+					'name' => 'Excel 2007+',
+					'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				),
+				'xls' => array(
+					'name' => 'BIFF / Excel 2003',
+					'type' => 'application/vnd.ms-excel',
+				),
+				'ods' => array(
+					'name' => 'OpenDocument SpreadSheet',
+					'type' => 'application/vnd.oasis.opendocument.spreadsheet',
+				),
+				'xml' => array(
+					'name' => 'Extensible Markup Language',
+					'type' => 'application/xml',
+				),
+				'csv' => array(
+					'name' => 'Comma-Seperated Values',
+					'type' => 'text/csv',
+				),
+				'php' => array(
+					'name' => 'PHP Array',
+					'type' => 'text/x-php',
+				),
+				'sql' => array(
+					'name' => 'SQL Query',
+					'type' => 'text/x-sql',
+				),
+				'markdown' => array(
+					'name' => 'MarkDown',
+					'type' => 'text/x-markdown',
+				),
+				'bbcode' => array(
+					'name' => 'BBcode',
+					'type' => 'text/x-bbcode',
+				),
+				'wiki' => array(
+					'name' => 'WikiCode',
+					'type' => 'text/x-wikicode',
+				),
+				'pdf' => array(
+					'name' => 'Adobe Portable Document Format',
+					'type' => 'application/pdf',
+				),
+				'txt' => array(
+					'name' => 'Text File',
+					'type' => 'text/plain',
+				),
+			);
+			return $formats;
 		}
 
 		/**
