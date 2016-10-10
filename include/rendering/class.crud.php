@@ -931,6 +931,7 @@
 			$this->run_list_query();
 			$header_shown = false;
 			$idx = 0;
+			$rows = array();
 			while ($this->db->next_record(MYSQL_ASSOC)) {
 				if ($header_shown == false) {
 					$header_shown = true;

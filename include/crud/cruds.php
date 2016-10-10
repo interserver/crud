@@ -101,7 +101,7 @@ function cruds() {
 	<div class='panel panel-primary cruds list-group'>
 		<div class='panel-heading' role='tab' id='headingTwo'>
 			<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
-				CRUD Table Links
+				CRUD Database Table Links
 				" . implode("\n					", $key) . "
 				<span class='pull-right'>Key:</span>
 			</a>
