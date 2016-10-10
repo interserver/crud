@@ -15,7 +15,7 @@
  */
 function crud_whm_listaccts() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select  whm_get_accounts")
+	crud::init("whm_get_accounts", 'defaul', 'function')
 		->set_title("Accounts List")
 		->go();
 }

@@ -994,7 +994,7 @@
 				if ($header_shown == false) {
 					$header_shown = true;
 					$empty_record = array();
-					if ($this->type == 'table') {
+					if ($this->type == 'function' || $this->type == 'table') {
 						foreach (array_keys($this->tables[$this->table]) as $field)
 							$empty_record[$field] = "%{$field}%";
 						foreach ($this->tables[$this->table] as $field => $field_data) {
@@ -1095,11 +1095,24 @@
 		 */
 		public function next_record($result_type) {
 			if ($this->type == 'function') {
+				if (!isset($this->tables[$this->query]))
+					$this->tables[$this->query] = array();
+				billingd_log("ran is " . var_export($this->queries->ran, true));
 				$ran = $this->queries->ran ;
 				$return = $this->queries->next_record();
-				if ($ran == false)
-					foreach (array_keys($this->queries->Record) as $field => $value)
-						$this->add_field($field, $field, false, false, 'input');
+				if ($ran == false) {
+
+					billingd_log("queries->Record is " . var_export($this->queries->Record, true));
+					foreach ($this->queries->Record as $field => $value) {
+						$comment = ucwords(str_replace(
+						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
+						array('SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '),
+						$field));
+						$this->add_field($field, $comment, false, array(), 'input');
+						$this->tables[$this->query] = $this->queries->Record;
+						$this->tables[$this->query]['Comment'] = $comment;
+					}
+				}
 			} else
 				$return = $this->db->next_record(MYSQL_ASSOC);
 			return $return;
@@ -2074,6 +2087,10 @@
 		 */
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
+			if (is_array($value)) {
+				billingd_log("Field {$field} has array value " . str_replace("\n", " ", print_r($value, true)), __LINE__, __FILE__);
+				return $value;
+			}
 			$value = htmlspecialchars($value);
 			$search = array('%field%', '%value%');
 			$replace = array($field, $value);
