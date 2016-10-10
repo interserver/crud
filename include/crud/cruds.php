@@ -14,6 +14,11 @@
  * @return void
  */
 function cruds() {
+	function_requirements('has_acl');
+	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
+		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
+		return false;
+	}
 	add_js('bootstrap');
 	page_title('CRUDs List');
 	$functions = get_crud_funcs();
@@ -39,26 +44,32 @@ function cruds() {
 }
 </style>");
 	add_output("
-<div class='cruds list-group'>
-	<div class='list-group-item active'>
-		CRUD Page Links
-		<span class='pull-right label label-danger'>Not Working Yet ({$sizes['danger']})</span>
-		<span class='pull-right label label-warning'>Loads ({$sizes['warning']})</span>
-		<span class='pull-right label label-info'>Almost Done ({$sizes['info']})</span>
-		<span class='pull-right label label-success'>Ready ({$sizes['success']})</span>
-		<span class='pull-right'>Key:</span>
-	</div>");
+<div class='panel-group' id='cruds-accordion' role='tablist' aria-multiselectable='true'>
+	<div class='panel panel-primary cruds list-group'>
+		<div class='panel-heading' role='tab' id='headingOne'>
+			<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
+				CRUD Page Links
+				<span class='pull-right label label-danger'>Not Working Yet ({$sizes['danger']})</span>
+				<span class='pull-right label label-warning'>Loads ({$sizes['warning']})</span>
+				<span class='pull-right label label-info'>Almost Done ({$sizes['info']})</span>
+				<span class='pull-right label label-success'>Ready ({$sizes['success']})</span>
+				<span class='pull-right'>Key:</span>
+			</a>
+		</div>
+		<div id='collapseOne' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne'>
+			<div class='panel-body'>");
 	foreach ($functions as $level => $functions_arr) {
 		foreach ($functions_arr as $orig_function => $function_data) {
 			add_output("
-	<a href='?choice=none.{$function_data['function']}' class='list-group-item' target='_blank'>
-		<span class='label label-{$level}'>{$orig_function}</span> {$function_data['title']}
-	</a>");
+				<a href='?choice=none.{$function_data['function']}' class='list-group-item' target='_blank'>
+					<span class='label label-{$level}'>{$orig_function}</span> {$function_data['title']}
+				</a>");
 		}
 	}
 	add_output("
-</div>
-");
+			</div>
+		</div>
+	</div>");
 	$all_tables = get_crud_tables();
 	$levels = array('primary', 'info' , 'success', 'warning', 'danger');
 	$idx  = 0;
@@ -71,10 +82,9 @@ function cruds() {
 		$size = sizeof($tables);
 		$key[] = "<span class='pull-right label label-{$level}'>{$db_name} ({$size})</span>";
 		foreach ($tables as $table) {
-			$rows[] = "
-	<a href='?choice=none.crud_table&db={$module}&table={$table}' class='list-group-item' target='_blank'>
-		<span class='label label-{$level}'>{$db_name}</span> {$table}
-	</a>";
+			$rows[] = "<a href='?choice=none.crud_table&db={$module}&table={$table}' class='list-group-item' target='_blank'>
+					<span class='label label-{$level}'>{$db_name}</span> {$table}
+				</a>";
 		}
 		$idx++;
 		if ($idx == sizeof($levels))
@@ -82,15 +92,21 @@ function cruds() {
 	}
 	$key = array_reverse($key);
 	add_output("
-<div class='cruds list-group'>
-	<div class='list-group-item active'>
-		CRUD Table Links
-		" . implode("\n		", $key) . "
-		<span class='pull-right'>Key:</span>
+	<div class='panel panel-primary cruds list-group'>
+		<div class='panel-heading' role='tab' id='headingTwo'>
+			<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
+				CRUD Table Links
+				" . implode("\n					", $key) . "
+				<span class='pull-right'>Key:</span>
+			</a>
+		</div>
+		<div id='collapseTwo' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingTwo'>
+			<div class='panel-body'>
+				" . implode("\n				", $rows) . "
+			</div>
+		</div>
 	</div>
-	" . implode("\n		", $rows) . "
-</div>
-");
+</div>");
 }
 
 function get_crud_tables() {

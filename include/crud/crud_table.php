@@ -21,7 +21,7 @@ function crud_table() {
 	}
 	$module = $GLOBALS['tf']->variables->request['db'];
 	$table = $GLOBALS['tf']->variables->request['table'];
-	page_title($settings['TITLE'] . ' List');
+	page_title("{$module} {$table} Table Data Browser");
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	crud::init($table, $module)
 		->set_title("{$module} {$table} Table Data Browser")
