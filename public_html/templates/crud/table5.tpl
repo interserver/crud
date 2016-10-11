@@ -112,7 +112,7 @@
 										<li role="presentation" data-type="sql"><a href=""><img src="/images/crud/sql.png" alt="">SQL Query</a></li>
 										<li role="presentation" data-type="php"><a href=""><img src="/images/crud/php.png" alt="">PHP Array</a></li>
 										<li role="presentation" data-type="pdf"><a href=""><img src="/images/crud/pdf.png" alt="">PDF</a></li>
-										<li role="presentation" data-type="ods"><a href=""><img src="/images/crud/ods.png" alt="">Libre/O.O. ODS</a></li>
+										<li role="presentation" data-type="ods"><a href=""><img src="/images/crud/ods.png" alt="">Libre/OO. ODS</a></li>
 										<li role="presentation" data-type="xls"><a href=""><img src="/images/crud/xls2.png" alt="">Excel 2003 XLS</a></li>
 										<li role="presentation" data-type="xlsx"><a href=""><img src="/images/crud/xls.png" alt="">Excel 2007 XLSX</a></li>
 									</ul>
