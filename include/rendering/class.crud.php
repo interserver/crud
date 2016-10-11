@@ -473,13 +473,12 @@
 
 
 			// Redirect output to a client’s web browser (OpenDocument)
-			//header('Content-Type: '.$info['type']);
-			header('Content-Type: application/vnd.oasis.opendocument.spreadsheet');
-			header('Content-Disposition: attachment;filename="01simple.PHP Excell"');
-			//header('Content-Disposition: inline;filename=' . $filename);
+			header('Content-Type: '.$info['type']);
+			header('Content-Disposition: attachment;filename="'.$filename.'"');
+			//header('Content-Disposition: inline;filename="'.$filename.'"');
 			header('Cache-Control: max-age=0');
 			// If you're serving to IE 9, then the following may be needed
-			header('Cache-Control: max-age=1');
+			//header('Cache-Control: max-age=1');
 			// If you're serving to IE over SSL, then the following may be needed
 			header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 			header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
