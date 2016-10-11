@@ -68,7 +68,7 @@
 {if isset($row_buttons)}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
-<div class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
+<div id="crud" class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
 	<div class="row">
 		<div class="col-md-12">
 {if $refresh_button == true}
@@ -94,7 +94,7 @@
 {if $print_button == true || $export_button == true}
 								<div class="export btn-group pull-right">
 {if $print_button == true}
-									<button class="btn btn-sm btn-default" type="button" title="Print">
+									<button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
 										<i class="fa fa-print crud-icon"></i>
 										Print
 									</button>

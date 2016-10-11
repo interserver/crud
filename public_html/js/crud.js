@@ -340,6 +340,17 @@ function crud_setup_refresh() {
 	});
 }
 
+
+function crud_print() {
+	event.preventDefault();
+	var obj = jQuery('.crud .table-responsive');
+	var divElements = obj.html();
+	var oldPage = document.body.innerHTML;
+	document.body.innerHTML = "<html><head><title></title></head><body>"+divElements+"</body>";
+	window.print();
+	document.body.innerHTML = oldPage;
+}
+
 jQuery(document).ready(function () {
 	crud_setup_binds();
 	crud_setup_refresh();
