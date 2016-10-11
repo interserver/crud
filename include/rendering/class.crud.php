@@ -46,6 +46,8 @@
 		public $ajax = false;
 		public $debug = false;
 		public $refresh_button = true;
+		public $export_button = true;
+		public $print_button = true;
 		public $module;
 		public $choice;
 		public $table;
@@ -466,7 +468,7 @@
 				return false;
 			}
 			$info = $formats[$format];
-			$filename = slugify($this->title).'.'.$format;
+			$filename = slugify($this->title).'_'.date('Y-m-d').'.'.$format;
 			$function = 'export_'.$format;
 			$this->get_all_rows();
 			$data = $this->$function();
@@ -964,6 +966,42 @@
 		}
 
 		/**
+		 * disables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function disable_export_button() {
+			$this->export_button = true;
+			return $this;
+		}
+
+		/**
+		 * enables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function enable_export_button() {
+			$this->export_button = true;
+			return $this;
+		}
+
+		/**
+		 * enables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function enable_print_button() {
+			$this->print_button = true;
+			return $this;
+		}
+
+		/**
+		 * disables the refresh button on the list view
+		 * @return Crud
+		 */
+		public function disable_print_button() {
+			$this->print_button = true;
+			return $this;
+		}
+
+		/**
 		 * adds a button to the list of buttons shown with each record
 		 *
 		 * @param string $button the html for the button to add
@@ -1134,6 +1172,10 @@
 			$page_links = $this->get_page_links($page, $total_pages);
 			$table->smarty->assign('fluid_container', $this->fluid_container);
 			$table->smarty->assign('refresh_button', $this->refresh_button);
+			$table->smarty->assign('export_button', $this->export_button);
+			if ($this->export_button == true)
+				$table->smarty->assign('export_formats', $this->get_export_formats());
+			$table->smarty->assign('print_button', $this->print_button);
 			$table->smarty->assign('page_links', $page_links);
 			$table->smarty->assign('total_rows', $count);
 			$table->smarty->assign('total_pages', $total_pages);
@@ -2285,50 +2327,62 @@
 				'xlsx' => array(
 					'name' => 'Excel 2007+',
 					'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+					'read' => 'row',
 				),
 				'xls' => array(
-					'name' => 'BIFF / Excel 2003',
+					'name' => 'Excel 2003/BIFF',
 					'type' => 'application/vnd.ms-excel',
+					'read' => 'row',
 				),
 				'ods' => array(
 					'name' => 'OpenDocument SpreadSheet',
 					'type' => 'application/vnd.oasis.opendocument.spreadsheet',
-				),
-				'xml' => array(
-					'name' => 'Extensible Markup Language',
-					'type' => 'application/xml',
-				),
-				'csv' => array(
-					'name' => 'Comma-Seperated Values',
-					'type' => 'text/csv',
-				),
-				'json' => array(
-					'name' => 'JSON',
-					'type' => 'application/json',
-				),
-				'php' => array(
-					'name' => 'PHP Array',
-					'type' => 'text/x-php',
-				),
-				'sql' => array(
-					'name' => 'SQL Query',
-					'type' => 'text/x-sql',
-				),
-				'markdown' => array(
-					'name' => 'MarkDown',
-					'type' => 'text/x-markdown',
-				),
-				'bbcode' => array(
-					'name' => 'BBcode',
-					'type' => 'text/x-bbcode',
-				),
-				'wiki' => array(
-					'name' => 'WikiCode',
-					'type' => 'text/x-wikicode',
+					'read' => 'row',
 				),
 				'pdf' => array(
 					'name' => 'Adobe Portable Document Format',
 					'type' => 'application/pdf',
+					'read' => 'row',
+				),
+				'xml' => array(
+					'name' => 'Extensible Markup Language',
+					'type' => 'application/xml',
+					'read' => 'all',
+				),
+				'php' => array(
+					'name' => 'PHP Array',
+					'type' => 'text/x-php',
+					'read' => 'all',
+				),
+				'sql' => array(
+					'name' => 'SQL Query',
+					'type' => 'text/x-sql',
+					'read' => 'all',
+				),
+				'csv' => array(
+					'name' => 'Comma-Seperated Values',
+					'type' => 'text/csv',
+					'read' => 'all',
+				),
+				'json' => array(
+					'name' => 'JSON',
+					'type' => 'application/json',
+					'read' => 'all',
+				),
+				'bbcode' => array(
+					'name' => 'BBcode',
+					'type' => 'text/x-bbcode',
+					'read' => 'all',
+				),
+				'wiki' => array(
+					'name' => 'WikiCode',
+					'type' => 'text/x-wikicode',
+					'read' => 'all',
+				),
+				'markdown' => array(
+					'name' => 'MarkDown',
+					'type' => 'text/x-markdown',
+					'read' => 'all',
 				),
 			);
 			return $formats;

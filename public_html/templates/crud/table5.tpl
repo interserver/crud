@@ -91,11 +91,15 @@
 								</div>
 {/if}
 								<span class="crud-title">{$title}</span>
+{if $print_button == true || $export_button == true}
 								<div class="export btn-group pull-right">
+{if $print_button == true}
 									<button class="btn btn-sm btn-default" type="button" title="Print">
 										<i class="fa fa-print crud-icon"></i>
 										Print
 									</button>
+{/if}
+{if $export_button == true}
 									<button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
 										<i class="fa fa-download crud-icon"></i>
 										Export
@@ -103,21 +107,17 @@
 										<span class="sr-only">Toggle Dropdown</span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li role="presentation" data-type="markdown"><a href=""><img src="/images/crud/markdown.png" alt="">MarkDown</a></li>
-										<li role="presentation" data-type="wiki"><a href=""><img src="/images/crud/wiki.png" alt="">WikiCode</a></li>
-										<li role="presentation" data-type="bbcode"><a href=""><img src="/images/crud/bbcode.png" alt="">BB Code</a></li>
-										<li role="presentation" data-type="xml"><a href=""><img src="/images/crud/xml.png" alt="">XML</a></li>
-										<li role="presentation" data-type="csv"><a href=""><img src="/images/crud/csv.png" alt="">CSV</a></li>
-										<li role="presentation" data-type="json"><a href=""><img src="/images/crud/json.png" alt="">JSON</a></li>
-										<li role="presentation" data-type="sql"><a href=""><img src="/images/crud/sql.png" alt="">SQL Query</a></li>
-										<li role="presentation" data-type="php"><a href=""><img src="/images/crud/php.png" alt="">PHP Array</a></li>
-										<li role="presentation" data-type="pdf"><a href=""><img src="/images/crud/pdf.png" alt="">PDF</a></li>
-										<li role="presentation" data-type="ods"><a href=""><img src="/images/crud/ods.png" alt="">Libre/OO. ODS</a></li>
-										<li role="presentation" data-type="xls"><a href=""><img src="/images/crud/xls2.png" alt="">Excel 2003 XLS</a></li>
-										<li role="presentation" data-type="xlsx"><a href=""><img src="/images/crud/xls.png" alt="">Excel 2007 XLSX</a></li>
+{foreach item=format_data key=ext from=$export_formats}
+										<li role="presentation" data-type="{$ext}">
+											<a href="" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this);">
+												<img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
+											</a>
+										</li>
+{/foreach}
 									</ul>
+{/if}
 								</div>
-
+{/if}
 							</th>
 						</tr>
 {/if}

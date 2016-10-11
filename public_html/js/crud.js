@@ -123,6 +123,19 @@ function get_crud_url() {
 	return url;
 }
 
+function crud_export(that) {
+	event.preventDefault();
+	var obj = jQuery(that);
+	var parent = obj.parent();
+	var format = parent.attr('data-type');
+	console.log("Exporting to format "+format);
+	var url = get_crud_url() + "&format="+format;
+	url = url.replace("action=list","action=export");
+	window.location = url;
+	//$.ajax({ url: url });
+
+}
+
 function crud_load_page(callback) {
 	$.getJSON(get_crud_url(), { }, function(json) {
 		crud_rows = json;
