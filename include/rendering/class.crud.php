@@ -482,23 +482,21 @@
 			$headers[] = 'Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'; // always modified
 			$headers[] = 'Cache-Control: cache, must-revalidate'; // HTTP/1.1
 			$headers[] = 'Pragma: public'; // HTTP/1.0
-
 			$this->get_all_rows();
-			$data = $this->$function($headers);
-
-			echo $data;
+			echo $this->{$function}($headers);
 			return true;
 		}
 
 		/**
 		 * runs thorugh al the query rows and bulids up an array for use with other functions like export
 		 *
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
 		 * @return void
 		 */
-		public function get_all_rows() {
+		public function get_all_rows($result_type = MYSQL_ASSOC) {
 			$this->run_list_query();
 			$this->rows = array();
-			while ($this->next_record(MYSQL_ASSOC)) {
+			while ($this->next_record($result_type)) {
 				$this->rows[] = $this->get_record();
 			}
 		}
@@ -1205,7 +1203,7 @@
 		/**
 		 * goes to the next record in the result set
 		 *
-		 * @param mixed $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
 		 * @return bool returns true if it was able to get a record and we have an array result, otherwise returns false
 		 */
 		public function next_record($result_type) {
@@ -1214,7 +1212,7 @@
 					$this->tables[$this->query] = array();
 				$this->log("ran is " . var_export($this->queries->ran, true));
 				$ran = $this->queries->ran ;
-				$return = $this->queries->next_record();
+				$return = $this->queries->next_record($result_type);
 				if ($ran == false) {
 
 					$this->log("queries->Record is " . var_export($this->queries->Record, true));
@@ -1228,8 +1226,10 @@
 						$this->tables[$this->query]['Comment'] = $comment;
 					}
 				}
-			} else
-				$return = $this->db->next_record(MYSQL_ASSOC);
+			} else {
+				$return = $this->db->next_record($result_type);
+				//billingd_log(json_encode($this->db->Record), __LINE__, __FILE__);
+			}
 			return $return;
 		}
 
@@ -1239,7 +1239,11 @@
 		 * @return array the result row
 		 */
 		public function get_record() {
-			return ($this->type == 'function' ? $this->queries->Record : $this->db->Record);
+			//$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__);
+			if ($this->type == 'function')
+				return $this->queries->Record;
+			else
+				return $this->db->Record;
 		}
 
 		/**
@@ -1260,13 +1264,13 @@
 		 */
 		public function log($message, $line = false, $file = false) {
 			if ($line !== false && $file !== false)
-				$this->log($message, $line, $file);
+				billingd_log($message, $line, $file);
 			elseif ($line !== false && $file == false)
-				$this->log($message, $line, __FILE__);
+				billingd_log($message, $line, __FILE__);
 			elseif ($line == false && $file !== false)
-				$this->log($message, false, $file);
+				billingd_log($message, false, $file);
 			else
-				$this->log($message, __LINE__, __FILE__);
+				billingd_log($message, __LINE__, __FILE__);
 		}
 
 		/**
@@ -2359,12 +2363,12 @@
 					'read' => 'all',
 					'disposition' => 'inline',
 				),
-				'sql' => array(
+				/*'sql' => array(
 					'name' => 'SQL Query',
 					'type' => 'text/x-sql',
 					'read' => 'all',
 					'disposition' => 'inline',
-				),
+				),*/
 				'csv' => array(
 					'name' => 'Comma-Seperated Values',
 					'type' => 'text/csv',
@@ -2478,7 +2482,16 @@
 			function_requirements('array2Csv');
 			foreach ($headers as $header)
 				header($header);
-			return array2Csv($this->rows, $headers);
+			$csv = '';
+			$out = fopen('php://output', 'w');
+			foreach ($this->rows as $idx => $Record) {
+				if ($idx == 0)
+					fputcsv($out, array_keys($Record));
+				fputcsv($out, $Record);
+				//$csv .= array2Csv($Record);
+			}
+			fclose($out);
+			return $csv;
 		}
 
 		/**
@@ -2530,7 +2543,21 @@
 		 */
 		public function export_markdown($headers) {
 			$return = '';
-
+			foreach ($headers as $header)
+				header($header);
+			$first = true;
+			foreach ($this->rows as $Record) {
+				if ($first == true) {
+					echo implode(' | ', array_keys($Record)) . PHP_EOL;
+					$size = sizeof($Record);
+					$row = array();
+					for ($x = 0; $x < $size; $x++)
+						$row[] = '---';
+					echo implode(' | ', $row) . PHP_EOL;
+					$first = false;
+				}
+				echo implode(' | ', array_values($Record)) . PHP_EOL;
+			}
 			return $return;
 		}
 
@@ -2544,7 +2571,18 @@
 		 */
 		public function export_bbcode($headers) {
 			$return = '';
-
+			foreach ($headers as $header)
+				header($header);
+			$first = true;
+			echo "[table]\n";
+			foreach ($this->rows as $Record) {
+				if ($first == true) {
+						echo "  [tr][td]".implode("[/td][td]", array_keys($Record)) . "[/td][/tr]\n";
+					$first = false;
+				}
+				echo "  [tr][td]".implode("[/td][td]", array_values($Record)) . "[/td][/tr]\n";
+			}
+			echo "[/table]\n";
 			return $return;
 		}
 
@@ -2558,7 +2596,19 @@
 		 */
 		public function export_wiki($headers) {
 			$return = '';
-
+			foreach ($headers as $header)
+				header($header);
+			$first = true;
+			echo "{|\n";
+			foreach ($this->rows as $Record) {
+				if ($first == true) {
+						echo "!".implode("!!", array_keys($Record)) . "\n";
+					$first = false;
+				}
+				echo "|-\n";
+				echo "|".implode("||", array_values($Record)) . "\n";
+			}
+			echo "|}\n";
 			return $return;
 		}
 
@@ -2596,8 +2646,11 @@
 
 		/**
 		 * grabs the next record in the curent row if there is one.
+		 *
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @return bool wether it was able to get an array or not
 		 */
-		 public function next_record() {
+		 public function next_record($result_type) {
 			if ($this->ran == false)
 				$this->run();
 			$this->idx++;
