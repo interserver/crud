@@ -470,22 +470,21 @@
 			$info = $formats[$format];
 			$filename = slugify($this->title).'_'.date('Y-m-d').'.'.$format;
 			$function = 'export_'.$format;
-			$this->get_all_rows();
-			$data = $this->$function();
-
-
+			$headers = array();
 			// Redirect output to a client’s web browser (OpenDocument)
-			header('Content-Type: '.$info['type']);
-			header('Content-Disposition: attachment;filename="'.$filename.'"');
-			//header('Content-Disposition: inline;filename="'.$filename.'"');
-			header('Cache-Control: max-age=0');
+			$headers[] = 'Content-Type: '.$info['type'];
+			$headers[] = 'Content-Disposition: '.$info['disposition'].';filename="'.$filename.'"';
+			$headers[] = 'Cache-Control: max-age=0';
 			// If you're serving to IE 9, then the following may be needed
-			//header('Cache-Control: max-age=1');
+			//$headers[] = 'Cache-Control: max-age=1';
 			// If you're serving to IE over SSL, then the following may be needed
-			header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-			header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-			header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-			header ('Pragma: public'); // HTTP/1.0
+			$headers[] = 'Expires: Mon, 26 Jul 1997 05:00:00 GMT'; // Date in the past
+			$headers[] = 'Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'; // always modified
+			$headers[] = 'Cache-Control: cache, must-revalidate'; // HTTP/1.1
+			$headers[] = 'Pragma: public'; // HTTP/1.0
+
+			$this->get_all_rows();
+			$data = $this->$function($headers);
 
 			echo $data;
 			return true;
@@ -2328,61 +2327,73 @@
 					'name' => 'Excel 2007+',
 					'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 					'read' => 'row',
+					'disposition' => 'attachment',
 				),
 				'xls' => array(
 					'name' => 'Excel 2003/BIFF',
 					'type' => 'application/vnd.ms-excel',
 					'read' => 'row',
+					'disposition' => 'attachment',
 				),
 				'ods' => array(
 					'name' => 'OpenDocument SpreadSheet',
 					'type' => 'application/vnd.oasis.opendocument.spreadsheet',
 					'read' => 'row',
+					'disposition' => 'attachment',
 				),
 				'pdf' => array(
 					'name' => 'Adobe Portable Document Format',
 					'type' => 'application/pdf',
 					'read' => 'row',
+					'disposition' => 'attachment',
 				),
 				'xml' => array(
 					'name' => 'Extensible Markup Language',
 					'type' => 'application/xml',
 					'read' => 'all',
+					'disposition' => 'attachment',
 				),
 				'php' => array(
 					'name' => 'PHP Array',
 					'type' => 'text/x-php',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'sql' => array(
 					'name' => 'SQL Query',
 					'type' => 'text/x-sql',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'csv' => array(
 					'name' => 'Comma-Seperated Values',
 					'type' => 'text/csv',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'json' => array(
 					'name' => 'JSON',
 					'type' => 'application/json',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'bbcode' => array(
 					'name' => 'BBcode',
 					'type' => 'text/x-bbcode',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'wiki' => array(
 					'name' => 'WikiCode',
 					'type' => 'text/x-wikicode',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 				'markdown' => array(
 					'name' => 'MarkDown',
 					'type' => 'text/x-markdown',
 					'read' => 'all',
+					'disposition' => 'inline',
 				),
 			);
 			return $formats;
@@ -2395,9 +2406,9 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_xlsx() {
+		public function export_xlsx($headers) {
 			function_requirements('array2Xlsx');
-			return array2Xlsx($this->rows);
+			return array2Xlsx($this->rows, $headers);
 		}
 
 		/**
@@ -2405,9 +2416,9 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_xls() {
+		public function export_xls($headers) {
 			function_requirements('array2Xls');
-			return array2Xls($this->rows);
+			return array2Xls($this->rows, $headers);
 		}
 
 		/**
@@ -2417,9 +2428,9 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_ods() {
+		public function export_ods($headers) {
 			function_requirements('array2Ods');
-			return array2Ods($this->rows);
+			return array2Ods($this->rows, $headers);
 		}
 
 		/**
@@ -2432,9 +2443,9 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_pdf() {
+		public function export_pdf($headers) {
 			function_requirements('array2Pdf');
-			return array2Pdf($this->rows);
+			return array2Pdf($this->rows, $headers);
 		}
 
 		/**
@@ -2447,8 +2458,10 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_xml() {
+		public function export_xml($headers) {
 			function_requirements('array2Xml');
+			foreach ($headers as $header)
+				header($header);
 			return array2Xml($this->rows);
 		}
 
@@ -2461,9 +2474,11 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_csv() {
+		public function export_csv($headers) {
 			function_requirements('array2Csv');
-			return array2Csv($this->rows);
+			foreach ($headers as $header)
+				header($header);
+			return array2Csv($this->rows, $headers);
 		}
 
 		/**
@@ -2473,8 +2488,10 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_json() {
-			return json_encode($this->rows);
+		public function export_json($headers) {
+			foreach ($headers as $header)
+				header($header);
+			return json_encode($this->rows, $headers);
 		}
 
 		/**
@@ -2484,7 +2501,9 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_php() {
+		public function export_php($headers) {
+			foreach ($headers as $header)
+				header($header);
 			return '<'.'?'.'php'."\n".'$data = '.var_export($this->rows, true).";\n";
 		}
 
@@ -2493,7 +2512,7 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_sql() {
+		public function export_sql($headers) {
 			$return = '';
 
 			return $return;
@@ -2509,7 +2528,7 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_markdown() {
+		public function export_markdown($headers) {
 			$return = '';
 
 			return $return;
@@ -2523,7 +2542,7 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_bbcode() {
+		public function export_bbcode($headers) {
 			$return = '';
 
 			return $return;
@@ -2537,7 +2556,7 @@
 		 *
 		 * @return string the exported data stored as a string
 		 */
-		public function export_wiki() {
+		public function export_wiki($headers) {
 			$return = '';
 
 			return $return;
