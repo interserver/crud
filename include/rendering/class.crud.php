@@ -2330,10 +2330,6 @@
 					'name' => 'Adobe Portable Document Format',
 					'type' => 'application/pdf',
 				),
-				'txt' => array(
-					'name' => 'Text File',
-					'type' => 'text/plain',
-				),
 			);
 			return $formats;
 		}
@@ -2346,9 +2342,8 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xlsx() {
-			$return = '';
-
-			return $return;
+			function_requirements('array2Xlsx');
+			return array2Xlsx($this->rows);
 		}
 
 		/**
@@ -2357,9 +2352,8 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xls() {
-			$return = '';
-
-			return $return;
+			function_requirements('array2Xls');
+			return array2Xls($this->rows);
 		}
 
 		/**
@@ -2370,9 +2364,23 @@
 		 * @return string the exported data stored as a string
 		 */
 		public function export_ods() {
-			$return = '';
+			function_requirements('array2Ods');
+			return array2Ods($this->rows);
+		}
 
-			return $return;
+		/**
+		 * Exports the table data in pdf format
+		 *
+		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
+		 * 		http://php.net/manual/en/ref.pdf.php
+		 * 		http://phptopdf.com/
+		 * 		https://github.com/tecnickcom/tcpdf
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_pdf() {
+			function_requirements('array2Pdf');
+			return array2Pdf($this->rows);
 		}
 
 		/**
@@ -2402,6 +2410,17 @@
 		public function export_csv() {
 			function_requirements('array2Csv');
 			return array2Csv($this->rows);
+		}
+
+		/**
+		 * Exports the table data in json format
+		 *
+		 * 		http://php.net/manual/en/function.json-encode.php
+		 *
+		 * @return string the exported data stored as a string
+		 */
+		public function export_json() {
+			return json_encode($this->rows);
 		}
 
 		/**
@@ -2468,44 +2487,6 @@
 			$return = '';
 
 			return $return;
-		}
-
-		/**
-		 * Exports the table data in pdf format
-		 *
-		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
-		 * 		http://php.net/manual/en/ref.pdf.php
-		 * 		http://phptopdf.com/
-		 * 		https://github.com/tecnickcom/tcpdf
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_pdf() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in txt format
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_txt() {
-			$return = '';
-
-			return $return;
-		}
-
-		/**
-		 * Exports the table data in json format
-		 *
-		 * 		http://php.net/manual/en/function.json-encode.php
-		 *
-		 * @return string the exported data stored as a string
-		 */
-		public function export_json() {
-			return json_encode($this->rows);
 		}
 
 	}
