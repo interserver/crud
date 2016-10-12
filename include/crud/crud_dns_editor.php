@@ -10,12 +10,13 @@
  */
 
 /**
- * crud_dns_manager()
+ * crud_dns_editor()
  * @return void
  */
-function crud_dns_manager() {
+function crud_dns_editor() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select domains.id, domains.account, domains.name, records.content from domains left join records on domains.id=records.domain_id where ((records.type='A' and (records.name=domains.name or records.name='') ) or records.type is null)", 'pdns')
-		->set_title("DNS Manager")
+	$domain_id = intval($GLOBALS['tf']->variables->request['id']);
+	crud::init("select * from records where domain_id='$domain_id'", 'pdns')
+		->set_title("DNS Editor")
 		->go();
 }
