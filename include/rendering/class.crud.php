@@ -2,6 +2,8 @@
 	/**
 	 * CRUD Class
 	 *
+	 *            .. because designing a webpage should be as easy as writing an sql query
+	 *
 	 * its got a very customizable output and customizable field handling ,  but aiming for it to automatically
 	 * generate an optimal page w/out the need for customizing in most cases
 	 *
