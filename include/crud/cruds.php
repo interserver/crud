@@ -37,6 +37,7 @@
 				'backups_list' => array('function' => 'crud_backups_list', 'title' => 'Backup List'),
 				'domains_list' => array('function' => 'crud_domains_list', 'title' => 'Domains'),
 				'quickservers_list' => array('function' => 'crud_quickservers_list', 'title' => 'QuickServers'),
+				'same_domain_accounts' => array('function' => 'crud_same_domain_accounts&id=358805', 'title => 'Accounts matching the @domain.com of client'),
 				'ssl_list' => array('function' => 'crud_ssl_list', 'title' => 'SSL Certificates'),
 				'vps_list' => array('function' => 'vps_list', 'title' => 'VPS List'),
 				'webhosting_list' => array('function' => 'crud_webhosting_list', 'title' => 'Website List'),
