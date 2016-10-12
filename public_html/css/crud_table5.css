@@ -1,0 +1,94 @@
+.crud .export li a img {
+	height: 20px;
+	vertical-align: top;
+	padding-right: 10px;
+}
+.panel-refresh {
+	height:250px;
+	position:relative;
+}
+.refresh-container {
+	position:absolute;
+	top:30%;
+	right:0;
+	background:rgba(200,200,200,0.25);
+	width:100%;
+	height:100%;
+	display: none;
+	text-align:center;
+	z-index:4;
+}
+.refresh-spinner {
+	padding: 30px;
+	opacity: 0.9;
+}
+/* ul.pagination li a { height: 30px; } */
+a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
+	font-size: 12px;
+}
+#crud-table tr th {
+	vertical-align: top;
+	text-align:center;
+}
+.crud {
+	margin-bottom: 10px;
+	max-width: 1400px;
+}
+.crud-header-buttons {
+	position: absolute;
+}
+.crud-title {
+	font-size: 22px;
+}
+.crud .fa.crud-icon {
+	font-size: 16px;
+}
+.crud .nav-crud a.btn, .crud .nav-crud a.btn span.fa, .crud .nav-crud a.btn i.fa {
+	font-size: 18px;
+}
+.crud .nav-crud,
+.crud .nav-crud ul,
+.crud .nav-crud ul li,
+.crud .nav-crud ul li a,
+.crud .nav-crud .btn-group button,
+.crud .nav-crud a.crud-search,
+.crud #crud-search-more input,
+.crud #crud-search-more select,
+.crud #crud-search-more span,
+.crud #crud-search-more a {
+	height: 30px;
+}
+.crud .crud-nav-bar {
+	display: table;
+}
+.crud .crud-nav-bar .nav-crud {
+	display: table-row;
+	vertical-align: top;
+}
+.crud .crud-nav-bar .nav-crud>* {
+	vertical-align: top;
+}
+.crud .crud-nav-bar .nav-crud .pagination {
+	margin: 0px;
+	display: table-cell;
+}
+.crud .crud-nav-bar .nav-crud .pagination li a {
+	padding-top: 4px;
+}
+.crud .crud-nav-bar .nav-crud .row-counts {
+	padding-top: 0px;
+}
+.crud .crud-nav-bar .nav-crud .nav-rows {
+	display: table-cell;
+}
+.crud .crud-nav-bar .nav-crud .row-counts button {
+	vertical-align: top;
+	padding-top: 4px;
+}
+#crud_search_button {
+	padding-top: 2px;
+}
+.error_message {
+	text-align: left;
+}
+
