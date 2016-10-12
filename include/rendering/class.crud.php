@@ -558,6 +558,16 @@
 					foreach ($join_arr->GetMembers() as $member => $member_arr) {
 						$this->join_handler($table, $member_arr);
 					}
+				} elseif ($condition_type == 'EXPR') {
+					// expr shoudl be statements to wrap around (   )  i think
+					foreach ($join_arr->GetMembers() as $member => $member_arr) {
+						$this->join_handler($table, $member_arr);
+					}
+				} elseif ($condition_type == 'OR') {
+					// expr shoudl be statements to wrap around (   )  i think
+					foreach ($join_arr->GetMembers() as $member => $member_arr) {
+						$this->join_handler($table, $member_arr);
+					}
 				} elseif ($condition_type == '=') {
 					//echo print_r($member_arr,true)."<br>";
 					//echo "Type:$type<br>";
@@ -874,7 +884,10 @@
 		public function search_to_sql() {
 			$search = array();
 			$valid_opers = array('=', 'in');
+			billingd_log("Search Terms: " . var_export($this->search_terms, true), __LINE__, __FILE__);
 			if (sizeof($this->search_terms) > 0) {
+				if (!is_array($this->search_terms[0]))
+					$this->search_terms = array($this->search_terms);
 				foreach ($this->search_terms as $search_term) {
 					list($field, $oper, $value) = $search_term;
 					if (!in_array($field, $this->fields)) {

@@ -54,6 +54,7 @@ function get_crud_funcs() {
 			'backups' => array('function' => 'crud_backups', 'title' => 'Backups'),
 			'dedicated_list' => array('function' => 'crud_dedicated_list', 'title' => 'Dedicated List'),
 			'domains' => array('function' => 'crud_domains', 'title' => 'Domains'),
+			'dns_editor' => array('function' => 'crud_dns_editor', 'title' => 'DNS Editor'),
 			'fantastico_list' => array('function' => 'crud_fantastico_list', 'title' => 'Fantastico License List'),
 			'forum_rss' => array('function' => 'crud_forum_rss', 'title' => 'Latest Forum Posts'),
 			'form_manager' => array('function' => 'crud_form_manager', 'title' => 'Form Manager'),

@@ -18,5 +18,7 @@ function crud_dns_editor() {
 	$domain_id = intval($GLOBALS['tf']->variables->request['id']);
 	crud::init("select * from records where domain_id='$domain_id'", 'pdns')
 		->set_title("DNS Editor")
+		->enable_fluid_container()
+		->set_extra_url_args('&id='.$domain_id)
 		->go();
 }
