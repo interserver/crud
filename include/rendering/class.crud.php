@@ -619,15 +619,17 @@
 		public function parse_query_fields($queries = false) {
 			if ($queries == false)
 				$queries = $this->queries;
-			//echo _debug_array($this->queries, true);
+			///echo _debug_array($this->queries, true);
 			//echo _debug_array($queries[0]->getJoins(), true);
 			$joins = $queries[0]->getJoins();
 			if (sizeof($joins) > 0)
 				foreach ($joins as $join => $join_arr) {
 					$table = $join_arr->getTable();											// accounts_ext, vps_masters
+					$table_alias = $join_arr->getAlias();
+					//var_export($table_alias);
 					$join_type = $join_arr->getType();										// LEFT JOIN
 					//echo "Table {$table} Join Type {$join_type}<br>";
-					if ($join_type != 'LEFT JOIN') {
+					if (!in_array($join_type, array('LEFT JOIN', 'LEFT OUTER JOIN'))) {
 						$this->log("Dont know how to handle Join Type {$join_type}", __LINE__, __FILE__);
 					} else {
 						$this->join_handler($table, $join_arr->getCondition());

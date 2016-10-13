@@ -55,12 +55,12 @@ ON swtickets.slaplanid = swslaplans.slaplanid
 WHERE
   swtickets.ticketstatusid = 4
   AND swtickets.departmentid IN (SELECT swstaffassigns.departmentid
-                                 FROM
-                                   swstaff
-                                 LEFT OUTER JOIN swstaffassigns
-                                 ON swstaffassigns.staffid = swstaff.staffid
-                                 WHERE
-                                   swstaff.email = 'detain@interserver.net')")
+								 FROM
+								   swstaff
+								 LEFT OUTER JOIN swstaffassigns
+								 ON swstaffassigns.staffid = swstaff.staffid
+								 WHERE
+								   swstaff.email = 'detain@interserver.net')", 'helpdesk')
 		->set_title("Admin Tickets")
 		->go();
 }

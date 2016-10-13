@@ -53,6 +53,8 @@
 			'warning' => array(
 				'abuse' => array('function' => 'crud_abuse', 'title' => 'Abuse'),
 				'active_packages' => array('function' => 'crud_active_packages', 'title' => 'Active Packages'),
+				'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
+				'admin_tickets_widget' => array('function' => 'crud_admin_tickets_widget', 'title' => 'Admin Tickets'),
 				'backups' => array('function' => 'crud_backups', 'title' => 'Backups'),
 				'dedicated_list' => array('function' => 'crud_dedicated_list', 'title' => 'Dedicated List'),
 				'domains' => array('function' => 'crud_domains', 'title' => 'Domains'),
@@ -94,8 +96,6 @@
 				'whm_listaccts' => array('function' => 'crud_whm_listaccts', 'title' => 'Accounts List'),
 			),
 			'danger' => array(
-				'admin_tickets' => array('function' => 'crud_admin_tickets', 'title' => 'Admin Tickets'),
-				'admin_tickets_widget' => array('function' => 'crud_admin_tickets_widget', 'title' => 'Admin Tickets'),
 				'innertell_pending_orders' => array('function' => 'crud_innertell_pending_orders', 'title' => 'Pending Dedicated Server Orders'),
 				'innertell_pending_orders_new' => array('function' => 'crud_innertell_pending_orders_new', 'title' => 'Pending Server Orders'),
 				'new_vps' => array('function' => 'crud_new_vps', 'title' => 'Newest VPS Signups'),
