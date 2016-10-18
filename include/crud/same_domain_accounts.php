@@ -21,7 +21,7 @@ function same_domain_accounts() {
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
-		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.edit_customer3&customer=\'+get_crud_row_id(this);" title="Goto Edit Customer" data-title="Goto Edit Customer"><i class="fa fa-fw fa-user"></i></button>')
+		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.edit_customer3&customer=\'+get_crud_row_id(this);" title="Goto Edit Customer" data-toggle="tooltip" tooltip="Goto Edit Customer"><i class="fa fa-fw fa-user"></i></button>')
 		->set_extra_url_args('&id='.$id)
 		->go();
 }
