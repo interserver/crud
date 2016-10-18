@@ -1021,7 +1021,15 @@
 		 * @param string $button the html for the button to add
 		 * @return Crud
 		 */
-		public function add_row_button($button) {
+		public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
+			$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
+			$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
+			$button = '<button type="button" class="btn btn-'.$level.' btn-xs" onclick="window.location=\''.$page.'?choice='.$link.';"';
+			if ($title != '')
+				$button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
+			if ($icon != '')
+				$button .= '<i class="fa fa-fw fa-'.$icon.'"></i>';
+			$button .= '</button>';
 			$this->buttons[] = $button;
 			return $this;
 		}

@@ -48,7 +48,7 @@
 				'licenses_list' => array('function' => 'crud_licenses_list', 'title' => 'License List'),
 				'last_logins' => array('function' => 'crud_last_logins', 'title' => 'Last Logn Locations'),
 				'dns_manager' => array('function' => 'crud_dns_manager', 'title' => 'DNS Manager'),
-				'dns_editor' => array('function' => 'crud_dns_editor', 'title' => 'DNS Editor'),
+				'dns_editor' => array('function' => 'crud_dns_editor&id=68', 'title' => 'DNS Editor'),
 			),
 			'warning' => array(
 				'abuse' => array('function' => 'crud_abuse', 'title' => 'Abuse'),

@@ -46,6 +46,9 @@ a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
 .crud .nav-crud a.btn, .crud .nav-crud a.btn span.fa, .crud .nav-crud a.btn i.fa {
 	font-size: 18px;
 }
+.crud-search {
+	padding: 2px 5px;	
+}
 .crud .nav-crud,
 .crud .nav-crud ul,
 .crud .nav-crud ul li,
