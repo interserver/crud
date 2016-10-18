@@ -29,6 +29,7 @@ function crud_licenses_list() {
 		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))),'Pending','info')
 		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('canceled','expired'))),'Expired','info')
 		->add_header_button(array(),'All','info active')
+		->add_filter('invoices_paid', array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple')
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()

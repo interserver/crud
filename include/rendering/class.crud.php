@@ -1022,7 +1022,7 @@
 		 * @return Crud
 		 */
 		public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
-			$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
+			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
 			$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
 			$button = '<button type="button" class="btn btn-'.$level.' btn-xs" onclick="window.location=\''.$page.'?choice='.$link.';"';
 			if ($title != '')
@@ -2280,6 +2280,7 @@
 				'acl' => $acl,
 			);
 			$this->filters[$field][] = $output;
+			return $this;
 		}
 
 		/**
@@ -2325,14 +2326,14 @@
 				$fields = array($fields);
 			foreach ($fields as $field) {
 				//$this->log($field);
-				if ($field == 'invoices_paid') {
-					$this->add_filter($field, array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple');
-				} elseif ($field == 'account_lid') {
+				if ($field == 'account_lid') {
 					$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+				/*} elseif ($field == 'invoices_paid') {
+					$this->add_filter($field, array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple');*/
 				} elseif ($field == $this->settings['PREFIX'].'_name') {
 					$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
-				} elseif ($field == $this->settings['PREFIX'].'_id') {
-					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doin this
+				/*} elseif ($field == $this->settings['PREFIX'].'_id') {
+					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doin this*/
 				} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
 					$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 				}
