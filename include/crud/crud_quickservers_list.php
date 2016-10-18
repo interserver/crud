@@ -32,6 +32,6 @@ function crud_quickservers_list() {
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
-		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.view_'.$settings['PREFIX'].($module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=\'+get_crud_row_id(this);" title="View '.$settings['TITLE'].'" data-title="View '.$settings['TITLE'].'"><i class="fa fa-fw fa-cog"></i></button>')
+		->add_row_button('<button type="button" class="btn btn-primary btn-xs" onclick="window.location=\'index.php?choice=none.view_'.$settings['PREFIX'].($module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=\'+get_crud_row_id(this);" title="View '.$settings['TITLE'].'" data-toggle="tooltip" tooltip="View '.$settings['TITLE'].'"><i class="fa fa-fw fa-cog"></i></button>')
 		->go();
 }
