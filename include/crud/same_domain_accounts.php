@@ -10,10 +10,10 @@
  */
 
 /**
- * crud_same_domain_accounts()
+ * same_domain_accounts()
  * @return void
  */
-function crud_same_domain_accounts() {
+function same_domain_accounts() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	$id = intval($GLOBALS['tf']->variables->request['id']);
 	crud::init("select account_id,account_lid,account_status from accounts where account_lid like (select concat('%',substring(account_lid, locate('@', account_lid))) from accounts where account_id={$id})")
