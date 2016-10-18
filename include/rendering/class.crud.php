@@ -2246,6 +2246,8 @@
 				foreach ($this->filters[$field] as $idx => $filter) {
 					if ($filter['type'] == 'string') {
 						$value = str_replace($search, $replace, $filter['value']);
+					} elseif ($filter['type'] == 'simple') {
+						$value = str_replace(array_keys($filter['value']), array_values($filter['value']), $value);
 					} elseif ($filter['type'] == 'function') {
 						eval('$value = '.$filter['value'].'($field, $value);');
 					}
@@ -2258,8 +2260,8 @@
 		 * adds a field display fitler
 		 *
 		 * @param string $field the name of the field
-		 * @param string $type type of filter, can be string, function,
 		 * @param mixed $value the string pattern to use to replace
+		 * @param string $type type of filter, can be string, function,
 		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
@@ -2268,7 +2270,7 @@
 			function_requirements('has_acl');
 			if (!isset($this->filters[$field]))
 				$this->filters[$field] = array();
-			if (!has_acl($acl)) {
+			if ($acl !== false && !has_acl($acl)) {
 				$type = 'string';
 				$value = $bad_acl_test;
 			}
@@ -2323,23 +2325,16 @@
 				$fields = array($fields);
 			foreach ($fields as $field) {
 				//$this->log($field);
-				switch ($field) {
-					case 'account_lid':
-						$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
-						break;
-					case $this->settings['PREFIX'].'_name':
-						$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
-						break;
+				if ($field == 'invoices_paid') {
+					$this->add_filter($field, array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple');
+				} elseif ($field == 'account_lid') {
+					$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+				} elseif ($field == $this->settings['PREFIX'].'_name') {
+					$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
+				} elseif ($field == $this->settings['PREFIX'].'_id') {
 					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doin this
-					//case $this->settings['PREFIX'].'_id':
-					case $this->settings['TITLE_FIELD']:
-						if ($this->module != 'webhosting')
-							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
-						elseif ($GLOBALS['tf']->ima == 'admin')
-							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'2&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
-						else
-							$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].'4&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
-						break;
+				} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
+					$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 				}
 			}
 
