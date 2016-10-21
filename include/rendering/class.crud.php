@@ -922,7 +922,7 @@
 		}
 
 		/**
-		 * adds additional parameters to the URL string used by the various ajaxy requests
+		 * adds additional parameters to the URL string used by the various ajax requests
 		 *
 		 * @param string $args additional string to add to the urls in the form of like  '&who=detain&what=rocks'
 		 * @return Crud
@@ -2653,7 +2653,7 @@
 		}
 
 		/**
-		 * runs the function and grabs the output from it applyingit usually
+		 * runs the function and grabs the output from it applying it usually
 		 *
 		 * @return void
 		 */
