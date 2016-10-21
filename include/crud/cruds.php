@@ -102,7 +102,7 @@
 				'pending_vps_list' => array('function' => 'crud_pending_vps_list', 'title' => 'Pending Virtual Private Servers (VPS)'),
 				'user_session_activity' => array('function' => 'crud_user_session_activity', 'title' => 'User Session Activity'),
 				'vps_bandwidth' => array('function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'),
-				'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Adddress Space'),
+				'vps_ips' => array('function' => 'crud_vps_ips', 'title' => 'VPS IP Address Space'),
 			),
 		);
 		return $functions;
