@@ -184,7 +184,7 @@
 		}
 
 		/**
-		 * checks for varoius request fields and applies them to their various crud settings
+		 * checks for various request fields and applies them to their various crud settings
 		 *
 		 * @return void
 		 */
@@ -561,12 +561,12 @@
 						$this->join_handler($table, $member_arr);
 					}
 				} elseif ($condition_type == 'EXPR') {
-					// expr shoudl be statements to wrap around (   )  i think
+					// expr should be statements to wrap around (   )  i think
 					foreach ($join_arr->GetMembers() as $member => $member_arr) {
 						$this->join_handler($table, $member_arr);
 					}
 				} elseif ($condition_type == 'OR') {
-					// expr shoudl be statements to wrap around (   )  i think
+					// expr should be statements to wrap around (   )  i think
 					foreach ($join_arr->GetMembers() as $member => $member_arr) {
 						$this->join_handler($table, $member_arr);
 					}
