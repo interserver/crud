@@ -604,7 +604,7 @@
 						$this->query_where[$member_1_table][] =  "{$member_1_field}{$condition_type}'{$member_2_value}'";
 					}
 				} else {
-					$this->log("Dont know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__);
+					$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__);
 				}
 				//echo _debug_array($join_arr->getCondition()->getType(), true)."<br>";
 				//echo _debug_array($join_arr->getCondition(), true)."<br>";
@@ -630,7 +630,7 @@
 					$join_type = $join_arr->getType();										// LEFT JOIN
 					//echo "Table {$table} Join Type {$join_type}<br>";
 					if (!in_array($join_type, array('LEFT JOIN', 'LEFT OUTER JOIN'))) {
-						$this->log("Dont know how to handle Join Type {$join_type}", __LINE__, __FILE__);
+						$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__);
 					} else {
 						$this->join_handler($table, $join_arr->getCondition());
 					}
@@ -683,7 +683,7 @@
 						$f_type = $field_arr[0]->getType();
 						$f_members = $field_arr[0]->getMembers();
 						if ($f_type != 'ALL') {
-							$this->log("Dont know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
+							$this->log("Don't know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
 						} else {
 							// Setup all the columns
 							$this->all_fields = true;
@@ -733,7 +733,7 @@
 					}
 					//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
 				} else {
-					$this->log("Dont know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
+					$this->log("Don't know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
 				}
 			}
 			if (isset($fields))
@@ -875,7 +875,7 @@
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
 				default:
-					$this->log("Dont konw how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+					$this->log("Don't konw how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
 					break;
 			}
 		}
