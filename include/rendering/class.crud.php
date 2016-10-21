@@ -875,13 +875,13 @@
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
 				default:
-					$this->log("Don't konw how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
 					break;
 			}
 		}
 
 		/**
-		 * converts the searchs setup into an sql string to be appened to the normal query
+		 * converts the searches setup into an sql string to be appended to the normal query
 		 *
 		 * @return string the sql string to add to the query
 		 */
@@ -1330,7 +1330,7 @@
 		/**
 		 * adds validations for multiple fields
 		 *
-		 * @param array $validations an array with each element containing a $field => $validations  where $validatoins is an array of validatoins to apply and $field is the field name
+		 * @param array $validations an array with each element containing a $field => $validations  where $validations is an array of validations to apply and $field is the field name
 		 */
 		public function add_validations($validations) {
 			foreach ($validations as $field => $field_validations) {
@@ -1490,7 +1490,7 @@
 		}
 
 		/**
-		 * parse the table results looking at each field and getting usefulr information from it and creating input types fbasedonwhat it finds.
+		 * parse the table results looking at each field and getting useful information from it and creating input types based on what it finds.
 		 *
 		 */
 		public function parse_tables() {
@@ -1627,7 +1627,7 @@
 					}
 				}
 				if ($this->primary_key == '') {
-					//$this->log("Genreatig Primary Key to {$first_field}", __LINE__, __FILE__);
+					//$this->log("Generating Primary Key to {$first_field}", __LINE__, __FILE__);
 					$this->primary_key = $first_field;
 				}
 			}
@@ -2003,7 +2003,7 @@
 		}
 
 		/**
-		 * disables the checkboxs to the left of the rows for bulk actions
+		 * disables the checkboxes to the left of the rows for bulk actions
 		 *
 		 * @return Crud
 		 */
@@ -2053,7 +2053,7 @@
 		}
 
 		/**
-		 * enables the checkboxs to the left of the rows for bulk actions
+		 * enables the checkboxes to the left of the rows for bulk actions
 		 *
 		 * @return Crud
 		 */
@@ -2653,7 +2653,7 @@
 		}
 
 		/**
-		 * runs the function and grabs the output from it aplying it usully
+		 * runs the function and grabs the output from it applyingit usually
 		 *
 		 * @return void
 		 */
