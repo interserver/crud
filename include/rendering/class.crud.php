@@ -1259,7 +1259,7 @@
 		}
 
 		/**
-		 * returns the record for the current row wether its an sql or function type
+		 * returns the record for the current row whether its an sql or function type
 		 *
 		 * @return array the result row
 		 */
@@ -2669,7 +2669,7 @@
 		 * grabs the next record in the curent row if there is one.
 		 *
 		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
-		 * @return bool wether it was able to get an array or not
+		 * @return bool whether it was able to get an array or not
 		 */
 		 public function next_record($result_type) {
 			if ($this->ran == false)
