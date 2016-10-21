@@ -769,7 +769,7 @@
 		/**
 		 * gets detailed information about the sql table.
 		 *
-		 * @param string $table the table name to get informatoin about.
+		 * @param string $table the table name to get information about.
 		 * @return array an array of information about the table
 		 */
 		public function get_table_details($table) {
@@ -2342,7 +2342,7 @@
 		}
 
 		/**
-		 * gets a list of all the export formats along with informatoin like tcontent ttpe to send accross the header
+		 * gets a list of all the export formats along with information like tcontent ttpe to send accross the header
 		 *
 		 * @return array an array of the various formats and their information
 		 */
