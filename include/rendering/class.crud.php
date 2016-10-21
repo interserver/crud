@@ -490,9 +490,9 @@
 		}
 
 		/**
-		 * runs thorugh al the query rows and bulids up an array for use with other functions like export
+		 * runs through all the query rows and builds up an array for use with other functions like export
 		 *
-		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 		 * @return void
 		 */
 		public function get_all_rows($result_type = MYSQL_ASSOC) {
@@ -911,7 +911,7 @@
 		/**
 		 * adds a quick-search button to the header of the table.
 		 *
-		 * @param array $terms array of search terms earch term an array in the form of array($field, $operator, $value)
+		 * @param array $terms array of search terms in the form of array($field, $operator, $value)
 		 * @param string $label optional text label for the button
 		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
 		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
@@ -1228,7 +1228,7 @@
 		/**
 		 * goes to the next record in the result set
 		 *
-		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 		 * @return bool returns true if it was able to get a record and we have an array result, otherwise returns false
 		 */
 		public function next_record($result_type) {
@@ -1274,7 +1274,7 @@
 		/**
 		 * displays an error message ot the user
 		 *
-		 * @param string $message the text of the erro rmessage
+		 * @param string $message the text of the error message
 		 */
 		public function error($message) {
 			dialog('Error', $message);
@@ -1339,11 +1339,11 @@
 		}
 
 		/**
-		 * adds an input type fieeld into the array of input types
+		 * adds an input type field into the array of input types
 		 *
 		 * @param string $field the field name
 		 * @param string $input_type the input type to use for the field
-		 * @param false|array $data optoinal data to use along with the input type
+		 * @param false|array $data optional data to use along with the input type
 		 */
 		public function add_input_type_field($field, $input_type, $data = false) {
 			//echo "Got here $field $input_type <pre>" . print_r($data, true) . "</pre><br>\n";
@@ -1373,7 +1373,7 @@
 		 * @param mixed $default default value
 		 * @param mixed $validations validations to apply
 		 * @param string $input_type type of input
-		 * @param mixed $input_data data to use forpopulating theinput type
+		 * @param mixed $input_data data to use forpopulating the input type
 		 * @return Crud
 		 */
 		public function add_field($field, $label = false, $default = false, $validations = false, $input_type = false, $input_data = false) {
@@ -1391,9 +1391,9 @@
 		}
 
 		/**
-		 * adds multiple fields to the sytsem
+		 * adds multiple fields to the system
 		 *
-		 * @param array $fields an array of fields t oadd
+		 * @param array $fields an array of fields to add
 		 */
 		public function add_fields($fields) {
 			foreach ($fields as $field) {
@@ -1446,7 +1446,7 @@
 		/**
 		 * alias function for label()
 		 *
-		 * @param string $field field to get the labe for
+		 * @param string $field field to get the label for
 		 * @return string the label
 		 */
 		public function get_label($field) {
@@ -1456,7 +1456,7 @@
 		/**
 		 * gets the label for a field
 		 *
-		 * @param string $field field to get the labe for
+		 * @param string $field field to get the label for
 		 * @return string the label
 		 */
 		public function label($field) {
@@ -1472,7 +1472,7 @@
 		}
 
 		/**
-		 * adds an admin confirmatoin field
+		 * adds an admin confirmation field
 		 *
 		 * @param mixed $field
 		 * @param mixed $label
@@ -1634,7 +1634,7 @@
 		}
 
 		/**
-		 * old carried over function used to validate a form submissoin
+		 * old carried over function used to validate a form submission
 		 *
 		 */
 		public function validate_order() {
@@ -2107,7 +2107,7 @@
 		}
 
 		/**
-		 * displays a confirmatoin type page for the add/order form
+		 * displays a confirmation type page for the add/order form
 		 *
 		 */
 		public function confirm_order() {
@@ -2257,7 +2257,7 @@
 		}
 
 		/**
-		 * adds a field display fitler
+		 * adds a field display filter
 		 *
 		 * @param string $field the name of the field
 		 * @param mixed $value the string pattern to use to replace
@@ -2303,7 +2303,7 @@
 		 *
 		 * @param string $field the field name
 		 * @param string $link url, it can be a full url or just like a 'choice=none.blah' type url
-		 * @param false|string $title optionally specify a title/tooltip to be shown when you hover the link, defauls to false , or no title/tooltip
+		 * @param false|string $title optionally specify a title/tooltip to be shown when you hover the link, defaults to false , or no title/tooltip
 		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
@@ -2314,7 +2314,7 @@
 		}
 
 		/**
-		 * processeds the standard/default set of filters, either adding all the filters or adding
+		 * proceeds the standard/default set of filters, either adding all the filters or adding
 		 * them for the specific fields you tell it to
 		 *
 		 * @param false|string|array $fields
@@ -2333,7 +2333,7 @@
 				} elseif ($field == $this->settings['PREFIX'].'_name') {
 					$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
 				/*} elseif ($field == $this->settings['PREFIX'].'_id') {
-					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doin this*/
+					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doing this*/
 				} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
 					$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 				}
@@ -2342,7 +2342,7 @@
 		}
 
 		/**
-		 * gets a list of all the export formats along with information like tcontent ttpe to send accross the header
+		 * gets a list of all the export formats along with information like content type to send across the header
 		 *
 		 * @return array an array of the various formats and their information
 		 */
@@ -2655,7 +2655,7 @@
 		/**
 		 * runs the function and grabs the output from it aplying it usully
 		 *
-		 * @eturn void
+		 * @return void
 		 */
 		public function run() {
 			function_requirements($this->function);
@@ -2666,9 +2666,9 @@
 		}
 
 		/**
-		 * grabs the next record in the curent row if there is one.
+		 * grabs the next record in the current row if there is one.
 		 *
-		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and oher stuffq
+		 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 		 * @return bool whether it was able to get an array or not
 		 */
 		 public function next_record($result_type) {
