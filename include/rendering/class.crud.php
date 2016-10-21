@@ -408,7 +408,7 @@
 					//$this->db->query($query, __LINE__, __FILE__);
 					// send response for js handler
 					echo "ok";
-					echo "<br>validation successfull<br>i want to run query<div class='well'>{$query}</div>";
+					echo "<br>validation successful<br>i want to run query<div class='well'>{$query}</div>";
 				} else {
 					$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
 					// send response for js handler
