@@ -9,6 +9,9 @@
 #permissions_check_all {
 	margin-bottom: 5px;
 }
+.permission-use, .permission-use a {
+font-size: 12px;
+}
 </style>
 				<table id="permissions_table" class="table table-condensed table-striped table-hover">
 				<thead>
@@ -41,6 +44,17 @@
 							{$perm.perm_text}
 						</td>
 					</tr>
+{if isset($perm_usage[$perm.perm_name]) && sizeof($perm_usage[$perm.perm_name]) > 0}
+					<tr>
+						<td colspan=3>
+							<small class="permission-use">
+{foreach from=$perm_usage[$perm.perm_name] item=function}
+								<a href="?choice=none.{$function}" target="_blank" title="Open {$function} in a new window">{$function}</a>,
+{/foreach}
+							</small>
+						</td>
+					</tr>
+{/if}
 {/foreach}
 				</tbody>
 				</table>
