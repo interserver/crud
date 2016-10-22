@@ -155,8 +155,8 @@
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
 {/foreach}
-<!--						<option value="{$idx}" data-type="text">Checknumber</option>
-						<option value="{$idx}" data-type="datetime">Paymentdate</option>
+<!--						<option value="{$idx}" data-type="text">Check number</option>
+						<option value="{$idx}" data-type="datetime">Payment date</option>
 						<option value="{$idx}" data-type="float">Amount</option> -->
 					</select>
 					<span class="btn-group">
