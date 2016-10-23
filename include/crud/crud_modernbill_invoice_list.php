@@ -15,7 +15,8 @@
  */
 function crud_modernbill_invoice_list() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select client_info.client_email
+	crud::init(
+		'select client_info.client_email
 	 , client_invoice.client_id
 	 , client_invoice.invoice_id
 	 , client_invoice.invoice_amount
@@ -27,7 +28,7 @@ function crud_modernbill_invoice_list() {
 	 , client_invoice.invoice_subtotal FROM
   client_invoice
 LEFT OUTER JOIN client_info
-ON client_invoice.client_id = client_info.client_id", 'mb')
-		->set_title("Modernbill Invoice List")
+ON client_invoice.client_id = client_info.client_id', 'mb')
+		->set_title('Modernbill Invoice List')
 		->go();
 }

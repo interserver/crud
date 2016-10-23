@@ -15,7 +15,7 @@
  */
 function crud_server_billing_stats() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("get_server_billing_stats", 'default', 'function')
-		->set_title("Server Billing Stats")
+	crud::init('get_server_billing_stats', 'default', 'function')
+		->set_title('Server Billing Stats')
 		->go();
 }

@@ -20,6 +20,6 @@ function crud_active_packages() {
   __TABLE__
 WHERE
   __TABLE__.__PREFIX___status = 'active'")
-		->set_title("Active Packages")
+		->set_title('Active Packages')
 		->go();
 }

@@ -22,6 +22,6 @@ WHERE
   AND month(invoices.invoices_date) = month(now())
   AND invoices.invoices_type >= 10
   AND invoices.invoices_module='__MODULE__'")
-		->set_title("Payments This Month")
+		->set_title('Payments This Month')
 		->go();
 }

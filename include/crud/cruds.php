@@ -30,7 +30,10 @@
 			return $return;
 	}
 
-	function get_crud_funcs() {
+/**
+ * @return array
+ */
+function get_crud_funcs() {
 		$functions = array(
 			'success' => array(
 				'admins' => array('function' => 'admins', 'title' => 'Administrator Role Assignments'),
@@ -171,10 +174,12 @@
 					</a>");
 			}
 		}
-		add_output("
+		add_output(
+			'
 			</div>
 			</div>
-		</div>");
+		</div>'
+		);
 		$all_tables = get_crud_tables();
 		$levels = array('primary', 'info' , 'success', 'warning', 'danger');
 		$idx  = 0;
@@ -207,9 +212,10 @@
 			</div>
 			<div id='collapseTwo' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingTwo'>
 			<div class='panel-body'>
-			" . implode("\n				", $rows) . "
+			" . implode("\n				", $rows) . '
 			</div>
 			</div>
 			</div>
-		</div>");
+		</div>'
+		);
 	}

@@ -402,22 +402,22 @@
 				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
 				$query_where = array_merge($query_where, $this->query_where[$query_table]);
 				// update database
-				$query = "update " . $query_table . " set " . implode(', ', $query_fields) . " where " . implode(' and ', $query_where);
+				$query = 'update ' . $query_table . ' set ' . implode(', ', $query_fields) . ' where ' . implode(' and ', $query_where);
 				if ($valid == true) {
 					$this->log("i want to run query {$query}", __LINE__, __FILE__);
 					//$this->db->query($query, __LINE__, __FILE__);
 					// send response for js handler
-					echo "ok";
+					echo 'ok';
 					echo "<br>validation successful<br>i want to run query<div class='well'>{$query}</div>";
 				} else {
 					$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
 					// send response for js handler
-					echo "There was an error with validation:<br>" . implode('<br>', $errors) . " with the fields " . impode(", ", $error_fields);
+					echo 'There was an error with validation:<br>' . implode('<br>', $errors) . ' with the fields ' . impode(', ', $error_fields);
 				}
 			} else {
-				$this->log("crud error nothing to update ", __LINE__, __FILE__);
+				$this->log('crud error nothing to update ', __LINE__, __FILE__);
 				// send response for js handler
-				echo "There was nothing to update";
+				echo 'There was nothing to update';
 			}
 		}
 
@@ -466,7 +466,7 @@
 			// convert data
 			// send data
 			if (!isset($formats[$format])) {
-				echo "Error";
+				echo 'Error';
 				return false;
 			}
 			$info = $formats[$format];
@@ -516,7 +516,7 @@
 				$json[] = $this->db->Record;
 			}
 			// send response for js handler
-			header("Content-type: application/json");
+			header('Content-type: application/json');
 			echo json_encode($json);
 		}
 
@@ -804,7 +804,7 @@
 				$db->next_record(MYSQL_NUM);
 				$count = $db->f(0);
 			} else {
-				if (preg_match('/^.*( from .*)$/iU', str_replace("\n", " ", $this->query), $matches)) {
+				if (preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
 					$from = $matches[1];
 					$db->query("select count(*) {$from}", __LINE__, __FILE__);
 					$db->next_record(MYSQL_NUM);
@@ -834,14 +834,14 @@
 				if ($this->type == 'table') {
 					$query = "select * from {$this->table}";
 					if (sizeof($this->search_terms) > 0)
-						$query .= " where " . $this->search_to_sql();
+						$query .= ' where ' . $this->search_to_sql();
 				} else {
 					$query = $this->query;
 					if (sizeof($this->search_terms) > 0)
 						if ($this->queries[0]->hasWhere() == false)
-							$query .= " where " . $this->search_to_sql();
+							$query .= ' where ' . $this->search_to_sql();
 						else
-							$query .= " and " . $this->search_to_sql();
+							$query .= ' and ' . $this->search_to_sql();
 				}
 				if ($this->page_limit > 0)
 					$query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
@@ -875,7 +875,7 @@
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
 				default:
-					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true) . ')', __LINE__, __FILE__);
 					break;
 			}
 		}
@@ -888,7 +888,7 @@
 		public function search_to_sql() {
 			$search = array();
 			$valid_opers = array('=', 'in');
-			billingd_log("Search Terms: " . var_export($this->search_terms, true), __LINE__, __FILE__);
+			billingd_log('Search Terms: ' . var_export($this->search_terms, true), __LINE__, __FILE__);
 			if (sizeof($this->search_terms) > 0) {
 				if (!is_array($this->search_terms[0]))
 					$this->search_terms = array($this->search_terms);
@@ -903,7 +903,7 @@
 					}
 				}
 			}
-			$search = implode(" and ", $search);
+			$search = implode(' and ', $search);
 			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__);
 			return $search;
 		}
@@ -915,9 +915,10 @@
 		 * @param string $label optional text label for the button
 		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
 		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
+		 * @return $this
 		 */
 		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : "") . "{$label}</a>";
+			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
 			return $this;
 		}
 
@@ -1235,12 +1236,12 @@
 			if ($this->type == 'function') {
 				if (!isset($this->tables[$this->query]))
 					$this->tables[$this->query] = array();
-				$this->log("ran is " . var_export($this->queries->ran, true));
+				$this->log('ran is ' . var_export($this->queries->ran, true));
 				$ran = $this->queries->ran ;
 				$return = $this->queries->next_record($result_type);
 				if ($ran == false) {
 
-					$this->log("queries->Record is " . var_export($this->queries->Record, true));
+					$this->log('queries->Record is ' . var_export($this->queries->Record, true));
 					foreach ($this->queries->Record as $field => $value) {
 						$comment = ucwords(str_replace(
 						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
@@ -2232,7 +2233,7 @@
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
 			if (is_array($value)) {
-				$this->log("Field {$field} has array value " . str_replace("\n", " ", print_r($value, true)), __LINE__, __FILE__);
+				$this->log("Field {$field} has array value " . str_replace("\n", ' ', print_r($value, true)), __LINE__, __FILE__);
 				return $value;
 			}
 			$value = htmlspecialchars($value);
@@ -2264,6 +2265,7 @@
 		 * @param string $type type of filter, can be string, function,
 		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
 		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
+		 * @return $this
 		 */
 		public function add_filter($field, $value = '%value%', $type = 'string', $acl = false, $bad_acl_test = '%value%') {
 			//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
@@ -2598,10 +2600,10 @@
 			echo "[table]\n";
 			foreach ($this->rows as $Record) {
 				if ($first == true) {
-						echo "  [tr][td]".implode("[/td][td]", array_keys($Record)) . "[/td][/tr]\n";
+						echo '  [tr][td]' . implode('[/td][td]', array_keys($Record)) . "[/td][/tr]\n";
 					$first = false;
 				}
-				echo "  [tr][td]".implode("[/td][td]", array_values($Record)) . "[/td][/tr]\n";
+				echo '  [tr][td]' . implode('[/td][td]', array_values($Record)) . "[/td][/tr]\n";
 			}
 			echo "[/table]\n";
 			return $return;
@@ -2623,11 +2625,11 @@
 			echo "{|\n";
 			foreach ($this->rows as $Record) {
 				if ($first == true) {
-						echo "!".implode("!!", array_keys($Record)) . "\n";
+						echo '!' . implode('!!', array_keys($Record)) . "\n";
 					$first = false;
 				}
 				echo "|-\n";
-				echo "|".implode("||", array_values($Record)) . "\n";
+				echo '|' . implode('||', array_values($Record)) . "\n";
 			}
 			echo "|}\n";
 			return $return;
@@ -2648,6 +2650,11 @@
 		public $Record;
 		public $keys;
 
+		/**
+		 * CrudFunctionIterator constructor.
+		 *
+		 * @param $function
+		 */
 		public function __construct($function) {
 			$this->function = $function;
 		}

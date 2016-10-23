@@ -15,7 +15,7 @@
  */
 function crud_domains() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
-	crud::init("select * from domains", 'domains')
-		->set_title("Domains")
+	crud::init('select * from domains', 'domains')
+		->set_title('Domains')
 		->go();
 }

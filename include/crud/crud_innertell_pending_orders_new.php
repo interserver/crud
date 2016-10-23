@@ -63,6 +63,6 @@ ON orders.username=users.username
 GROUP BY
   orders.username
 ", 'innertell')
-		->set_title("Pending Server Orders")
+		->set_title('Pending Server Orders')
 		->go();
 }
