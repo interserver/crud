@@ -89,7 +89,7 @@
 		public $column_templates = array();
 		public $tables = array();
 		// from the SQLParser or CrudFunctionIterator
-		public $queries = null;
+		public $queries;
 		public $db;
 		public $settings;
 		public $buttons = array();
@@ -105,8 +105,7 @@
 
 		/**
 		 * constructor class
-		 *
-		 * @return void
+
 		 */
 		public function __construct() {
 		}
@@ -117,7 +116,8 @@
 		 * @param string $table_or_query the table name or sql query or function to use in the result
 		 * @param string $module optional module to associate w/ this query
 		 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
-		 * @return {Crud|crud} an instance of the crud system.
+		 * @return \Crud {Crud|crud} an instance of the crud system.
+		 * an instance of the crud system.
 		 */
 		public static function init($table_or_query, $module = 'default', $type = 'sql') {
 			// @codingStandardsIgnoreStart
@@ -533,7 +533,7 @@
 		 * parses a query using crodas/sql-parser giving structured detailed information about the query
 		 * and then parses that information to use in the crud system
 		 *
-		 * @param false|string $query optional query to parse, if false or not passed it uses the one associated w/ the crud request
+		 * @param bool|false|string $query optional query to parse, if false or not passed it uses the one associated w/ the crud request
 		 */
 		public function parse_query($query = false) {
 			if ($query == false)
@@ -744,7 +744,7 @@
 		/**
 		 * gets the sql tables associated with the sql query.
 		 *
-		 * @param false|string $query optional query to use to get information from,if blank or false it uses the query associated with the crud instance
+		 * @param bool|false|string $query optional query to use to get information from,if blank or false it uses the query associated with the crud instance
 		 */
 		public function get_tables_from_query($query = false) {
 			if ($query == false)
@@ -914,7 +914,7 @@
 		 * @param array $terms array of search terms in the form of array($field, $operator, $value)
 		 * @param string $label optional text label for the button
 		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
-		 * @param false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
+		 * @param bool|false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
 		 * @return $this
 		 */
 		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
@@ -936,8 +936,8 @@
 		/**
 		 * sets the interval in which the list of records will automatically update itself
 		 *
-		 * @param false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
-		 * @return Crud
+		 * @param bool|false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
+		 * @return \Crud
 		 */
 		public function set_auto_update($auto_update = false) {
 			$this->auto_update = $auto_update;
@@ -1019,8 +1019,13 @@
 		/**
 		 * adds a button to the list of buttons shown with each record
 		 *
-		 * @param string $button the html for the button to add
-		 * @return Crud
+		 * @param $link
+		 * @param string $title
+		 * @param string $level
+		 * @param string $icon
+		 * @param string $page
+		 * @return \Crud
+		 * @internal param string $button the html for the button to add
 		 */
 		public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
 			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
@@ -1285,8 +1290,8 @@
 		 * logs a message
 		 *
 		 * @param string $message message to log
-		 * @param false|int $line optional line your calling from to track down where the log messages originates easily to send w/ the log message
-		 * @param false|string $file optional file your calling from to track down where the log messages originates easily to send w/ the log message
+		 * @param bool|false|int $line optional line your calling from to track down where the log messages originates easily to send w/ the log message
+		 * @param bool|false|string $file optional file your calling from to track down where the log messages originates easily to send w/ the log message
 		 */
 		public function log($message, $line = false, $file = false) {
 			if ($line !== false && $file !== false)
@@ -1344,7 +1349,7 @@
 		 *
 		 * @param string $field the field name
 		 * @param string $input_type the input type to use for the field
-		 * @param false|array $data optional data to use along with the input type
+		 * @param array|bool|false $data optional data to use along with the input type
 		 */
 		public function add_input_type_field($field, $input_type, $data = false) {
 			//echo "Got here $field $input_type <pre>" . print_r($data, true) . "</pre><br>\n";
@@ -1370,12 +1375,12 @@
 		 * adds a field to the system
 		 *
 		 * @param string $field the field name
-		 * @param false|string $label label for the field
+		 * @param bool|false|string $label label for the field
 		 * @param mixed $default default value
 		 * @param mixed $validations validations to apply
-		 * @param string $input_type type of input
+		 * @param bool|string $input_type type of input
 		 * @param mixed $input_data data to use forpopulating the input type
-		 * @return Crud
+		 * @return \Crud
 		 */
 		public function add_field($field, $label = false, $default = false, $validations = false, $input_type = false, $input_data = false) {
 			if (!in_array($field, $this->fields))
@@ -2263,9 +2268,10 @@
 		 * @param string $field the name of the field
 		 * @param mixed $value the string pattern to use to replace
 		 * @param string $type type of filter, can be string, function,
-		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
-		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
+		 * @param bool|false|string $acl optional acl rule required for this filter, such as 'view_customer'
+		 * @param string $bad_acl_test
 		 * @return $this
+		 * @internal param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter($field, $value = '%value%', $type = 'string', $acl = false, $bad_acl_test = '%value%') {
 			//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
@@ -2291,23 +2297,20 @@
 		 * be shown the normal value instead of wrapping it in a link.   You can also optionally specify
 		 * a failed acl string so when it fails the acl check instead of just displaying the plain value,
 		 * you can specify a string filter to get applied to the value if it fails instead
-		 *
 		 * The filters have special strings that are automatically replaced with data, the current
 		 * fields supported are:
-
-		 *     %field%	      - replaced with the field name, ie account_lid
-		 * 	   %value%	      - replaced with the fields value, ie username@email.com
-		 *
+		 *     %field%          - replaced with the field name, ie account_lid
+		 *       %value%          - replaced with the fields value, ie username@email.com
 		 * you can also include any field names to have them automatically replaced w/ their value, ie:
-		 *
 		 *     %account_id%   - if there is a field in the result row called 'account_id', then
 		 *                      this is replaced w/ the value of that field
 		 *
 		 * @param string $field the field name
 		 * @param string $link url, it can be a full url or just like a 'choice=none.blah' type url
-		 * @param false|string $title optionally specify a title/tooltip to be shown when you hover the link, defaults to false , or no title/tooltip
-		 * @param false|string $acl optional acl rule required for this filter, such as 'view_customer'
-		 * @param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
+		 * @param bool|false|string $title optionally specify a title/tooltip to be shown when you hover the link, defaults to false , or no title/tooltip
+		 * @param bool|false|string $acl optional acl rule required for this filter, such as 'view_customer'
+		 * @param string $bad_acl_test
+		 * @internal param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter_link($field, $link, $title = false, $acl = false, $bad_acl_test = '%value%') {
 			//$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
@@ -2319,7 +2322,7 @@
 		 * proceeds the standard/default set of filters, either adding all the filters or adding
 		 * them for the specific fields you tell it to
 		 *
-		 * @param false|string|array $fields
+		 * @param array|bool|false|string $fields
 		 */
 		public function default_filters($fields = false) {
 			if ($fields == false)
@@ -2428,9 +2431,9 @@
 
 		/**
 		 * Exports the table data in xlsx format
+		 *        https://github.com/PHPOffice/PHPExcel
 		 *
-		 * 		https://github.com/PHPOffice/PHPExcel
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xlsx($headers) {
@@ -2441,6 +2444,7 @@
 		/**
 		 * Exports the table data in xls format
 		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xls($headers) {
@@ -2450,9 +2454,9 @@
 
 		/**
 		 * Exports the table data in ods format
+		 *        https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
 		 *
-		 * 		https://github.com/PHPOffice/PhpSpreadsheet#want-to-contribute
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_ods($headers) {
@@ -2462,12 +2466,12 @@
 
 		/**
 		 * Exports the table data in pdf format
+		 *        http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
+		 *        http://php.net/manual/en/ref.pdf.php
+		 *        http://phptopdf.com/
+		 *        https://github.com/tecnickcom/tcpdf
 		 *
-		 * 		http://stackoverflow.com/questions/7673056/how-to-generate-pdf-in-php-with-mysql-while-getting-a-array-of-values-by-get-or
-		 * 		http://php.net/manual/en/ref.pdf.php
-		 * 		http://phptopdf.com/
-		 * 		https://github.com/tecnickcom/tcpdf
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_pdf($headers) {
@@ -2477,12 +2481,12 @@
 
 		/**
 		 * Exports the table data in xml format
+		 *        http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
+		 *        http://www.redips.net/php/convert-array-to-xml/
+		 *        http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+		 *        https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
 		 *
-		 * 		http://www.viper007bond.com/2011/06/29/easily-create-xml-in-php-using-a-data-array/
-		 * 		http://www.redips.net/php/convert-array-to-xml/
-		 * 		http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
-		 * 		https://www.kerstner.at/2011/12/php-array-to-xml-conversion/
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_xml($headers) {
@@ -2494,11 +2498,11 @@
 
 		/**
 		 * Exports the table data in csv format
+		 *        http://php.net/manual/en/function.fputcsv.php
+		 *        http://stackoverflow.com/questions/13108157/php-array-to-csv
+		 *        https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
 		 *
-		 * 		http://php.net/manual/en/function.fputcsv.php
-		 * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
-		 * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_csv($headers) {
@@ -2519,9 +2523,9 @@
 
 		/**
 		 * Exports the table data in json format
+		 *        http://php.net/manual/en/function.json-encode.php
 		 *
-		 * 		http://php.net/manual/en/function.json-encode.php
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_json($headers) {
@@ -2532,9 +2536,9 @@
 
 		/**
 		 * Exports the table data in php format
+		 *        http://php.net/manual/en/function.var-export.php
 		 *
-		 * 		http://php.net/manual/en/function.var-export.php
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_php($headers) {
@@ -2546,6 +2550,7 @@
 		/**
 		 * Exports the table data in sql format
 		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_sql($headers) {
@@ -2556,12 +2561,12 @@
 
 		/**
 		 * Exports the table data in markdown format
+		 *        https://en.wikipedia.org/wiki/Markdown
+		 *        http://www.tablesgenerator.com/markdown_tables
+		 *        https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+		 *        https://github.com/erusev/parsedown
 		 *
-		 * 		https://en.wikipedia.org/wiki/Markdown
-		 * 		http://www.tablesgenerator.com/markdown_tables
-		 * 		https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-		 * 		https://github.com/erusev/parsedown
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_markdown($headers) {
@@ -2586,10 +2591,10 @@
 
 		/**
 		 * Exports the table data in bbcode format
+		 *        https://en.wikipedia.org/wiki/BBCode
+		 *        https://xenforo.com/community/resources/cta-table-bb-code.2847/
 		 *
-		 * 		https://en.wikipedia.org/wiki/BBCode
-		 * 		https://xenforo.com/community/resources/cta-table-bb-code.2847/
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_bbcode($headers) {
@@ -2611,10 +2616,10 @@
 
 		/**
 		 * Exports the table data in wiki format
+		 *        https://en.wikipedia.org/wiki/Help:Wiki_markup
+		 *        https://www.mediawiki.org/wiki/Help:Tables
 		 *
-		 * 		https://en.wikipedia.org/wiki/Help:Wiki_markup
-		 * 		https://www.mediawiki.org/wiki/Help:Tables
-		 *
+		 * @param $headers
 		 * @return string the exported data stored as a string
 		 */
 		public function export_wiki($headers) {
