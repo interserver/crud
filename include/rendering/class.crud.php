@@ -45,6 +45,7 @@
 	class Crud
 	{
 		public $custid;
+		public $limit_custid = false;
 		public $ajax = false;
 		public $debug = false;
 		public $refresh_button = true;
@@ -206,10 +207,14 @@
 				$this->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
 			if (substr($this->choice, 0, 5) == 'none.')
 				$this->choice = substr($this->choice, 5);
+			$this->custid = $GLOBALS['tf']->session->account_id;
+			$this->limit_custid = true;
 			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
 				$this->custid = $GLOBALS['tf']->variables->request['custid'];
-			else
-				$this->custid = $GLOBALS['tf']->session->account_id;
+			elseif ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['custid'])) {
+				$this->limit_custid = false;
+			}
+
 		}
 
 		/**
@@ -782,6 +787,12 @@
 						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
 						array('SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '),
 						$db->Record['Field']));
+				if (preg_match('/_custid$/m', $db->Record['Field'])) {
+					//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__);
+					if ($this->limit_custid == true)
+						$this->search_terms[] = array($db->Record['Field'], '=', $this->custid);
+				}
+
 				$fields[$db->Record['Field']] = $db->Record;
 			}
 			return $fields;
@@ -806,6 +817,11 @@
 			} else {
 				if (preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
 					$from = $matches[1];
+					if (sizeof($this->search_terms) > 0)
+						if ($this->queries[0]->hasWhere() == false)
+							$from .= ' where ' . $this->search_to_sql();
+						else
+							$from .= ' and ' . $this->search_to_sql();
 					$db->query("select count(*) {$from}", __LINE__, __FILE__);
 					$db->next_record(MYSQL_NUM);
 					$count = $db->f(0);
@@ -888,13 +904,18 @@
 		public function search_to_sql() {
 			$search = array();
 			$valid_opers = array('=', 'in');
-			billingd_log('Search Terms: ' . var_export($this->search_terms, true), __LINE__, __FILE__);
+			//$this->log('Search Terms: ' . json_encode($this->search_terms), __LINE__, __FILE__);
 			if (sizeof($this->search_terms) > 0) {
 				if (!is_array($this->search_terms[0]))
 					$this->search_terms = array($this->search_terms);
 				foreach ($this->search_terms as $search_term) {
 					list($field, $oper, $value) = $search_term;
-					if (!in_array($field, $this->fields)) {
+					$found = false;
+					foreach ($this->tables as $table => $fields) {
+						if (isset($fields[$field]))
+							$found = true;
+					}
+					if ($found == false && !in_array($field, $this->fields)) {
 						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__);
 					} elseif (!in_array($oper, $valid_opers)) {
 						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__);
@@ -1259,7 +1280,7 @@
 				}
 			} else {
 				$return = $this->db->next_record($result_type);
-				//billingd_log(json_encode($this->db->Record), __LINE__, __FILE__);
+				//$this->log(json_encode($this->db->Record), __LINE__, __FILE__);
 			}
 			return $return;
 		}
