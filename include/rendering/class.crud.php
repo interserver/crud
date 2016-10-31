@@ -790,7 +790,13 @@
 				if (preg_match('/_custid$/m', $db->Record['Field'])) {
 					//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__);
 					if ($this->limit_custid == true)
+						if (sizeof($this->search_terms) > 0)
+							if (!is_array($this->search_terms[0]))
+								$this->search_terms = array($this->search_terms);
+
+						//$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__);
 						$this->search_terms[] = array($db->Record['Field'], '=', $this->custid);
+						//$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__);
 				}
 
 				$fields[$db->Record['Field']] = $db->Record;
@@ -909,6 +915,7 @@
 				if (!is_array($this->search_terms[0]))
 					$this->search_terms = array($this->search_terms);
 				foreach ($this->search_terms as $search_term) {
+					//$this->log("Processing search " . json_encode($search_term), __LINE__, __FILE__);
 					list($field, $oper, $value) = $search_term;
 					$found = false;
 					foreach ($this->tables as $table => $fields) {
