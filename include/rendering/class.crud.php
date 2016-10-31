@@ -209,10 +209,14 @@
 				$this->choice = substr($this->choice, 5);
 			$this->custid = $GLOBALS['tf']->session->account_id;
 			$this->limit_custid = true;
-			if ($GLOBALS['tf']->ima == 'admin' && isset($GLOBALS['tf']->variables->request['custid']))
-				$this->custid = $GLOBALS['tf']->variables->request['custid'];
-			elseif ($GLOBALS['tf']->ima == 'admin' && !isset($GLOBALS['tf']->variables->request['custid'])) {
-				$this->limit_custid = false;
+			if ($GLOBALS['tf']->ima == 'admin') {
+				if (isset($GLOBALS['tf']->variables->request['custid'])) {
+					$this->custid = $GLOBALS['tf']->variables->request['custid'];
+					//$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__);
+				} else {
+					$this->limit_custid = false;
+					//$this->log("Disabling CustID Limiting", __LINE__, __FILE__);
+				}
 			}
 
 		}
@@ -789,7 +793,7 @@
 						$db->Record['Field']));
 				if (preg_match('/_custid$/m', $db->Record['Field'])) {
 					//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__);
-					if ($this->limit_custid == true)
+					if ($this->limit_custid == true) {
 						if (sizeof($this->search_terms) > 0)
 							if (!is_array($this->search_terms[0]))
 								$this->search_terms = array($this->search_terms);
@@ -797,6 +801,7 @@
 						//$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__);
 						$this->search_terms[] = array($db->Record['Field'], '=', $this->custid);
 						//$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__);
+					}
 				}
 
 				$fields[$db->Record['Field']] = $db->Record;
@@ -2153,7 +2158,7 @@
 			$table->set_options('width="500" cellpadding=5');
 			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
 			$table->set_title($this->settings['TITLE'] . ' Order Summary');
-			if ($GLOBALS['tf']->ima == 'admin') {
+			if ($GLOBALS['tf']->ima == 'admin' && $this->limit_custid == true) {
 				$table->add_hidden('custid', $this->custid);
 			}
 			$table->add_hidden('module', $this->module);
