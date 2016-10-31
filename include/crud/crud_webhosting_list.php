@@ -1,24 +1,20 @@
 <?php
 /**
- * CRUD System
+ * Webhosting List
  * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
  * @author detain
  * @version $Revision: 21022 $
  * @copyright 2017
  * @package MyAdmin
- * @category Admin
+ * @subpackage Webhosting
  */
 
 /**
- * crud_webhosting_list()
+ * Displays a list of all the Websites's available to your current session
+ *
  * @return void
  */
 function crud_webhosting_list() {
-	function_requirements('has_acl');
-	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
-		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return false;
-	}
 	$module = 'webhosting';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
