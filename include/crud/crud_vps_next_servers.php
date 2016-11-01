@@ -14,6 +14,7 @@
  * @return void
  */
 function crud_vps_next_servers() {
+	add_output(alert('TODO', 'Fix field names'));
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	crud::init('get_vps_next_servers', 'vps', 'function')
 		->set_title('VPS Next Setup Servers')
