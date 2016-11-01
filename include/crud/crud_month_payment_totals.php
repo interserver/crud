@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_month_payment_totals() {
-	alert('TODO', 'Have it work over all modules');
+	add_output(alert('TODO', 'Have it work over all modules'));
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	crud::init("select '__TBLNAME__' as module, sum(invoices.invoices_amount) AS invoices_total FROM
   invoices
