@@ -814,7 +814,7 @@
 		 *
 		 * @return int the number of total records for the query
 		 */
-		function get_count() {
+		public function get_count() {
 			$db = $this->db;
 			if ($this->type == 'function') {
 				if (!method_exists('CrudFunctionIterator', 'run') || $this->queries->ran == false)
