@@ -408,7 +408,7 @@
 				}
 			}
 			if (count($query_fields) > 0) {
-				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]));
+				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__);
 				$query_where = array_merge($query_where, $this->query_where[$query_table]);
 				// update database
 				$query = 'update ' . $query_table . ' set ' . implode(', ', $query_fields) . ' where ' . implode(' and ', $query_where);
@@ -1171,7 +1171,8 @@
 							$empty_record[$field] = "%{$field}%";
 						foreach ($this->tables[$this->table] as $field => $field_data) {
 							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
-							$table->add_header_field($field_data['Comment'].$this->get_sort_icon($field));
+							//$table->add_header_field($field_data['Comment'].$this->get_sort_icon($field));
+							$table->add_header_field($this->label($field).$this->get_sort_icon($field));
 						}
 					} else {
 						foreach (array_keys($record) as $field)
@@ -1274,12 +1275,11 @@
 			if ($this->type == 'function') {
 				if (!isset($this->tables[$this->query]))
 					$this->tables[$this->query] = array();
-				$this->log('ran is ' . var_export($this->queries->ran, true));
+				//$this->log('ran is ' . var_export($this->queries->ran, true), __LINE__, __FILE__);
 				$ran = $this->queries->ran ;
 				$return = $this->queries->next_record($result_type);
 				if ($ran == false) {
-
-					$this->log('queries->Record is ' . var_export($this->queries->Record, true));
+					//$this->log('queries->Record is ' . var_export($this->queries->Record, true), __LINE__, __FILE__);
 					foreach ($this->queries->Record as $field => $value) {
 						$comment = ucwords(str_replace(
 						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
@@ -1651,7 +1651,7 @@
 					}
 					if ($first_field == false)
 						$first_field = $field;
-					//$this->log(print_r($this->query_fields, true));
+					//$this->log(print_r($this->query_fields, true), __LINE__, __FILE__);
 					if ($this->type == 'table' || $this->all_fields == true || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
@@ -2363,7 +2363,7 @@
 			elseif (!is_array($fields))
 				$fields = array($fields);
 			foreach ($fields as $field) {
-				//$this->log($field);
+				//$this->log($field, __LINE__, __FILE__);
 				if ($field == 'account_lid') {
 					$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
 				/*} elseif ($field == 'invoices_paid') {
