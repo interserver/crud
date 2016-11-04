@@ -53,6 +53,7 @@
 		public $print_button = true;
 		public $module;
 		public $choice;
+		/* @var TFTable */
 		public $table;
 		public $query;
 		public $primary_key = '';
@@ -91,6 +92,7 @@
 		public $tables = array();
 		// from the SQLParser or CrudFunctionIterator
 		public $queries;
+		/* @var db */
 		public $db;
 		public $settings;
 		public $buttons = array();
