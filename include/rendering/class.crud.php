@@ -1330,13 +1330,13 @@
 		 */
 		public function log($message, $line = false, $file = false) {
 			if ($line !== false && $file !== false)
-				billingd_log($message, $line, $file);
+				myadmin_log('rendering', 'info', $message, $line, $file);
 			elseif ($line !== false && $file == false)
-				billingd_log($message, $line, __FILE__);
+				myadmin_log('rendering', 'info', $message, $line, __FILE__);
 			elseif ($line == false && $file !== false)
-				billingd_log($message, false, $file);
+				myadmin_log('rendering', 'info', $message, false, $file);
 			else
-				billingd_log($message, __LINE__, __FILE__);
+				myadmin_log('rendering', 'info', $message, __LINE__, __FILE__);
 		}
 
 		/**
