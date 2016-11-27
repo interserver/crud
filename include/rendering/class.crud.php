@@ -2273,7 +2273,7 @@
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
 			if (is_array($value)) {
-				$this->log("Field {$field} has array value " . str_replace("\n", ' ', print_r($value, true)), __LINE__, __FILE__);
+				$this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__);
 				return $value;
 			}
 			$value = htmlspecialchars($value);
