@@ -856,7 +856,7 @@
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'function') {
-				$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__);
+				//$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__);
 				function_requirements($this->query);
 				$this->queries = new CrudFunctionIterator($this->query);
 			} else {
@@ -894,12 +894,22 @@
 			//$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
 			switch ($oper) {
 				case '=':
-					return $field.$oper."'".$GLOBALS['tf']->db->real_escape($val)."'";
+					if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
+						return $field.$oper.intval($val);
+					elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
+						return $field.$oper.floatval($val);
+					else
+						return $field.$oper."'".$GLOBALS['tf']->db->real_escape($val)."'";
 					break;
 				case 'in':
 					$val_arr = array();
 					foreach ($val as $value) {
-						$val_arr[] = "'".$GLOBALS['tf']->db->real_escape($value)."'";
+						if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
+							$val_arr[] = intval($value);
+						elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
+							$val_arr[] = floatval($value);
+						else
+							$val_arr[] = "'".$GLOBALS['tf']->db->real_escape($value)."'";
 					}
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
@@ -917,6 +927,7 @@
 		public function search_to_sql() {
 			$search = array();
 			$valid_opers = array('=', 'in');
+			$implode_type = 'and';
 			//$this->log('Search Terms: ' . json_encode($this->search_terms), __LINE__, __FILE__);
 			if (sizeof($this->search_terms) > 0) {
 				if (!is_array($this->search_terms[0]))
@@ -929,7 +940,17 @@
 						if (isset($fields[$field]))
 							$found = true;
 					}
-					if ($found == false && !in_array($field, $this->fields)) {
+					if ($found == false && $field == '') {
+						//$this->log("Searching All Fields", __LINE__, __FILE__);
+						foreach ($this->tables as $table => $fields) {
+							foreach ($fields as $field_name => $field_data)
+							if (in_array($field_name, $this->fields)) {
+								$search[] = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
+							}
+						}
+						$implode_type = 'or';
+					}
+					else if ($found == false && !in_array($field, $this->fields)) {
 						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__);
 					} elseif (!in_array($oper, $valid_opers)) {
 						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__);
@@ -938,7 +959,10 @@
 					}
 				}
 			}
-			$search = implode(' and ', $search);
+			if ($implode_type == 'and')
+				$search = implode(' and ', $search);
+			else
+				$search = '('.implode(' or ', $search).')';
 			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__);
 			return $search;
 		}
