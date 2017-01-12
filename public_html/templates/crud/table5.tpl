@@ -237,12 +237,10 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="debugModalLabel">Debug Output</h4>
+				<h4 class="modal-title custom_align" id="debugModalLabel">Admin Debug Output</h4>
 			</div>
 			<div class="modal-body">
-				<pre style="text-align: left;">
-				{$debug_output}
-				</pre>
+				<pre style="text-align: left; overflow: scroll; max-height: 600px;">{$debug_output}</pre>
 			</div>
 			<div class="modal-footer ">
 				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
