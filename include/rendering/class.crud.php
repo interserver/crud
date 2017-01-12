@@ -85,6 +85,7 @@
 		public $filters = array();
 		public $values = array();
 		public $labels = array();
+		public $use_labels = false;
 		public $defaults = array();
 		public $validations = array();
 		public $input_types = array();
@@ -120,7 +121,6 @@
 		 * @param string $module optional module to associate w/ this query
 		 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
 		 * @return \Crud {Crud|crud} an instance of the crud system.
-		 * an instance of the crud system.
 		 */
 		public static function init($table_or_query, $module = 'default', $type = 'sql') {
 			// @codingStandardsIgnoreStart
@@ -238,7 +238,7 @@
 		 * starts/displays the crud interface handler
 		 *
 		 * @param string $view optional default view, this defaults to the list view if not specified.  alternatively you can pass 'add' for the add interface
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function go($view = 'list') {
 			if ($this->ajax !== false)
@@ -950,7 +950,7 @@
 		 * @param string $label optional text label for the button
 		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
 		 * @param bool|false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
-		 * @return $this
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
 			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
@@ -961,7 +961,7 @@
 		 * adds additional parameters to the URL string used by the various ajax requests
 		 *
 		 * @param string $args additional string to add to the urls in the form of like  '&who=detain&what=rocks'
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function set_extra_url_args($args) {
 			$this->extra_url_args = $args;
@@ -972,7 +972,7 @@
 		 * sets the interval in which the list of records will automatically update itself
 		 *
 		 * @param bool|false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
-		 * @return \Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function set_auto_update($auto_update = false) {
 			$this->auto_update = $auto_update;
@@ -981,7 +981,7 @@
 
 		/**
 		 * enables the fluid table view which is a 100% wide table
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_fluid_container() {
 			$this->fluid_container = true;
@@ -990,7 +990,7 @@
 
 		/**
 		 * disables the fluid table view which is a 100% wide table
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_fluid_container() {
 			$this->fluid_container = true;
@@ -999,7 +999,7 @@
 
 		/**
 		 * enables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_refresh_button() {
 			$this->refresh_button = true;
@@ -1008,7 +1008,7 @@
 
 		/**
 		 * disables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_refresh_button() {
 			$this->refresh_button = true;
@@ -1016,8 +1016,26 @@
 		}
 
 		/**
+		 * enables the labels over field comment
+		 * @return \Crud {Crud|crud} an instance of the crud system.
+		 */
+		public function enable_labels() {
+			$this->use_labels = true;
+			return $this;
+		}
+
+		/**
+		 * disables the labels over field comment
+		 * @return \Crud {Crud|crud} an instance of the crud system.
+		 */
+		public function disable_labels() {
+			$this->use_labels = true;
+			return $this;
+		}
+
+		/**
 		 * disables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_export_button() {
 			$this->export_button = true;
@@ -1026,7 +1044,7 @@
 
 		/**
 		 * enables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_export_button() {
 			$this->export_button = true;
@@ -1035,7 +1053,7 @@
 
 		/**
 		 * enables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_print_button() {
 			$this->print_button = true;
@@ -1044,7 +1062,7 @@
 
 		/**
 		 * disables the refresh button on the list view
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_print_button() {
 			$this->print_button = true;
@@ -1065,11 +1083,13 @@
 		public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
 			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
 			$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
+			//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
 			$button = '<button type="button" class="btn btn-'.$level.' btn-xs" onclick="window.location=\''.$page.'?choice='.$link.';"';
 			if ($title != '')
 				$button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
 			if ($icon != '')
 				$button .= '<i class="fa fa-fw fa-'.$icon.'"></i>';
+			//$button .= '</a>';
 			$button .= '</button>';
 			$this->buttons[] = $button;
 			return $this;
@@ -1181,7 +1201,7 @@
 							$empty_record[$field] = "%{$field}%";
 						foreach (array_keys($record) as $field) {
 							$table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
-							if (isset($this->tables[$this->table][$field]))
+							if (isset($this->tables[$this->table][$field]) && $this->use_labels == false)
 								$table->add_header_field($this->tables[$this->table][$field]['Comment'].$this->get_sort_icon($field));
 							else
 								$table->add_header_field($this->label($field).$this->get_sort_icon($field));
@@ -1343,7 +1363,7 @@
 		 * sets the title for the crud page setting both the web page title and the table title
 		 *
 		 * @param bool|string $title text of the title
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function set_title($title = false) {
 			if ($title === false) {
@@ -1450,6 +1470,7 @@
 		 */
 		public function set_default($field, $value) {
 			$this->defaults[$field] = $value;
+			return $this;
 		}
 
 		/**
@@ -1458,9 +1479,9 @@
 		 * @param array $defaults an array of    field => value
 		 */
 		public function set_defaults($defaults) {
-			foreach ($defaults as $field => $value) {
+			foreach ($defaults as $field => $value)
 				$this->set_default($field, $value);
-			}
+			return $this;
 		}
 
 		/**
@@ -1471,6 +1492,7 @@
 		 */
 		public function set_label($field, $label) {
 			$this->labels[$field] = $label;
+			return $this;
 		}
 
 		/**
@@ -1479,9 +1501,9 @@
 		 * @param array $labels array with elements in the form of  field => label
 		 */
 		public function set_labels($labels) {
-			foreach ($labels as $field => $label) {
+			foreach ($labels as $field => $label)
 				$this->set_label($field, $label);
-			}
+			return $this;
 		}
 
 		/**
@@ -2036,7 +2058,7 @@
 		/**
 		 * disables the delete button next to each row
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_delete() {
 			$this->delete_row = false;
@@ -2046,7 +2068,7 @@
 		/**
 		 * disables the checkboxes to the left of the rows for bulk actions
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_select_multiple() {
 			$this->select_multiple = false;
@@ -2056,7 +2078,7 @@
 		/**
 		 * disables the edit button next to each row
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_edit() {
 			$this->edit_row = false;
@@ -2066,7 +2088,7 @@
 		/**
 		 * disables the add record button
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_add() {
 			$this->add_row = false;
@@ -2076,7 +2098,7 @@
 		/**
 		 * disables the delete button next to each row
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_initial_populate() {
 			$this->initial_populate = true;
@@ -2086,7 +2108,7 @@
 		/**
 		 * disables the delete button next to each row
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_delete() {
 			$this->delete_row = true;
@@ -2096,7 +2118,7 @@
 		/**
 		 * enables the checkboxes to the left of the rows for bulk actions
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_select_multiple() {
 			$this->select_multiple = true;
@@ -2106,7 +2128,7 @@
 		/**
 		 * enables the edit button next to each row
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_edit() {
 			$this->edit_row = true;
@@ -2116,7 +2138,7 @@
 		/**
 		 * enables the add record button
 		 *
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function enable_add() {
 			$this->add_row = true;
@@ -2127,7 +2149,7 @@
 		 * disables a field from being edited
 		 *
 		 * @param string $field field name
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_field($field) {
 			if (!in_array($field, $this->disabled_fields))
@@ -2139,7 +2161,7 @@
 		 * disables an array of fields from the edit function
 		 *
 		 * @param array $fields an array of fields
-		 * @return Crud
+		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function disable_fields($fields) {
 			foreach ($fields as $field)
