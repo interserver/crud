@@ -163,9 +163,9 @@
 						<a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">Go</a>
 					</span>
 				</span>
-{if $ima == 'admin' || $refresh_button == true}
+{if $admin == true || $refresh_button == true}
 				<span class="btn-group nav-rows">
-{if $ima == 'admin'}
+{if $admin == true}
 					<a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
 						<span class="fa fa-bug fa-fw"></span>
 					</a>
@@ -231,7 +231,7 @@
 		</form>
 	</div>
 </div>
-{if $ima == 'admin'}
+{if $admin == true}
 <div class="modal fade" id="debugModal" tabindex="-1" role="dialog" aria-labelledby="debugModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">

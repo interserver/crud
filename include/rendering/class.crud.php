@@ -1,4 +1,5 @@
 <?php
+
 	/**
 	 * CRUD Class
 	 *
@@ -102,6 +103,8 @@
 		public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
 		public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
 		public $extra_url_args = '';
+		public $request = array();
+		public $admin = false;
 		/**
 		 * @var false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
 		 */
@@ -192,28 +195,34 @@
 		 * @return void
 		 */
 		public function apply_request_data() {
-			$this->choice = $GLOBALS['tf']->variables->request['choice'];
-			if ($this->choice == 'crud') {
-				$this->ajax = $GLOBALS['tf']->variables->request['action'];
-				$this->choice = $GLOBALS['tf']->variables->request['crud'];
+			if (isset($GLOBALS['tf'])) {
+				$this->request = $GLOBALS['tf']->variables->request;
+				$this->admin = ($GLOBALS['tf']->ima == 'admin' ? true : false);
+				$this->custid = $GLOBALS['tf']->session->account_id;
+			} else {
+				$this->request = $_REQUEST;
 			}
-			if (isset($GLOBALS['tf']->variables->request['order_by']))
-				$this->order_by = $GLOBALS['tf']->variables->request['order_by'];
-			if (isset($GLOBALS['tf']->variables->request['order_dir']) && in_array($GLOBALS['tf']->variables->request['order_dir'], array('asc','desc')))
-				$this->order_dir = $GLOBALS['tf']->variables->request['order_dir'];
-			if (isset($GLOBALS['tf']->variables->request['search']))
-				$this->search_terms = json_decode(html_entity_decode($GLOBALS['tf']->variables->request['search']));
-			if (isset($GLOBALS['tf']->variables->request['offset']))
-				$this->page_offset = (int)$GLOBALS['tf']->variables->request['offset'];
-			if (isset($GLOBALS['tf']->variables->request['limit']))
-				$this->page_limit = (int)$GLOBALS['tf']->variables->request['limit'];
+			$this->choice = $this->request['choice'];
+			if ($this->choice == 'crud') {
+				$this->ajax = $this->request['action'];
+				$this->choice = $this->request['crud'];
+			}
+			if (isset($this->request['order_by']))
+				$this->order_by = $this->request['order_by'];
+			if (isset($this->request['order_dir']) && in_array($this->request['order_dir'], array('asc','desc')))
+				$this->order_dir = $this->request['order_dir'];
+			if (isset($this->request['search']))
+				$this->search_terms = json_decode(html_entity_decode($this->request['search']));
+			if (isset($this->request['offset']))
+				$this->page_offset = (int)$this->request['offset'];
+			if (isset($this->request['limit']))
+				$this->page_limit = (int)$this->request['limit'];
 			if (substr($this->choice, 0, 5) == 'none.')
 				$this->choice = substr($this->choice, 5);
-			$this->custid = $GLOBALS['tf']->session->account_id;
 			$this->limit_custid = true;
-			if ($GLOBALS['tf']->ima == 'admin') {
-				if (isset($GLOBALS['tf']->variables->request['custid'])) {
-					$this->custid = $GLOBALS['tf']->variables->request['custid'];
+			if ($this->admin == true) {
+				if (isset($this->request['custid'])) {
+					$this->custid = $this->request['custid'];
 					//$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__);
 				} else {
 					$this->limit_custid = false;
@@ -471,7 +480,7 @@
 		 */
 		public function ajax_export_handler() {
 			// get export type
-			$format = $GLOBALS['tf']->variables->request['format'];
+			$format = $this->request['format'];
 			$formats = $this->get_export_formats();
 			// get data
 			// convert data
@@ -901,7 +910,7 @@
 					elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
 						return $field.$oper.floatval($val);
 					else
-						return $field.$oper."'".$GLOBALS['tf']->db->real_escape($val)."'";
+						return $field.$oper."'".$this->db->real_escape($val)."'";
 					break;
 				case 'in':
 					$val_arr = array();
@@ -911,7 +920,7 @@
 						elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
 							$val_arr[] = floatval($value);
 						else
-							$val_arr[] = "'".$GLOBALS['tf']->db->real_escape($value)."'";
+							$val_arr[] = "'".$this->db->real_escape($value)."'";
 					}
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
@@ -1270,8 +1279,8 @@
 			$table->set_filename('../crud/table5.tpl');
 			$table->smarty->assign('primary_key', $this->primary_key);
 			$table->smarty->assign('choice', $this->choice);
-			$table->smarty->assign('ima', $GLOBALS['tf']->ima);
-			if ($GLOBALS['tf']->ima == 'admin') {
+			$table->smarty->assign('admin', $this->admin);
+			if ($this->admin == true) {
 				$debug = $this;
 				unset($debug->db);
 				$table->smarty->assign('debug_output', print_r($debug, true));
@@ -1733,8 +1742,8 @@
 				if (isset($this->defaults[$field])) {
 					$this->values[$field] = $this->defaults[$field];
 				}
-				if (isset($GLOBALS['tf']->variables->request[$field])) {
-					$this->values[$field] = $GLOBALS['tf']->variables->request[$field];
+				if (isset($this->request[$field])) {
+					$this->values[$field] = $this->request[$field];
 					$this->set_vars[$field] = $this->values[$field];
 					$anything_set = true;
 				}
@@ -2208,7 +2217,7 @@
 			$table->set_options('width="500" cellpadding=5');
 			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName(' . "'confirm'" . ')[0].disabled = true; return true;"');
 			$table->set_title($this->settings['TITLE'] . ' Order Summary');
-			if ($GLOBALS['tf']->ima == 'admin' && $this->limit_custid == true) {
+			if ($this->admin == true && $this->limit_custid == true) {
 				$table->add_hidden('custid', $this->custid);
 			}
 			$table->add_hidden('module', $this->module);
@@ -2243,7 +2252,7 @@
 			if (SESSION_COOKIES == false) {
 				$this->returnURL .= '&sessionid=' . urlencode($GLOBALS['tf']->session->sessionid);
 			}
-			if ($GLOBALS['tf']->ima == 'admin') {
+			if ($this->admin == true) {
 				foreach ($this->admin_confirm_fields as $field => $data) {
 					switch ($data['type']) {
 						case 'select_multiple':
@@ -2423,7 +2432,7 @@
 				/*} elseif ($field == $this->settings['PREFIX'].'_id') {
 					// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doing this*/
 				} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
-					$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
+					$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($this->admin == true ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 				}
 			}
 
