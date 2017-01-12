@@ -892,6 +892,8 @@
 		 */
 		public function json_search_tosql($field, $oper, $val) {
 			//$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+			if (isset($this->query_fields[$field]))
+				$field = $this->query_fields[$field];
 			switch ($oper) {
 				case '=':
 					if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
