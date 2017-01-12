@@ -22,7 +22,7 @@ function crud_backups_list() {
 	crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_username, {$settings['PREFIX']}_status, services_name from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['TABLE']}.{$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->enable_labels()
-		->set_labels(['backup_id' => 'ID','backup_username' => 'Username', 'backup_cost' => 'Cost', 'backup_status' => 'Status', 'backup_name' => 'Server', 'services_name' => 'Package'], true)
+		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_username' => 'Username', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', 'services_name' => 'Package'], true)
 		->add_header_button(array(array($settings['PREFIX'].'_status','=','active')),'Active','info')
 		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))),'Pending','info')
 		->add_header_button(array(array($settings['PREFIX'].'_status','in',array('canceled','expired'))),'Expired','info')
