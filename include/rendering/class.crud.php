@@ -892,7 +892,6 @@
 			}
 		}
 
-
 		/**
 		 * json_search_tosql()
 		 * converts a JSON search request to an sql query.
@@ -929,7 +928,7 @@
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
 				default:
-					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val,true) . ')', __LINE__, __FILE__);
+					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, true) . ')', __LINE__, __FILE__);
 					break;
 			}
 		}
@@ -965,7 +964,7 @@
 						}
 						$implode_type = 'or';
 					}
-					else if ($found == false && !in_array($field, $this->fields)) {
+					elseif ($found == false && !in_array($field, $this->fields)) {
 						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__);
 					} elseif (!in_array($oper, $valid_opers)) {
 						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__);
@@ -1337,7 +1336,7 @@
 				if (!isset($this->tables[$this->query]))
 					$this->tables[$this->query] = array();
 				//$this->log('ran is ' . var_export($this->queries->ran, true), __LINE__, __FILE__);
-				$ran = $this->queries->ran ;
+				$ran = $this->queries->ran;
 				$return = $this->queries->next_record($result_type);
 				if ($ran == false) {
 					//$this->log('queries->Record is ' . var_export($this->queries->Record, true), __LINE__, __FILE__);
