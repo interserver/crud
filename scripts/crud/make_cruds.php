@@ -28,7 +28,7 @@ function crud_{$func}() {
 file_put_contents(INCLUDE_ROOT . '/crud/cruds.php', '<'.'?'."php
 function cruds() {
 	add_js('bootstrap');
-	add_output(\"<div class='list-group' style='width: 500px; text-align: left;'>\n" . implode("\n",$li)."\n</div>\n\");
+	add_output(\"<div class='list-group' style='width: 500px; text-align: left;'>\n" . implode("\n", $li)."\n</div>\n\");
 }");
 file_put_contents(INCLUDE_ROOT . '/function_requirements.new', $function_req);
 }
