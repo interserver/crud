@@ -540,6 +540,10 @@
 			echo json_encode($json);
 		}
 
+		/**
+		 * loads all the table schemas into an array
+		 *
+		 */
 		public function load_tables() {
 			$db = clone $this->db;
 			$db->query("show full tables where Table_Type = 'BASE TABLE'", __LINE__, __FILE__);
