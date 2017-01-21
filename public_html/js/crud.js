@@ -1,4 +1,3 @@
-
 /**
  * processing submit buttons and handles the responses
  *
@@ -38,11 +37,11 @@ function crud_submit_handler(what, that) {
 				jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
 			}
 		},
-		error : function() {
+		error: function() {
 			$('#'+what+'Modal .btn').attr('disabled', false);
 			jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
 		},
-		beforeSend:function()
+		beforeSend: function()
 		{
 			$('#'+what+'Modal .btn').attr('disabled', true);
 			jQuery('#'+what+'Modal .error_message').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing "+what+"</span><div>');
@@ -304,10 +303,10 @@ function crud_setup_binds() {
 $.fn.refreshMe = function(opts){
 	var $this = this,
 	defaults = {
-		panel:'.crud',
-		refreshcontainer:'.refresh-container',
-		started:function(){},
-		completed:function(){}
+		panel: '.crud',
+		refreshcontainer: '.refresh-container',
+		started: function(){},
+		completed: function(){}
 	},
 	settings = $.extend(defaults, opts);
 
@@ -331,7 +330,7 @@ $.fn.refreshMe = function(opts){
 
 function crud_setup_refresh() {
 	$('.refresh').refreshMe({
-		started:function(refreshobj, panel){
+		started: function(refreshobj, panel){
 			crud_load_page(function(){
 				panel.fadeOut(800);
 				refreshobj.find('.fa').removeClass('fa-spin');
@@ -356,4 +355,3 @@ jQuery(document).ready(function () {
 	crud_setup_refresh();
 	jQuery("[data-toggle=tooltip]").tooltip();
 });
-
