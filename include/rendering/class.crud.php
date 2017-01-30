@@ -1122,7 +1122,7 @@
 			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
 			$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
 			//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
-			$button = '<button type="button" class="btn btn-'.$level.' btn-xs" onclick="window.location=\''.$page.'?choice='.$link.';"';
+			$button = '<button type="button" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
 			if ($title != '')
 				$button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
 			if ($icon != '')

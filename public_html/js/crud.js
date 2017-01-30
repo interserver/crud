@@ -342,12 +342,14 @@ function crud_setup_refresh() {
 
 function crud_print() {
 	event.preventDefault();
+	jQuery('.printer-hidden').hide();
 	var obj = jQuery('.crud .table-responsive');
 	var divElements = obj.html();
 	var oldPage = document.body.innerHTML;
 	document.body.innerHTML = "<html><head><title></title></head><body>"+divElements+"</body>";
 	window.print();
 	document.body.innerHTML = oldPage;
+	jQuery('.printer-hidden').show();
 }
 
 jQuery(document).ready(function () {

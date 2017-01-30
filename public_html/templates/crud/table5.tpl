@@ -18,7 +18,7 @@
 						<tr>
 							<th colspan="{$titcolspan}">
 {if sizeof($header_buttons) > 0}
-								<div class="crud-header-buttons pull-left">
+								<div class="crud-header-buttons pull-left printer-hidden">
 									<div class="btn-group">
 {foreach item=button from=$header_buttons}
 										{$button}
