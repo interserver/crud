@@ -223,10 +223,10 @@
 			if ($this->admin == true) {
 				if (isset($this->request['custid'])) {
 					$this->custid = $this->request['custid'];
-					//$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__);
+					//$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__, 'debug');
 				} else {
 					$this->limit_custid = false;
-					//$this->log("Disabling CustID Limiting", __LINE__, __FILE__);
+					//$this->log("Disabling CustID Limiting", __LINE__, __FILE__, 'debug');
 				}
 			}
 
@@ -271,10 +271,10 @@
 		 *
 		 */
 		public function ajax_handler() {
-			//$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__);
+			//$this->log("CRUD {$this->title} {$action} Handling", __LINE__, __FILE__, 'debug');
 			// generic data to get us here is in _GET, while the specific fields are all in _POST
-			//$this->log(print_r($_GET, true), __LINE__, __FILE__);
-			//$this->log(print_r($_POST, true), __LINE__, __FILE__);
+			//$this->log(print_r($_GET, true), __LINE__, __FILE__, 'debug');
+			//$this->log(print_r($_POST, true), __LINE__, __FILE__, 'debug');
 			switch ($this->ajax) {
 				case 'edit':
 					$this->ajax_edit_handler();
@@ -292,7 +292,7 @@
 					$this->ajax_export_handler();
 					break;
 				default:
-					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__);
+					$this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__, 'warning');
 					break;
 			}
 		}
@@ -419,23 +419,23 @@
 				}
 			}
 			if (count($query_fields) > 0) {
-				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__);
+				//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where ' . implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
 				$query_where = array_merge($query_where, $this->query_where[$query_table]);
 				// update database
 				$query = 'update ' . $query_table . ' set ' . implode(', ', $query_fields) . ' where ' . implode(' and ', $query_where);
 				if ($valid == true) {
-					$this->log("i want to run query {$query}", __LINE__, __FILE__);
+					$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
 					//$this->db->query($query, __LINE__, __FILE__);
 					// send response for js handler
 					echo 'ok';
 					echo "<br>validation successful<br>i want to run query<div class='well'>{$query}</div>";
 				} else {
-					$this->log("error validating so could not run query {$query}", __LINE__, __FILE__);
+					$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 					// send response for js handler
 					echo 'There was an error with validation:<br>' . implode('<br>', $errors) . ' with the fields ' . impode(', ', $error_fields);
 				}
 			} else {
-				$this->log('crud error nothing to update ', __LINE__, __FILE__);
+				$this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
 				// send response for js handler
 				echo 'There was nothing to update';
 			}
@@ -628,7 +628,7 @@
 						$this->query_where[$member_1_table][] =  "{$member_1_field}{$condition_type}'{$member_2_value}'";
 					}
 				} else {
-					$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__);
+					$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__, 'warning');
 				}
 				//echo _debug_array($join_arr->getCondition()->getType(), true)."<br>";
 				//echo _debug_array($join_arr->getCondition(), true)."<br>";
@@ -654,7 +654,7 @@
 					$join_type = $join_arr->getType();										// LEFT JOIN
 					//echo "Table {$table} Join Type {$join_type}<br>";
 					if (!in_array($join_type, array('LEFT JOIN', 'LEFT OUTER JOIN'))) {
-						$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__);
+						$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__, 'warning');
 					} else {
 						$this->join_handler($table, $join_arr->getCondition());
 					}
@@ -707,7 +707,7 @@
 						$f_type = $field_arr[0]->getType();
 						$f_members = $field_arr[0]->getMembers();
 						if ($f_type != 'ALL') {
-							$this->log("Don't know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__);
+							$this->log("Don't know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__, 'warning');
 						} else {
 							// Setup all the columns
 							$this->all_fields = true;
@@ -757,7 +757,7 @@
 					}
 					//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
 				} else {
-					$this->log("Don't know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__);
+					$this->log("Don't know how to handle Type {$c_type}, only COLUMN", __LINE__, __FILE__, 'warning');
 				}
 			}
 			if (isset($fields))
@@ -807,15 +807,15 @@
 						array('SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '),
 						$db->Record['Field']));
 				if (preg_match('/_custid$/m', $db->Record['Field'])) {
-					//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__);
+					//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
 					if ($this->limit_custid == true) {
 						if (sizeof($this->search_terms) > 0)
 							if (!is_array($this->search_terms[0]))
 								$this->search_terms = array($this->search_terms);
 
-						//$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__);
+						//$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
 						$this->search_terms[] = array($db->Record['Field'], '=', $this->custid);
-						//$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__);
+						//$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
 					}
 				}
 
@@ -853,7 +853,7 @@
 					$count = $db->f(0);
 				}
 			}
-			//$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__);
+			//$this->log("Count {$count} Page Limit {$this->page_limit} Offset {$this->page_offset}", __LINE__, __FILE__, 'debug');
 			return $count;
 		}
 
@@ -865,11 +865,11 @@
 		 * @return void
 		 */
 		public function run_list_query() {
-			//$this->log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__);
+			//$this->log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__, 'debug');
 			if (!in_array($this->order_by, $this->fields))
 				$this->order_by = $this->primary_key;
 			if ($this->type == 'function') {
-				//$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__);
+				//$this->log("Running Function as Query: {$this->query}", __LINE__, __FILE__, 'debug');
 				function_requirements($this->query);
 				$this->queries = new CrudFunctionIterator($this->query);
 			} else {
@@ -887,7 +887,7 @@
 				}
 				if ($this->page_limit > 0)
 					$query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
-				//$this->log("Running Query: {$query}", __LINE__, __FILE__);
+				//$this->log("Running Query: {$query}", __LINE__, __FILE__, 'debug');
 				$this->db->query($query, __LINE__, __FILE__);
 			}
 		}
@@ -903,7 +903,7 @@
 		 * @return string the mysql safe search tag
 		 */
 		public function json_search_tosql($field, $oper, $val) {
-			//$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__);
+			//$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__, 'debug');
 			if (isset($this->query_fields[$field]))
 				$field = $this->query_fields[$field];
 			switch ($oper) {
@@ -928,7 +928,7 @@
 					return $field.' '.$oper.' ('.implode(',', $val_arr).')';
 					break;
 				default:
-					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, true) . ')', __LINE__, __FILE__);
+					$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, true) . ')', __LINE__, __FILE__, 'warning');
 					break;
 			}
 		}
@@ -942,12 +942,12 @@
 			$search = array();
 			$valid_opers = array('=', 'in');
 			$implode_type = 'and';
-			//$this->log('Search Terms: ' . json_encode($this->search_terms), __LINE__, __FILE__);
+			//$this->log('Search Terms: ' . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
 			if (sizeof($this->search_terms) > 0) {
 				if (!is_array($this->search_terms[0]))
 					$this->search_terms = array($this->search_terms);
 				foreach ($this->search_terms as $search_term) {
-					//$this->log("Processing search " . json_encode($search_term), __LINE__, __FILE__);
+					//$this->log("Processing search " . json_encode($search_term), __LINE__, __FILE__, 'debug');
 					list($field, $oper, $value) = $search_term;
 					$found = false;
 					foreach ($this->tables as $table => $fields) {
@@ -965,9 +965,9 @@
 						$implode_type = 'or';
 					}
 					elseif ($found == false && !in_array($field, $this->fields)) {
-						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__);
+						$this->log("Invalid Search Field {$field}", __LINE__, __FILE__, 'warning');
 					} elseif (!in_array($oper, $valid_opers)) {
-						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__);
+						$this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__, 'warning');
 					} else {
 						$search[] = $this->json_search_tosql($field, $oper, $value);
 					}
@@ -977,7 +977,7 @@
 				$search = implode(' and ', $search);
 			else
 				$search = '('.implode(' or ', $search).')';
-			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__);
+			//$this->log("search_to_sql() got {$search}", __LINE__, __FILE__, 'debug');
 			return $search;
 		}
 
@@ -1119,7 +1119,7 @@
 		 * @internal param string $button the html for the button to add
 		 */
 		public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
-			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__);
+			//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
 			$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
 			//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
 			$button = '<button type="button" class="btn btn-'.$level.' btn-xs" onclick="window.location=\''.$page.'?choice='.$link.';"';
@@ -1335,11 +1335,11 @@
 			if ($this->type == 'function') {
 				if (!isset($this->tables[$this->query]))
 					$this->tables[$this->query] = array();
-				//$this->log('ran is ' . var_export($this->queries->ran, true), __LINE__, __FILE__);
+				//$this->log('ran is ' . var_export($this->queries->ran, true), __LINE__, __FILE__, 'debug');
 				$ran = $this->queries->ran;
 				$return = $this->queries->next_record($result_type);
 				if ($ran == false) {
-					//$this->log('queries->Record is ' . var_export($this->queries->Record, true), __LINE__, __FILE__);
+					//$this->log('queries->Record is ' . var_export($this->queries->Record, true), __LINE__, __FILE__, 'debug');
 					foreach ($this->queries->Record as $field => $value) {
 						$comment = ucwords(str_replace(
 						array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
@@ -1352,7 +1352,7 @@
 				}
 			} else {
 				$return = $this->db->next_record($result_type);
-				//$this->log(json_encode($this->db->Record), __LINE__, __FILE__);
+				//$this->log(json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
 			}
 			return $return;
 		}
@@ -1363,7 +1363,7 @@
 		 * @return array the result row
 		 */
 		public function get_record() {
-			//$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__);
+			//$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
 			if ($this->type == 'function')
 				return $this->queries->Record;
 			else
@@ -1385,16 +1385,17 @@
 		 * @param string $message message to log
 		 * @param bool|false|int $line optional line your calling from to track down where the log messages originates easily to send w/ the log message
 		 * @param bool|false|string $file optional file your calling from to track down where the log messages originates easily to send w/ the log message
+		 * @param string $level level to log the message at, defaults to info
 		 */
-		public function log($message, $line = false, $file = false) {
+		public function log($message, $line = false, $file = false, $level = 'info') {
 			if ($line !== false && $file !== false)
-				myadmin_log('rendering', 'info', $message, $line, $file);
+				myadmin_log('crud', $level, $message, $line, $file);
 			elseif ($line !== false && $file == false)
-				myadmin_log('rendering', 'info', $message, $line, __FILE__);
+				myadmin_log('crud', $level, $message, $line, __FILE__);
 			elseif ($line == false && $file !== false)
-				myadmin_log('rendering', 'info', $message, false, $file);
+				myadmin_log('crud', $level, $message, false, $file);
 			else
-				myadmin_log('rendering', 'info', $message, __LINE__, __FILE__);
+				myadmin_log('crud', $level, $message, __LINE__, __FILE__);
 		}
 
 		/**
@@ -1705,15 +1706,15 @@
 								$validations[] = 'timestamp';
 								break;
 							default:
-								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it does not Understand", __LINE__, __FILE__);
+								$this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it does not Understand", __LINE__, __FILE__, 'warning');
 								break;
 						}
 					} else {
-						$this->log("CRUD class Found Field Type {$data['Type']} it could not Parse", __LINE__, __FILE__);
+						$this->log("CRUD class Found Field Type {$data['Type']} it could not Parse", __LINE__, __FILE__, 'warning');
 					}
 					if ($first_field == false)
 						$first_field = $field;
-					//$this->log(print_r($this->query_fields, true), __LINE__, __FILE__);
+					//$this->log(print_r($this->query_fields, true), __LINE__, __FILE__, 'debug');
 					if ($this->type == 'table' || $this->all_fields == true || isset($this->query_fields[$field]) || isset($this->query_fields[$table.'.'.$field])) {
 						if ($data['Key'] == 'PRI') {
 							$this->primary_key = $field;
@@ -1728,7 +1729,7 @@
 					}
 				}
 				if ($this->primary_key == '') {
-					//$this->log("Generating Primary Key to {$first_field}", __LINE__, __FILE__);
+					//$this->log("Generating Primary Key to {$first_field}", __LINE__, __FILE__, 'debug');
 					$this->primary_key = $first_field;
 				}
 			}
@@ -1916,7 +1917,7 @@
 									//echo "<br>";
 								}
 								if (!isset($field_text)) {
-									$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
+									$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__, 'debug');
 								}
 								$text = str_replace(array('%title%','%field%'), array($label, $field_text), $text);
 								$table->add_field($text, $align);
@@ -2059,7 +2060,7 @@
 								//echo "<br>";
 							}
 							if (!isset($field_text)) {
-								$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__);
+								$this->log("field $field Field Text: " . print_r($field_text, true), __LINE__, __FILE__, 'debug');
 							}
 							$text = str_replace(array('%title%','%field%'), array($label, $field_text), $text);
 							$table->add_field($text, $align);
@@ -2333,7 +2334,7 @@
 		public function decorate_field($field, $row) {
 			$value = $row[$field];
 			if (is_array($value)) {
-				$this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__);
+				$this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__, 'info');
 				return $value;
 			}
 			$value = htmlspecialchars($value);
@@ -2369,7 +2370,7 @@
 		 * @internal param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter($field, $value = '%value%', $type = 'string', $acl = false, $bad_acl_test = '%value%') {
-			//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
 			function_requirements('has_acl');
 			if (!isset($this->filters[$field]))
 				$this->filters[$field] = array();
@@ -2408,7 +2409,7 @@
 		 * @internal param string $bad_acl_text same as the $text field but meant to be used to specify what is displayed instead of a link when the acl check is failed
 		 */
 		public function add_filter_link($field, $link, $title = false, $acl = false, $bad_acl_test = '%value%') {
-			//$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__);
+			//$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
 			// $link = 'choice=none.edit_customer&customer=%field%'
 			$this->add_filter($field, '<a href="' . $link . '" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
 		}
@@ -2425,7 +2426,7 @@
 			elseif (!is_array($fields))
 				$fields = array($fields);
 			foreach ($fields as $field) {
-				//$this->log($field, __LINE__, __FILE__);
+				//$this->log($field, __LINE__, __FILE__, 'debug');
 				if ($field == 'account_lid') {
 					$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
 				/*} elseif ($field == 'invoices_paid') {
