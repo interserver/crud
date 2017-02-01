@@ -990,7 +990,7 @@
 		 * @param bool|false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
 		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
-		public function add_header_button($terms, $label = '', $status = 'default', $icon = false) {
+		public function add_title_search_button($terms, $label = '', $status = 'default', $icon = false) {
 			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
 			return $this;
 		}
