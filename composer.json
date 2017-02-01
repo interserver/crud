@@ -10,13 +10,18 @@
             "homepage": "https://my.interserver.net/"
         }
     ],
+    "repositories": [
+        {
+            "type": "svn",
+            "url": "https://creation.interserver.net/svn/db_abstraction"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
+        "crodas/sql-parser": "^0.1.5",
 	"detain/db_abstraction": "dev-trunk"
     },
     "require-dev": {
-    },
-    "suggests": {
     },
     "autoload": {
         "psr-4": {"detain\\Crud\\": "src/"}
