@@ -99,6 +99,7 @@
 		public $settings;
 		public $buttons = array();
 		public $header_buttons = array();
+		public $title_buttons = array();
 		public $fluid_container = false;
 		public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
 		public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
@@ -982,6 +983,21 @@
 		}
 
 		/**
+		 * adds a button to the header of the table.
+		 *
+		 * @param string $link optional text label for the button
+		 * @param string $label optional text label for the button
+		 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
+		 * @param bool|false|string $icon optional fontawesome icon name or false to disable also can have like icon<space>active  to have the button pressed
+		 * @return \Crud {Crud|crud} an instance of the crud system.
+		 */
+		public function add_header_button($link, $label = '', $status = 'default', $icon = false, $title = false, $ima = false) {
+			if ($ima == false || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid'])))
+				$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . ">" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+			return $this;
+		}
+
+		/**
 		 * adds a quick-search button to the header of the table.
 		 *
 		 * @param array $terms array of search terms in the form of array($field, $operator, $value)
@@ -991,7 +1007,7 @@
 		 * @return \Crud {Crud|crud} an instance of the crud system.
 		 */
 		public function add_title_search_button($terms, $label = '', $status = 'default', $icon = false) {
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+			$this->title_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
 			return $this;
 		}
 
@@ -1310,6 +1326,7 @@
 			$table->smarty->assign('edit_form', $this->order_form());
 			$table->smarty->assign('select_multiple', $this->select_multiple);
 			$table->smarty->assign('header_buttons', $this->header_buttons);
+			$table->smarty->assign('title_buttons', $this->title_buttons);
 			$table->smarty->assign('extra_url_args', $this->extra_url_args);
 			if ($this->edit_row == true)
 				$this->buttons[] = $this->edit_button;

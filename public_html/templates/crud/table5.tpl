@@ -5,9 +5,23 @@
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
 <div id="crud" class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
+{if sizeof($header_buttons) > 0}
 	<div class="row">
 		<div class="col-md-12">
-{if $refresh_button == true}
+			<div class="printer-hidden">
+				<div class="btn-group">
+{foreach item=button from=$header_buttons}
+					{$button}
+{/foreach}
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+	<div class="row">
+		<div class="col-md-12">
+
+		{if $refresh_button == true}
 			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-5x"></i></div>
 {/if}
 			<div class="table-responsive">
@@ -17,10 +31,10 @@
 {if isset($title)}
 						<tr>
 							<th colspan="{$titcolspan}">
-{if sizeof($header_buttons) > 0}
+{if sizeof($title_buttons) > 0}
 								<div class="crud-header-buttons pull-left printer-hidden">
 									<div class="btn-group">
-{foreach item=button from=$header_buttons}
+{foreach item=button from=$title_buttons}
 										{$button}
 {/foreach}
 									</div>
