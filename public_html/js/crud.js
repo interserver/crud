@@ -103,10 +103,24 @@ function get_crud_row_id(that) {
 	return row[crud_primary_key];
 }
 
+/**
+ * replaces all text within a string similar to php's str_replace() function
+ *
+ * @param string str the original string to find+replace text in
+ * @param string find the text to replace
+ * @param string replace the replacement text
+ * @returns string the string with the text replaced
+ */
 function replaceAll(str, find, replace) {
 	return str.replace(new RegExp(find, 'g'), replace);
 }
 
+/**
+ * performs a crud search request
+ *
+ * @param that
+ * @param terms
+ */
 function crud_search(that, terms) {
 	crud_search_terms = terms;
 	jQuery('.crud-header-buttons a').removeClass('active');
@@ -115,6 +129,11 @@ function crud_search(that, terms) {
 	crud_load_page();
 }
 
+/**
+ * gets the crud URL to use with the current pagination/offset/order information
+ *
+ * @returns string the URL to use
+ */
 function get_crud_url() {
 	var url = jQuery("#paginationForm").attr("action")+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit;
 	if (crud_search_terms.length > 0)
@@ -122,6 +141,11 @@ function get_crud_url() {
 	return url;
 }
 
+/**
+ * handles click events and reads the export type from the links parent element attribute ''data-type'
+ *
+ * @param that
+ */
 function crud_export(that) {
 	event.preventDefault();
 	var obj = jQuery(that);
@@ -135,6 +159,11 @@ function crud_export(that) {
 
 }
 
+/**
+ * grabs crud page data JSON data and populates the table
+ *
+ * @param callback
+ */
 function crud_load_page(callback) {
 	$.getJSON(get_crud_url(), { }, function(json) {
 		crud_rows = json;
@@ -160,6 +189,9 @@ function crud_load_page(callback) {
 	});
 }
 
+/**
+ * updates the pager links with appropriate page numbers
+ */
 function crud_update_pager() {
 	var x, first, page_links = [], page_html = '';
 	crud_page = (crud_page_offset / crud_page_limit) + 1;
@@ -195,6 +227,9 @@ function crud_update_pager() {
 	crud_setup_pager_binds();
 }
 
+/**
+ * sets up the edit item click bind event
+ */
 function crud_setup_edit_binds() {
 	jQuery("#editModal").on("shown.bs.modal", function(e) {
 		jQuery("#editModal input").focus();
@@ -205,6 +240,9 @@ function crud_setup_edit_binds() {
 	});
 }
 
+/**
+ * sets up the delete item bind events
+ */
 function crud_setup_delete_binds() {
 	jQuery("#deleteModal form").on("submit", function(event) {
 		event.preventDefault();
@@ -212,6 +250,9 @@ function crud_setup_delete_binds() {
 	});
 }
 
+/**
+ * sets up the search click bind events
+ */
 function crud_setup_search_binds() {
 	jQuery('#crud-search').on('click', function(event) {
 		event.preventDefault();
@@ -224,6 +265,12 @@ function crud_setup_search_binds() {
 	});
 }
 
+/**
+ * updates the sort order.  called from a click type event on a sort button. the link/button
+ * object is passed to it and it reads the sort information from the element attributes
+ *
+ * @param that
+ */
 function crud_update_sort(that) {
 	event.preventDefault();
 	var obj = jQuery(that);
@@ -243,6 +290,9 @@ function crud_update_sort(that) {
 	crud_load_page();
 }
 
+/**
+ * setup the pagination click bind events
+ */
 function crud_setup_pager_binds() {
 	jQuery('.crud .pagination .crud-page a').on('click', function(event) {
 		event.preventDefault();
@@ -267,6 +317,9 @@ function crud_setup_pager_binds() {
 	});
 }
 
+/**
+ * sets up the mass click bind events
+ */
 function crud_setup_mass_binds() {
 	jQuery("#crud-table #checkall").click(function () {
 		if (jQuery("#crud-table #checkall").is(':checked')) {
@@ -281,6 +334,9 @@ function crud_setup_mass_binds() {
 	});
 }
 
+/**
+ * sets up the page limit click bindings
+ */
 function crud_setup_limit_binds() {
 	jQuery('.crud .row-counts button').on('click', function(event) {
 		var obj = jQuery(this);
@@ -291,6 +347,9 @@ function crud_setup_limit_binds() {
 	});
 }
 
+/**
+ * setup the click type bind events
+ */
 function crud_setup_binds() {
 	crud_setup_edit_binds();
 	crud_setup_delete_binds();
@@ -300,6 +359,9 @@ function crud_setup_binds() {
 	crud_setup_mass_binds();
 }
 
+/**
+ * defines the .refreshMe() function for jQuery which will refresh a page and show a spinner while refreshing
+ */
 $.fn.refreshMe = function(opts){
 	var $this = this,
 	defaults = {
@@ -328,6 +390,9 @@ $.fn.refreshMe = function(opts){
 	})
 }
 
+/**
+ * handles refreshing the crud contents
+ */
 function crud_setup_refresh() {
 	$('.refresh').refreshMe({
 		started: function(refreshobj, panel){
@@ -339,7 +404,14 @@ function crud_setup_refresh() {
 	});
 }
 
-
+/**
+ * prepaires the page for printing. it does this by:
+ *  - it removes the page contents other than the table
+ *  - hides any table elements with the 'printer-hidden' class
+ *  - replaces all <a href></a> type html in the page with the text inside the link
+ *  - delays the printing by 250ms so the page changes can fully take place
+ * upon finishing or canceling the print window it restores the original page contents
+ */
 function crud_print() {
 	event.preventDefault();
 	jQuery('.printer-hidden').hide();
@@ -357,6 +429,11 @@ function crud_print() {
 	}, 250);
 }
 
+/**
+ * called when th page loads and performs any calls to setup the crud system
+ *
+ * @type Object
+ */
 jQuery(document).ready(function () {
 	crud_setup_binds();
 	crud_setup_refresh();
