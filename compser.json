@@ -1,0 +1,24 @@
+{
+    "name": "detain/crud",
+    "type": "library",
+    "description": "Advanced CRUD Class",
+    "keywords": ["db","database","sql","crud","abstraction","list","edit","delete","add","create","bootstrap"],
+    "license": "LGPL-2.1",
+    "authors": [
+        {
+            "name": "Joe Huss",
+            "homepage": "https://my.interserver.net/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+	"detain/db_abstraction": "dev-trunk"
+    },
+    "require-dev": {
+    },
+    "suggests": {
+    },
+    "autoload": {
+        "psr-4": {"detain\\Crud\\": "src/"}
+    }
+}
