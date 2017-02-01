@@ -28,7 +28,7 @@
 {/if}
 								<span class="crud-title">{$title}</span>
 {if $print_button == true || $export_button == true}
-								<div class="export btn-group pull-right">
+								<div class="export btn-group pull-right printer-hidden">
 {if $print_button == true}
 									<button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
 										<i class="fa fa-print crud-icon"></i>

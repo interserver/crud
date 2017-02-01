@@ -343,13 +343,18 @@ function crud_setup_refresh() {
 function crud_print() {
 	event.preventDefault();
 	jQuery('.printer-hidden').hide();
+	var oldPage = document.body.innerHTML;
+	jQuery("#crud-table td a").each(function() {
+		jQuery(this).parent().text(jQuery(this).parent().text());
+	});
 	var obj = jQuery('.crud .table-responsive');
 	var divElements = obj.html();
-	var oldPage = document.body.innerHTML;
 	document.body.innerHTML = "<html><head><title></title></head><body>"+divElements+"</body>";
-	window.print();
-	document.body.innerHTML = oldPage;
-	jQuery('.printer-hidden').show();
+	setTimeout(function(oldpage) {
+		window.print();
+		document.body.innerHTML = oldPage;
+		jQuery('.printer-hidden').show();
+	}, 250);
 }
 
 jQuery(document).ready(function () {
