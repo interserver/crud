@@ -1,5 +1,4 @@
-# crud
-Advanced CRUD Class
+# Advanced CRUD Class
 
 .. because designing a webpage should be as easy as writing an sql query
 
