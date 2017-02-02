@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @subpackage Domains
  */
+use \detain\Crud\Crud;
 
 /**
  * Displays a list of all the Domains's available to your current session
@@ -18,7 +19,6 @@ function crud_domains_list() {
 	$module = 'domains';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	crud::init("select {$settings['PREFIX']}_id,{$settings['PREFIX']}_hostname,{$settings['PREFIX']}_cost,{$settings['PREFIX']}_status,{$settings['PREFIX']}_company from {$settings['TABLE']}", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order ' . $settings['TITLE'], 'client')
