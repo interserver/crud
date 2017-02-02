@@ -18,7 +18,7 @@ function crud_webhosting_list() {
 	$module = 'webhosting';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, services_name, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->enable_labels()

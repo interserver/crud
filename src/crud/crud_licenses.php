@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_licenses() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from licenses', 'licenses')
 		->set_title('Licenses')
 		->go();

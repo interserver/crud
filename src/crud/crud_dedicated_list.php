@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_dedicated_list() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from orders', 'innertell')
 		->set_title('Dedicated List')
 		->go();

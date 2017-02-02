@@ -15,7 +15,7 @@
  */
 function crud_last_logins() {
 	add_output(alert('TODO', 'Get Client Side Working Right'));
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init("select access_ip, access_login from access_log where access_ip != '' group by access_ip")
 		->set_title('Last Logn Locations')
 		->disable_delete()

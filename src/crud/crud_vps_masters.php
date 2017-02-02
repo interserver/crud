@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_vps_masters() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from vps_masters', 'vps')
 		->set_title('VPS Host Servers')
 		->go();

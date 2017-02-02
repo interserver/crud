@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_active_packages() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init("select '__TBLNAME__' as module, count(*) AS packages
  FROM
   __TABLE__

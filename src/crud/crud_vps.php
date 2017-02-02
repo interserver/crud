@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_vps() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from vps', 'vps')
 		->set_title('Virtual Private Servers')
 		->go();

@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_templates() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('get_template_files', 'default', 'function')
 		->set_title('Templates')
 		->go();

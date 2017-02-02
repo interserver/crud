@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_fantastico_list() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('get_fantastico_list', 'licenses', 'function')
 		->set_title('Fantastico License List')
 		->go();

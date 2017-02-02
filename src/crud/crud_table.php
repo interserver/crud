@@ -23,7 +23,7 @@ function crud_table() {
 	$table = $GLOBALS['tf']->variables->request['table'];
 	$db = get_module_db($module);
 	page_title("{$db->Database} {$table} Table Data Browser");
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init($table, $module)
 		->set_extra_url_args("&db={$module}&table={$table}")
 		->set_title("{$db->Database}.{$table} table data browser")

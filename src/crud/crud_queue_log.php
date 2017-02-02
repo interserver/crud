@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_queue_log() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from queue_log')
 		->set_title('Queue Log')
 		->go();

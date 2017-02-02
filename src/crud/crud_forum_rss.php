@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_forum_rss() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('get_forum_rss', 'default', 'function')
 		->set_title('Latest Forum Posts')
 		->go();

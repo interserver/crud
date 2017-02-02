@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_vps_list_free_ips2() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('get_vps_free_ips', 'vps', 'function')
 		->set_title('Free/Available IPs For VPs Servers')
 		->disable_delete()

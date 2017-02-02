@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_form_manager() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('select * from forms')
 		->set_title('Form Manager')
 		->go();

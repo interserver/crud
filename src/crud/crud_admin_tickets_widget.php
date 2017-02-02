@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_admin_tickets_widget() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init("select swtickets.subject
 , swtickets.ticketid
 , swtickets.ticketmaskid

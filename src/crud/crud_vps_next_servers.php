@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_vps_next_servers() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('get_vps_next_servers', 'vps', 'function')
 		->set_title('VPS Next Setup Servers')
 		->disable_delete()

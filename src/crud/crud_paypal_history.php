@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_paypal_history() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init('Get_PayPal_History')
 		->set_title('Paypal History')
 		->go();

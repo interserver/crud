@@ -14,7 +14,7 @@
  * @return void
  */
 function crud_month_payment_totals() {
-	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
+	function_requirements('class.crud');
 	crud::init("select invoices_module as module, sum(invoices_amount) as total_paid from invoices where year(invoices.invoices_date) = year(now()) AND month(invoices.invoices_date) = month(now()) AND invoices.invoices_type >= 10 group by invoices_module")
 		->set_title('Payments This Month')
 		->disable_delete()
