@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_modernbill_client_list()
  * @return void
  */
 function crud_modernbill_client_list() {
-	function_requirements('class.crud');
-	crud::init('select * from client_info', 'mb')
+		Crud::init('select * from client_info', 'mb')
 		->set_title('Modernbill Client List')
 		->go();
 }

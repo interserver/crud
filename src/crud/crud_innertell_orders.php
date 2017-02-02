@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_innertell_orders()
  * @return void
  */
 function crud_innertell_orders() {
-	function_requirements('class.crud');
-	crud::init('select * from orders', 'innertell')
+		Crud::init('select * from orders', 'innertell')
 		->set_title('Dedicated Server Orders')
 		->go();
 }

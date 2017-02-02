@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_queue_log()
  * @return void
  */
 function crud_queue_log() {
-	function_requirements('class.crud');
-	crud::init('select * from queue_log')
+		Crud::init('select * from queue_log')
 		->set_title('Queue Log')
 		->go();
 }

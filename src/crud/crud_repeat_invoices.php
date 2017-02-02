@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_repeat_invoices()
  * @return void
  */
 function crud_repeat_invoices() {
-	function_requirements('class.crud');
-	crud::init('select * from repeat_invoices')
+		Crud::init('select * from repeat_invoices')
 		->set_title('Repeat Invoices')
 		->go();
 }

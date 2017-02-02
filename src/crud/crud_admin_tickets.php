@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_admin_tickets()
  * @return void
  */
 function crud_admin_tickets() {
-	function_requirements('class.crud');
-	crud::init("select swtickets.subject
+		Crud::init("select swtickets.subject
 , swtickets.ticketid
 , swtickets.ticketmaskid
 , swtickets.lastreplier

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_vps_list_free_ips()
  * @return void
  */
 function crud_vps_list_free_ips() {
-	function_requirements('class.crud');
-	crud::init('get_vps_free_ips', 'vps', 'function')
+		Crud::init('get_vps_free_ips', 'vps', 'function')
 		->set_title('Free/Available IPs For VPs Servers')
 		->disable_delete()
 		->disable_edit()

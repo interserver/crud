@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_coupons()
@@ -15,8 +16,7 @@
  */
 function crud_coupons() {
 	add_output(alert('TODO', 'Add Adding Coupons, and improve the display'));
-	function_requirements('class.crud');
-	crud::init('select id,customer,usable,applies,type,amount,name,onetime,account_lid from coupons left join accounts on account_id=customer')
+		Crud::init('select id,customer,usable,applies,type,amount,name,onetime,account_lid from coupons left join accounts on account_id=customer')
 		->set_title('Coupons')
 		->go();
 }

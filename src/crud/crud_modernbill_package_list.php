@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_modernbill_package_list()
  * @return void
  */
 function crud_modernbill_package_list() {
-	function_requirements('class.crud');
-	crud::init(
+		Crud::init(
 		'select  package_type.pack_id
      , package_type.pack_name
      , client_package.pack_price

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_backups()
  * @return void
  */
 function crud_backups() {
-	function_requirements('class.crud');
-	crud::init('select * from backups', 'backups')
+		Crud::init('select * from backups', 'backups')
 		->set_title('Backups')
 		->go();
 }

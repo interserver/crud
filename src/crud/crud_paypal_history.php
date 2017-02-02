@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_paypal_history()
  * @return void
  */
 function crud_paypal_history() {
-	function_requirements('class.crud');
-	crud::init('Get_PayPal_History')
+		Crud::init('Get_PayPal_History')
 		->set_title('Paypal History')
 		->go();
 }

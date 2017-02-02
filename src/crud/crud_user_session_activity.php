@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_user_session_activity()
  * @return void
  */
 function crud_user_session_activity() {
-	function_requirements('class.crud');
-	crud::init("select session_log.history_id, accounts.account_id, accounts.account_lid, accounts.account_ima, session_log.history_sid, session_log.history_timestamp, session_log.history_owner, session_log.history_type, session_log.history_new_value FROM accounts INNER JOIN session_log ON accounts.account_id = session_log.history_creator WHERE accounts.account_ima <> 'services'")
+		Crud::init("select session_log.history_id, accounts.account_id, accounts.account_lid, accounts.account_ima, session_log.history_sid, session_log.history_timestamp, session_log.history_owner, session_log.history_type, session_log.history_new_value FROM accounts INNER JOIN session_log ON accounts.account_id = session_log.history_creator WHERE accounts.account_ima <> 'services'")
 		->set_title('User Session Activity')
 		->go();
 }

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_dedicated_list()
  * @return void
  */
 function crud_dedicated_list() {
-	function_requirements('class.crud');
-	crud::init('select * from orders', 'innertell')
+		Crud::init('select * from orders', 'innertell')
 		->set_title('Dedicated List')
 		->go();
 }

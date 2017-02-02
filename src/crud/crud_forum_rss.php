@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_forum_rss()
  * @return void
  */
 function crud_forum_rss() {
-	function_requirements('class.crud');
-	crud::init('get_forum_rss', 'default', 'function')
+		Crud::init('get_forum_rss', 'default', 'function')
 		->set_title('Latest Forum Posts')
 		->go();
 }

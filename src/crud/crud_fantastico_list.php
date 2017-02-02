@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_fantastico_list()
  * @return void
  */
 function crud_fantastico_list() {
-	function_requirements('class.crud');
-	crud::init('get_fantastico_list', 'licenses', 'function')
+		Crud::init('get_fantastico_list', 'licenses', 'function')
 		->set_title('Fantastico License List')
 		->go();
 }

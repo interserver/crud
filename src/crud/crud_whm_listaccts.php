@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_whm_listaccts()
  * @return void
  */
 function crud_whm_listaccts() {
-	function_requirements('class.crud');
-	crud::init('whm_get_accounts', 'default', 'function')
+		Crud::init('whm_get_accounts', 'default', 'function')
 		->set_title('Accounts List')
 		->go();
 }

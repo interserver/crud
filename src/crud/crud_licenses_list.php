@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @subpackage Licenses
  */
+use \detain\Crud\Crud;
 
 /**
  * Displays a list of all the License's available to your current session
@@ -19,8 +20,7 @@ function crud_licenses_list() {
 	$module = 'licenses';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
-	function_requirements('class.crud');
-	crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_ip, services_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_status, invoices_paid, invoices_date from {$settings['TABLE']} left join invoices on invoices_extra={$settings['PREFIX']}_invoice and invoices_id=(select max(invoices_id) from invoices where invoices_type=1 and  invoices_extra={$settings['PREFIX']}_invoice) left join services on services_id={$settings['PREFIX']}_type", $module)
+		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_ip, services_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_status, invoices_paid, invoices_date from {$settings['TABLE']} left join invoices on invoices_extra={$settings['PREFIX']}_invoice and invoices_id=(select max(invoices_id) from invoices where invoices_type=1 and  invoices_extra={$settings['PREFIX']}_invoice) left join services on services_id={$settings['PREFIX']}_type", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','=','active')), 'Active', 'info')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))), 'Pending', 'info')

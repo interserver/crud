@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_renewals()
  * @return void
  */
 function crud_renewals() {
-	function_requirements('class.crud');
-	crud::init('get_renewals', 'default', 'function')
+		Crud::init('get_renewals', 'default', 'function')
 		->set_title('Renewals')
 		->go();
 }

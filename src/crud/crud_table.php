@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_table()
@@ -23,8 +24,7 @@ function crud_table() {
 	$table = $GLOBALS['tf']->variables->request['table'];
 	$db = get_module_db($module);
 	page_title("{$db->Database} {$table} Table Data Browser");
-	function_requirements('class.crud');
-	crud::init($table, $module)
+		Crud::init($table, $module)
 		->set_extra_url_args("&db={$module}&table={$table}")
 		->set_title("{$db->Database}.{$table} table data browser")
 		->enable_fluid_container()

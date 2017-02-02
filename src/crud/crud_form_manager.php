@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_form_manager()
  * @return void
  */
 function crud_form_manager() {
-	function_requirements('class.crud');
-	crud::init('select * from forms')
+		Crud::init('select * from forms')
 		->set_title('Form Manager')
 		->go();
 }

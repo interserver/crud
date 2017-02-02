@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_history_log()
  * @return void
  */
 function crud_history_log() {
-	function_requirements('class.crud');
-	crud::init('select * from history_log')
+		Crud::init('select * from history_log')
 		->set_title('History Log')
 		->go();
 }

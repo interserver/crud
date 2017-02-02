@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_templates()
  * @return void
  */
 function crud_templates() {
-	function_requirements('class.crud');
-	crud::init('get_template_files', 'default', 'function')
+		Crud::init('get_template_files', 'default', 'function')
 		->set_title('Templates')
 		->go();
 }

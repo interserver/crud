@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_abuse()
  * @return void
  */
 function crud_abuse() {
-	function_requirements('class.crud');
-	crud::init('select * from abuse')
+		Crud::init('select * from abuse')
 		->set_title('Abuse')
 		->go();
 }

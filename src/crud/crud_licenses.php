@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_licenses()
  * @return void
  */
 function crud_licenses() {
-	function_requirements('class.crud');
-	crud::init('select * from licenses', 'licenses')
+		Crud::init('select * from licenses', 'licenses')
 		->set_title('Licenses')
 		->go();
 }

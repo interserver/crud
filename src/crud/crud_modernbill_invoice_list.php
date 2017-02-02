@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_modernbill_invoice_list()
  * @return void
  */
 function crud_modernbill_invoice_list() {
-	function_requirements('class.crud');
-	crud::init(
+		Crud::init(
 		'select client_info.client_email
 	 , client_invoice.client_id
 	 , client_invoice.invoice_id

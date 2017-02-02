@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_reusable_fantastico()
  * @return void
  */
 function crud_reusable_fantastico() {
-	function_requirements('class.crud');
-	crud::init('get_reusable_fantastico', 'licenses', 'function')
+		Crud::init('get_reusable_fantastico', 'licenses', 'function')
 		->set_title('Reusable Fantastico')
 		->go();
 }

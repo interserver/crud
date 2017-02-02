@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_vps_masters()
  * @return void
  */
 function crud_vps_masters() {
-	function_requirements('class.crud');
-	crud::init('select * from vps_masters', 'vps')
+		Crud::init('select * from vps_masters', 'vps')
 		->set_title('VPS Host Servers')
 		->go();
 }

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_invoices()
  * @return void
  */
 function crud_invoices() {
-	function_requirements('class.crud');
-	crud::init('select * from invoices')
+		Crud::init('select * from invoices')
 		->set_title('Invoices')
 		->go();
 }

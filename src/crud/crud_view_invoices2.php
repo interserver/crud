@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_view_invoices2()
  * @return void
  */
 function crud_view_invoices2() {
-	function_requirements('class.crud');
-	crud::init('select * from invoices')
+		Crud::init('select * from invoices')
 		->set_title('View Invoices List')
 		->go();
 }

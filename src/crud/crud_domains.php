@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_domains()
  * @return void
  */
 function crud_domains() {
-	function_requirements('class.crud');
-	crud::init('select * from domains', 'domains')
+		Crud::init('select * from domains', 'domains')
 		->set_title('Domains')
 		->go();
 }

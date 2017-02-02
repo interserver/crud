@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_ssl()
  * @return void
  */
 function crud_ssl() {
-	function_requirements('class.crud');
-	crud::init('select * from orders', 'ssl')
+		Crud::init('select * from orders', 'ssl')
 		->set_title('SSL Certificates')
 		->go();
 }

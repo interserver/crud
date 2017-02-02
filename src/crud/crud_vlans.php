@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_vlans()
@@ -15,8 +16,7 @@
  */
 function crud_vlans() {
 	add_output(alert('TODO', 'Get Adding a VLAN working well, maybe some totals/stats type bottom row'));
-	function_requirements('class.crud');
-	crud::init('select * from vlans', 'admin')
+		Crud::init('select * from vlans', 'admin')
 		->set_title('IP VLAN Manager')
 		->go();
 }

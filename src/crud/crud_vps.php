@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_vps()
  * @return void
  */
 function crud_vps() {
-	function_requirements('class.crud');
-	crud::init('select * from vps', 'vps')
+		Crud::init('select * from vps', 'vps')
 		->set_title('Virtual Private Servers')
 		->go();
 }

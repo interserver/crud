@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_server_billing_stats()
  * @return void
  */
 function crud_server_billing_stats() {
-	function_requirements('class.crud');
-	crud::init('get_server_billing_stats', 'default', 'function')
+		Crud::init('get_server_billing_stats', 'default', 'function')
 		->set_title('Server Billing Stats')
 		->go();
 }

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_active_packages()
  * @return void
  */
 function crud_active_packages() {
-	function_requirements('class.crud');
-	crud::init("select '__TBLNAME__' as module, count(*) AS packages
+		Crud::init("select '__TBLNAME__' as module, count(*) AS packages
  FROM
   __TABLE__
 WHERE

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_user_log()
  * @return void
  */
 function crud_user_log() {
-	function_requirements('class.crud');
-	crud::init('select * from user_log')
+		Crud::init('select * from user_log')
 		->set_title('User Log')
 		->go();
 }

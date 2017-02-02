@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @subpackage SSL
  */
+use \detain\Crud\Crud;
 
 /**
  * Displays a list of all the SSL Certificates's available to your current session
@@ -18,8 +19,7 @@ function crud_ssl_list() {
 	$module = 'ssl';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
-	function_requirements('class.crud');
-	crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from orders left join services on {$settings['PREFIX']}_type=services_id", $module)
+		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from orders left join services on {$settings['PREFIX']}_type=services_id", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','=','active')), 'Active', 'info')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))), 'Pending', 'info')

@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_paypal_transactions()
  * @return void
  */
 function crud_paypal_transactions() {
-	function_requirements('class.crud');
-	crud::init('select * from paypal')
+		Crud::init('select * from paypal')
 		->set_title('Paypal Transactions')
 		->go();
 }

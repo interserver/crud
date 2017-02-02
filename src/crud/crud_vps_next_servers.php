@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_vps_next_servers()
  * @return void
  */
 function crud_vps_next_servers() {
-	function_requirements('class.crud');
-	crud::init('get_vps_next_servers', 'vps', 'function')
+		Crud::init('get_vps_next_servers', 'vps', 'function')
 		->set_title('VPS Next Setup Servers')
 		->disable_delete()
 		->disable_edit()

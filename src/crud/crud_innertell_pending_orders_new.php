@@ -8,14 +8,14 @@
  * @package MyAdmin
  * @category Admin
  */
+use \detain\Crud\Crud;
 
 /**
  * crud_innertell_pending_orders_new()
  * @return void
  */
 function crud_innertell_pending_orders_new() {
-	function_requirements('class.crud');
-	crud::init("select orders.id
+		Crud::init("select orders.id
      , orders.username
      , orders.ccname
      , orders.exp

@@ -8,6 +8,7 @@
  * @package MyAdmin
  * @subpackage QuickServers
  */
+use \detain\Crud\Crud;
 
 /**
  * Displays a list of all the QuickServer's available to your current session
@@ -18,8 +19,7 @@ function crud_quickservers_list() {
 	$module = 'quickservers';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
-	function_requirements('class.crud');
-	crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['TABLE']}.{$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id", $module)
+		Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['TABLE']}.{$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id", $module)
 		->set_title($settings['TITLE'] . ' List')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','=','active')), 'Active', 'info')
 		->add_title_search_button(array(array($settings['PREFIX'].'_status','in',array('pending','pending-setup','pend-approval'))), 'Pending', 'info')
