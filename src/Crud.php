@@ -2647,7 +2647,7 @@ class Crud
 	public function export_json($headers) {
 		foreach ($headers as $header)
 			header($header);
-		return json_encode($this->rows, $headers);
+		return json_encode($this->rows, JSON_PRETTY_PRINT);
 	}
 
 	/**
