@@ -16,7 +16,7 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_licenses_list() {
-	add_output(alert('TODO', 'Get the Paid check working with pagination updates'));
+	//add_output(alert('TODO', 'Get the Paid check working with pagination updates'));
 	$module = 'licenses';
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'] . ' List');
