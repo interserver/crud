@@ -67,7 +67,7 @@ class Crud
 	public $price_align = 'r';
 	public $price_text_align = 'r';
 	public $stage = 1;
-	public $rows = array();
+	public $rows = [];
 	public $page_limits = array(10, 25, 100, -1);
 	public $page_limit = 10;
 	public $page_offset = 0;
@@ -79,35 +79,35 @@ class Crud
 	public $delete_row = true;
 	public $edit_row = true;
 	public $add_row = true;
-	public $query_where = array();
-	public $admin_confirm_fields = array();
-	public $fields = array();
-	public $query_fields = array();
-	public $search_terms = array();
+	public $query_where = [];
+	public $admin_confirm_fields = [];
+	public $fields = [];
+	public $query_fields = [];
+	public $search_terms = [];
 	// temp fields maybe from buy service class i think
-	public $disabled_fields = array();
-	public $filters = array();
-	public $values = array();
-	public $labels = array();
+	public $disabled_fields = [];
+	public $filters = [];
+	public $values = [];
+	public $labels = [];
 	public $use_labels = false;
-	public $defaults = array();
-	public $validations = array();
-	public $input_types = array();
-	public $column_templates = array();
-	public $tables = array();
+	public $defaults = [];
+	public $validations = [];
+	public $input_types = [];
+	public $column_templates = [];
+	public $tables = [];
 	// from the SQLParser or CrudFunctionIterator
 	public $queries;
 	/* @var db */
 	public $db;
 	public $settings;
-	public $buttons = array();
-	public $header_buttons = array();
-	public $title_buttons = array();
+	public $buttons = [];
+	public $header_buttons = [];
+	public $title_buttons = [];
 	public $fluid_container = false;
 	public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
 	public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
 	public $extra_url_args = '';
-	public $request = array();
+	public $request = [];
 	public $admin = false;
 	/**
 	 * @var false|int $auto_update false to disable, or frequency in seconds to update the list of records automatically
@@ -306,11 +306,11 @@ class Crud
 	 */
 	public function ajax_edit_handler() {
 		$fields = $_POST;
-		$query_fields = array();
-		$query_where = array();
+		$query_fields = [];
+		$query_where = [];
 		$valid = true;
-		$errors = array();
-		$error_fields = array();
+		$errors = [];
+		$error_fields = [];
 		foreach ($fields as $field => $value) {
 			// match up fields
 			if (isset($this->query_fields[$field])) {
@@ -369,7 +369,7 @@ class Crud
 								break;
 							case 'in_array':
 								if (isset($value)) {
-									$values = array();
+									$values = [];
 									if (!is_array($value))
 										$value = array($value);
 									foreach ($value as $t_value) {
@@ -389,7 +389,7 @@ class Crud
 					} else {
 						if (isset($validation['in_array'])) {
 							if (isset($value)) {
-								$values = array();
+								$values = [];
 								if (!is_array($value))
 									$value = array($value);
 								foreach ($value as $t_value) {
@@ -496,7 +496,7 @@ class Crud
 		$info = $formats[$format];
 		$filename = slugify($this->title).'_'.date('Y-m-d').'.'.$format;
 		$function = 'export_'.$format;
-		$headers = array();
+		$headers = [];
 		// Redirect output to a client’s web browser (OpenDocument)
 		$headers[] = 'Content-Type: '.$info['type'];
 		$headers[] = 'Content-Disposition: '.$info['disposition'].';filename="'.$filename.'"';
@@ -521,7 +521,7 @@ class Crud
 	 */
 	public function get_all_rows($result_type = MYSQL_ASSOC) {
 		$this->run_list_query();
-		$this->rows = array();
+		$this->rows = [];
 		while ($this->next_record($result_type)) {
 			$this->rows[] = $this->get_record();
 		}
@@ -535,7 +535,7 @@ class Crud
 		// apply pagination
 		// apply sorting
 		$this->run_list_query();
-		$json = array();
+		$json = [];
 		while ($this->db->next_record(MYSQL_ASSOC)) {
 			$json[] = $this->db->Record;
 		}
@@ -614,7 +614,7 @@ class Crud
 					}
 					//add_output("adding table {$member_1_table}");
 					if (!isset($this->query_where[$member_1_table]))
-						$this->query_where[$member_1_table] = array();
+						$this->query_where[$member_1_table] = [];
 				}
 				$member_2_type = $join_arr->getMembers()[1]->getType();			// COLUMN or VALUE
 				$member_2_members = $join_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
@@ -778,7 +778,7 @@ class Crud
 		if ($query == false)
 			$query = $this->query;
 		$this->db->query("explain {$query}", __LINE__, __FILE__);
-		$tables = array();
+		$tables = [];
 		$table = false;
 		if ($this->db->num_rows() > 0) {
 			while ($this->db->next_record(MYSQL_ASSOC)) {
@@ -803,7 +803,7 @@ class Crud
 	public function get_table_details($table) {
 		$db = clone $this->db;
 		$db->query("show full columns from {$table}", __LINE__, __FILE__);
-		$fields = array();
+		$fields = [];
 		while ($db->next_record(MYSQL_ASSOC)) {
 			if ($db->Record['Comment'] == '')
 				$db->Record['Comment'] = ucwords(str_replace(
@@ -920,7 +920,7 @@ class Crud
 					return $field.$oper."'".$this->db->real_escape($val)."'";
 				break;
 			case 'in':
-				$val_arr = array();
+				$val_arr = [];
 				foreach ($val as $value) {
 					if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
 						$val_arr[] = intval($value);
@@ -943,7 +943,7 @@ class Crud
 	 * @return string the sql string to add to the query
 	 */
 	public function search_to_sql() {
-		$search = array();
+		$search = [];
 		$valid_opers = array('=', 'in');
 		$implode_type = 'and';
 		//$this->log('Search Terms: ' . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
@@ -1239,12 +1239,12 @@ class Crud
 		$this->run_list_query();
 		$header_shown = false;
 		$idx = 0;
-		$rows = array();
+		$rows = [];
 		while ($this->next_record(MYSQL_ASSOC)) {
 			$record = $this->get_record();
 			if ($header_shown == false) {
 				$header_shown = true;
-				$empty_record = array();
+				$empty_record = [];
 				if ($this->type == 'function' || $this->type == 'table') {
 					foreach (array_keys($this->tables[$this->table]) as $field)
 						$empty_record[$field] = "%{$field}%";
@@ -1354,7 +1354,7 @@ class Crud
 	public function next_record($result_type) {
 		if ($this->type == 'function') {
 			if (!isset($this->tables[$this->query]))
-				$this->tables[$this->query] = array();
+				$this->tables[$this->query] = [];
 			//$this->log('ran is ' . var_export($this->queries->ran, true), __LINE__, __FILE__, 'debug');
 			$ran = $this->queries->ran;
 			$return = $this->queries->next_record($result_type);
@@ -1440,7 +1440,7 @@ class Crud
 	 */
 	public function add_field_validations($field, $validations) {
 		if (!isset($this->validations[$field])) {
-			$this->validations[$field] = array();
+			$this->validations[$field] = [];
 		}
 		foreach ($validations as $validation)
 			if (!in_array($validation, $this->validations[$field]))
@@ -1621,7 +1621,7 @@ class Crud
 			foreach ($fields as $field => $data) {
 				$input_type = 'input';
 				$input_data = false;
-				$validations = array();
+				$validations = [];
 				if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|double|timestamp|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
 					$type = $matches['type'];
 					switch ($type) {
@@ -2393,7 +2393,7 @@ class Crud
 		//$this->log("add_filter({$field}, {$value}, {$type}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
 		function_requirements('has_acl');
 		if (!isset($this->filters[$field]))
-			$this->filters[$field] = array();
+			$this->filters[$field] = [];
 		if ($acl !== false && !has_acl($acl)) {
 			$type = 'string';
 			$value = $bad_acl_test;
@@ -2694,7 +2694,7 @@ class Crud
 			if ($first == true) {
 				echo implode(' | ', array_keys($Record)) . PHP_EOL;
 				$size = sizeof($Record);
-				$row = array();
+				$row = [];
 				for ($x = 0; $x < $size; $x++)
 					$row[] = '---';
 				echo implode(' | ', $row) . PHP_EOL;

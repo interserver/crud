@@ -7,7 +7,7 @@ $cmd = "ls " . INCLUDE_ROOT . "/forms/*json;";
 $files = explode("\n", trim(`$cmd`));
 $function_req = '';
 $function_req .= "			'cruds' => '/crud/cruds.php',\n";
-$li = array();
+$li = [];
 $li[] = "<a href='#' class='list-group-item active'>CRUD Page Links</a>";
 foreach ($files as $filepath) {
 	$func = basename($filepath, '.json');

@@ -24,7 +24,7 @@ function get_crud_tables() {
 			$dbh = $GLOBALS[$module.'_dbh'];
 			$db_name = $dbh->Database;
 			$return['modules'][$module] = $dbh;
-			$return['tables'][$module] = array();
+			$return['tables'][$module] = [];
 			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
 			while ($dbh->next_record(MYSQL_ASSOC)) {
 				$table = $dbh->Record['Tables_in_'.$db_name];
@@ -132,7 +132,7 @@ function cruds() {
 	add_js('bootstrap');
 	page_title('CRUDs List');
 	$functions = get_crud_funcs();
-	$sizes = array();
+	$sizes = [];
 	foreach ($functions as $level => $functions_arr)
 		$sizes[$level] = sizeof($functions_arr);
 	add_output("
@@ -190,8 +190,8 @@ function cruds() {
 	$all_tables = get_crud_tables();
 	$levels = array('primary', 'info' , 'success', 'warning', 'danger');
 	$idx  = 0;
-	$key = array();
-	$rows = array();
+	$key = [];
+	$rows = [];
 	foreach ($all_tables['tables'] as $module => $tables) {
 		$dbh = $all_tables['modules'][$module];
 		$db_name = $dbh->Database;
