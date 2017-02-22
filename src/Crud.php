@@ -224,6 +224,10 @@ class Crud
 		if (substr($this->choice, 0, 5) == 'none.')
 			$this->choice = substr($this->choice, 5);
 		$this->limit_custid = true;
+		if ($this->page_limit < 1)
+			$this->page_limit = 1;
+		if ($this->page_offset < 0)
+			$this->page_offset = 0;
 		if ($this->admin == true) {
 			if (isset($this->request['custid'])) {
 				$this->custid = $this->request['custid'];
