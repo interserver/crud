@@ -16,8 +16,8 @@ use \detain\Crud\Crud;
  */
 function get_crud_tables() {
 	$return = array(
-		'modules' => array(),
-		'tables' => array(),
+		'modules' => [],
+		'tables' => [],
 	);
 	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {

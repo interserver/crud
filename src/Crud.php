@@ -194,6 +194,18 @@ class Crud
 	}
 
 	/**
+	 * sets default search terms
+	 *
+	 * @param array $search
+	 * @return Crud
+	 */
+	public function set_default_search($search) {
+		if ($this->ajax == false && !isset($this->request['search']))
+			$this->search_terms = $search;
+		return $this;
+	}
+
+	/**
 	 * checks for various request fields and applies them to their various crud settings
 	 *
 	 * @return void
