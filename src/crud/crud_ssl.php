@@ -15,7 +15,7 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_ssl() {
-		Crud::init('select * from orders', 'ssl')
+		Crud::init('select * from ssl_certs', 'ssl')
 		->set_title('SSL Certificates')
 		->go();
 }
