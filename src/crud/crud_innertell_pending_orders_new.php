@@ -15,53 +15,53 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_innertell_pending_orders_new() {
-		Crud::init("select orders.id
-	 , orders.username
-	 , orders.ccname
-	 , orders.exp
-	 , orders.bankname
-	 , orders.cc
-	 , orders.servername
-	 , orders.root
-	 , orders.dedicated_tag
-	 , orders.custom_tag
-	 , orders.status
-	 , orders.`comment`
-	 , orders.inital_bill
-	 , orders.hardware
-	 , orders.ips
-	 , orders.monthly_bill
-	 , orders.setup
-	 , orders.discount
-	 , orders.rep
-	 , orders.`date`
-	 , orders.total_cost
-	 , orders.referer
-	 , orders.server_id
-	 , orders.fraud
-	 , orders.modernbill_package_id
-	 , orders.hardware_ordered
-	 , orders.server_billed
-	 , orders.welcome_email
-	 , orders.dedicated_cpu
-	 , orders.dedicated_memory
-	 , orders.dedicated_hd1
-	 , orders.dedicated_hd2
-	 , orders.dedicated_bandwidth
-	 , orders.dedicated_ips
-	 , orders.dedicated_os
-	 , orders.dedicated_cp
-	 , orders.dedicated_raid
+		Crud::init("select servers.id
+	 , servers.username
+	 , servers.ccname
+	 , servers.exp
+	 , servers.bankname
+	 , servers.cc
+	 , servers.servername
+	 , servers.root
+	 , servers.dedicated_tag
+	 , servers.custom_tag
+	 , servers.status
+	 , servers.`comment`
+	 , servers.inital_bill
+	 , servers.hardware
+	 , servers.ips
+	 , servers.monthly_bill
+	 , servers.setup
+	 , servers.discount
+	 , servers.rep
+	 , servers.`date`
+	 , servers.total_cost
+	 , servers.referer
+	 , servers.server_id
+	 , servers.fraud
+	 , servers.modernbill_package_id
+	 , servers.hardware_ordered
+	 , servers.server_billed
+	 , servers.welcome_email
+	 , servers.dedicated_cpu
+	 , servers.dedicated_memory
+	 , servers.dedicated_hd1
+	 , servers.dedicated_hd2
+	 , servers.dedicated_bandwidth
+	 , servers.dedicated_ips
+	 , servers.dedicated_os
+	 , servers.dedicated_cp
+	 , servers.dedicated_raid
 	 , group_concat(DISTINCT vlans.vlans_networks SEPARATOR ':') AS vlans
 	 , group_concat(DISTINCT vlans.vlans_ports SEPARATOR ':') AS ports
 	 , users.id as user_id FROM
-  innertell.orders
+  innertell.servers
 LEFT JOIN vlans
 ON vlans_comment LIKE concat('%', servername)
 LEFT JOIN users
-ON orders.username=users.username
+ON servers.username=users.username
 GROUP BY
-  orders.username
+  servers.username
 ", 'innertell')
 		->set_title('Pending Server Orders')
 		->go();
