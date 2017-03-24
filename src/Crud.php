@@ -147,7 +147,7 @@ class Crud
 			$crud->type = $type;
 			$crud->table = $table_or_query;
 			$crud->query = $table_or_query;
-		} elseif (strpos($table_or_query, ' ')) {
+		} elseif (mb_strpos($table_or_query, ' ')) {
 			$crud->all_fields = false;
 			$crud->query = $crud->decorate_query($table_or_query);
 			$crud->type = 'query';
@@ -233,8 +233,8 @@ class Crud
 			$this->page_offset = (int)$this->request['offset'];
 		if (isset($this->request['limit']))
 			$this->page_limit = (int)$this->request['limit'];
-		if (substr($this->choice, 0, 5) == 'none.')
-			$this->choice = substr($this->choice, 5);
+		if (mb_substr($this->choice, 0, 5) == 'none.')
+			$this->choice = mb_substr($this->choice, 5);
 		$this->limit_custid = true;
 		if ($this->page_limit < 1)
 			$this->page_limit = 1;
