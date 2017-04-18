@@ -58,11 +58,9 @@ function crud_innertell_pending_orders_new() {
   innertell.servers
 LEFT JOIN vlans
 ON vlans_comment LIKE concat('%', servername)
-LEFT JOIN users
-ON servers.username=users.username
 GROUP BY
   servers.username
-", 'innertell')
+", 'domains')
 		->set_title('Pending Server Orders')
 		->go();
 }
