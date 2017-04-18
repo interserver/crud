@@ -37,7 +37,7 @@ function crud_innertell_pending_orders_new() {
 	 , servers.`date`
 	 , servers.total_cost
 	 , servers.referer
-	 , servers.server_id
+	 , servers.server_location
 	 , servers.fraud
 	 , servers.modernbill_package_id
 	 , servers.hardware_ordered
