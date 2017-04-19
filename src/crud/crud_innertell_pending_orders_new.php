@@ -15,7 +15,7 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_innertell_pending_orders_new() {
-		Crud::init("select servers.id
+		Crud::init("select servers.server_id
 	 , servers.username
 	 , servers.ccname
 	 , servers.exp

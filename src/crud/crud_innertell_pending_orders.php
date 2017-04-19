@@ -16,7 +16,7 @@ use \detain\Crud\Crud;
  */
 function crud_innertell_pending_orders() {
 		Crud::init('SELECT
-	servers.id,
+	servers.server_id,
 	username,
 	ccname,
 	exp,
@@ -73,7 +73,7 @@ function crud_innertell_pending_orders() {
 FROM
 	servers
 		LEFT JOIN
-	location ON location.order_id = servers.id
+	location ON location.order_id = servers.server_id
 		LEFT JOIN
 	dedicated_cpu ON dedicated_cpu = dedicated_cpu.id
 		LEFT JOIN
