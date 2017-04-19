@@ -1638,7 +1638,7 @@ class Crud
 				$input_type = 'input';
 				$input_data = false;
 				$validations = [];
-				if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|double|timestamp|char|varchar|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+				if (preg_match("/^(?P<type>tinyint|smallint|mediumint|bigint|int|float|double|timestamp|char|varchar|mediumtext|text|enum)(\((?P<size>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
 					$type = $matches['type'];
 					switch ($type) {
 						case 'enum':
@@ -1736,6 +1736,7 @@ class Crud
 
 							}
 							break;
+						case 'mediumtext':
 						case 'text':
 							break;
 						case 'timestamp':
