@@ -15,7 +15,81 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_innertell_pending_orders() {
-		Crud::init('select servers.id, username, ccname, exp, bankname, cc, servername, root, dedicated_tag, custom_tag, servers.status, comment, inital_bill, hardware, ips, monthly_bill, setup, discount, rep, date, total_cost, referer, server_location, fraud, modernbill_package_id, hardware_ordered, server_billed, welcome_email, dedicated_cpu, dedicated_memory, dedicated_hd1, dedicated_hd2, dedicated_bandwidth, dedicated_ips, dedicated_os, dedicated_cp, dedicated_raid, location.id as server_location, dedicated_cpu.short_desc as dedicated_cpu_desc, dedicated_cpu.monthly_price as dedicated_cpu_cost, dedicated_memory.short_desc as dedicated_memory_desc, dedicated_memory.monthly_price as dedicated_memory_cost, dedicated_hd1.short_desc as dedicated_hd1_desc, dedicated_hd1.monthly_price as dedicated_hd1_cost, dedicated_hd2.short_desc as dedicated_hd2_desc, dedicated_hd2.monthly_price as dedicated_hd2_cost, dedicated_bandwidth.short_desc as dedicated_bandwidth_desc, dedicated_bandwidth.monthly_price as dedicated_bandwidth_cost, dedicated_ips.short_desc as dedicated_ips_desc, dedicated_ips.monthly_price as dedicated_ips_cost, dedicated_os.short_desc as dedicated_os_desc, dedicated_os.monthly_price as dedicated_os_cost, dedicated_cp.short_desc as dedicated_cp_desc, dedicated_cp.monthly_price as dedicated_cp_cost  from servers left join location on location.order_id=servers.id left join dedicated_cpu on dedicated_cpu=dedicated_cpu.id  left join dedicated_memory on dedicated_memory=dedicated_memory.id  left join dedicated_hd as dedicated_hd1 on dedicated_hd1=dedicated_hd1.id  left join dedicated_hd as dedicated_hd2 on dedicated_hd2=dedicated_hd2.id  left join dedicated_bandwidth on dedicated_bandwidth=dedicated_bandwidth.id  left join dedicated_ips on dedicated_ips=dedicated_ips.id  left join dedicated_os on dedicated_os=dedicated_os.id  left join dedicated_cp on dedicated_cp=dedicated_cp.id', 'domains')
+		Crud::init('SELECT
+	servers.id,
+	username,
+	ccname,
+	exp,
+	bankname,
+	cc,
+	servername,
+	root,
+	dedicated_tag,
+	custom_tag,
+	servers.status,
+	comment,
+	inital_bill,
+	hardware,
+	ips,
+	monthly_bill,
+	setup,
+	discount,
+	rep,
+	date,
+	total_cost,
+	referer,
+	server_location,
+	fraud,
+	modernbill_package_id,
+	hardware_ordered,
+	server_billed,
+	welcome_email,
+	dedicated_cpu,
+	dedicated_memory,
+	dedicated_hd1,
+	dedicated_hd2,
+	dedicated_bandwidth,
+	dedicated_ips,
+	dedicated_os,
+	dedicated_cp,
+	dedicated_raid,
+	location.id AS server_location,
+	dedicated_cpu.short_desc AS dedicated_cpu_desc,
+	dedicated_cpu.monthly_price AS dedicated_cpu_cost,
+	dedicated_memory.short_desc AS dedicated_memory_desc,
+	dedicated_memory.monthly_price AS dedicated_memory_cost,
+	dedicated_hd1.short_desc AS dedicated_hd1_desc,
+	dedicated_hd1.monthly_price AS dedicated_hd1_cost,
+	dedicated_hd2.short_desc AS dedicated_hd2_desc,
+	dedicated_hd2.monthly_price AS dedicated_hd2_cost,
+	dedicated_bandwidth.short_desc AS dedicated_bandwidth_desc,
+	dedicated_bandwidth.monthly_price AS dedicated_bandwidth_cost,
+	dedicated_ips.short_desc AS dedicated_ips_desc,
+	dedicated_ips.monthly_price AS dedicated_ips_cost,
+	dedicated_os.short_desc AS dedicated_os_desc,
+	dedicated_os.monthly_price AS dedicated_os_cost,
+	dedicated_cp.short_desc AS dedicated_cp_desc,
+	dedicated_cp.monthly_price AS dedicated_cp_cost
+FROM
+	servers
+		LEFT JOIN
+	location ON location.order_id = servers.id
+		LEFT JOIN
+	dedicated_cpu ON dedicated_cpu = dedicated_cpu.id
+		LEFT JOIN
+	dedicated_memory ON dedicated_memory = dedicated_memory.id
+		LEFT JOIN
+	dedicated_hd AS dedicated_hd1 ON dedicated_hd1 = dedicated_hd1.id
+		LEFT JOIN
+	dedicated_hd AS dedicated_hd2 ON dedicated_hd2 = dedicated_hd2.id
+		LEFT JOIN
+	dedicated_bandwidth ON dedicated_bandwidth = dedicated_bandwidth.id
+		LEFT JOIN
+	dedicated_ips ON dedicated_ips = dedicated_ips.id
+		LEFT JOIN
+	dedicated_os ON dedicated_os = dedicated_os.id
+		LEFT JOIN
+	dedicated_cp ON dedicated_cp = dedicated_cp.id', 'domains')
 		->set_title('Pending Dedicated Server Orders')
 		->go();
 }
