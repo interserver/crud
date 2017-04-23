@@ -871,6 +871,7 @@ class Crud
 	 */
 	public function get_count() {
 		$db = $this->db;
+		$count = 0;
 		if ($this->type == 'function') {
 			if (!method_exists('CrudFunctionIterator', 'run') || $this->queries->ran == false)
 				$count = 0;
