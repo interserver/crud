@@ -2374,7 +2374,7 @@ class Crud
 			$this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__, 'info');
 			return $value;
 		}
-		$value = htmlspecialchars($value);
+		$value = htmlspecial($value);
 		$search = array('%field%', '%value%');
 		$replace = array($field, $value);
 		foreach ($row as $row_field => $row_value) {
