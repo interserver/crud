@@ -6,6 +6,21 @@
  *
  * @returns {Boolean}
  */
+
+function sortTable(table, order) {
+		console.log("sort-table");
+    var asc   = order === 'asc',
+        tbody = table.find('tbody');
+    
+    tbody.find('tr').sort(function(a, b) {
+        if (asc) {
+            return $('td:eq(4)', a).text().localeCompare($('td:eq(4)', b).text());
+        } else {
+            return $('td:eq(4)', b).text().localeCompare($('td:eq(4)', a).text());
+        }
+    }).appendTo(tbody);
+}
+
 function crud_submit_handler(what, that) {
 	var disabled = jQuery("#"+what+"ModalForm input[disabled], #"+what+"ModalForm select[disabled]");
 	disabled.removeAttr("disabled");
@@ -192,6 +207,7 @@ function crud_load_page(callback) {
 			callback();
 		}
 	});
+sortTable(jQuery('.webhosting-list'),'asc');
 }
 
 /**
@@ -447,5 +463,6 @@ function crud_print() {
 jQuery(document).ready(function () {
 	crud_setup_binds();
 	crud_setup_refresh();
+	sortTable(jQuery('.webhosting-list'),'asc');
 	jQuery("[data-toggle=tooltip]").tooltip();
 });
