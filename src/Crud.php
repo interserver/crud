@@ -68,9 +68,22 @@ class Crud
 	public $price_text_align = 'r';
 	public $stage = 1;
 	public $rows = [];
-	public $page_limits = array(10, 25, 100, -1);
+	public $page_limits = array(10, 25, 50, 100, -1);
 	public $page_limit = 10;
 	public $page_offset = 0;
+
+
+
+
+	public $total_pages = 1;
+	public $page_links = null;
+	public $total_rows;
+
+
+
+
+
+
 	public $order_by = '';
 	public $order_dir = 'desc';
 	public $all_fields = false;
@@ -237,9 +250,16 @@ class Crud
 			$this->choice = mb_substr($this->choice, 5);
 		$this->limit_custid = true;
 		if ($this->page_limit < 1)
-			$this->page_limit = 1;
+			$this->page_limit = 500;
 		if ($this->page_offset < 0)
 			$this->page_offset = 0;
+
+		$count = $this->get_count();
+		$this->total_pages = $this->get_total_pages($count);
+		$page = $this->get_page();
+		$this->page_links = $this->get_page_links($page, $this->total_pages);
+		$this->total_rows = $count;
+
 		if ($this->admin == true) {
 			if (isset($this->request['custid'])) {
 				$this->custid = $this->request['custid'];
@@ -1325,17 +1345,21 @@ class Crud
 		}
 		$table->hide_form();
 		$page = $this->get_page();
-		$total_pages = $this->get_total_pages($count);
-		$page_links = $this->get_page_links($page, $total_pages);
+		$page_count = ceil($count / $this->page_limit);
+		//$total_pages = $this->get_total_pages($count);
+		//$total_pages = $page_count;
+		//echo 'pages'.$total_pages;
+		$this->total_pages = $this->get_total_pages($count);
+		$this->page_links = $this->get_page_links($page, $this->total_pages);
 		$table->smarty->assign('fluid_container', $this->fluid_container);
 		$table->smarty->assign('refresh_button', $this->refresh_button);
 		$table->smarty->assign('export_button', $this->export_button);
 		if ($this->export_button == true)
 			$table->smarty->assign('export_formats', $this->get_export_formats());
 		$table->smarty->assign('print_button', $this->print_button);
-		$table->smarty->assign('page_links', $page_links);
+		$table->smarty->assign('page_links', $this->page_links);
 		$table->smarty->assign('total_rows', $count);
-		$table->smarty->assign('total_pages', $total_pages);
+		$table->smarty->assign('total_pages', $this->total_pages);
 		$table->smarty->assign('page_limits', $this->page_limits);
 		$table->smarty->assign('page', $page);
 		$table->smarty->assign('page_limit', $this->page_limit);

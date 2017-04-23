@@ -200,6 +200,11 @@ function crud_load_page(callback) {
 function crud_update_pager() {
 	var x, first, page_links = [], page_html = '';
 	crud_page = (crud_page_offset / crud_page_limit) + 1;
+	//console.log(crud_page);
+	//console.log(crud_page_offset);
+	//console.log(crud_page_limit);
+	//console.log('crud_total_counts'+crud_total_count);
+	crud_total_pages = Math.ceil(crud_total_count / crud_page_limit);
 	//console.log("Offset "+crud_page_offset+" Limit "+crud_page_limit+" Page "+crud_page);
 	if (crud_page > 1)
 		jQuery('#crud-pager-prev').removeClass('disabled');

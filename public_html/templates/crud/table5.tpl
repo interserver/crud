@@ -273,6 +273,7 @@
 	var crud_total_pages = {$total_pages};
 	var crud_page = {$page};
 	var crud_search_terms = [];
+	var crud_total_count = "{$total_rows}";
 </script>
 <script type="text/javascript" src="/js/crud.js"></script>
 <link rel="stylesheet" href="/css/crud_table5.css">
