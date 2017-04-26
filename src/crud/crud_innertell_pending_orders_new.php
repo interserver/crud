@@ -25,7 +25,7 @@ function crud_innertell_pending_orders_new() {
 	 , servers.root
 	 , servers.dedicated_tag
 	 , servers.custom_tag
-	 , servers.status
+	 , servers.server_status
 	 , servers.`comment`
 	 , servers.inital_bill
 	 , servers.hardware

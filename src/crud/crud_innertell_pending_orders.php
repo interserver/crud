@@ -26,7 +26,7 @@ function crud_innertell_pending_orders() {
 	root,
 	dedicated_tag,
 	custom_tag,
-	servers.status,
+	servers.server_status,
 	comment,
 	inital_bill,
 	hardware,
