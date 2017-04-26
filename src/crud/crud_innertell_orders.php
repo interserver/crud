@@ -15,7 +15,7 @@ use \detain\Crud\Crud;
  * @return void
  */
 function crud_innertell_orders() {
-		Crud::init('select server_id, username, servername, server_status from servers', 'domains')
+		Crud::init('select server_id, username, server_hostname, server_status from servers', 'domains')
 		->set_title('Dedicated Server Orders')
 		->go();
 }

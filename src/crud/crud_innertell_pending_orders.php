@@ -22,7 +22,7 @@ function crud_innertell_pending_orders() {
 	exp,
 	bankname,
 	cc,
-	servername,
+	server_hostname,
 	root,
 	dedicated_tag,
 	custom_tag,

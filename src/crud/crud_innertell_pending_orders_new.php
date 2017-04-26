@@ -21,7 +21,7 @@ function crud_innertell_pending_orders_new() {
 	 , servers.exp
 	 , servers.bankname
 	 , servers.cc
-	 , servers.servername
+	 , servers.server_hostname
 	 , servers.root
 	 , servers.dedicated_tag
 	 , servers.custom_tag
@@ -57,7 +57,7 @@ function crud_innertell_pending_orders_new() {
 	 , users.id as user_id FROM
   innertell.servers
 LEFT JOIN vlans
-ON vlans_comment LIKE concat('%', servername)
+ON vlans_comment LIKE concat('%', server_hostname)
 GROUP BY
   servers.username
 ", 'domains')
