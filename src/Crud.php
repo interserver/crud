@@ -41,7 +41,7 @@
  * @TODO Add Console/ANSI Interface to this
  * @TODO Add order summary includable by login page
  */
-namespace detain\Crud;
+namespace MyCrud;
 use \sqlparser;
 use \TFSmarty;
 use \TFTable;

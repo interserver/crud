@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage SSL
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the SSL Certificates's available to your current session

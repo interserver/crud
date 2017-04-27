@@ -24,6 +24,6 @@
     "require-dev": {
     },
     "autoload": {
-        "psr-4": {"detain\\Crud\\": "src/"}
+        "psr-4": {"MyCrud\\": "src/"}
     }
 }

@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage Licenses
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the License's available to your current session

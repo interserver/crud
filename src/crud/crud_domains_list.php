@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage Domains
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the Domains's available to your current session

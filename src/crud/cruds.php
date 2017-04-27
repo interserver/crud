@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * returns an array of all the modules and tables

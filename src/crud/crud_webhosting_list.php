@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage Webhosting
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the Websites's available to your current session

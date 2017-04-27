@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage VPS
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the VPS's available to your current session

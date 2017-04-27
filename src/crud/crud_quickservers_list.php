@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @subpackage QuickServers
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the QuickServer's available to your current session

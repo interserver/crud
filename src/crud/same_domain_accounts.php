@@ -8,7 +8,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * same_domain_accounts()

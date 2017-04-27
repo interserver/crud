@@ -9,7 +9,7 @@
  * @package MyAdmin
  * @subpackage Backups
  */
-use \detain\Crud\Crud;
+use \MyCrud\Crud;
 
 /**
  * Displays a list of all the Backup's available to your current session
