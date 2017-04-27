@@ -2348,7 +2348,7 @@ class Crud
 			'pend_choice' => $this->choice,
 			'pend_timestamp' => mysql_now(),
 			'pend_custid' => $this->custid,
-			'pend_data' => serialize($this->set_vars))), __LINE__, __FILE__);
+			'pend_data' => myadmin_stringify($this->set_vars))), __LINE__, __FILE__);
 		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" ' . (WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
 		$this->continue = false;
 	}
