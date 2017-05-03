@@ -25,6 +25,6 @@ function crud_dedicated_list() {
 		->add_title_search_button([], 'All', 'info active')
 		->disable_delete()
 		->disable_edit()
-		->add_row_button('none.view_dedicated_server&id=%id%', 'View Server', 'primary', 'cog')
+		->add_row_button(($GLOBALS['tf']->ima == 'admin' ? 'none.view_server_order&id=%id%' : 'none.view_dedicated_server&id=%id%'), 'View Server', 'primary', 'cog')
 		->go();
 }
