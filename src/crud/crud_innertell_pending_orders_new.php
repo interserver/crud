@@ -43,14 +43,14 @@ function crud_innertell_pending_orders_new() {
 	 , servers.server_hardware_ordered
 	 , servers.server_billed
 	 , servers.welcome_email
-	 , servers.dedicated_cpu
+	 , servers.server_dedicated_cpu
 	 , servers.server_dedicated_memory
 	 , servers.server_dedicated_hd1
 	 , servers.server_dedicated_hd2
-	 , servers.dedicated_bandwidth
+	 , servers.server_dedicated_bandwidth
 	 , servers.server_dedicated_ips
 	 , servers.server_dedicated_os
-	 , servers.dedicated_cp
+	 , servers.server_dedicated_cp
 	 , servers.server_dedicated_raid
 	 , group_concat(DISTINCT vlans.vlans_networks SEPARATOR ':') AS vlans
 	 , group_concat(DISTINCT vlans.vlans_ports SEPARATOR ':') AS ports
