@@ -40,7 +40,7 @@ function crud_innertell_pending_orders_new() {
 	 , servers.server_location
 	 , servers.fraud
 	 , servers.server_mb_package_id
-	 , servers.hardware_ordered
+	 , servers.server_hardware_ordered
 	 , servers.server_billed
 	 , servers.welcome_email
 	 , servers.dedicated_cpu

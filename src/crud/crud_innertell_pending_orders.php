@@ -41,7 +41,7 @@ function crud_innertell_pending_orders() {
 	server_location,
 	fraud,
 	server_mb_package_id,
-	hardware_ordered,
+	server_hardware_ordered,
 	server_billed,
 	welcome_email,
 	dedicated_cpu,
