@@ -27,10 +27,10 @@ function crud_innertell_pending_orders_new() {
 	 , servers.custom_tag
 	 , servers.server_status
 	 , servers.`comment`
-	 , servers.inital_bill
+	 , servers.server_initial_bill
 	 , servers.hardware
 	 , servers.ips
-	 , servers.monthly_bill
+	 , servers.server_monthly_bill
 	 , servers.setup
 	 , servers.discount
 	 , servers.rep
@@ -39,7 +39,7 @@ function crud_innertell_pending_orders_new() {
 	 , servers.referer
 	 , servers.server_location
 	 , servers.fraud
-	 , servers.modernbill_package_id
+	 , servers.server_mb_package_id
 	 , servers.hardware_ordered
 	 , servers.server_billed
 	 , servers.welcome_email
