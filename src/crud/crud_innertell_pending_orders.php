@@ -46,22 +46,22 @@ function crud_innertell_pending_orders() {
 	welcome_email,
 	dedicated_cpu,
 	dedicated_memory,
-	dedicated_hd1,
-	dedicated_hd2,
+	server_dedicated_hd1,
+	server_dedicated_hd2,
 	dedicated_bandwidth,
 	dedicated_ips,
 	dedicated_os,
 	dedicated_cp,
-	dedicated_raid,
+	server_dedicated_raid,
 	location.id AS server_location,
 	dedicated_cpu.short_desc AS dedicated_cpu_desc,
 	dedicated_cpu.monthly_price AS dedicated_cpu_cost,
 	dedicated_memory.short_desc AS dedicated_memory_desc,
 	dedicated_memory.monthly_price AS dedicated_memory_cost,
-	dedicated_hd1.short_desc AS dedicated_hd1_desc,
-	dedicated_hd1.monthly_price AS dedicated_hd1_cost,
-	dedicated_hd2.short_desc AS dedicated_hd2_desc,
-	dedicated_hd2.monthly_price AS dedicated_hd2_cost,
+	server_dedicated_hd1.short_desc AS server_dedicated_hd1_desc,
+	server_dedicated_hd1.monthly_price AS server_dedicated_hd1_cost,
+	server_dedicated_hd2.short_desc AS server_dedicated_hd2_desc,
+	server_dedicated_hd2.monthly_price AS server_dedicated_hd2_cost,
 	dedicated_bandwidth.short_desc AS dedicated_bandwidth_desc,
 	dedicated_bandwidth.monthly_price AS dedicated_bandwidth_cost,
 	dedicated_ips.short_desc AS dedicated_ips_desc,
@@ -79,9 +79,9 @@ FROM
 		LEFT JOIN
 	dedicated_memory ON dedicated_memory = dedicated_memory.id
 		LEFT JOIN
-	dedicated_hd AS dedicated_hd1 ON dedicated_hd1 = dedicated_hd1.id
+	dedicated_hd AS server_dedicated_hd1 ON server_dedicated_hd1 = server_dedicated_hd1.id
 		LEFT JOIN
-	dedicated_hd AS dedicated_hd2 ON dedicated_hd2 = dedicated_hd2.id
+	dedicated_hd AS server_dedicated_hd2 ON server_dedicated_hd2 = server_dedicated_hd2.id
 		LEFT JOIN
 	dedicated_bandwidth ON dedicated_bandwidth = dedicated_bandwidth.id
 		LEFT JOIN

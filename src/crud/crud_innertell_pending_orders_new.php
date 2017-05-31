@@ -45,13 +45,13 @@ function crud_innertell_pending_orders_new() {
 	 , servers.welcome_email
 	 , servers.dedicated_cpu
 	 , servers.dedicated_memory
-	 , servers.dedicated_hd1
-	 , servers.dedicated_hd2
+	 , servers.server_dedicated_hd1
+	 , servers.server_dedicated_hd2
 	 , servers.dedicated_bandwidth
 	 , servers.dedicated_ips
 	 , servers.dedicated_os
 	 , servers.dedicated_cp
-	 , servers.dedicated_raid
+	 , servers.server_dedicated_raid
 	 , group_concat(DISTINCT vlans.vlans_networks SEPARATOR ':') AS vlans
 	 , group_concat(DISTINCT vlans.vlans_ports SEPARATOR ':') AS ports
 	 , users.id as user_id FROM
