@@ -60,7 +60,7 @@ LEFT JOIN vlans
 ON vlans_comment LIKE concat('%', server_hostname)
 GROUP BY
   servers.username
-", 'domains')
+", 'servers')
 		->set_title('Pending Server Orders')
 		->go();
 }

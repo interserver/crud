@@ -15,10 +15,10 @@ use \MyCrud\Crud;
  * @return void
  */
 function crud_dedicated_list() {
-		Crud::init('select server_id, username, server_hostname, server_status from servers', 'domains')
+		Crud::init('select server_id, server_username, server_hostname, server_status from servers', 'servers')
 		->set_title('Dedicated List')
 		->enable_labels()
-		->set_labels(['server_id' => 'ID','username' => 'Client','server_hostname' =>  'Server Name', 'server_status' => 'Status'], true)
+		->set_labels(['server_id' => 'ID','server_username' => 'Client','server_hostname' =>  'Server Name', 'server_status' => 'Status'], true)
 		->add_title_search_button([['server_status','=','active']], 'Active', 'info')
 		->add_title_search_button([['server_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([['server_status','in',['canceled','expired']]], 'Expired', 'info')
