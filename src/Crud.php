@@ -639,33 +639,33 @@ class Crud
 				//echo "Type:$type<br>";
 				//echo print_r($memberArray->getMembers(), true)."<br>";
 				$member1Type = $joinArray->getMembers()[0]->getType();			// COLUMN
-				$member_1_members = $joinArray->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
+				$member1Members = $joinArray->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
 				if ($member1Type == 'COLUMN') {
-					if (count($member_1_members) == 1) {
-						$member_1_table = $table;
-						$member_1_field = $member_1_members[0];
+					if (count($member1Members) == 1) {
+						$member1Table = $table;
+						$member1Field = $member1Members[0];
 					} else {
-						$member_1_table = $member_1_members[0];
-						$member_1_field = $member_1_members[1];
+						$member1Table = $member1Members[0];
+						$member1Field = $member1Members[1];
 					}
-					//add_output("adding table {$member_1_table}");
-					if (!isset($this->query_where[$member_1_table]))
-						$this->query_where[$member_1_table] = [];
+					//add_output("adding table {$member1Table}");
+					if (!isset($this->query_where[$member1Table]))
+						$this->query_where[$member1Table] = [];
 				}
 				$member2Type = $joinArray->getMembers()[1]->getType();			// COLUMN or VALUE
-				$member_2_members = $joinArray->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
+				$member2Members = $joinArray->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
 				if ($member2Type == 'COLUMN') {
-					if (count($member_2_members) == 1) {
-						$member_2_table = $table;
-						$member_2_field = $member_2_members[0];
+					if (count($member2Members) == 1) {
+						$member2Table = $table;
+						$member2Field = $member2Members[0];
 					} else {
-						$member_2_table = $member_2_members[0];
-						$member_2_field = $member_2_members[1];
+						$member2Table = $member2Members[0];
+						$member2Field = $member2Members[1];
 					}
 				} elseif ($member2Type == 'VALUE') {
-					$member_2_value = $member_2_members[0];
-					//$this->query_where[$member_1_table][] =  "{$member_1_table}.{$member_1_field} {$type} '{$member_2_value}'";
-					$this->query_where[$member_1_table][] =  "{$member_1_field}{$condition_type}'{$member_2_value}'";
+					$member2Value = $member2Members[0];
+					//$this->query_where[$member1Table][] =  "{$member1Table}.{$member1Field} {$type} '{$member2Value}'";
+					$this->query_where[$member1Table][] =  "{$member1Field}{$condition_type}'{$member2Value}'";
 				}
 			} else {
 				$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($joinArray, true), __LINE__, __FILE__, 'warning');
