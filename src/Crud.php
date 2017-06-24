@@ -616,31 +616,31 @@ class Crud
 	 * handles joins from the query parser results determining what fields and such are used in the join
 	 *
 	 * @param string $table the main table from the query
-	 * @param mixed $join_arr the join array
+	 * @param mixed $joinArray the join array
 	 */
-	public function join_handler($table, $join_arr) {
-			$condition_type = $join_arr->getType();					// AND, =
+	public function join_handler($table, $joinArray) {
+			$condition_type = $joinArray->getType();					// AND, =
 			if ($condition_type == 'AND') {
-				foreach ($join_arr->GetMembers() as $member => $member_arr) {
-					$this->join_handler($table, $member_arr);
+				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+					$this->join_handler($table, $memberArray);
 				}
 			} elseif ($condition_type == 'EXPR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($join_arr->GetMembers() as $member => $member_arr) {
-					$this->join_handler($table, $member_arr);
+				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+					$this->join_handler($table, $memberArray);
 				}
 			} elseif ($condition_type == 'OR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($join_arr->GetMembers() as $member => $member_arr) {
-					$this->join_handler($table, $member_arr);
+				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+					$this->join_handler($table, $memberArray);
 				}
 			} elseif ($condition_type == '=') {
-				//echo print_r($member_arr,true)."<br>";
+				//echo print_r($memberArray,true)."<br>";
 				//echo "Type:$type<br>";
-				//echo print_r($member_arr->getMembers(), true)."<br>";
-				$member_1_type = $join_arr->getMembers()[0]->getType();			// COLUMN
-				$member_1_members = $join_arr->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
-				if ($member_1_type == 'COLUMN') {
+				//echo print_r($memberArray->getMembers(), true)."<br>";
+				$member1Type = $joinArray->getMembers()[0]->getType();			// COLUMN
+				$member_1_members = $joinArray->getMembers()[0]->getMembers();		// array('accounts', 'account_id') or array('account_key')
+				if ($member1Type == 'COLUMN') {
 					if (count($member_1_members) == 1) {
 						$member_1_table = $table;
 						$member_1_field = $member_1_members[0];
@@ -652,9 +652,9 @@ class Crud
 					if (!isset($this->query_where[$member_1_table]))
 						$this->query_where[$member_1_table] = [];
 				}
-				$member_2_type = $join_arr->getMembers()[1]->getType();			// COLUMN or VALUE
-				$member_2_members = $join_arr->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
-				if ($member_2_type == 'COLUMN') {
+				$member2Type = $joinArray->getMembers()[1]->getType();			// COLUMN or VALUE
+				$member_2_members = $joinArray->getMembers()[1]->getMembers();		// array('accounts_ext', 'account_id') or array('roles', '2')
+				if ($member2Type == 'COLUMN') {
 					if (count($member_2_members) == 1) {
 						$member_2_table = $table;
 						$member_2_field = $member_2_members[0];
@@ -662,17 +662,17 @@ class Crud
 						$member_2_table = $member_2_members[0];
 						$member_2_field = $member_2_members[1];
 					}
-				} elseif ($member_2_type == 'VALUE') {
+				} elseif ($member2Type == 'VALUE') {
 					$member_2_value = $member_2_members[0];
 					//$this->query_where[$member_1_table][] =  "{$member_1_table}.{$member_1_field} {$type} '{$member_2_value}'";
 					$this->query_where[$member_1_table][] =  "{$member_1_field}{$condition_type}'{$member_2_value}'";
 				}
 			} else {
-				$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($join_arr, true), __LINE__, __FILE__, 'warning');
+				$this->log("Don't know how to handle Type {$condition_type} in Join Array " . print_r($joinArray, true), __LINE__, __FILE__, 'warning');
 			}
-			//echo _debug_array($join_arr->getCondition()->getType(), true)."<br>";
-			//echo _debug_array($join_arr->getCondition(), true)."<br>";
-			//echo _debug_array($join_arr->getCondition()->getMembers(), true)."<br>";
+			//echo _debug_array($joinArray->getCondition()->getType(), true)."<br>";
+			//echo _debug_array($joinArray->getCondition(), true)."<br>";
+			//echo _debug_array($joinArray->getCondition()->getMembers(), true)."<br>";
 	}
 
 	/**
@@ -687,16 +687,16 @@ class Crud
 		//echo _debug_array($queries[0]->getJoins(), true);
 		$joins = $queries[0]->getJoins();
 		if (sizeof($joins) > 0)
-			foreach ($joins as $join => $join_arr) {
-				$table = $join_arr->getTable();											// accounts_ext, vps_masters
-				$table_alias = $join_arr->getAlias();
+			foreach ($joins as $join => $joinArray) {
+				$table = $joinArray->getTable();											// accounts_ext, vps_masters
+				$table_alias = $joinArray->getAlias();
 				//var_export($table_alias);
-				$join_type = $join_arr->getType();										// LEFT JOIN
+				$join_type = $joinArray->getType();										// LEFT JOIN
 				//echo "Table {$table} Join Type {$join_type}<br>";
 				if (!in_array($join_type, array('LEFT JOIN', 'LEFT OUTER JOIN'))) {
 					$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__, 'warning');
 				} else {
-					$this->join_handler($table, $join_arr->getCondition());
+					$this->join_handler($table, $joinArray->getCondition());
 				}
 			}
 		// accounts_ext
@@ -739,13 +739,13 @@ class Crud
 		}
 		echo '</pre>';
 		*/
-		foreach ($queries[0]->getColumns() as $col => $col_arr) {
-			$c_type = $col_arr[0]->getType();
-			$field_arr = $col_arr[0]->getMembers();
+		foreach ($queries[0]->getColumns() as $col => $colArray) {
+			$c_type = $colArray[0]->getType();
+			$fieldArray = $colArray[0]->getMembers();
 			if ($c_type == 'COLUMN') {
-				if (is_object($field_arr[0])) {
-					$f_type = $field_arr[0]->getType();
-					$f_members = $field_arr[0]->getMembers();
+				if (is_object($fieldArray[0])) {
+					$f_type = $fieldArray[0]->getType();
+					$f_members = $fieldArray[0]->getMembers();
 					if ($f_type != 'ALL') {
 						$this->log("Don't know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__, 'warning');
 					} else {
@@ -753,25 +753,25 @@ class Crud
 						$this->all_fields = true;
 					}
 				} else {
-					if (count($field_arr) > 1) {
-						$table = $field_arr[0];
-						$orig_field = $field_arr[1];
+					if (count($fieldArray) > 1) {
+						$table = $fieldArray[0];
+						$orig_field = $fieldArray[1];
 						//$orig_field = $table.'.'.$orig_field;
 					} else {
 						$table = false;
-						$orig_field = $field_arr[0];
+						$orig_field = $fieldArray[0];
 					}
-					if (count($col_arr) > 1) {
-						$field = $col_arr[1];
+					if (count($colArray) > 1) {
+						$field = $colArray[1];
 					} else {
 						$field = $orig_field;
 					}
 					$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
 				}
 			} elseif ($c_type == 'CALL') {
-				// if sizeof col_arr is 2  then [0] expr  and [1] is  the alias for field, like 'field as name'
-				$call = $field_arr[0];
-				$exprs = $field_arr[1]->getExprs();
+				// if sizeof colArray is 2  then [0] expr  and [1] is  the alias for field, like 'field as name'
+				$call = $fieldArray[0];
+				$exprs = $fieldArray[1]->getExprs();
 				foreach ($exprs as $e_idx => $expr) {
 					$e_type = $expr->getType();
 					$e_members = $expr->getMembers();
@@ -787,8 +787,8 @@ class Crud
 							$f_table = false;
 							$f_orig_field = $f_members[0];
 						}
-						if (count($col_arr) > 1) {
-							$field = $col_arr[1];
+						if (count($colArray) > 1) {
+							$field = $colArray[1];
 						} else {
 							$field = $orig_field;
 						}
@@ -957,16 +957,16 @@ class Crud
 					return $field.$oper."'".$this->db->real_escape($val)."'";
 				break;
 			case 'in':
-				$val_arr = [];
+				$valArray = [];
 				foreach ($val as $value) {
 					if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
-						$val_arr[] = intval($value);
+						$valArray[] = intval($value);
 					elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
-						$val_arr[] = floatval($value);
+						$valArray[] = floatval($value);
 					else
-						$val_arr[] = "'".$this->db->real_escape($value)."'";
+						$valArray[] = "'".$this->db->real_escape($value)."'";
 				}
-				return $field.' '.$oper.' ('.implode(',', $val_arr).')';
+				return $field.' '.$oper.' ('.implode(',', $valArray).')';
 				break;
 			default:
 				$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, true) . ')', __LINE__, __FILE__, 'warning');

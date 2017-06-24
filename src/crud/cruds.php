@@ -133,8 +133,8 @@ function cruds() {
 	page_title('CRUDs List');
 	$functions = get_crud_funcs();
 	$sizes = [];
-	foreach ($functions as $level => $functions_arr)
-		$sizes[$level] = sizeof($functions_arr);
+	foreach ($functions as $level => $functionsArray)
+		$sizes[$level] = sizeof($functionsArray);
 	add_output("
 	<style type='text/css'>
 		.cruds.list-group {
@@ -174,8 +174,8 @@ function cruds() {
 			</div>
 		<div id='collapseOne' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne'>
 			<div class='panel-body'>");
-	foreach ($functions as $level => $functions_arr) {
-		foreach ($functions_arr as $orig_function => $function_data) {
+	foreach ($functions as $level => $functionsArray) {
+		foreach ($functionsArray as $orig_function => $function_data) {
 			add_output("
 				<a href='?choice=none.{$function_data['function']}' class='list-group-item' target='_blank'>
 					<span class='label label-{$level}'>{$orig_function}</span> {$function_data['title']}
