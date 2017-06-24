@@ -10,6 +10,10 @@
             "homepage": "https://my.interserver.net/"
         }
     ],
+    "config": {
+        "bin-dir": "vendor/bin",
+        "minimum-stability": "dev"
+    },
     "repositories": [
         {
             "type": "svn",
@@ -22,6 +26,11 @@
 	"detain/db_abstraction": ">=1.0.0"
     },
     "require-dev": {
+        "phpunit/phpunit": "*",
+        "vlucas/phpdotenv": "*",
+        "codeclimate/php-test-reporter": "dev-master",
+        "satooshi/php-coveralls": "*",
+        "codacy/coverage": "dev-master"
     },
     "autoload": {
         "psr-4": {"MyCrud\\": "src/"}
