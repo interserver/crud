@@ -22,12 +22,12 @@ function get_crud_tables() {
 	foreach (array('domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns') as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {
 			$dbh = $GLOBALS[$module.'_dbh'];
-			$db_name = $dbh->Database;
+			$dbName = $dbh->Database;
 			$return['modules'][$module] = $dbh;
 			$return['tables'][$module] = [];
 			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
 			while ($dbh->next_record(MYSQL_ASSOC)) {
-				$table = $dbh->Record['Tables_in_'.$db_name];
+				$table = $dbh->Record['Tables_in_'.$dbName];
 				$type = $dbh->Record['Table_type'];
 				$return['tables'][$module][] = $table;
 			}
@@ -194,14 +194,14 @@ function cruds() {
 	$rows = [];
 	foreach ($all_tables['tables'] as $module => $tables) {
 		$dbh = $all_tables['modules'][$module];
-		$db_name = $dbh->Database;
+		$dbName = $dbh->Database;
 		$level = $levels[$idx];
 		$size = sizeof($tables);
-		$key[] = "<span class='pull-right label label-{$level}'>{$db_name} ({$size})</span>";
+		$key[] = "<span class='pull-right label label-{$level}'>{$dbName} ({$size})</span>";
 		foreach ($tables as $table) {
 			$rows[] = "
 			<a href='?choice=none.crud_table&db={$module}&table={$table}' class='list-group-item' target='_blank'>
-				<span class='label label-{$level}'>{$db_name}</span> {$table}
+				<span class='label label-{$level}'>{$dbName}</span> {$table}
 			</a>";
 		}
 		$idx++;
