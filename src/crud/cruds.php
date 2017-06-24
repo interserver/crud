@@ -175,10 +175,10 @@ function cruds() {
 		<div id='collapseOne' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne'>
 			<div class='panel-body'>");
 	foreach ($functions as $level => $functionsArray) {
-		foreach ($functionsArray as $orig_function => $function_data) {
+		foreach ($functionsArray as $origFunction => $functionData) {
 			add_output("
-				<a href='?choice=none.{$function_data['function']}' class='list-group-item' target='_blank'>
-					<span class='label label-{$level}'>{$orig_function}</span> {$function_data['title']}
+				<a href='?choice=none.{$functionData['function']}' class='list-group-item' target='_blank'>
+					<span class='label label-{$level}'>{$origFunction}</span> {$functionData['title']}
 				</a>");
 		}
 	}

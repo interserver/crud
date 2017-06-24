@@ -350,7 +350,7 @@ class Crud
 		foreach ($fields as $field => $value) {
 			// match up fields
 			if (isset($this->query_fields[$field])) {
-				$orig_field = $field;
+				$origField = $field;
 				$field = $this->query_fields[$field];
 				if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
 					$field = $matches['field'];
@@ -372,7 +372,7 @@ class Crud
 				}
 				$already_safe = false;
 				// validate fields
-				foreach ($this->validations[$orig_field] as $validation) {
+				foreach ($this->validations[$origField] as $validation) {
 					if (!is_array($validation)) {
 						switch ($validation) {
 							case 'abs':
@@ -744,10 +744,10 @@ class Crud
 			$fieldArray = $colArray[0]->getMembers();
 			if ($c_type == 'COLUMN') {
 				if (is_object($fieldArray[0])) {
-					$f_type = $fieldArray[0]->getType();
-					$f_members = $fieldArray[0]->getMembers();
-					if ($f_type != 'ALL') {
-						$this->log("Don't know how to handle Field Type {$f_type}, only ALL", __LINE__, __FILE__, 'warning');
+					$fType = $fieldArray[0]->getType();
+					$fMembers = $fieldArray[0]->getMembers();
+					if ($fType != 'ALL') {
+						$this->log("Don't know how to handle Field Type {$fType}, only ALL", __LINE__, __FILE__, 'warning');
 					} else {
 						// Setup all the columns
 						$this->all_fields = true;
@@ -755,18 +755,18 @@ class Crud
 				} else {
 					if (count($fieldArray) > 1) {
 						$table = $fieldArray[0];
-						$orig_field = $fieldArray[1];
-						//$orig_field = $table.'.'.$orig_field;
+						$origField = $fieldArray[1];
+						//$origField = $table.'.'.$origField;
 					} else {
 						$table = false;
-						$orig_field = $fieldArray[0];
+						$origField = $fieldArray[0];
 					}
 					if (count($colArray) > 1) {
 						$field = $colArray[1];
 					} else {
-						$field = $orig_field;
+						$field = $origField;
 					}
-					$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
+					$fields[$field] = ($table === false ? $origField : $table . '.' . $origField);
 				}
 			} elseif ($c_type == 'CALL') {
 				// if sizeof colArray is 2  then [0] expr  and [1] is  the alias for field, like 'field as name'
@@ -774,25 +774,25 @@ class Crud
 				$exprs = $fieldArray[1]->getExprs();
 				foreach ($exprs as $e_idx => $expr) {
 					$e_type = $expr->getType();
-					$e_members = $expr->getMembers();
-					if (is_object($e_members[0])) {
-						$f_type = $e_members[0]->getType();
-						$f_members = $e_members[0]->getMembers();
+					$eMembers = $expr->getMembers();
+					if (is_object($eMembers[0])) {
+						$fType = $eMembers[0]->getType();
+						$fMembers = $eMembers[0]->getMembers();
 					} else {
-						if (count($f_members) > 1) {
-							$f_table = $f_members[0];
-							$f_orig_field = $f_members[1];
-							//$orig_field = $table.'.'.$orig_field;
+						if (count($fMembers) > 1) {
+							$fTable = $fMembers[0];
+							$fOrigField = $fMembers[1];
+							//$origField = $table.'.'.$origField;
 						} else {
-							$f_table = false;
-							$f_orig_field = $f_members[0];
+							$fTable = false;
+							$fOrigField = $fMembers[0];
 						}
 						if (count($colArray) > 1) {
 							$field = $colArray[1];
 						} else {
-							$field = $orig_field;
+							$field = $origField;
 						}
-						$fields[$field] = ($table === false ? $orig_field : $table . '.' . $orig_field);
+						$fields[$field] = ($table === false ? $origField : $table . '.' . $origField);
 					}
 				}
 				//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
