@@ -1,5 +1,6 @@
 <?php
 
+use MyCrud\Crud;
 use PHPUnit\Framework\TestCase;
 
 /**
