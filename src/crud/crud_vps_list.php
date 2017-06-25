@@ -23,7 +23,7 @@ function crud_vps_list() {
 		->set_title($settings['TITLE'] . ' List')
 		->enable_labels()
 		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_hostname' => 'Hostname', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', $settings['PREFIX'].'_comment' => 'Comments', 'services_name' => 'Package'], TRUE)
-		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX'].'3'), 'Order', 'primary', 'shopping-cart', 'Order ' . $settings['TITLE'], 'client')
+		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX'].'3'), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')

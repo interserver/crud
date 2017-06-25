@@ -17,7 +17,7 @@ foreach ($files as $filepath) {
 	$function_req .= "			'crud_{$func}' => '/crud/crud_{$func}.php',\n";
 	$li[] = "<a href='?choice=none.crud_{$func}' class='list-group-item'>
 <span class='label label-info'>{$func}</span> - {$title}</a>";
-	file_put_contents(INCLUDE_ROOT . '/crud/crud_' . $func . '.php', '<'.'?'."php
+	file_put_contents(INCLUDE_ROOT . '/crud/crud_'.$func . '.php', '<'.'?'."php
 function crud_{$func}() {
 	require_once(INCLUDE_ROOT . '/rendering/class.crud.php');
 	\$crud = crud::init(\"{$query}\"" . (in_array($data['module'], array('innertell', 'mb', 'powerdns')) ? ", '{$data['module']}'" : '') . ")
