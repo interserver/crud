@@ -127,7 +127,7 @@ function cruds() {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
 		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return false;
+		return FALSE;
 	}
 	add_js('bootstrap');
 	page_title('CRUDs List');

@@ -11,7 +11,7 @@ $li = [];
 $li[] = "<a href='#' class='list-group-item active'>CRUD Page Links</a>";
 foreach ($files as $filepath) {
 	$func = basename($filepath, '.json');
-	$data = json_decode(file_get_contents($filepath), true);
+	$data = json_decode(file_get_contents($filepath), TRUE);
 	$title = $data['caption'];
 	$query = "select {$data['queryfields']} {$data['query']}";
 	$function_req .= "			'crud_{$func}' => '/crud/crud_{$func}.php',\n";

@@ -18,7 +18,7 @@ function crud_table() {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
 		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return false;
+		return FALSE;
 	}
 	$module = $GLOBALS['tf']->variables->request['db'];
 	$table = $GLOBALS['tf']->variables->request['table'];
