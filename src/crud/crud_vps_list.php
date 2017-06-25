@@ -18,9 +18,9 @@ use \MyCrud\Crud;
 function crud_vps_list() {
 	$module = 'vps';
 	$settings = get_module_settings($module);
-	page_title($settings['TITLE'] . ' List');
+	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, services_name, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
-		->set_title($settings['TITLE'] . ' List')
+		->set_title($settings['TITLE'].' List')
 		->enable_labels()
 		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_hostname' => 'Hostname', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', $settings['PREFIX'].'_comment' => 'Comments', 'services_name' => 'Package'], TRUE)
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX'].'3'), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')

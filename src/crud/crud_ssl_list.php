@@ -18,9 +18,9 @@ use \MyCrud\Crud;
 function crud_ssl_list() {
 	$module = 'ssl';
 	$settings = get_module_settings($module);
-	page_title($settings['TITLE'] . ' List');
+	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
-		->set_title($settings['TITLE'] . ' List')
+		->set_title($settings['TITLE'].' List')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')

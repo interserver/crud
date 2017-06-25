@@ -19,9 +19,9 @@ use \MyCrud\Crud;
 function crud_backups_list() {
 	$module = 'backups';
 	$settings = get_module_settings($module);
-	page_title($settings['TITLE'] . ' List');
+	page_title($settings['TITLE'].' List');
 	Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_username, {$settings['PREFIX']}_status, services_name from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['TABLE']}.{$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
-		->set_title($settings['TITLE'] . ' List')
+		->set_title($settings['TITLE'].' List')
 		->enable_labels()
 		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_username' => 'Username', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', 'services_name' => 'Package'], TRUE)
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')

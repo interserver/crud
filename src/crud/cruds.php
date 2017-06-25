@@ -220,7 +220,7 @@ function cruds() {
 			</div>
 			<div id='collapseTwo' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingTwo'>
 				<div class='panel-body'>
-					" . implode("\n				", $rows) . '
+					" . implode("\n				", $rows).'
 				</div>
 			</div>
 		</div>

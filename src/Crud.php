@@ -381,14 +381,14 @@ class Crud
 							case 'int':
 								// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
 								if (isset($value) && $value != (int)$value) {
-									$errors[] = 'Invalid '.$this->label($field) . ' "'.$value . '"';
+									$errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
 									$error_fields[] = $field;
 									$valid = FALSE;
 								}
 								break;
 							case 'notags':
 								if ($value != strip_tags($value)) {
-									$errors[] = 'Invalid '.$this->label($field) . ' "'.$value . '"';
+									$errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
 									$error_fields[] = $field;
 									$valid = FALSE;
 								}
@@ -410,7 +410,7 @@ class Crud
 										$value = array($value);
 									foreach ($value as $t_value) {
 										if (!in_array($t_value, $this->labels[$field])) {
-											$errors[] = 'Invalid '.$this->label($field) . ' "'.$t_value . '"';
+											$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
 											$error_fields[] = $field;
 											$valid = FALSE;
 										}
@@ -430,7 +430,7 @@ class Crud
 									$value = array($value);
 								foreach ($value as $t_value) {
 									if (!in_array($t_value, $validation['in_array'])) {
-										$errors[] = 'Invalid '.$this->label($field) . ' "'.$t_value . '"';
+										$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
 										$error_fields[] = $field;
 										$valid = FALSE;
 									}
@@ -459,10 +459,10 @@ class Crud
 			}
 		}
 		if (count($query_fields) > 0) {
-			//$this->log("Query Table {$query_table} Where " . implode(',', $query_where) . ' Class Where '.implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
+			//$this->log("Query Table {$query_table} Where " . implode(',', $query_where).' Class Where '.implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
 			$query_where = array_merge($query_where, $this->query_where[$query_table]);
 			// update database
-			$query = 'update '.$query_table . ' set '.implode(', ', $query_fields) . ' where '.implode(' and ', $query_where);
+			$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
 			if ($valid == TRUE) {
 				$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
 				//$this->db->query($query, __LINE__, __FILE__);
@@ -472,7 +472,7 @@ class Crud
 			} else {
 				$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 				// send response for js handler
-				echo 'There was an error with validation:<br>'.implode('<br>', $errors) . ' with the fields '.impode(', ', $error_fields);
+				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.impode(', ', $error_fields);
 			}
 		} else {
 			$this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
@@ -602,14 +602,14 @@ class Crud
 	public function parse_query($query = FALSE) {
 		if ($query == FALSE)
 			$query = $this->query;
-		//require_once(INCLUDE_ROOT . '/../vendor/autoload.php');
-		//require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/SQLParser.php');
-		require_once(INCLUDE_ROOT . '/../vendor/crodas/sql-parser/src/autoload.php');
+		//require_once(INCLUDE_ROOT.'/../vendor/autoload.php');
+		//require_once(INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/SQLParser.php');
+		require_once(INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/autoload.php');
 		$parser = new SQLParser;
 		$this->queries = $parser->parse($query);
 		$this->parse_query_fields();
 		//_debug_array($queries);
-		//add_output('<pre style="text-align: left;">'.print_r($queries, TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries, TRUE).'</pre>');
 	}
 
 	/**
@@ -700,29 +700,29 @@ class Crud
 				}
 			}
 		// accounts_ext
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getTable(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getTable(), TRUE).'</pre>');
 		// LEFT JOIN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getType(), TRUE).'</pre>');
 		// =
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getType(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getType(), TRUE).'</pre>');
 		// array('accounts', 'account_id')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getMembers(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getMembers(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getType(), TRUE).'</pre>');
 		// array('accounts_ext', 'account_id')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getMembers(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getMembers(), TRUE).'</pre>');
 		// =
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getType(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getType(), TRUE).'</pre>');
 		// array('accounts_ext', 'account_key')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getMembers(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getMembers(), TRUE).'</pre>');
 		// VALUE
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), TRUE).'</pre>');
 		// array('roles', '2')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), TRUE).'</pre>');
 		/*
 		$columns = $queries[0]->getColumns();
 		echo '<pre style="text-align: left;">';
@@ -766,7 +766,7 @@ class Crud
 					} else {
 						$field = $origField;
 					}
-					$fields[$field] = ($table === FALSE ? $origField : $table . '.'.$origField);
+					$fields[$field] = ($table === FALSE ? $origField : $table.'.'.$origField);
 				}
 			} elseif ($c_type == 'CALL') {
 				// if sizeof colArray is 2  then [0] expr  and [1] is  the alias for field, like 'field as name'
@@ -792,7 +792,7 @@ class Crud
 						} else {
 							$field = $origField;
 						}
-						$fields[$field] = ($table === FALSE ? $origField : $table . '.'.$origField);
+						$fields[$field] = ($table === FALSE ? $origField : $table.'.'.$origField);
 					}
 				}
 				//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
@@ -802,7 +802,7 @@ class Crud
 		}
 		if (isset($fields))
 			$this->query_fields = $fields;
-		//add_output('<pre style="text-align: left;">'.print_r($fields, TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'.print_r($fields, TRUE).'</pre>');
 	}
 
 	/**
@@ -969,7 +969,7 @@ class Crud
 				return $field.' '.$oper.' ('.implode(',', $valArray).')';
 				break;
 			default:
-				$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, TRUE) . ')', __LINE__, __FILE__, 'warning');
+				$this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, TRUE).')', __LINE__, __FILE__, 'warning');
 				break;
 		}
 	}
@@ -1270,7 +1270,7 @@ class Crud
 		$smarty = new TFSmarty();
 		$table = new TFTable;
 		if ($this->title == FALSE)
-			$table->set_title($this->table . ' Records');
+			$table->set_title($this->table.' Records');
 		else
 			$table->set_title($this->title);
 		$this->run_list_query();
@@ -1383,7 +1383,7 @@ class Crud
 		$table->smarty->assign('rows', $rows);
 		$this->add_js_headers();
 		add_output($table->get_table());
-		//add_output('<pre style="text-align: left;">'. print_r($this->tables, TRUE) . '</pre>');
+		//add_output('<pre style="text-align: left;">'. print_r($this->tables, TRUE).'</pre>');
 	}
 
 	/**
@@ -1823,7 +1823,7 @@ class Crud
 							case 'int':
 								// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
 								if (isset($this->values[$field]) && $this->values[$field] != (int)$this->values[$field]) {
-									$this->errors[] = 'Invalid '.$this->label($field) . ' "'.$this->values[$field] . '"';
+									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
 									$this->error_fields[] = $field;
 									$this->values[$field] = (int)$this->values[$field];
 									$this->continue = FALSE;
@@ -1831,7 +1831,7 @@ class Crud
 								break;
 							case 'notags':
 								if ($this->values[$field] != strip_tags($this->values[$field])) {
-									$this->errors[] = 'Invalid '.$this->label($field) . ' "'.$this->values[$field] . '"';
+									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
 									$this->error_fields[] = $field;
 									$this->values[$field] = strip_tags($this->values[$field]);
 									$this->continue = FALSE;
@@ -1849,7 +1849,7 @@ class Crud
 								break;
 							case 'in_array':
 								if (isset($this->values[$field]) && !in_array($this->values[$field], $this->labels[$field])) {
-									$this->errors[] = 'Invalid '.$this->label($field) . ' "'.$this->values[$field] . '"';
+									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
 									$this->error_fields[] = $field;
 									$this->continue = FALSE;
 									$this->values[$field] = $this->defaults[$field];
@@ -1859,7 +1859,7 @@ class Crud
 					} else {
 						if (isset($validation['in_array'])) {
 							if (isset($this->values[$field]) && !in_array($this->values[$field], $validation['in_array'])) {
-								$this->errors[] = 'Invalid '.$this->label($field) . ' "'.$this->values[$field] . '"';
+								$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
 								$this->error_fields[] = $field;
 								$this->continue = FALSE;
 								$this->values[$field] = $this->defaults[$field];
@@ -1886,15 +1886,15 @@ class Crud
 			$table = new TFTable;
 			$table->hide_table();
 			$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
-			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'" . ')[0].disabled = TRUE; return TRUE;"');
+			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
 			$table->set_title($this->title);
 			$table->csrf('crud_order_form');
 			$table_pos = 0;
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->set_vars[$field]) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
 					$value = $this->values[$field];
-					if (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
-						$value = $this->labels[$field . '_a'][$value];
+					if (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value])) {
+						$value = $this->labels[$field.'_a'][$value];
 					}
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
@@ -1906,7 +1906,7 @@ class Crud
 						}
 					}
 					$table->add_hidden($field, $this->values[$field]);
-					$table->add_field('<b>'.$this->label($field) . '</b>');
+					$table->add_field('<b>'.$this->label($field).'</b>');
 					$table_pos++;
 					$table->add_field($value);
 					$table_pos++;
@@ -1922,7 +1922,7 @@ class Crud
 								break;
 							case 'select_multiple':
 							case 'select':
-								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field . '" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 								break;
 							case 'raw':
 								$fieldText = $data;
@@ -2004,7 +2004,7 @@ class Crud
 			$table->add_field($table->make_submit('Continue'));
 			$table->add_row();
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
 		} else {
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->input_types[$field])) {
@@ -2019,12 +2019,12 @@ class Crud
 						case 'label':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-	<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="'.$value . '" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
+	<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="'.$value.'" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -2032,7 +2032,7 @@ class Crud
 						case 'input':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
@@ -2045,24 +2045,24 @@ class Crud
 						case 'textarea':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
-	<textarea rows="2" class="form-control" placeholder="'.$label.'">'.$value . '</textarea>
+	<textarea rows="2" class="form-control" placeholder="'.$label.'">'.$value.'</textarea>
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
 							break;
 						case 'select_multiple':
 						case 'select':
-							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field . '" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . '
+							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field . '" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*sizeof($data['values']))). 'px;"' : '')).'
+	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*sizeof($data['values']))). 'px;"' : '')).'
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -2127,7 +2127,7 @@ class Crud
 						$text = str_replace(array('%title%','%field%'), array($label, $fieldText), $text);
 						$table->add_field($text, $align);
 					}
-					$table->set_row_options('id="'.$field . 'row"');
+					$table->set_row_options('id="'.$field.'row"');
 					$table->add_row();
 					$table->set_row_options();
 					*/
@@ -2140,7 +2140,7 @@ class Crud
 			$table->add_row();
 			$table->set_method('get');
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
 			$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
 			*/
 		}
@@ -2281,8 +2281,8 @@ class Crud
 		$table->hide_table();
 		$table->set_method('get');
 		$table->set_options('width="500" cellpadding=5');
-		$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'" . ')[0].disabled = TRUE; return TRUE;"');
-		$table->set_title($this->settings['TITLE'] . ' Order Summary');
+		$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
+		$table->set_title($this->settings['TITLE'].' Order Summary');
 		if ($this->admin == TRUE && $this->limit_custid == TRUE) {
 			$table->add_hidden('custid', $this->custid);
 		}
@@ -2292,13 +2292,13 @@ class Crud
 		$this->returnURL = 'choice='.urlencode($this->choice);
 		$payment_method_table_fields = array($this->custid);
 		foreach ($this->set_vars as $field => $value) {
-			$this->returnURL .= '&'.$field . '='.urlencode($value);
+			$this->returnURL .= '&'.$field.'='.urlencode($value);
 			$table->add_hidden($field, $value);
 			$label = $value;
-			if (is_numeric($value) && isset($this->labels[$field . '_i']) && isset($this->labels[$field . '_i'][$value])) {
-				$label = $this->labels[$field . '_i'][$value];
-			} elseif (isset($this->labels[$field . '_a']) && isset($this->labels[$field . '_a'][$value])) {
-				$label = $this->labels[$field . '_a'][$value];
+			if (is_numeric($value) && isset($this->labels[$field.'_i']) && isset($this->labels[$field.'_i'][$value])) {
+				$label = $this->labels[$field.'_i'][$value];
+			} elseif (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value])) {
+				$label = $this->labels[$field.'_a'][$value];
 			}
 			if (isset($this->input_types[$field])) {
 				$input_type = $this->input_types[$field][0];
@@ -2310,7 +2310,7 @@ class Crud
 				}
 			}
 			if ($label != '') {
-				$table->add_field('<b>'.$this->label($field) . '</b>', 'l');
+				$table->add_field('<b>'.$this->label($field).'</b>', 'l');
 				$table->add_field($label, 'l');
 				$table->add_row();
 			}
@@ -2323,18 +2323,18 @@ class Crud
 				switch ($data['type']) {
 					case 'select_multiple':
 					case 'select':
-						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field . '" class="customsel" onChange="update_service_choices();" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
-						$table->add_field('<b>'.$data['label'] . '</b>', 'l');
+						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
+						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$table->add_field($fieldText, 'l');
 						$table->add_row();
 						break;
 					case 'input':
-						$table->add_field('<b>'.$data['label'] . '</b>', 'l');
+						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$table->add_field($table->make_input($field, $data['value'], (isset($data['data']['length']) ? $data['data']['length'] : 30)), 'l');
 						$table->add_row();
 						break;
 					case 'func':
-						$table->add_field('<b>'.$data['label'] . '</b>', 'l');
+						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$func = $data['data'];
 						$table->add_field($this->$func(), 'l');
 						$table->add_row();
@@ -2349,7 +2349,7 @@ class Crud
 			'pend_timestamp' => mysql_now(),
 			'pend_custid' => $this->custid,
 			'pend_data' => myadmin_stringify($this->set_vars))), __LINE__, __FILE__);
-		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"') . '></script>');
+		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
 		$this->continue = FALSE;
 	}
 
@@ -2473,7 +2473,7 @@ class Crud
 	public function add_filter_link($field, $link, $title = FALSE, $acl = FALSE, $bad_acl_test = '%value%') {
 		//$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
 		// $link = 'choice=none.edit_customer&customer=%field%'
-		$this->add_filter($field, '<a href="'.$link . '" data-container="body"'.($title !== FALSE ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
+		$this->add_filter($field, '<a href="'.$link.'" data-container="body"'.($title !== FALSE ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
 	}
 
 	/**
