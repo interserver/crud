@@ -2702,7 +2702,7 @@ class Crud
 	public function export_php($headers) {
 		foreach ($headers as $header)
 			header($header);
-		return '<'.'?'.'php'."\n".'$data = '.var_export($this->rows, TRUE).";\n";
+		return '<'.'?'.'php'.PHP_EOL.'$data = '.var_export($this->rows, TRUE).";\n";
 	}
 
 	/**
