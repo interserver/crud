@@ -90,10 +90,10 @@
 			$filters = $panel.find('.filters input'),
 			$tbody = $panel.find('.table tbody');
 			if ($filters.prop('disabled') == true) {
-				$filters.prop('disabled', false);
+				$filters.prop('disabled', FALSE);
 				$filters.first().focus();
 			} else {
-				$filters.val('').prop('disabled', true);
+				$filters.val('').prop('disabled', TRUE);
 				$tbody.find('.no-result').remove();
 				$tbody.find('tr').show();
 			}

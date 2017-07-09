@@ -43,22 +43,22 @@ function crud_submit_handler(what, that) {
 					window.location=html.substring(4);
 				}
 			} else if (html == 'error') {
-				$('#'+what+'Modal .btn').attr('disabled', false);
+				$('#'+what+'Modal .btn').attr('disabled', FALSE);
 				jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error Charging the Credit-Card</div>");
 			} else if (html == 'ok') {
-				$('#'+what+'Modal .btn').attr('disabled', false);
+				$('#'+what+'Modal .btn').attr('disabled', FALSE);
 			} else {
-				$('#'+what+'Modal .btn').attr('disabled', false);
+				$('#'+what+'Modal .btn').attr('disabled', FALSE);
 				jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>"+html+"</div>");
 			}
 		},
 		error: function() {
-			$('#'+what+'Modal .btn').attr('disabled', false);
+			$('#'+what+'Modal .btn').attr('disabled', FALSE);
 			jQuery('#'+what+'Modal .error_message').html("<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>Error occurred!</div>");
 		},
 		beforeSend: function()
 		{
-			$('#'+what+'Modal .btn').attr('disabled', true);
+			$('#'+what+'Modal .btn').attr('disabled', TRUE);
 			jQuery('#'+what+'Modal .error_message').html('<div style="margin: 15px; text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i> <span style="margin-left: 10px;font-size: 18px;">Processing "+what+"</span><div>');
 		}
 	});
@@ -350,11 +350,11 @@ function crud_setup_mass_binds() {
 	jQuery("#crud-table #checkall").click(function () {
 		if (jQuery("#crud-table #checkall").is(':checked')) {
 			jQuery("#crud-table input[type=checkbox]").each(function () {
-				jQuery(this).prop("checked", true);
+				jQuery(this).prop("checked", TRUE);
 			});
 		} else {
 			jQuery("#crud-table input[type=checkbox]").each(function () {
-				jQuery(this).prop("checked", false);
+				jQuery(this).prop("checked", FALSE);
 			});
 		}
 	});
