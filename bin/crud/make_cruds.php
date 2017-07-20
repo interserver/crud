@@ -20,7 +20,7 @@ foreach ($files as $filepath) {
 	file_put_contents(INCLUDE_ROOT.'/crud/crud_'.$func.'.php', '<'.'?'."php
 function crud_{$func}() {
 	require_once(INCLUDE_ROOT.'/rendering/class.crud.php');
-	\$crud = crud::init(\"{$query}\"" . (in_array($data['module'], array('innertell', 'mb', 'powerdns')) ? ", '{$data['module']}'" : '') . ")
+	\$crud = crud::init(\"{$query}\"" . (in_array($data['module'], ['innertell', 'mb', 'powerdns']) ? ", '{$data['module']}'" : '') . ")
 		->set_title(\"{$title}\")
 		->go();
 }

@@ -25,7 +25,7 @@ function crud_licenses_list() {
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')
 		->add_title_search_button([], 'All', 'info active')
-		->add_filter('invoices_paid', array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple')
+		->add_filter('invoices_paid', ['1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'], 'simple')
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()

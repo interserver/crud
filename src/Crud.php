@@ -73,7 +73,7 @@ class Crud
 	public $price_text_align = 'r';
 	public $stage = 1;
 	public $rows = [];
-	public $page_limits = array(10, 25, 50, 100, -1);
+	public $page_limits = [10, 25, 50, 100, -1];
 	public $page_limit = 10;
 	public $page_offset = 0;
 
@@ -155,9 +155,9 @@ class Crud
 			$crud = new crud();
 		// @codingStandardsIgnoreEnd
 		$crud->apply_module_info($module);
-		$crud->column_templates[] = array('text' => '<h3>%title%</h3>', 'align' => 'r');
-		$crud->column_templates[] = array('text' => '%field%', 'align' => 'r');
-		$crud->column_templates[] = array('text' => '', 'align' => 'r');
+		$crud->column_templates[] = ['text' => '<h3>%title%</h3>', 'align' => 'r'];
+		$crud->column_templates[] = ['text' => '%field%', 'align' => 'r'];
+		$crud->column_templates[] = ['text' => '', 'align' => 'r'];
 		$crud->set_title();
 		$crud->apply_request_data();
 		if ($type == 'function') {
@@ -243,7 +243,7 @@ class Crud
 		}
 		if (isset($this->request['order_by']))
 			$this->order_by = $this->request['order_by'];
-		if (isset($this->request['order_dir']) && in_array($this->request['order_dir'], array('asc','desc')))
+		if (isset($this->request['order_dir']) && in_array($this->request['order_dir'], ['asc', 'desc']))
 			$this->order_dir = $this->request['order_dir'];
 		if (isset($this->request['search']))
 			$this->search_terms = json_decode(html_entity_decode($this->request['search']));
@@ -360,7 +360,7 @@ class Crud
 				if (preg_match('/^((?P<table>[^\.]+)\.){0,1}(?P<field>[^\.]+)$/m', $field, $matches)) {
 					$field = $matches['field'];
 					if (isset($matches['table']) && $matches['table'] != '') {
-						$tables = array($matches['table'] => $this->tables[$matches['table']]);
+						$tables = [$matches['table'] => $this->tables[$matches['table']]];
 						$query_table = $matches['table'];
 					} else {
 						$tables = $this->tables;
@@ -412,7 +412,7 @@ class Crud
 								if (isset($value)) {
 									$values = [];
 									if (!is_array($value))
-										$value = array($value);
+										$value = [$value];
 									foreach ($value as $t_value) {
 										if (!in_array($t_value, $this->labels[$field])) {
 											$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
@@ -432,7 +432,7 @@ class Crud
 							if (isset($value)) {
 								$values = [];
 								if (!is_array($value))
-									$value = array($value);
+									$value = [$value];
 								foreach ($value as $t_value) {
 									if (!in_array($t_value, $validation['in_array'])) {
 										$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
@@ -698,7 +698,7 @@ class Crud
 				//var_export($table_alias);
 				$join_type = $joinArray->getType();										// LEFT JOIN
 				//echo "Table {$table} Join Type {$join_type}<br>";
-				if (!in_array($join_type, array('LEFT JOIN', 'LEFT OUTER JOIN'))) {
+				if (!in_array($join_type, ['LEFT JOIN', 'LEFT OUTER JOIN'])) {
 					$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__, 'warning');
 				} else {
 					$this->join_handler($table, $joinArray->getCondition());
@@ -848,18 +848,18 @@ class Crud
 		while ($db->next_record(MYSQL_ASSOC)) {
 			if ($db->Record['Comment'] == '')
 				$db->Record['Comment'] = ucwords(str_replace(
-					array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
-					array('SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '),
+					                                 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+					                                 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
 					$db->Record['Field']));
 			if (preg_match('/_custid$/m', $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
 				if ($this->limit_custid == TRUE) {
 					if (count($this->search_terms) > 0)
 						if (!is_array($this->search_terms[0]))
-							$this->search_terms = array($this->search_terms);
+							$this->search_terms = [$this->search_terms];
 
 					//$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
-					$this->search_terms[] = array($db->Record['Field'], '=', $this->custid);
+					$this->search_terms[] = [$db->Record['Field'], '=', $this->custid];
 					//$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
 				}
 			}
@@ -986,12 +986,12 @@ class Crud
 	 */
 	public function search_to_sql() {
 		$search = [];
-		$valid_opers = array('=', 'in');
+		$valid_opers = ['=', 'in'];
 		$implode_type = 'and';
 		//$this->log('Search Terms: '.json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
 		if (count($this->search_terms) > 0) {
 			if (!is_array($this->search_terms[0]))
-				$this->search_terms = array($this->search_terms);
+				$this->search_terms = [$this->search_terms];
 			foreach ($this->search_terms as $search_term) {
 				//$this->log("Processing search " . json_encode($search_term), __LINE__, __FILE__, 'debug');
 				list($field, $oper, $value) = $search_term;
@@ -1185,7 +1185,7 @@ class Crud
 	 */
 	public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
 		//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
-		$link = str_replace(array('%id%', '+\'\''), array('\'+get_crud_row_id(this)', ''), $link);
+		$link = str_replace(['%id%', '+\'\''], ['\'+get_crud_row_id(this)', ''], $link);
 		//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
 		$button = '<button type="button" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
 		if ($title != '')
@@ -1244,7 +1244,7 @@ class Crud
 	 * @return array an array of page numbers to link to for the paginatoin
 	 */
 	public function get_page_links($page, $total_pages) {
-		$page_links = array(1);
+		$page_links = [1];
 		$first = $page - 2;
 		if ($first < 2)
 			$first = 2;
@@ -1329,7 +1329,7 @@ class Crud
 			$idx++;
 		}
 		$count = $this->get_count();
-		$table->smarty->assign('label_rep', array(
+		$table->smarty->assign('label_rep', [
 			'active' => 'success',
 			'pending' => 'info',
 			'locked' => 'danger',
@@ -1337,7 +1337,8 @@ class Crud
 			'canceled' => 'warning',
 			'expired' => 'danger',
 			'terminated' => 'danger',
-		));
+		]
+		);
 		$table->set_template_dir('/templates/crud/');
 		//$table->set_filename('../crud/table.tpl');
 		//$table->set_filename('../crud/table1.tpl');
@@ -1412,10 +1413,10 @@ class Crud
 				//$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
 				foreach ($this->queries->Record as $field => $value) {
 					$comment = ucwords(str_replace(
-					array('ssl_', 'vps_', '_id', '_lid', '_ip', '_'),
-					array('SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '),
-					$field));
-					$this->add_field($field, $comment, FALSE, array(), 'input');
+						                   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+						                   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+						                   $field));
+					$this->add_field($field, $comment, FALSE, [], 'input');
 					$this->tables[$this->query] = $this->queries->Record;
 					$this->tables[$this->query]['Comment'] = $comment;
 				}
@@ -1518,9 +1519,9 @@ class Crud
 	public function add_input_type_field($field, $input_type, $data = FALSE) {
 		//echo "Got here $field $input_type <pre>" . print_r($data, TRUE) . "</pre><br>\n";
 		// FIXME get in_array working properly / add validations based on this
-		$this->input_types[$field] = array($input_type, $data);
-		if (in_array($this->input_types[$field][0], array('select', 'select_multiple'))) {
-			$this->add_field_validations($field, array('in_array' => $this->input_types[$field][1]['values']));
+		$this->input_types[$field] = [$input_type, $data];
+		if (in_array($this->input_types[$field][0], ['select', 'select_multiple'])) {
+			$this->add_field_validations($field, ['in_array' => $this->input_types[$field][1]['values']]);
 		}
 	}
 
@@ -1639,11 +1640,12 @@ class Crud
 		if (isset($this->labels[$field])) {
 			return $this->labels[$field];
 		} else {
-			return ucwords(str_replace(array(
+			return ucwords(str_replace(
+				               [
 				'_'
-			), array(
+				               ], [
 				' '
-			), $field));
+			                           ], $field));
 		}
 	}
 
@@ -1657,12 +1659,12 @@ class Crud
 	 * @param mixed $data
 	 */
 	public function add_admin_confirmation_field($field, $label, $default, $type, $data = FALSE) {
-		$this->admin_confirm_fields[$field] = array(
+		$this->admin_confirm_fields[$field] = [
 			'label' => $label,
 			'value' => $default,
 			'type' => $type,
 			'data' => $data,
-		);
+		];
 	}
 
 	/**
@@ -1686,12 +1688,12 @@ class Crud
 								}
 							}
 							$input_type = 'select';
-							$validations[] = array('in_array' => $types);
-							$input_data = array(
+							$validations[] = ['in_array' => $types];
+							$input_data = [
 								'values' => $types,
 								'labels' => $types,
 								'default' => FALSE,
-							);
+							];
 							break;
 						case 'tinyint':
 							if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
@@ -2303,7 +2305,7 @@ class Crud
 		$table->add_hidden('pp_token', '');
 		$table->add_hidden('pp_payerid', '');
 		$this->returnURL = 'choice='.urlencode($this->choice);
-		$payment_method_table_fields = array($this->custid);
+		$payment_method_table_fields = [$this->custid];
 		foreach ($this->set_vars as $field => $value) {
 			$this->returnURL .= '&'.$field.'='.urlencode($value);
 			$table->add_hidden($field, $value);
@@ -2356,12 +2358,14 @@ class Crud
 			}
 		}
 		$this->db = get_module_db($this->module);
-		$this->db->query(make_insert_query('pending_orders', array(
+		$this->db->query(make_insert_query('pending_orders', [
 			'pend_id' => NULL,
 			'pend_choice' => $this->choice,
 			'pend_timestamp' => mysql_now(),
 			'pend_custid' => $this->custid,
-			'pend_data' => myadmin_stringify($this->set_vars))), __LINE__, __FILE__);
+			'pend_data' => myadmin_stringify($this->set_vars)
+		]
+		                 ), __LINE__, __FILE__);
 		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
 		$this->continue = FALSE;
 	}
@@ -2374,7 +2378,7 @@ class Crud
 	 */
 	public function decorate_query($query) {
 		return str_replace(
-			array(
+			[
 				'__MODULE__',
 				'__TITLE__',
 				'__CUSTID__',
@@ -2383,8 +2387,8 @@ class Crud
 				'__TABLE__',
 				'__PREFIX__',
 				'__TITLE_FIELD__',
-			),
-			array(
+			],
+			[
 				$this->module,
 				$this->settings['TITLE'],
 				$this->custid,
@@ -2393,7 +2397,7 @@ class Crud
 				$this->settings['TABLE'],
 				$this->settings['PREFIX'],
 				$this->settings['TITLE_FIELD'],
-			),
+			],
 			$query
 		);
 	}
@@ -2413,8 +2417,8 @@ class Crud
 			return $value;
 		}
 		$value = htmlspecial($value);
-		$search = array('%field%', '%value%');
-		$replace = array($field, $value);
+		$search = ['%field%', '%value%'];
+		$replace = [$field, $value];
 		foreach ($row as $row_field => $row_value) {
 			$search[] = '%'.$row_field.'%';
 			$replace[] = $row_value;
@@ -2453,11 +2457,11 @@ class Crud
 			$type = 'string';
 			$value = $bad_acl_test;
 		}
-		$output = array(
+		$output = [
 			'type' => $type,
 			'value' => $value,
 			'acl' => $acl,
-		);
+		];
 		$this->filters[$field][] = $output;
 		return $this;
 	}
@@ -2499,7 +2503,7 @@ class Crud
 		if ($fields == FALSE)
 			$fields = array_values($this->query_fields);
 		elseif (!is_array($fields))
-			$fields = array($fields);
+			$fields = [$fields];
 		foreach ($fields as $field) {
 			//$this->log($field, __LINE__, __FILE__, 'debug');
 			if ($field == 'account_lid') {
@@ -2523,80 +2527,80 @@ class Crud
 	 * @return array an array of the various formats and their information
 	 */
 	public function get_export_formats() {
-		$formats = array(
-			'xlsx' => array(
+		$formats = [
+			'xlsx' => [
 				'name' => 'Excel 2007+',
 				'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'read' => 'row',
 				'disposition' => 'attachment',
-			),
-			'xls' => array(
+			],
+			'xls' => [
 				'name' => 'Excel 2003/BIFF',
 				'type' => 'application/vnd.ms-excel',
 				'read' => 'row',
 				'disposition' => 'attachment',
-			),
-			'ods' => array(
+			],
+			'ods' => [
 				'name' => 'OpenDocument SpreadSheet',
 				'type' => 'application/vnd.oasis.opendocument.spreadsheet',
 				'read' => 'row',
 				'disposition' => 'attachment',
-			),
-			'pdf' => array(
+			],
+			'pdf' => [
 				'name' => 'Adobe Portable Document Format',
 				'type' => 'application/pdf',
 				'read' => 'row',
 				'disposition' => 'attachment',
-			),
-			'xml' => array(
+			],
+			'xml' => [
 				'name' => 'Extensible Markup Language',
 				'type' => 'application/xml',
 				'read' => 'all',
 				'disposition' => 'attachment',
-			),
-			'php' => array(
+			],
+			'php' => [
 				'name' => 'PHP Array',
 				'type' => 'text/x-php',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
+			],
 			/*'sql' => array(
 				'name' => 'SQL Query',
 				'type' => 'text/x-sql',
 				'read' => 'all',
 				'disposition' => 'inline',
 			),*/
-			'csv' => array(
+			'csv' => [
 				'name' => 'Comma-Seperated Values',
 				'type' => 'text/csv',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
-			'json' => array(
+			],
+			'json' => [
 				'name' => 'JSON',
 				'type' => 'application/json',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
-			'bbcode' => array(
+			],
+			'bbcode' => [
 				'name' => 'BBcode',
 				'type' => 'text/x-bbcode',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
-			'wiki' => array(
+			],
+			'wiki' => [
 				'name' => 'WikiCode',
 				'type' => 'text/x-wikicode',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
-			'markdown' => array(
+			],
+			'markdown' => [
 				'name' => 'MarkDown',
 				'type' => 'text/x-markdown',
 				'read' => 'all',
 				'disposition' => 'inline',
-			),
-		);
+			],
+		];
 		return $formats;
 	}
 
