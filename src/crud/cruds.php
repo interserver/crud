@@ -16,7 +16,7 @@ use \MyCrud\Crud;
 function get_crud_tables() {
 	$return = [
 		'modules' => [],
-		'tables' => [],
+		'tables' => []
 	];
 	foreach (['domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns'] as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {
@@ -49,7 +49,7 @@ function get_crud_funcs() {
 			'same_domain_accounts' => ['function' => 'same_domain_accounts&id=358805', 'title' => 'Accounts matching the @domain.com of client'],
 			'ssl_list' => ['function' => 'crud_ssl_list', 'title' => 'SSL Certificates'],
 			'vps_list' => ['function' => 'vps_list', 'title' => 'VPS List'],
-			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List'],
+			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List']
 		],
 		'info' => [
 			'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
@@ -58,7 +58,7 @@ function get_crud_funcs() {
 			'last_logins' => ['function' => 'crud_last_logins', 'title' => 'Last Logn Locations'],
 			'month_payment_totals' => ['function' => 'crud_month_payment_totals', 'title' => 'Payments This Month'],
 			'dns_manager' => ['function' => 'crud_dns_manager', 'title' => 'DNS Manager'],
-			'dns_editor' => ['function' => 'crud_dns_editor&id=68', 'title' => 'DNS Editor'],
+			'dns_editor' => ['function' => 'crud_dns_editor&id=68', 'title' => 'DNS Editor']
 		],
 		'warning' => [
 			'abuse' => ['function' => 'crud_abuse', 'title' => 'Abuse'],
@@ -102,7 +102,7 @@ function get_crud_funcs() {
 			'vps_masters' => ['function' => 'crud_vps_masters', 'title' => 'VPS Host Servers'],
 			'vps_next_servers' => ['function' => 'crud_vps_next_servers', 'title' => 'VPS Next Setup Servers'],
 			'whos_online' => ['function' => 'crud_whos_online', 'title' => 'Whos Online'],
-			'whm_listaccts' => ['function' => 'crud_whm_listaccts', 'title' => 'Accounts List'],
+			'whm_listaccts' => ['function' => 'crud_whm_listaccts', 'title' => 'Accounts List']
 		],
 		'danger' => [
 			'innertell_pending_orders' => ['function' => 'crud_innertell_pending_orders', 'title' => 'Pending Dedicated Server Orders'],
@@ -111,8 +111,8 @@ function get_crud_funcs() {
 			'pending_vps_list' => ['function' => 'crud_pending_vps_list', 'title' => 'Pending Virtual Private Servers (VPS)'],
 			'user_session_activity' => ['function' => 'crud_user_session_activity', 'title' => 'User Session Activity'],
 			'vps_bandwidth' => ['function' => 'crud_vps_bandwidth', 'title' => 'VPS Bandwidth'],
-			'vps_ips' => ['function' => 'crud_vps_ips', 'title' => 'VPS IP Address Space'],
-		],
+			'vps_ips' => ['function' => 'crud_vps_ips', 'title' => 'VPS IP Address Space']
+		]
 	];
 	return $functions;
 }

@@ -1336,8 +1336,8 @@ class Crud
 			'suspended' => 'warning',
 			'canceled' => 'warning',
 			'expired' => 'danger',
-			'terminated' => 'danger',
-		]
+			'terminated' => 'danger'
+		                                  ]
 		);
 		$table->set_template_dir('/templates/crud/');
 		//$table->set_filename('../crud/table.tpl');
@@ -1663,7 +1663,7 @@ class Crud
 			'label' => $label,
 			'value' => $default,
 			'type' => $type,
-			'data' => $data,
+			'data' => $data
 		];
 	}
 
@@ -1692,7 +1692,7 @@ class Crud
 							$input_data = [
 								'values' => $types,
 								'labels' => $types,
-								'default' => FALSE,
+								'default' => FALSE
 							];
 							break;
 						case 'tinyint':
@@ -2386,7 +2386,7 @@ class Crud
 				'__TBLNAME__',
 				'__TABLE__',
 				'__PREFIX__',
-				'__TITLE_FIELD__',
+				'__TITLE_FIELD__'
 			],
 			[
 				$this->module,
@@ -2396,7 +2396,7 @@ class Crud
 				$this->settings['TBLNAME'],
 				$this->settings['TABLE'],
 				$this->settings['PREFIX'],
-				$this->settings['TITLE_FIELD'],
+				$this->settings['TITLE_FIELD']
 			],
 			$query
 		);
@@ -2460,7 +2460,7 @@ class Crud
 		$output = [
 			'type' => $type,
 			'value' => $value,
-			'acl' => $acl,
+			'acl' => $acl
 		];
 		$this->filters[$field][] = $output;
 		return $this;
@@ -2532,37 +2532,37 @@ class Crud
 				'name' => 'Excel 2007+',
 				'type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'read' => 'row',
-				'disposition' => 'attachment',
+				'disposition' => 'attachment'
 			],
 			'xls' => [
 				'name' => 'Excel 2003/BIFF',
 				'type' => 'application/vnd.ms-excel',
 				'read' => 'row',
-				'disposition' => 'attachment',
+				'disposition' => 'attachment'
 			],
 			'ods' => [
 				'name' => 'OpenDocument SpreadSheet',
 				'type' => 'application/vnd.oasis.opendocument.spreadsheet',
 				'read' => 'row',
-				'disposition' => 'attachment',
+				'disposition' => 'attachment'
 			],
 			'pdf' => [
 				'name' => 'Adobe Portable Document Format',
 				'type' => 'application/pdf',
 				'read' => 'row',
-				'disposition' => 'attachment',
+				'disposition' => 'attachment'
 			],
 			'xml' => [
 				'name' => 'Extensible Markup Language',
 				'type' => 'application/xml',
 				'read' => 'all',
-				'disposition' => 'attachment',
+				'disposition' => 'attachment'
 			],
 			'php' => [
 				'name' => 'PHP Array',
 				'type' => 'text/x-php',
 				'read' => 'all',
-				'disposition' => 'inline',
+				'disposition' => 'inline'
 			],
 			/*'sql' => array(
 				'name' => 'SQL Query',
@@ -2574,32 +2574,32 @@ class Crud
 				'name' => 'Comma-Seperated Values',
 				'type' => 'text/csv',
 				'read' => 'all',
-				'disposition' => 'inline',
+				'disposition' => 'inline'
 			],
 			'json' => [
 				'name' => 'JSON',
 				'type' => 'application/json',
 				'read' => 'all',
-				'disposition' => 'inline',
+				'disposition' => 'inline'
 			],
 			'bbcode' => [
 				'name' => 'BBcode',
 				'type' => 'text/x-bbcode',
 				'read' => 'all',
-				'disposition' => 'inline',
+				'disposition' => 'inline'
 			],
 			'wiki' => [
 				'name' => 'WikiCode',
 				'type' => 'text/x-wikicode',
 				'read' => 'all',
-				'disposition' => 'inline',
+				'disposition' => 'inline'
 			],
 			'markdown' => [
 				'name' => 'MarkDown',
 				'type' => 'text/x-markdown',
 				'read' => 'all',
-				'disposition' => 'inline',
-			],
+				'disposition' => 'inline'
+			]
 		];
 		return $formats;
 	}
