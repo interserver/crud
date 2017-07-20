@@ -133,7 +133,7 @@ function cruds() {
 	$functions = get_crud_funcs();
 	$sizes = [];
 	foreach ($functions as $level => $functionsArray)
-		$sizes[$level] = sizeof($functionsArray);
+		$sizes[$level] = count($functionsArray);
 	add_output("
 	<style type='text/css'>
 		.cruds.list-group {
@@ -195,7 +195,7 @@ function cruds() {
 		$dbh = $all_tables['modules'][$module];
 		$dbName = $dbh->Database;
 		$level = $levels[$idx];
-		$size = sizeof($tables);
+		$size = count($tables);
 		$key[] = "<span class='pull-right label label-{$level}'>{$dbName} ({$size})</span>";
 		foreach ($tables as $table) {
 			$rows[] = "
@@ -204,7 +204,7 @@ function cruds() {
 			</a>";
 		}
 		$idx++;
-		if ($idx == sizeof($levels))
+		if ($idx == count($levels))
 			$idx = 0;
 	}
 	$key = array_reverse($key);

@@ -691,7 +691,7 @@ class Crud
 		///echo _debug_array($this->queries, TRUE);
 		//echo _debug_array($queries[0]->getJoins(), TRUE);
 		$joins = $queries[0]->getJoins();
-		if (sizeof($joins) > 0)
+		if (count($joins) > 0)
 			foreach ($joins as $join => $joinArray) {
 				$table = $joinArray->getTable();											// accounts_ext, vps_masters
 				$table_alias = $joinArray->getAlias();
@@ -854,7 +854,7 @@ class Crud
 			if (preg_match('/_custid$/m', $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
 				if ($this->limit_custid == TRUE) {
-					if (sizeof($this->search_terms) > 0)
+					if (count($this->search_terms) > 0)
 						if (!is_array($this->search_terms[0]))
 							$this->search_terms = array($this->search_terms);
 
@@ -889,7 +889,7 @@ class Crud
 		} else {
 			if (preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
 				$from = $matches[1];
-				if (sizeof($this->search_terms) > 0)
+				if (count($this->search_terms) > 0)
 					if ($this->queries[0]->hasWhere() == FALSE)
 						$from .= ' where '.$this->search_to_sql();
 					else
@@ -921,11 +921,11 @@ class Crud
 		} else {
 			if ($this->type == 'table') {
 				$query = "select * from {$this->table}";
-				if (sizeof($this->search_terms) > 0)
+				if (count($this->search_terms) > 0)
 					$query .= ' where '.$this->search_to_sql();
 			} else {
 				$query = $this->query;
-				if (sizeof($this->search_terms) > 0)
+				if (count($this->search_terms) > 0)
 					if ($this->queries[0]->hasWhere() == FALSE)
 						$query .= ' where '.$this->search_to_sql();
 					else
@@ -955,9 +955,9 @@ class Crud
 		switch ($oper) {
 			case '=':
 				if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
-					return $field.$oper.intval($val);
+					return $field.$oper. (int)$val;
 				elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
-					return $field.$oper.floatval($val);
+					return $field.$oper. (float)$val;
 				else
 					return $field.$oper."'".$this->db->real_escape($val)."'";
 				break;
@@ -965,9 +965,9 @@ class Crud
 				$valArray = [];
 				foreach ($val as $value) {
 					if (isset($this->validations[$field]) && in_array('int', $this->validations[$field]))
-						$valArray[] = intval($value);
+						$valArray[] = (int)$value;
 					elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field]))
-						$valArray[] = floatval($value);
+						$valArray[] = (float)$value;
 					else
 						$valArray[] = "'".$this->db->real_escape($value)."'";
 				}
@@ -989,7 +989,7 @@ class Crud
 		$valid_opers = array('=', 'in');
 		$implode_type = 'and';
 		//$this->log('Search Terms: '.json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
-		if (sizeof($this->search_terms) > 0) {
+		if (count($this->search_terms) > 0) {
 			if (!is_array($this->search_terms[0]))
 				$this->search_terms = array($this->search_terms);
 			foreach ($this->search_terms as $search_term) {
@@ -1385,7 +1385,7 @@ class Crud
 			$this->buttons[] = $this->edit_button;
 		if ($this->delete_row == TRUE)
 			$this->buttons[] = $this->delete_button;
-		if (sizeof($this->buttons) > 0)
+		if (count($this->buttons) > 0)
 			$table->smarty->assign('row_buttons', $this->buttons);
 		$table->smarty->assign('add_row', $this->add_row);
 		$table->smarty->assign('labels', $this->labels);
@@ -2075,7 +2075,7 @@ class Crud
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*sizeof($data['values']))). 'px;"' : '')).'
+	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -2748,7 +2748,7 @@ class Crud
 		foreach ($this->rows as $Record) {
 			if ($first == TRUE) {
 				echo implode(' | ', array_keys($Record)) . PHP_EOL;
-				$size = sizeof($Record);
+				$size = count($Record);
 				$row = [];
 				for ($x = 0; $x < $size; $x++)
 					$row[] = '---';
@@ -2844,7 +2844,7 @@ Class CrudFunctionIterator {
 		function_requirements($this->function);
 		$this->result = call_user_func($this->function);
 		$this->ran = TRUE;
-		$this->size = sizeof($this->result);
+		$this->size = count($this->result);
 		$this->keys = array_keys($this->result);
 	}
 
