@@ -46,6 +46,11 @@ use \sqlparser;
 use \TFSmarty;
 use \TFTable;
 
+/**
+ * Class Crud
+ *
+ * @package MyCrud
+ */
 class Crud
 {
 	public $custid;
@@ -1025,11 +1030,15 @@ class Crud
 	/**
 	 * adds a button to the header of the table.
 	 *
-	 * @param string $link optional text label for the button
-	 * @param string $label optional text label for the button
-	 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
-	 * @param bool|false|string $icon optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
+	 * @param string            $link   optional text label for the button
+	 * @param string            $label  optional text label for the button
+	 * @param string            $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
+	 * @param bool|false|string $icon   optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
+	 * @param bool              $title
+	 * @param bool              $ima
 	 * @return \Crud {Crud|crud} an instance of the crud system.
+	 *                                  an instance of the crud system.
+	 *                                  an instance of the crud system.
 	 */
 	public function add_header_button($link, $label = '', $status = 'default', $icon = FALSE, $title = FALSE, $ima = FALSE) {
 		if ($ima == FALSE || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid'])))
@@ -1567,6 +1576,7 @@ class Crud
 	 *
 	 * @param string $field the field name to set the default value of
 	 * @param string $value the default value for the field
+	 * @return $this
 	 */
 	public function set_default($field, $value) {
 		$this->defaults[$field] = $value;
@@ -1577,6 +1587,7 @@ class Crud
 	 * sets default values for multiple fields
 	 *
 	 * @param array $defaults an array of    field => value
+	 * @return $this
 	 */
 	public function set_defaults($defaults) {
 		foreach ($defaults as $field => $value)
@@ -1589,6 +1600,7 @@ class Crud
 	 *
 	 * @param string $field field name
 	 * @param string $label label to apply to the field
+	 * @return $this
 	 */
 	public function set_label($field, $label) {
 		$this->labels[$field] = $label;
@@ -1599,6 +1611,7 @@ class Crud
 	 * sets the labels for an array of fields
 	 *
 	 * @param array $labels array with elements in the form of  field => label
+	 * @return $this
 	 */
 	public function set_labels($labels) {
 		foreach ($labels as $field => $label)
