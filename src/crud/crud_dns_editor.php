@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  * @return void
  */
 function crud_dns_editor() {
-	function_requirements('class.crud');
+	function_requirements('class.Crud');
 	$domain_id = (int)$GLOBALS['tf']->variables->request['id'];
 	crud::init("select * from records where domain_id='{$domain_id}'", 'pdns')
 		->set_title('DNS Editor')
