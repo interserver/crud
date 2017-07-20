@@ -120,7 +120,7 @@ function get_crud_funcs() {
 /**
  * displays a list of the various CRUD pages
  *
- * @return void
+ * @return bool
  */
 function cruds() {
 	function_requirements('has_acl');

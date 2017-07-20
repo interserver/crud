@@ -11,7 +11,8 @@ use \MyCrud\Crud;
 
 /**
  * crud_table()
- * @return void
+ *
+ * @return bool
  */
 function crud_table() {
 	function_requirements('has_acl');
