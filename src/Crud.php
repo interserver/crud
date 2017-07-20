@@ -1042,7 +1042,7 @@ class Crud
 	 */
 	public function add_header_button($link, $label = '', $status = 'default', $icon = FALSE, $title = FALSE, $ima = FALSE) {
 		if ($ima == FALSE || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid'])))
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != FALSE ? ' data-toggle="tooltip" title="'.$title.'"' : '') . ">" . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != FALSE ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
 		return $this;
 	}
 

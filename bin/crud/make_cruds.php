@@ -3,7 +3,7 @@
 require_once(__DIR__.'/../../include/functions.inc.php');
 add_js('bootstrap');
 require_once(INCLUDE_ROOT.'/rendering/class.crud.php');
-$cmd = "ls " . INCLUDE_ROOT . "/forms/*json;";
+$cmd = 'ls ' . INCLUDE_ROOT . '/forms/*json;';
 $files = explode("\n", trim(`$cmd`));
 $function_req = '';
 $function_req .= "			'cruds' => '/crud/cruds.php',\n";
