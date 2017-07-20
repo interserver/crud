@@ -1,13 +1,13 @@
 {literal}
 <style type="text/css">
-	.trash { color:rgb(209, 91, 71); }
-	.flag { color:rgb(248, 148, 6); }
+	.trash { color: #d15b47; }
+	.flag { color: #f89406; }
 	.panel-body { padding:0px; }
 	.panel-footer .pagination { margin: 0; }
 	.panel .glyphicon,.list-group-item .glyphicon { margin-right:5px; }
 	.panel-body .radio, .checkbox { display:inline-block;margin:0px; }
-	.panel-body input[type=checkbox]:checked + label { text-decoration: line-through;color: rgb(128, 144, 160); }
-	.list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: rgb(245, 245, 245);}
+	.panel-body input[type=checkbox]:checked + label { text-decoration: line-through;color: #8090a0; }
+	.list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: #f5f5f5;}
 	.list-group { margin-bottom:0px; }
 	.action-buttons{margin-right:5px;}
 </style>
