@@ -231,7 +231,7 @@ class Crud
 	public function apply_request_data() {
 		if (isset($GLOBALS['tf'])) {
 			$this->request = $GLOBALS['tf']->variables->request;
-			$this->admin = ($GLOBALS['tf']->ima == 'admin' ? TRUE : FALSE);
+			$this->admin = ($GLOBALS['tf']->ima == 'admin');
 			$this->custid = $GLOBALS['tf']->session->account_id;
 		} else {
 			$this->request = $_REQUEST;
@@ -1221,8 +1221,7 @@ class Crud
 	 * @return int the page number you are currently on
 	 */
 	public function get_page() {
-		$page = ($this->page_offset / $this->page_limit) + 1;
-		return $page;
+		return ($this->page_offset / $this->page_limit) + 1;
 	}
 
 	/**
@@ -1232,8 +1231,7 @@ class Crud
 	 * @return int total number of pages of results
 	 */
 	public function get_total_pages($count) {
-		$total_pages = ceil($count / $this->page_limit);
-		return $total_pages;
+		return ceil($count / $this->page_limit);
 	}
 
 	/**
@@ -2729,9 +2727,7 @@ class Crud
 	 * @return string the exported data stored as a string
 	 */
 	public function export_sql($headers) {
-		$return = '';
-
-		return $return;
+		return '';
 	}
 
 	/**
