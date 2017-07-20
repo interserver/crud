@@ -2685,7 +2685,7 @@ class Crud
 		foreach ($headers as $header)
 			header($header);
 		$csv = '';
-		$out = fopen('php://output', 'w');
+		$out = fopen('php://output', 'wb');
 		foreach ($this->rows as $idx => $Record) {
 			if ($idx == 0)
 				fputcsv($out, array_keys($Record));

@@ -21,7 +21,7 @@
 					</div>
 				</h4>
 			</div>
-			<div id="collapse-1" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+			<div id="collapse-1" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
 				<div class="panel-body">
 					<img src="//lorempixel.com/128/128/people/?1" class="pull-left img-circle">
 					<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
@@ -49,7 +49,7 @@
 					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
 				</h4>
 			</div>
-			<div id="collapse-3" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+			<div id="collapse-3" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
 				<div class="panel-body">
 					<img src="//lorempixel.com/128/128/people/?3" class="pull-left img-circle">
 					<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
@@ -76,7 +76,7 @@
 					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
 				</h4>
 			</div>
-			<div id="collapse-4" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+			<div id="collapse-4" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
 				<div class="panel-body">
 					<img src="//lorempixel.com/128/128/people/?4" class="pull-left img-circle">
 					<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
@@ -103,7 +103,7 @@
 					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
 				</h4>
 			</div>
-			<div id="collapse-5" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+			<div id="collapse-5" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
 				<div class="panel-body">
 					<img src="//lorempixel.com/128/128/people/?5" class="pull-left img-circle">
 					<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad

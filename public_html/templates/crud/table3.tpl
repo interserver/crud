@@ -2,13 +2,13 @@
 <style type="text/css">
 	.trash { color: #d15b47; }
 	.flag { color: #f89406; }
-	.panel-body { padding:0px; }
+	.panel-body { padding:0; }
 	.panel-footer .pagination { margin: 0; }
 	.panel .glyphicon,.list-group-item .glyphicon { margin-right:5px; }
-	.panel-body .radio, .checkbox { display:inline-block;margin:0px; }
+	.panel-body .radio, .checkbox { display:inline-block;margin:0; }
 	.panel-body input[type=checkbox]:checked + label { text-decoration: line-through;color: #8090a0; }
 	.list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: #f5f5f5;}
-	.list-group { margin-bottom:0px; }
+	.list-group { margin-bottom:0; }
 	.action-buttons{margin-right:5px;}
 </style>
 {/literal}

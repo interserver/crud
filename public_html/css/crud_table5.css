@@ -72,14 +72,14 @@ a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
 	vertical-align: top;
 }
 .crud .crud-nav-bar .nav-crud .pagination {
-	margin: 0px;
+	margin: 0;
 	display: table-cell;
 }
 .crud .crud-nav-bar .nav-crud .pagination li a {
 	padding-top: 4px;
 }
 .crud .crud-nav-bar .nav-crud .row-counts {
-	padding-top: 0px;
+	padding-top: 0;
 }
 .crud .crud-nav-bar .nav-crud .nav-rows {
 	display: table-cell;

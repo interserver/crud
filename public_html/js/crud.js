@@ -11,7 +11,7 @@ function sortTable(table, order) {
 		console.log("sort-table");
     var asc   = order === 'asc',
         tbody = table.find('tbody');
-    
+
     tbody.find('tr').sort(function(a, b) {
         if (asc) {
             return $('td:eq(4)', a).text().localeCompare($('td:eq(4)', b).text());
@@ -157,7 +157,7 @@ function get_crud_url() {
 	}
 	url = url+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit;
 	if (crud_search_terms.length > 0)
-		url = url + "&search=" + JSON.stringify(crud_search_terms)
+		url = url + "&search=" + JSON.stringify(crud_search_terms);
 	return url;
 }
 
@@ -414,7 +414,7 @@ $.fn.refreshMe = function(opts){
 		*/
 		return false;
 	})
-}
+};
 
 /**
  * handles refreshing the crud contents
