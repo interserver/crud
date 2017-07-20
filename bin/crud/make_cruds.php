@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
-require_once(__DIR__.'/../../include/functions.inc.php');
+require_once __DIR__.'/../../include/functions.inc.php';
 add_js('bootstrap');
-require_once(INCLUDE_ROOT.'/rendering/class.crud.php');
+require_once INCLUDE_ROOT.'/rendering/class.crud.php';
 $cmd = 'ls ' . INCLUDE_ROOT . '/forms/*json;';
 $files = explode("\n", trim(`$cmd`));
 $function_req = '';

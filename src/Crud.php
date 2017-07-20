@@ -609,7 +609,7 @@ class Crud
 			$query = $this->query;
 		//require_once(INCLUDE_ROOT.'/../vendor/autoload.php');
 		//require_once(INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/SQLParser.php');
-		require_once(INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/autoload.php');
+		require_once INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/autoload.php';
 		$parser = new SQLParser;
 		$this->queries = $parser->parse($query);
 		$this->parse_query_fields();
