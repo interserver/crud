@@ -8,1165 +8,1165 @@ use PHPUnit\Framework\TestCase;
  */
 class CrudTest extends TestCase
 {
-    /**
-     * @var Crud
-     */
-    protected $object;
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        $this->object = new Crud;
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
-     * @covers MyCrud\Crud::init
-     * @todo   Implement testInit().
-     */
-    public function testInit()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::apply_module_info
-     * @todo   Implement testApply_module_info().
-     */
-    public function testApply_module_info()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_default_search
-     * @todo   Implement testSet_default_search().
-     */
-    public function testSet_default_search()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::apply_request_data
-     * @todo   Implement testApply_request_data().
-     */
-    public function testApply_request_data()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_js_headers
-     * @todo   Implement testAdd_js_headers().
-     */
-    public function testAdd_js_headers()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::go
-     * @todo   Implement testGo().
-     */
-    public function testGo()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_handler
-     * @todo   Implement testAjax_handler().
-     */
-    public function testAjax_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_edit_handler
-     * @todo   Implement testAjax_edit_handler().
-     */
-    public function testAjax_edit_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_add_handler
-     * @todo   Implement testAjax_add_handler().
-     */
-    public function testAjax_add_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_delete_handler
-     * @todo   Implement testAjax_delete_handler().
-     */
-    public function testAjax_delete_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_export_handler
-     * @todo   Implement testAjax_export_handler().
-     */
-    public function testAjax_export_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_all_rows
-     * @todo   Implement testGet_all_rows().
-     */
-    public function testGet_all_rows()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::ajax_list_handler
-     * @todo   Implement testAjax_list_handler().
-     */
-    public function testAjax_list_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::load_tables
-     * @todo   Implement testLoad_tables().
-     */
-    public function testLoad_tables()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::parse_query
-     * @todo   Implement testParse_query().
-     */
-    public function testParse_query()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::join_handler
-     * @todo   Implement testJoin_handler().
-     */
-    public function testJoin_handler()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::parse_query_fields
-     * @todo   Implement testParse_query_fields().
-     */
-    public function testParse_query_fields()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_tables_from_query
-     * @todo   Implement testGet_tables_from_query().
-     */
-    public function testGet_tables_from_query()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_table_details
-     * @todo   Implement testGet_table_details().
-     */
-    public function testGet_table_details()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_count
-     * @todo   Implement testGet_count().
-     */
-    public function testGet_count()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::run_list_query
-     * @todo   Implement testRun_list_query().
-     */
-    public function testRun_list_query()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::json_search_tosql
-     * @todo   Implement testJson_search_tosql().
-     */
-    public function testJson_search_tosql()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::search_to_sql
-     * @todo   Implement testSearch_to_sql().
-     */
-    public function testSearch_to_sql()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_header_button
-     * @todo   Implement testAdd_header_button().
-     */
-    public function testAdd_header_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_title_search_button
-     * @todo   Implement testAdd_title_search_button().
-     */
-    public function testAdd_title_search_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_extra_url_args
-     * @todo   Implement testSet_extra_url_args().
-     */
-    public function testSet_extra_url_args()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_auto_update
-     * @todo   Implement testSet_auto_update().
-     */
-    public function testSet_auto_update()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_fluid_container
-     * @todo   Implement testEnable_fluid_container().
-     */
-    public function testEnable_fluid_container()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_fluid_container
-     * @todo   Implement testDisable_fluid_container().
-     */
-    public function testDisable_fluid_container()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_refresh_button
-     * @todo   Implement testEnable_refresh_button().
-     */
-    public function testEnable_refresh_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_refresh_button
-     * @todo   Implement testDisable_refresh_button().
-     */
-    public function testDisable_refresh_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_labels
-     * @todo   Implement testEnable_labels().
-     */
-    public function testEnable_labels()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_labels
-     * @todo   Implement testDisable_labels().
-     */
-    public function testDisable_labels()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_export_button
-     * @todo   Implement testDisable_export_button().
-     */
-    public function testDisable_export_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_export_button
-     * @todo   Implement testEnable_export_button().
-     */
-    public function testEnable_export_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_print_button
-     * @todo   Implement testEnable_print_button().
-     */
-    public function testEnable_print_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_print_button
-     * @todo   Implement testDisable_print_button().
-     */
-    public function testDisable_print_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_row_button
-     * @todo   Implement testAdd_row_button().
-     */
-    public function testAdd_row_button()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_sort_icon
-     * @todo   Implement testGet_sort_icon().
-     */
-    public function testGet_sort_icon()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_page
-     * @todo   Implement testGet_page().
-     */
-    public function testGet_page()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_total_pages
-     * @todo   Implement testGet_total_pages().
-     */
-    public function testGet_total_pages()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_page_links
-     * @todo   Implement testGet_page_links().
-     */
-    public function testGet_page_links()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::list_records
-     * @todo   Implement testList_records().
-     */
-    public function testList_records()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::next_record
-     * @todo   Implement testNext_record().
-     */
-    public function testNext_record()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_record
-     * @todo   Implement testGet_record().
-     */
-    public function testGet_record()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::error
-     * @todo   Implement testError().
-     */
-    public function testError()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::log
-     * @todo   Implement testLog().
-     */
-    public function testLog()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_title
-     * @todo   Implement testSet_title().
-     */
-    public function testSet_title()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_field_validations
-     * @todo   Implement testAdd_field_validations().
-     */
-    public function testAdd_field_validations()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_validations
-     * @todo   Implement testAdd_validations().
-     */
-    public function testAdd_validations()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_input_type_field
-     * @todo   Implement testAdd_input_type_field().
-     */
-    public function testAdd_input_type_field()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_input_type_fields
-     * @todo   Implement testAdd_input_type_fields().
-     */
-    public function testAdd_input_type_fields()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_field
-     * @todo   Implement testAdd_field().
-     */
-    public function testAdd_field()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_fields
-     * @todo   Implement testAdd_fields().
-     */
-    public function testAdd_fields()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_default
-     * @todo   Implement testSet_default().
-     */
-    public function testSet_default()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_defaults
-     * @todo   Implement testSet_defaults().
-     */
-    public function testSet_defaults()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_label
-     * @todo   Implement testSet_label().
-     */
-    public function testSet_label()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::set_labels
-     * @todo   Implement testSet_labels().
-     */
-    public function testSet_labels()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_label
-     * @todo   Implement testGet_label().
-     */
-    public function testGet_label()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::label
-     * @todo   Implement testLabel().
-     */
-    public function testLabel()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_admin_confirmation_field
-     * @todo   Implement testAdd_admin_confirmation_field().
-     */
-    public function testAdd_admin_confirmation_field()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::parse_tables
-     * @todo   Implement testParse_tables().
-     */
-    public function testParse_tables()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::validate_order
-     * @todo   Implement testValidate_order().
-     */
-    public function testValidate_order()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::order_form
-     * @todo   Implement testOrder_form().
-     */
-    public function testOrder_form()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_initial_populate
-     * @todo   Implement testDisable_initial_populate().
-     */
-    public function testDisable_initial_populate()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_delete
-     * @todo   Implement testDisable_delete().
-     */
-    public function testDisable_delete()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_select_multiple
-     * @todo   Implement testDisable_select_multiple().
-     */
-    public function testDisable_select_multiple()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_edit
-     * @todo   Implement testDisable_edit().
-     */
-    public function testDisable_edit()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_add
-     * @todo   Implement testDisable_add().
-     */
-    public function testDisable_add()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_initial_populate
-     * @todo   Implement testEnable_initial_populate().
-     */
-    public function testEnable_initial_populate()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_delete
-     * @todo   Implement testEnable_delete().
-     */
-    public function testEnable_delete()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_select_multiple
-     * @todo   Implement testEnable_select_multiple().
-     */
-    public function testEnable_select_multiple()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_edit
-     * @todo   Implement testEnable_edit().
-     */
-    public function testEnable_edit()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::enable_add
-     * @todo   Implement testEnable_add().
-     */
-    public function testEnable_add()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_field
-     * @todo   Implement testDisable_field().
-     */
-    public function testDisable_field()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::disable_fields
-     * @todo   Implement testDisable_fields().
-     */
-    public function testDisable_fields()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::confirm_order
-     * @todo   Implement testConfirm_order().
-     */
-    public function testConfirm_order()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::decorate_query
-     * @todo   Implement testDecorate_query().
-     */
-    public function testDecorate_query()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::decorate_field
-     * @todo   Implement testDecorate_field().
-     */
-    public function testDecorate_field()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_filter
-     * @todo   Implement testAdd_filter().
-     */
-    public function testAdd_filter()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::add_filter_link
-     * @todo   Implement testAdd_filter_link().
-     */
-    public function testAdd_filter_link()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::default_filters
-     * @todo   Implement testDefault_filters().
-     */
-    public function testDefault_filters()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::get_export_formats
-     * @todo   Implement testGet_export_formats().
-     */
-    public function testGet_export_formats()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_xlsx
-     * @todo   Implement testExport_xlsx().
-     */
-    public function testExport_xlsx()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_xls
-     * @todo   Implement testExport_xls().
-     */
-    public function testExport_xls()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_ods
-     * @todo   Implement testExport_ods().
-     */
-    public function testExport_ods()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_pdf
-     * @todo   Implement testExport_pdf().
-     */
-    public function testExport_pdf()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_xml
-     * @todo   Implement testExport_xml().
-     */
-    public function testExport_xml()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_csv
-     * @todo   Implement testExport_csv().
-     */
-    public function testExport_csv()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_json
-     * @todo   Implement testExport_json().
-     */
-    public function testExport_json()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_php
-     * @todo   Implement testExport_php().
-     */
-    public function testExport_php()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_sql
-     * @todo   Implement testExport_sql().
-     */
-    public function testExport_sql()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_markdown
-     * @todo   Implement testExport_markdown().
-     */
-    public function testExport_markdown()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_bbcode
-     * @todo   Implement testExport_bbcode().
-     */
-    public function testExport_bbcode()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers MyCrud\Crud::export_wiki
-     * @todo   Implement testExport_wiki().
-     */
-    public function testExport_wiki()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 * @var Crud
+	 */
+	protected $object;
+
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		$this->object = new Crud;
+	}
+
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+	}
+
+	/**
+	 * @covers MyCrud\Crud::init
+	 * @todo   Implement testInit().
+	 */
+	public function testInit()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::apply_module_info
+	 * @todo   Implement testApply_module_info().
+	 */
+	public function testApply_module_info()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_default_search
+	 * @todo   Implement testSet_default_search().
+	 */
+	public function testSet_default_search()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::apply_request_data
+	 * @todo   Implement testApply_request_data().
+	 */
+	public function testApply_request_data()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_js_headers
+	 * @todo   Implement testAdd_js_headers().
+	 */
+	public function testAdd_js_headers()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::go
+	 * @todo   Implement testGo().
+	 */
+	public function testGo()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_handler
+	 * @todo   Implement testAjax_handler().
+	 */
+	public function testAjax_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_edit_handler
+	 * @todo   Implement testAjax_edit_handler().
+	 */
+	public function testAjax_edit_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_add_handler
+	 * @todo   Implement testAjax_add_handler().
+	 */
+	public function testAjax_add_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_delete_handler
+	 * @todo   Implement testAjax_delete_handler().
+	 */
+	public function testAjax_delete_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_export_handler
+	 * @todo   Implement testAjax_export_handler().
+	 */
+	public function testAjax_export_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_all_rows
+	 * @todo   Implement testGet_all_rows().
+	 */
+	public function testGet_all_rows()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::ajax_list_handler
+	 * @todo   Implement testAjax_list_handler().
+	 */
+	public function testAjax_list_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::load_tables
+	 * @todo   Implement testLoad_tables().
+	 */
+	public function testLoad_tables()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::parse_query
+	 * @todo   Implement testParse_query().
+	 */
+	public function testParse_query()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::join_handler
+	 * @todo   Implement testJoin_handler().
+	 */
+	public function testJoin_handler()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::parse_query_fields
+	 * @todo   Implement testParse_query_fields().
+	 */
+	public function testParse_query_fields()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_tables_from_query
+	 * @todo   Implement testGet_tables_from_query().
+	 */
+	public function testGet_tables_from_query()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_table_details
+	 * @todo   Implement testGet_table_details().
+	 */
+	public function testGet_table_details()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_count
+	 * @todo   Implement testGet_count().
+	 */
+	public function testGet_count()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::run_list_query
+	 * @todo   Implement testRun_list_query().
+	 */
+	public function testRun_list_query()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::json_search_tosql
+	 * @todo   Implement testJson_search_tosql().
+	 */
+	public function testJson_search_tosql()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::search_to_sql
+	 * @todo   Implement testSearch_to_sql().
+	 */
+	public function testSearch_to_sql()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_header_button
+	 * @todo   Implement testAdd_header_button().
+	 */
+	public function testAdd_header_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_title_search_button
+	 * @todo   Implement testAdd_title_search_button().
+	 */
+	public function testAdd_title_search_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_extra_url_args
+	 * @todo   Implement testSet_extra_url_args().
+	 */
+	public function testSet_extra_url_args()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_auto_update
+	 * @todo   Implement testSet_auto_update().
+	 */
+	public function testSet_auto_update()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_fluid_container
+	 * @todo   Implement testEnable_fluid_container().
+	 */
+	public function testEnable_fluid_container()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_fluid_container
+	 * @todo   Implement testDisable_fluid_container().
+	 */
+	public function testDisable_fluid_container()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_refresh_button
+	 * @todo   Implement testEnable_refresh_button().
+	 */
+	public function testEnable_refresh_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_refresh_button
+	 * @todo   Implement testDisable_refresh_button().
+	 */
+	public function testDisable_refresh_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_labels
+	 * @todo   Implement testEnable_labels().
+	 */
+	public function testEnable_labels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_labels
+	 * @todo   Implement testDisable_labels().
+	 */
+	public function testDisable_labels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_export_button
+	 * @todo   Implement testDisable_export_button().
+	 */
+	public function testDisable_export_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_export_button
+	 * @todo   Implement testEnable_export_button().
+	 */
+	public function testEnable_export_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_print_button
+	 * @todo   Implement testEnable_print_button().
+	 */
+	public function testEnable_print_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_print_button
+	 * @todo   Implement testDisable_print_button().
+	 */
+	public function testDisable_print_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_row_button
+	 * @todo   Implement testAdd_row_button().
+	 */
+	public function testAdd_row_button()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_sort_icon
+	 * @todo   Implement testGet_sort_icon().
+	 */
+	public function testGet_sort_icon()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_page
+	 * @todo   Implement testGet_page().
+	 */
+	public function testGet_page()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_total_pages
+	 * @todo   Implement testGet_total_pages().
+	 */
+	public function testGet_total_pages()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_page_links
+	 * @todo   Implement testGet_page_links().
+	 */
+	public function testGet_page_links()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::list_records
+	 * @todo   Implement testList_records().
+	 */
+	public function testList_records()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::next_record
+	 * @todo   Implement testNext_record().
+	 */
+	public function testNext_record()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_record
+	 * @todo   Implement testGet_record().
+	 */
+	public function testGet_record()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::error
+	 * @todo   Implement testError().
+	 */
+	public function testError()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::log
+	 * @todo   Implement testLog().
+	 */
+	public function testLog()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_title
+	 * @todo   Implement testSet_title().
+	 */
+	public function testSet_title()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_field_validations
+	 * @todo   Implement testAdd_field_validations().
+	 */
+	public function testAdd_field_validations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_validations
+	 * @todo   Implement testAdd_validations().
+	 */
+	public function testAdd_validations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_input_type_field
+	 * @todo   Implement testAdd_input_type_field().
+	 */
+	public function testAdd_input_type_field()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_input_type_fields
+	 * @todo   Implement testAdd_input_type_fields().
+	 */
+	public function testAdd_input_type_fields()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_field
+	 * @todo   Implement testAdd_field().
+	 */
+	public function testAdd_field()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_fields
+	 * @todo   Implement testAdd_fields().
+	 */
+	public function testAdd_fields()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_default
+	 * @todo   Implement testSet_default().
+	 */
+	public function testSet_default()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_defaults
+	 * @todo   Implement testSet_defaults().
+	 */
+	public function testSet_defaults()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_label
+	 * @todo   Implement testSet_label().
+	 */
+	public function testSet_label()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::set_labels
+	 * @todo   Implement testSet_labels().
+	 */
+	public function testSet_labels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_label
+	 * @todo   Implement testGet_label().
+	 */
+	public function testGet_label()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::label
+	 * @todo   Implement testLabel().
+	 */
+	public function testLabel()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_admin_confirmation_field
+	 * @todo   Implement testAdd_admin_confirmation_field().
+	 */
+	public function testAdd_admin_confirmation_field()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::parse_tables
+	 * @todo   Implement testParse_tables().
+	 */
+	public function testParse_tables()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::validate_order
+	 * @todo   Implement testValidate_order().
+	 */
+	public function testValidate_order()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::order_form
+	 * @todo   Implement testOrder_form().
+	 */
+	public function testOrder_form()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_initial_populate
+	 * @todo   Implement testDisable_initial_populate().
+	 */
+	public function testDisable_initial_populate()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_delete
+	 * @todo   Implement testDisable_delete().
+	 */
+	public function testDisable_delete()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_select_multiple
+	 * @todo   Implement testDisable_select_multiple().
+	 */
+	public function testDisable_select_multiple()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_edit
+	 * @todo   Implement testDisable_edit().
+	 */
+	public function testDisable_edit()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_add
+	 * @todo   Implement testDisable_add().
+	 */
+	public function testDisable_add()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_initial_populate
+	 * @todo   Implement testEnable_initial_populate().
+	 */
+	public function testEnable_initial_populate()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_delete
+	 * @todo   Implement testEnable_delete().
+	 */
+	public function testEnable_delete()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_select_multiple
+	 * @todo   Implement testEnable_select_multiple().
+	 */
+	public function testEnable_select_multiple()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_edit
+	 * @todo   Implement testEnable_edit().
+	 */
+	public function testEnable_edit()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::enable_add
+	 * @todo   Implement testEnable_add().
+	 */
+	public function testEnable_add()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_field
+	 * @todo   Implement testDisable_field().
+	 */
+	public function testDisable_field()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::disable_fields
+	 * @todo   Implement testDisable_fields().
+	 */
+	public function testDisable_fields()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::confirm_order
+	 * @todo   Implement testConfirm_order().
+	 */
+	public function testConfirm_order()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::decorate_query
+	 * @todo   Implement testDecorate_query().
+	 */
+	public function testDecorate_query()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::decorate_field
+	 * @todo   Implement testDecorate_field().
+	 */
+	public function testDecorate_field()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_filter
+	 * @todo   Implement testAdd_filter().
+	 */
+	public function testAdd_filter()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::add_filter_link
+	 * @todo   Implement testAdd_filter_link().
+	 */
+	public function testAdd_filter_link()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::default_filters
+	 * @todo   Implement testDefault_filters().
+	 */
+	public function testDefault_filters()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::get_export_formats
+	 * @todo   Implement testGet_export_formats().
+	 */
+	public function testGet_export_formats()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_xlsx
+	 * @todo   Implement testExport_xlsx().
+	 */
+	public function testExport_xlsx()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_xls
+	 * @todo   Implement testExport_xls().
+	 */
+	public function testExport_xls()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_ods
+	 * @todo   Implement testExport_ods().
+	 */
+	public function testExport_ods()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_pdf
+	 * @todo   Implement testExport_pdf().
+	 */
+	public function testExport_pdf()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_xml
+	 * @todo   Implement testExport_xml().
+	 */
+	public function testExport_xml()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_csv
+	 * @todo   Implement testExport_csv().
+	 */
+	public function testExport_csv()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_json
+	 * @todo   Implement testExport_json().
+	 */
+	public function testExport_json()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_php
+	 * @todo   Implement testExport_php().
+	 */
+	public function testExport_php()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_sql
+	 * @todo   Implement testExport_sql().
+	 */
+	public function testExport_sql()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_markdown
+	 * @todo   Implement testExport_markdown().
+	 */
+	public function testExport_markdown()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_bbcode
+	 * @todo   Implement testExport_bbcode().
+	 */
+	public function testExport_bbcode()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers MyCrud\Crud::export_wiki
+	 * @todo   Implement testExport_wiki().
+	 */
+	public function testExport_wiki()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 }
