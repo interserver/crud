@@ -985,7 +985,7 @@ class Crud
 	 * @return string the sql string to add to the query
 	 */
 	public function search_to_sql() {
-		$search = ['active'];
+		$search = [];
 		$valid_opers = ['=', 'in'];
 		$implode_type = 'and';
 		//$this->log('Search Terms: '.json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
