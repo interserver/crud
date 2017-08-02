@@ -903,6 +903,12 @@ class Crud
 		return $count;
 	}
 
+
+	public function set_order($order_by_field = $this->primary_key, $order_direct = $this->order_dir) {
+		$this->order_by = $order_by;
+		$this->order_dir = $order_direct;
+	}
+
 	/**
 	 * builds up the query and sends it to the sql server to run i.  if there are any search terms
 	 * setup then they are automatically added onto the query as well as current order field, order
