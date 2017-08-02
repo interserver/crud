@@ -907,6 +907,7 @@ class Crud
 	public function set_order($order_by_field = '', $order_direct = '') {
 		$this->order_by = $order_by_field ? $order_by_field : $this->order_by;
 		$this->order_dir = $order_direct ? $order_direct : $this->order_dir;
+		return $this;
 	}
 
 	/**
