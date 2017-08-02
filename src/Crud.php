@@ -74,7 +74,7 @@ class Crud
 	public $stage = 1;
 	public $rows = [];
 	public $page_limits = [10, 25, 50, 100, -1];
-	public $page_limit = 10;
+	public $page_limit = 100;
 	public $page_offset = 0;
 
 

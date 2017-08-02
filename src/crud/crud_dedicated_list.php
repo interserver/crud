@@ -16,6 +16,7 @@ use \MyCrud\Crud;
 function crud_dedicated_list() {
 		Crud::init('select server_id, server_username, server_hostname, server_status from servers', 'servers')
 		->set_title('Dedicated List')
+		->set_order('server_status', 'asc')
 		->enable_labels()
 		->set_labels(['server_id' => 'ID','server_username' => 'Client','server_hostname' =>  'Server Name', 'server_status' => 'Status'], TRUE)
 		->add_title_search_button([['server_status','=','active']], 'Active', 'info')

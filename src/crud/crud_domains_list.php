@@ -19,6 +19,7 @@ function crud_domains_list() {
 	$settings = get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['PREFIX']}_id,{$settings['PREFIX']}_hostname,{$settings['PREFIX']}_cost,{$settings['PREFIX']}_status,{$settings['PREFIX']}_company from {$settings['TABLE']}", $module)
+		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_new_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
