@@ -1295,8 +1295,8 @@ class Crud
 					[Privileges] => select,insert,update,references
 					[Comment] => Account ID
 		)))*/
-		$smarty = new TFSmarty();
-		$table = new TFTable;
+		$smarty = new \TFSmarty();
+		$table = new \TFTable;
 		if ($this->title == FALSE)
 			$table->set_title($this->table.' Records');
 		else
@@ -1918,7 +1918,7 @@ class Crud
 	public function order_form() {
 		$edit_form = '';
 		if ($this->stage == 2) {
-			$table = new TFTable;
+			$table = new \TFTable;
 			$table->hide_table();
 			$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
 			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
@@ -2312,7 +2312,7 @@ class Crud
 	public function confirm_order() {
 		$this->confirm = TRUE;
 		add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
-		$table = new TFTable;
+		$table = new \TFTable;
 		$table->hide_table();
 		$table->set_method('get');
 		$table->set_options('width="500" cellpadding=5');
