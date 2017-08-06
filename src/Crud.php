@@ -152,7 +152,7 @@ class Crud
 		if (isset($this) && $this instanceof self)
 			$crud = &$this;
 		else
-			$crud = new crud();
+			$crud = new self();
 		// @codingStandardsIgnoreEnd
 		$crud->apply_module_info($module);
 		$crud->column_templates[] = ['text' => '<h3>%title%</h3>', 'align' => 'r'];
@@ -477,7 +477,7 @@ class Crud
 			} else {
 				$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 				// send response for js handler
-				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.impode(', ', $error_fields);
+				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.implode(', ', $error_fields);
 			}
 		} else {
 			$this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
@@ -903,7 +903,11 @@ class Crud
 		return $count;
 	}
 
-
+	/**
+	 * @param string $order_by_field
+	 * @param string $order_direct
+	 * @return $this
+	 */
 	public function set_order($order_by_field = '', $order_direct = '') {
 		$this->order_by = $order_by_field ? $order_by_field : $this->order_by;
 		$this->order_dir = $order_direct ? $order_direct : $this->order_dir;
