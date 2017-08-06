@@ -1433,7 +1433,8 @@ class Crud
 						                   $field));
 					$this->add_field($field, $comment, FALSE, [], 'input');
 					$this->tables[$this->query] = $this->queries->Record;
-					$this->tables[$this->query]['Comment'] = $comment;
+					if (isset($this->tables[$this->query]['Comment']))
+						$this->tables[$this->query]['Comment'] = $comment;
 				}
 			}
 		} else {
