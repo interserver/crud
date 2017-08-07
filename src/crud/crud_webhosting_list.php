@@ -22,7 +22,7 @@ function crud_webhosting_list() {
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
 		->enable_labels()
-		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_hostname' => 'Hostname', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_comment' => 'Comments', 'services_name' => 'Package'], TRUE)
+		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_hostname' => 'Hostname', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_comment' => 'Comments', 'services_name' => 'Package'])
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
 //		->set_default_search([[$settings['PREFIX'].'_status','=','active']])
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')

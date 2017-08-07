@@ -23,7 +23,7 @@ function crud_backups_list() {
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
 		->enable_labels()
-		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_username' => 'Username', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', 'services_name' => 'Package'], TRUE)
+		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_username' => 'Username', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', 'services_name' => 'Package'])
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')
