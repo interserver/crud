@@ -31,8 +31,7 @@
  * I do have several table alternate layouts already, I have no plans to setup additional templates
  * until everything else with it is working and getting widely implemented.
  *
- * Last Changed: $LastChangedDate$
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @version $Revision$
  * @copyright 2017
  * @package MyAdmin
