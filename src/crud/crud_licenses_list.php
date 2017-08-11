@@ -5,7 +5,7 @@
  * @author detain
  * @copyright 2017
  * @package MyAdmin
- * @subpackage Licenses
+ * @category Licenses
  */
 use \MyCrud\Crud;
 

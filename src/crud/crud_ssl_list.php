@@ -5,7 +5,7 @@
  * @author detain
  * @copyright 2017
  * @package MyAdmin
- * @subpackage SSL
+ * @category SSL
  */
 use \MyCrud\Crud;
 

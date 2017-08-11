@@ -6,7 +6,7 @@
  * @author detain
  * @copyright 2017
  * @package MyAdmin
- * @subpackage Backups
+ * @category Backups
  */
 use \MyCrud\Crud;
 

@@ -5,7 +5,7 @@
  * @author detain
  * @copyright 2017
  * @package MyAdmin
- * @subpackage VPS
+ * @category VPS
  */
 use \MyCrud\Crud;
 
