@@ -47,7 +47,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MyCrud\\": "src\/"
+            "MyCrud\\": "src/"
         }
     }
 }
