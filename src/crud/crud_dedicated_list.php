@@ -14,11 +14,11 @@ use \MyCrud\Crud;
  * @return void
  */
 function crud_dedicated_list() {
-		Crud::init('select server_id, server_username, server_hostname, server_status from servers', 'servers')
+		Crud::init('select server_id, account_lid, server_hostname, server_status from servers left join accounts on account_id=server_custid', 'servers')
 		->set_title('Dedicated List')
 		->set_order('server_status', 'asc')
 		->enable_labels()
-		->set_labels(['server_id' => 'ID','server_username' => 'Client','server_hostname' =>  'Server Name', 'server_status' => 'Status'])
+		->set_labels(['server_id' => 'ID','account_lid' => 'Client','server_hostname' =>  'Server Name', 'server_status' => 'Status'])
 		->add_title_search_button([['server_status','=','active']], 'Active', 'info')
 		->add_title_search_button([['server_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([['server_status','in',['canceled','expired']]], 'Expired', 'info')

@@ -16,7 +16,7 @@ use \MyCrud\Crud;
 function crud_innertell_pending_orders() {
 		Crud::init('SELECT
 	servers.server_id,
-	server_username,
+	server_custid,
 	server_ccname,
 	server_exp,
 	server_bankname,
