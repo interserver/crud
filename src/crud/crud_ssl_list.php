@@ -15,7 +15,7 @@ use \MyCrud\Crud;
  */
 function crud_ssl_list() {
 	$module = 'ssl';
-	$settings = get_module_settings($module);
+	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')

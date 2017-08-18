@@ -15,7 +15,7 @@ use \MyCrud\Crud;
  */
 function crud_quickservers_list() {
 	$module = 'quickservers';
-	$settings = get_module_settings($module);
+	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['TABLE']}.{$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id", $module)
 		->set_title($settings['TITLE'].' List')
