@@ -76,19 +76,10 @@ class Crud
 	public $page_limits = [10, 25, 50, 100, -1];
 	public $page_limit = 100;
 	public $page_offset = 0;
-
-
-
-
+	public $insert_over_update = FALSE;
 	public $total_pages = 1;
 	public $page_links = NULL;
 	public $total_rows;
-
-
-
-
-
-
 	public $order_by = '';
 	public $order_dir = 'desc';
 	public $all_fields = FALSE;
@@ -145,7 +136,7 @@ class Crud
 	 * @param string $table_or_query the table name or sql query or function to use in the result
 	 * @param string $module optional module to associate w/ this query
 	 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public static function init($table_or_query, $module = 'default', $type = 'sql') {
 		// @codingStandardsIgnoreStart
@@ -292,7 +283,7 @@ class Crud
 	 * starts/displays the crud interface handler
 	 *
 	 * @param string $view optional default view, this defaults to the list view if not specified.  alternatively you can pass 'add' for the add interface
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function go($view = 'list') {
 		if ($this->ajax !== FALSE)
@@ -348,6 +339,8 @@ class Crud
 	public function ajax_edit_handler() {
 		$fields = $_POST;
 		$query_fields = [];
+		$insert_fields = [];
+		$insert_values = [];
 		$query_where = [];
 		$valid = TRUE;
 		$errors = [];
@@ -454,12 +447,17 @@ class Crud
 					$safe_value = $this->db->real_escape($value);
 				else
 					$safe_value = $value;
-				if ($field == $this->primary_key)
+				if ($field == $this->primary_key) {
 					$query_where[] = "{$field}='{$safe_value}'";
-				else {
+					$insert_fields[] = $field;
+					$insert_values[] = "'{$safe_value}'";
+				} else {
 					// see which fields are editable
-					if (!in_array($field, $this->disabled_fields))
+					if (!in_array($field, $this->disabled_fields)) {
 						$query_fields[] = "{$field}='{$safe_value}'";
+						$insert_fields[] = $field;
+						$insert_values[] = "'{$safe_value}'";
+					}
 				}
 			}
 		}
@@ -467,7 +465,11 @@ class Crud
 			//$this->log("Query Table {$query_table} Where " . implode(',', $query_where).' Class Where '.implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
 			$query_where = array_merge($query_where, $this->query_where[$query_table]);
 			// update database
-			$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
+			if ($this->insert_over_update == TRUE) {
+				$query = 'insert into '.$query_table.' ('.implode(', ', $insert_fields).') values ('.implode(', ', $insert_values).' where '.implode(' and ', $query_where);
+			} else {
+				$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
+			}
 			if ($valid == TRUE) {
 				$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
 				//$this->db->query($query, __LINE__, __FILE__);
@@ -1047,7 +1049,7 @@ class Crud
 	 * @param bool|false|string $icon   optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
 	 * @param bool              $title
 	 * @param bool              $ima
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 *                                  an instance of the crud system.
 	 *                                  an instance of the crud system.
 	 */
@@ -1064,7 +1066,7 @@ class Crud
 	 * @param string $label optional text label for the button
 	 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
 	 * @param bool|false|string $icon optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function add_title_search_button($terms, $label = '', $status = 'default', $icon = FALSE) {
 		$this->title_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
@@ -1075,7 +1077,7 @@ class Crud
 	 * adds additional parameters to the URL string used by the various ajax requests
 	 *
 	 * @param string $args additional string to add to the urls in the form of like  '&who=detain&what=rocks'
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_extra_url_args($args) {
 		$this->extra_url_args = $args;
@@ -1086,7 +1088,7 @@ class Crud
 	 * sets the interval in which the list of records will automatically update itself
 	 *
 	 * @param bool|false|int $auto_update FALSE to disable, or frequency in seconds to update the list of records automatically
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_auto_update($auto_update = FALSE) {
 		$this->auto_update = $auto_update;
@@ -1096,7 +1098,7 @@ class Crud
 	/**
 	 * enables the fluid table view which is a 100% wide table
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_fluid_container() {
 		$this->fluid_container = TRUE;
@@ -1106,7 +1108,7 @@ class Crud
 	/**
 	 * disables the fluid table view which is a 100% wide table
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_fluid_container() {
 		$this->fluid_container = TRUE;
@@ -1116,7 +1118,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_refresh_button() {
 		$this->refresh_button = TRUE;
@@ -1126,7 +1128,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_refresh_button() {
 		$this->refresh_button = TRUE;
@@ -1136,7 +1138,7 @@ class Crud
 	/**
 	 * enables the labels over field comment
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_labels() {
 		$this->use_labels = TRUE;
@@ -1146,7 +1148,7 @@ class Crud
 	/**
 	 * disables the labels over field comment
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_labels() {
 		$this->use_labels = TRUE;
@@ -1156,7 +1158,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_export_button() {
 		$this->export_button = TRUE;
@@ -1166,7 +1168,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_export_button() {
 		$this->export_button = TRUE;
@@ -1176,7 +1178,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_print_button() {
 		$this->print_button = TRUE;
@@ -1186,7 +1188,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_print_button() {
 		$this->print_button = TRUE;
@@ -1201,7 +1203,7 @@ class Crud
 	 * @param string $level
 	 * @param string $icon
 	 * @param string $page
-	 * @return \MyCrud\Crud
+	 * @return MyCrud\Crud
 	 * @internal param string $button the html for the button to add
 	 */
 	public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
@@ -1493,7 +1495,7 @@ class Crud
 	 * sets the title for the crud page setting both the web page title and the table title
 	 *
 	 * @param bool|string $title text of the title
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_title($title = FALSE) {
 		if ($title === FALSE) {
@@ -1565,7 +1567,7 @@ class Crud
 	 * @param mixed $validations validations to apply
 	 * @param bool|string $input_type type of input
 	 * @param mixed $input_data data to use forpopulating the input type
-	 * @return \MyCrud\Crud
+	 * @return MyCrud\Crud
 	 */
 	public function add_field($field, $label = FALSE, $default = FALSE, $validations = FALSE, $input_type = FALSE, $input_data = FALSE) {
 		if (!in_array($field, $this->fields))
@@ -2194,7 +2196,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_delete() {
 		$this->delete_row = FALSE;
@@ -2204,7 +2206,7 @@ class Crud
 	/**
 	 * disables the checkboxes to the left of the rows for bulk actions
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_select_multiple() {
 		$this->select_multiple = FALSE;
@@ -2214,7 +2216,7 @@ class Crud
 	/**
 	 * disables the edit button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_edit() {
 		$this->edit_row = FALSE;
@@ -2224,7 +2226,7 @@ class Crud
 	/**
 	 * disables the add record button
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_add() {
 		$this->add_row = FALSE;
@@ -2234,7 +2236,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_initial_populate() {
 		$this->initial_populate = TRUE;
@@ -2244,7 +2246,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_delete() {
 		$this->delete_row = TRUE;
@@ -2254,7 +2256,7 @@ class Crud
 	/**
 	 * enables the checkboxes to the left of the rows for bulk actions
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_select_multiple() {
 		$this->select_multiple = TRUE;
@@ -2264,7 +2266,7 @@ class Crud
 	/**
 	 * enables the edit button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_edit() {
 		$this->edit_row = TRUE;
@@ -2274,7 +2276,7 @@ class Crud
 	/**
 	 * enables the add record button
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_add() {
 		$this->add_row = TRUE;
@@ -2285,7 +2287,7 @@ class Crud
 	 * disables a field from being edited
 	 *
 	 * @param string $field field name
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_field($field) {
 		if (!in_array($field, $this->disabled_fields))
@@ -2297,11 +2299,22 @@ class Crud
 	 * disables an array of fields from the edit function
 	 *
 	 * @param array $fields an array of fields
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_fields($fields) {
 		foreach ($fields as $field)
 			$this->disable_field($field);
+		return $this;
+	}
+
+	/**
+	 * enables using insert over update
+	 *
+	 * @param bool $enable defaults to true
+	 * @return MyCrud\Crud an instance of the crud system.
+	 */
+	public function set_insert_over_update($enable = TRUE) {
+		$this->insert_over_update = $enable;
 		return $this;
 	}
 
