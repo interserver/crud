@@ -41,9 +41,10 @@
  * @TODO Add order summary includable by login page
  */
 namespace MyCrud;
-use \sqlparser;
-use \TFSmarty;
-use \TFTable;
+use sqlparser;
+use TFSmarty;
+use TFTable;
+use MyCrud\CrudFunctionIterator;
 
 /**
  * Class Crud
@@ -847,8 +848,8 @@ class Crud
 		while ($db->next_record(MYSQL_ASSOC)) {
 			if ($db->Record['Comment'] == '')
 				$db->Record['Comment'] = ucwords(str_replace(
-					                                 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-					                                 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+													 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+													 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
 					$db->Record['Field']));
 			if (preg_match('/_custid$/m', $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
@@ -1355,7 +1356,7 @@ class Crud
 			'canceled' => 'warning',
 			'expired' => 'danger',
 			'terminated' => 'danger'
-		                                  ]
+										  ]
 		);
 		$table->set_template_dir('/templates/crud/');
 		//$table->set_filename('crud/table.tpl');
@@ -1431,9 +1432,9 @@ class Crud
 				//$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
 				foreach ($this->queries->Record as $field => $value) {
 					$comment = ucwords(str_replace(
-						                   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-						                   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
-						                   $field));
+										   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+										   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+										   $field));
 					$this->add_field($field, $comment, FALSE, [], 'input');
 					$this->tables[$this->query] = $this->queries->Record;
 					if (isset($this->tables[$this->query]['Comment']))
@@ -1660,11 +1661,11 @@ class Crud
 			return $this->labels[$field];
 		} else {
 			return ucwords(str_replace(
-				               [
+							   [
 				'_'
-				               ], [
+							   ], [
 				' '
-			                           ], $field));
+									   ], $field));
 		}
 	}
 
@@ -1956,7 +1957,7 @@ class Crud
 								break;
 							case 'select_multiple':
 							case 'select':
-								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 								break;
 							case 'raw':
 								$fieldText = $data;
@@ -2090,13 +2091,13 @@ class Crud
 							break;
 						case 'select_multiple':
 						case 'select':
-							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
+	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -2357,7 +2358,7 @@ class Crud
 				switch ($data['type']) {
 					case 'select_multiple':
 					case 'select':
-						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
+						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
 						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$table->add_field($fieldText, 'l');
 						$table->add_row();
@@ -2384,7 +2385,7 @@ class Crud
 			'pend_custid' => $this->custid,
 			'pend_data' => myadmin_stringify($this->set_vars)
 		]
-		                 ), __LINE__, __FILE__);
+						 ), __LINE__, __FILE__);
 		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
 		$this->continue = FALSE;
 	}
@@ -2830,59 +2831,6 @@ class Crud
 		}
 		echo "|}\n";
 		return $return;
-	}
-
-}
-
-
-/**
- *Crud class to handle iterating over the output of a local function and give an interface similar to the db class
- */
-Class CrudFunctionIterator {
-	public $function;
-	public $result;
-	public $size;
-	public $idx = -1;
-	public $ran = FALSE;
-	public $Record;
-	public $keys;
-
-	/**
-	 * CrudFunctionIterator constructor.
-	 *
-	 * @param $function
-	 */
-	public function __construct($function) {
-		$this->function = $function;
-	}
-
-	/**
-	 * runs the function and grabs the output from it applying it usually
-	 *
-	 * @return void
-	 */
-	public function run() {
-		function_requirements($this->function);
-		$this->result = call_user_func($this->function);
-		$this->ran = TRUE;
-		$this->size = count($this->result);
-		$this->keys = array_keys($this->result);
-	}
-
-	/**
-	 * grabs the next record in the current row if there is one.
-	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
-	 * @return bool whether it was able to get an array or not
-	 */
-	 public function next_record($result_type) {
-		if ($this->ran == FALSE)
-			$this->run();
-		$this->idx++;
-		if ($this->idx >= $this->size)
-			return FALSE;
-		$this->Record = $this->result[$this->keys[$this->idx]];
-		return is_array($this->Record);
 	}
 
 }
