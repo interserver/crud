@@ -471,11 +471,11 @@ class Crud
 				$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
 			}
 			if ($valid == TRUE) {
-				$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
-				//$this->db->query($query, __LINE__, __FILE__);
+				//$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
+				$this->db->query($query, __LINE__, __FILE__);
 				// send response for js handler
 				echo 'ok';
-				echo "<br>validation successful<br>i want to run query<div class='well'>{$query}</div>";
+				echo "<br>updated<br>ran query<div class='well'>{$query}</div>";
 			} else {
 				$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 				// send response for js handler
