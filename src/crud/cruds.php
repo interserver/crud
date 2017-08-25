@@ -20,7 +20,7 @@ function get_crud_tables() {
 	foreach (['domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns'] as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {
 			$dbh = $GLOBALS[$module.'_dbh'];
-			$dbName = $dbh->Database;
+			$dbName = $dbh->database;
 			$return['modules'][$module] = $dbh;
 			$return['tables'][$module] = [];
 			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
@@ -192,7 +192,7 @@ function cruds() {
 	$rows = [];
 	foreach ($all_tables['tables'] as $module => $tables) {
 		$dbh = $all_tables['modules'][$module];
-		$dbName = $dbh->Database;
+		$dbName = $dbh->database;
 		$level = $levels[$idx];
 		$size = count($tables);
 		$key[] = "<span class='pull-right label label-{$level}'>{$dbName} ({$size})</span>";

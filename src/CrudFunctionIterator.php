@@ -45,10 +45,10 @@ Class CrudFunctionIterator {
 	/**
 	 * grabs the next record in the current row if there is one.
 	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
+	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return bool whether it was able to get an array or not
 	 */
-	 public function next_record($result_type) {
+	 public function next_record($resultType) {
 		if ($this->ran == FALSE)
 			$this->run();
 		$this->idx++;

@@ -559,13 +559,13 @@ class Crud
 	/**
 	 * runs through all the query rows and builds up an array for use with other functions like export
 	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
+	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return void
 	 */
-	public function get_all_rows($result_type = MYSQL_ASSOC) {
+	public function get_all_rows($resultType = MYSQL_ASSOC) {
 		$this->run_list_query();
 		$this->rows = [];
-		while ($this->next_record($result_type)) {
+		while ($this->next_record($resultType)) {
 			$this->rows[] = $this->get_record();
 		}
 	}
@@ -1420,16 +1420,16 @@ class Crud
 	/**
 	 * goes to the next record in the result set
 	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
+	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return bool returns TRUE if it was able to get a record and we have an array result, otherwise returns FALSE
 	 */
-	public function next_record($result_type) {
+	public function next_record($resultType) {
 		if ($this->type == 'function') {
 			if (!isset($this->tables[$this->query]))
 				$this->tables[$this->query] = [];
 			//$this->log('ran is '.var_export($this->queries->ran, TRUE), __LINE__, __FILE__, 'debug');
 			$ran = $this->queries->ran;
-			$return = $this->queries->next_record($result_type);
+			$return = $this->queries->next_record($resultType);
 			if ($ran == FALSE) {
 				//$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
 				foreach ($this->queries->Record as $field => $value) {
@@ -1444,7 +1444,7 @@ class Crud
 				}
 			}
 		} else {
-			$return = $this->db->next_record($result_type);
+			$return = $this->db->next_record($resultType);
 			//$this->log(json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
 		}
 		return $return;
