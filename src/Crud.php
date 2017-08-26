@@ -2178,7 +2178,7 @@ class Crud
 			$table->set_method('get');
 			add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
-			$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
+			$GLOBALS['tf']->add_html_head_js_file('js/customSelect/jquery.customSelect.min.js');
 			*/
 		}
 		return $edit_form;
