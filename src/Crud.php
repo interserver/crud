@@ -2041,7 +2041,7 @@ class Crud
 			$table->add_field($table->make_submit('Continue'));
 			$table->add_row();
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
+			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		} else {
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->input_types[$field])) {
@@ -2177,7 +2177,7 @@ class Crud
 			$table->add_row();
 			$table->set_method('get');
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
+			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 			$GLOBALS['tf']->add_html_head_js_file('js/customSelect/jquery.customSelect.min.js');
 			*/
 		}
@@ -2399,7 +2399,7 @@ class Crud
 			'pend_data' => myadmin_stringify($this->set_vars)
 		]
 						 ), __LINE__, __FILE__);
-		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
+		//				$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		$this->continue = FALSE;
 	}
 
