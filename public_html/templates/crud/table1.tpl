@@ -6,7 +6,7 @@
 				<thead class=">
 {if isset($title)}
 					<tr>
-						<th style="text-align:center;" colspan={$titcolspan}>
+						<th style="text-align: center;" colspan={$titcolspan}>
 							{$title}
 						</th>
 					</tr>
