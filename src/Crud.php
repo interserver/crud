@@ -276,7 +276,7 @@ class Crud
 	public function add_js_headers() {
 		add_js('bootstrap');
 		add_js('font-awesome');
-		$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
+		$GLOBALS['tf']->add_html_head_js_file('/js/crud.js');
 	}
 
 	/**
