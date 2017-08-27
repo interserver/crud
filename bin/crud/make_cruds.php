@@ -19,7 +19,7 @@ foreach ($files as $filepath) {
 <span class='label label-info'>{$func}</span> - {$title}</a>";
 	file_put_contents(INCLUDE_ROOT.'/crud/crud_'.$func.'.php', '<'.'?'."php
 function crud_{$func}() {
-	require_once(INCLUDE_ROOT.'/rendering/class.crud.php');
+	require_once(INCLUDE_ROOT.'/Renderingclass.crud.php');
 	\$crud = crud::init(\"{$query}\"" . (in_array($data['module'], ['innertell', 'mb', 'powerdns']) ? ", '{$data['module']}'" : '') . ")
 		->set_title(\"{$title}\")
 		->go();
