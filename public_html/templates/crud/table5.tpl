@@ -22,7 +22,7 @@
 		<div class="col-md-12">
 
 		{if $refresh_button == true}
-			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-5x"></i></div>
+			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
 {/if}
 			<div class="table-responsive">
 				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
