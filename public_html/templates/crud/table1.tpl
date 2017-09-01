@@ -38,9 +38,9 @@
 						</td>
 {/section}
 						<td>
-							<a href="#" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> View</a>&nbsp;
-							<a class="btn btn-info btn-xs" href="#"><span class="glyphicon glyphicon-edit"></span> Edit</a>&nbsp;
-							<a href="#" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Delete</a>
+							<a href="#" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> {t}View{/t}</a>&nbsp;
+							<a class="btn btn-info btn-xs" href="#"><span class="glyphicon glyphicon-edit"></span> {t}Edit{/t}</a>&nbsp;
+							<a href="#" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> {t}Delete{/t}</a>
 						</td>
 					</tr>
 {/section}

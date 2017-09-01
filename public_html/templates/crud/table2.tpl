@@ -10,13 +10,13 @@
 					</a>
 					<div class="btn-group pull-right">
 						<a href="#" class="btn btn-primary">
-							<i class="fa fa-info"></i><span> Info</span>
+							<i class="fa fa-info"></i><span> {t}Info{/t}</span>
 						</a>
 						<a href="#" class="btn btn-warning">
-							<i class="fa fa-pencil"></i><span> Edit</span>
+							<i class="fa fa-pencil"></i><span> {t}Edit{/t}</span>
 						</a>
 						<a href="#" class="btn btn-danger">
-							<i class="fa fa-times"></i><span> Remove</span>
+							<i class="fa fa-times"></i><span> {t}Remove{/t}</span>
 						</a>
 					</div>
 				</h4>
@@ -35,7 +35,7 @@
 					</p>
 				</div>
 				<div class="panel-footer">
-					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> Add reputation</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> Decrease reputation</a></div>
+					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> {t}Add reputation{/t}</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> {t}Decrease reputation{/t}</a></div>
 				</div>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 					<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-3" aria-expanded="false"><img src="//lorempixel.com/128/128/people/?3" class="img-circle">
 						Michael Jackson <small>(mijacksn)</small>
 					</a>
-					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
+					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> {t}Info{/t}</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> {t}Edit{/t}</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> {t}Remove{/t}</span></a></div>
 				</h4>
 			</div>
 			<div id="collapse-3" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
@@ -63,7 +63,7 @@
 					</p>
 				</div>
 				<div class="panel-footer">
-					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> Add reputation</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> Decrease reputation</a></div>
+					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> {t}Add reputation{/t}</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> {t}Decrease reputation{/t}</a></div>
 				</div>
 			</div>
 		</div>
@@ -73,7 +73,7 @@
 					<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-4" aria-expanded="false"><img src="//lorempixel.com/128/128/people/?4" class="img-circle">
 						Alexis Foobar <small>(afoobar)</small>
 					</a>
-					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
+					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> {t}Info{/t}</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> {t}Edit{/t}</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> {t}Remove{/t}</span></a></div>
 				</h4>
 			</div>
 			<div id="collapse-4" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
@@ -90,7 +90,7 @@
 					</p>
 				</div>
 				<div class="panel-footer">
-					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> Add reputation</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> Decrease reputation</a></div>
+					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> {t}Add reputation{/t}</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> {t}Decrease reputation{/t}</a></div>
 				</div>
 			</div>
 		</div>
@@ -100,7 +100,7 @@
 					<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-5" aria-expanded="false"><img src="//lorempixel.com/128/128/people/?5" class="img-circle">
 						John Doe <small>(johndoe)</small>
 					</a>
-					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> Info</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> Edit</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> Remove</span></a></div>
+					<div class="btn-group pull-right"><a href="#" class="btn btn-primary"><i class="fa fa-info"></i><span> {t}Info{/t}</span></a><a href="#" class="btn btn-warning"><i class="fa fa-pencil"></i><span> {t}Edit{/t}</span></a><a href="#" class="btn btn-danger"><i class="fa fa-times"></i><span> {t}Remove{/t}</span></a></div>
 				</h4>
 			</div>
 			<div id="collapse-5" class="panel-collapse collapse" aria-expanded="false" style="height: 0;">
@@ -117,7 +117,7 @@
 					</p>
 				</div>
 				<div class="panel-footer">
-					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> Add reputation</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> Decrease reputation</a></div>
+					<div class="btn-group btn-group-xs"><span class="btn">Actions: </span><a class="btn btn-success" href="#"><i class="fa fa-thumbs-up"></i> {t}Add reputation{/t}</a> <a class="btn btn-danger" href="#"><i class="fa fa-thumbs-down"></i> {t}Decrease reputation{/t}</a></div>
 				</div>
 			</div>
 		</div>

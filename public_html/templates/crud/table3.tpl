@@ -34,9 +34,9 @@
 								<span class="glyphicon glyphicon-list"></span>
 							</button>
 							<ul class="dropdown-menu slidedown">
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span>Edit</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-trash"></span>Delete</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-flag"></span>Flag</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span>{t}Edit{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-trash"></span>{t}Delete{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-flag"></span>{t}Flag{/t}</a></li>
 							</ul>
 						</div>
 					</div>
@@ -115,16 +115,16 @@
 					<div class="row">
 						<div class="col-md-6">
 							<h6>
-								Total Count <span class="label label-info">25</span></h6>
+								Total Count <span class="label label-info">{t}25{/t}</span></h6>
 						</div>
 						<div class="col-md-6">
 							<ul class="pagination pagination-sm pull-right">
 								<li class="disabled"><a href="javascript:void(0)">«</a></li>
 								<li class="active"><a href="javascript:void(0)">1 <span class="sr-only">(current)</span></a></li>
-								<li><a href="//www.interserver.net">2</a></li>
-								<li><a href="//www.interserver.net">3</a></li>
-								<li><a href="//www.interserver.net">4</a></li>
-								<li><a href="//www.interserver.net">5</a></li>
+								<li><a href="//www.interserver.net">{t}2{/t}</a></li>
+								<li><a href="//www.interserver.net">{t}3{/t}</a></li>
+								<li><a href="//www.interserver.net">{t}4{/t}</a></li>
+								<li><a href="//www.interserver.net">{t}5{/t}</a></li>
 								<li><a href="javascript:void(0)">»</a></li>
 							</ul>
 						</div>
