@@ -392,14 +392,12 @@ class Crud
 								}
 								break;
 							case 'trim':
-								if (isset($value)) {
+								if (isset($value))
 									$value = trim($value);
-								}
 								break;
 							case 'lower':
-								if (isset($value)) {
+								if (isset($value))
 									$value = strtolower($value);
-								}
 								break;
 							case 'in_array':
 								if (isset($value)) {
@@ -565,9 +563,8 @@ class Crud
 	public function get_all_rows($resultType = MYSQL_ASSOC) {
 		$this->run_list_query();
 		$this->rows = [];
-		while ($this->next_record($resultType)) {
+		while ($this->next_record($resultType))
 			$this->rows[] = $this->get_record();
-		}
 	}
 
 	/**
@@ -579,9 +576,8 @@ class Crud
 		// apply sorting
 		$this->run_list_query();
 		$json = [];
-		while ($this->db->next_record(MYSQL_ASSOC)) {
+		while ($this->db->next_record(MYSQL_ASSOC))
 			$json[] = $this->db->Record;
-		}
 		// send response for js handler
 		header('Content-type: application/json');
 		echo json_encode($json);
@@ -628,19 +624,16 @@ class Crud
 	public function join_handler($table, $joinArray) {
 			$condition_type = $joinArray->getType();					// AND, =
 			if ($condition_type == 'AND') {
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == 'EXPR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == 'OR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == '=') {
 				//echo print_r($memberArray,true)."<br>";
 				//echo "Type:$type<br>";
@@ -1017,9 +1010,8 @@ class Crud
 					//$this->log("Searching All Fields", __LINE__, __FILE__);
 					foreach ($this->tables as $table => $fields) {
 						foreach ($fields as $field_name => $field_data)
-						if (in_array($field_name, $this->fields)) {
+						if (in_array($field_name, $this->fields))
 							$search[] = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
-						}
 					}
 					$implode_type = 'or';
 				}
@@ -1270,9 +1262,8 @@ class Crud
 		if ($first < 2)
 			$first = 2;
 		for ($x = 0; $x < 4; $x++) {
-			if (!in_array($first + $x, $page_links) && $first + $x < $total_pages) {
+			if (!in_array($first + $x, $page_links) && $first + $x < $total_pages)
 				$page_links[] = $first + $x;
-			}
 		}
 		if (!in_array($total_pages, $page_links))
 			$page_links[] = $total_pages;
@@ -1498,9 +1489,8 @@ class Crud
 	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_title($title = FALSE) {
-		if ($title === FALSE) {
+		if ($title === FALSE)
 			$title = 'View '.$this->settings['TITLE'];
-		}
 		$this->title = $title;
 		return $this;
 	}
@@ -1512,9 +1502,8 @@ class Crud
 	 * @param array $validations an array of validations to apply
 	 */
 	public function add_field_validations($field, $validations) {
-		if (!isset($this->validations[$field])) {
+		if (!isset($this->validations[$field]))
 			$this->validations[$field] = [];
-		}
 		foreach ($validations as $validation)
 			if (!in_array($validation, $this->validations[$field]))
 				$this->validations[$field] = array_merge($this->validations[$field], $validations);
@@ -1526,9 +1515,8 @@ class Crud
 	 * @param array $validations an array with each element containing a $field => $validations  where $validations is an array of validations to apply and $field is the field name
 	 */
 	public function add_validations($validations) {
-		foreach ($validations as $field => $field_validations) {
+		foreach ($validations as $field => $field_validations)
 			$this->add_field_validations($field, $field_validations);
-		}
 	}
 
 	/**
@@ -1542,9 +1530,8 @@ class Crud
 		//echo "Got here $field $input_type <pre>" . print_r($data, TRUE) . "</pre><br>\n";
 		// FIXME get in_array working properly / add validations based on this
 		$this->input_types[$field] = [$input_type, $data];
-		if (in_array($this->input_types[$field][0], ['select', 'select_multiple'])) {
+		if (in_array($this->input_types[$field][0], ['select', 'select_multiple']))
 			$this->add_field_validations($field, ['in_array' => $this->input_types[$field][1]['values']]);
-		}
 	}
 
 	/**
@@ -1553,9 +1540,8 @@ class Crud
 	 * @param mixed $fields
 	 */
 	public function add_input_type_fields($fields) {
-		foreach ($fields as $field => $data) {
+		foreach ($fields as $field => $data)
 			$this->input_types[$field] = $data;
-		}
 	}
 
 	/**
@@ -1589,9 +1575,8 @@ class Crud
 	 * @param array $fields an array of fields to add
 	 */
 	public function add_fields($fields) {
-		foreach ($fields as $field) {
+		foreach ($fields as $field)
 			$this->add_field($field);
-		}
 	}
 
 	/**
@@ -1705,9 +1690,8 @@ class Crud
 					switch ($type) {
 						case 'enum':
 							if (isset($matches['types']) && $matches['types'] != '') {
-								if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types)) {
+								if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types))
 									$types = $types['types'];
-								}
 							}
 							$input_type = 'select';
 							$validations[] = ['in_array' => $types];
@@ -1842,9 +1826,8 @@ class Crud
 		$this->continue = TRUE;
 		$anything_set = FALSE;
 		foreach ($this->fields as $idx => $field) {
-			if (isset($this->defaults[$field])) {
+			if (isset($this->defaults[$field]))
 				$this->values[$field] = $this->defaults[$field];
-			}
 			if (isset($this->request[$field])) {
 				$this->values[$field] = $this->request[$field];
 				$this->set_vars[$field] = $this->values[$field];
@@ -1875,14 +1858,12 @@ class Crud
 								}
 								break;
 							case 'trim':
-								if (isset($this->values[$field])) {
+								if (isset($this->values[$field]))
 									$this->values[$field] = trim($this->values[$field]);
-								}
 								break;
 							case 'lower':
-								if (isset($this->values[$field])) {
+								if (isset($this->values[$field]))
 									$this->values[$field] = strtolower($this->values[$field]);
-								}
 								break;
 							case 'in_array':
 								if (isset($this->values[$field]) && !in_array($this->values[$field], $this->labels[$field])) {
@@ -1906,9 +1887,8 @@ class Crud
 				}
 			}
 		}
-		if ($anything_set === FALSE) {
+		if ($anything_set === FALSE)
 			$this->continue = FALSE;
-		}
 		if ($this->continue == TRUE && !verify_csrf('crud_order_form'))
 			$this->continue = FALSE;
 	}
@@ -1930,9 +1910,8 @@ class Crud
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->set_vars[$field]) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
 					$value = $this->values[$field];
-					if (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value])) {
+					if (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value]))
 						$value = $this->labels[$field.'_a'][$value];
-					}
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
 						switch ($input_type) {
@@ -1981,28 +1960,24 @@ class Crud
 								if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
 									if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
 										$text = $this->column_templates[$x]['fields'][$field]['text'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-										}
 									}
 									if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
 										$align = $this->column_templates[$x]['fields'][$field]['align'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-										}
 									}
 								} else {
 									if (isset($this->column_templates[$x]['text'])) {
 										$text = $this->column_templates[$x]['text'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-										}
 									}
 									if (isset($this->column_templates[$x]['align'])) {
 										$align = $this->column_templates[$x]['align'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-										}
 									}
 								}
 							}
@@ -2015,9 +1990,8 @@ class Crud
 								//var_dump($fieldText);
 								//echo "<br>";
 							}
-							if (!isset($fieldText)) {
+							if (!isset($fieldText))
 								$this->log("field $field Field Text: " . print_r($fieldText, TRUE), __LINE__, __FILE__, 'debug');
-							}
 							$text = str_replace(array('%title%','%field%'), array($label, $fieldText), $text);
 							$table->add_field($text, $align);
 							$table_pos++;
@@ -2124,28 +2098,24 @@ class Crud
 							if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
 								if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
 									$text = $this->column_templates[$x]['fields'][$field]['text'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-									}
 								}
 								if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
 									$align = $this->column_templates[$x]['fields'][$field]['align'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-									}
 								}
 							} else {
 								if (isset($this->column_templates[$x]['text'])) {
 									$text = $this->column_templates[$x]['text'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-									}
 								}
 								if (isset($this->column_templates[$x]['align'])) {
 									$align = $this->column_templates[$x]['align'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-									}
 								}
 							}
 						}
@@ -2158,9 +2128,8 @@ class Crud
 							//var_dump($fieldText);
 							//echo "<br>";
 						}
-						if (!isset($fieldText)) {
+						if (!isset($fieldText))
 							$this->log("field $field Field Text: " . print_r($fieldText, TRUE), __LINE__, __FILE__, 'debug');
-						}
 						$text = str_replace(array('%title%','%field%'), array($label, $fieldText), $text);
 						$table->add_field($text, $align);
 					}
@@ -2331,9 +2300,8 @@ class Crud
 		$table->set_options('width="500" cellpadding=5');
 		$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
 		$table->set_title($this->settings['TITLE'].' Order Summary');
-		if ($this->admin == TRUE && $this->limit_custid == TRUE) {
+		if ($this->admin == TRUE && $this->limit_custid == TRUE)
 			$table->add_hidden('custid', $this->custid);
-		}
 		$table->add_hidden('module', $this->module);
 		$table->add_hidden('pp_token', '');
 		$table->add_hidden('pp_payerid', '');
@@ -2363,9 +2331,8 @@ class Crud
 				$table->add_row();
 			}
 		}
-		if (SESSION_COOKIES == FALSE) {
+		if (SESSION_COOKIES == FALSE)
 			$this->returnURL .= '&sessionid='.urlencode($GLOBALS['tf']->session->sessionid);
-		}
 		if ($this->admin == TRUE) {
 			foreach ($this->admin_confirm_fields as $field => $data) {
 				switch ($data['type']) {
