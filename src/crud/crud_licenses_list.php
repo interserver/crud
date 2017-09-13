@@ -22,6 +22,7 @@ function crud_licenses_list() {
 		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_ip, services_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_status, invoices_paid, invoices_date from {$settings['TABLE']} left join invoices on invoices_extra={$settings['PREFIX']}_invoice and invoices_id=(select max(invoices_id) from invoices where invoices_type=1 and  invoices_extra={$settings['PREFIX']}_invoice) left join services on services_id={$settings['PREFIX']}_type", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
+		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX'].'3'), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')

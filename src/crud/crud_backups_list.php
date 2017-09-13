@@ -24,6 +24,7 @@ function crud_backups_list() {
 		->set_title($settings['TITLE'].' List')
 		->enable_labels()
 		->set_labels([$settings['PREFIX'].'_id' => 'ID',$settings['PREFIX'].'_username' => 'Username', $settings['PREFIX'].'_cost' => 'Cost', $settings['PREFIX'].'_status' => 'Status', $settings['PREFIX'].'_name' => 'Server', 'services_name' => 'Package'], TRUE)
+		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')

@@ -122,9 +122,10 @@
 			</div>
 		</div>
 	</div>
-{if $total_pages > 1}
+
 	<div class="row">
 		<form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
+		{if $total_pages > 1}
 		<div class="col-md-12 crud-nav-bar">
 			<div class="nav-crud">
 				<ul class="pagination">
@@ -193,10 +194,11 @@
 {/if}
 			</div>
 		</div>
+		{/if}
 		</form>
 	</div>
 </div>
-{/if}
+
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
