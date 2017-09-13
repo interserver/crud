@@ -34,9 +34,9 @@
 								<span class="glyphicon glyphicon-list"></span>
 							</button>
 							<ul class="dropdown-menu slidedown">
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span>Edit</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-trash"></span>Delete</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-flag"></span>Flag</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span>{t}Edit{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-trash"></span>{t}Delete{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-flag"></span>{t}Flag{/t}</a></li>
 							</ul>
 						</div>
 					</div>

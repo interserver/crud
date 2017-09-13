@@ -1,11 +1,10 @@
 <?php
 /**
  * QuickServers List
- * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
- * @subpackage QuickServers
+ * @category QuickServers
  */
 use \MyCrud\Crud;
 
@@ -16,7 +15,7 @@ use \MyCrud\Crud;
  */
 function crud_quickservers_list() {
 	$module = 'quickservers';
-	$settings = get_module_settings($module);
+	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['TABLE']}.{$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id", $module)
 		->set_title($settings['TITLE'].' List')

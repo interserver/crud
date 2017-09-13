@@ -1,8 +1,7 @@
 <?php
 /**
  * CRUD System
- * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
  * @category Admin
@@ -21,7 +20,7 @@ function get_crud_tables() {
 	foreach (['domains', 'helpdesk', 'admin', 'mb', 'innertell', 'pdns'] as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {
 			$dbh = $GLOBALS[$module.'_dbh'];
-			$dbName = $dbh->Database;
+			$dbName = $dbh->database;
 			$return['modules'][$module] = $dbh;
 			$return['tables'][$module] = [];
 			$dbh->query("show full tables where Table_Type='BASE TABLE'", __LINE__, __FILE__);
@@ -193,7 +192,7 @@ function cruds() {
 	$rows = [];
 	foreach ($all_tables['tables'] as $module => $tables) {
 		$dbh = $all_tables['modules'][$module];
-		$dbName = $dbh->Database;
+		$dbName = $dbh->database;
 		$level = $levels[$idx];
 		$size = count($tables);
 		$key[] = "<span class='pull-right label label-{$level}'>{$dbName} ({$size})</span>";

@@ -1,8 +1,7 @@
 <?php
 /**
  * CRUD System
- * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
  * @category Admin
@@ -16,7 +15,7 @@ use \MyCrud\Crud;
 function crud_innertell_pending_orders() {
 		Crud::init('SELECT
 	servers.server_id,
-	server_username,
+	server_custid,
 	server_ccname,
 	server_exp,
 	server_bankname,

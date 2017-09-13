@@ -1,11 +1,10 @@
 <?php
 /**
  * Domains List
- * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
- * @subpackage Domains
+ * @category Domains
  */
 use \MyCrud\Crud;
 
@@ -16,7 +15,7 @@ use \MyCrud\Crud;
  */
 function crud_domains_list() {
 	$module = 'domains';
-	$settings = get_module_settings($module);
+	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['PREFIX']}_id,{$settings['PREFIX']}_hostname,{$settings['PREFIX']}_cost,{$settings['PREFIX']}_status,{$settings['PREFIX']}_company from {$settings['TABLE']}", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')

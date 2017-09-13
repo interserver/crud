@@ -37,7 +37,7 @@
 				<h3 class="panel-title">{$title}</h3>
 {/if}
 				<div class="pull-right">
-					<button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+					<button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> {t}Filter{/t}</button>
 				</div>
 			</div>
 			<table class="table table-hover">
@@ -122,7 +122,7 @@
 			$filteredRows.hide();
 			/* Prepend no-result row if all rows are filtered */
 			if ($filteredRows.length === $rows.length) {
-				$table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+				$table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">{t}No result found{/t}</td></tr>'));
 			}
 		});
 	});

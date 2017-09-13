@@ -1,5 +1,5 @@
 {
-    "name": "detain\/crud",
+    "name": "detain/crud",
     "type": "library",
     "description": "Advanced CRUD Class",
     "keywords": [
@@ -34,20 +34,20 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "crodas\/sql-parser": "^0.1.5",
-        "detain\/db_abstraction": ">=1.0.0",
-        "roave\/security-advisories": "dev-master"
+        "crodas/sql-parser": "^0.1.5",
+        "detain/db_abstraction": ">=1.0.0",
+        "roave/security-advisories": "dev-master"
     },
     "require-dev": {
-        "phpunit\/phpunit": "*",
-        "vlucas\/phpdotenv": "*",
-        "codeclimate\/php-test-reporter": "dev-master",
-        "satooshi\/php-coveralls": "*",
-        "codacy\/coverage": "dev-master"
+        "phpunit/phpunit": "*",
+        "vlucas/phpdotenv": "*",
+        "codeclimate/php-test-reporter": "dev-master",
+        "satooshi/php-coveralls": "*",
+        "codacy/coverage": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "MyCrud\\": "src\/"
+            "MyCrud\\": "src/"
         }
     }
 }

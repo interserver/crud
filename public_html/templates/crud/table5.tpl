@@ -22,7 +22,7 @@
 		<div class="col-md-12">
 
 		{if $refresh_button == true}
-			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-5x"></i></div>
+			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
 {/if}
 			<div class="table-responsive">
 				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
@@ -54,7 +54,7 @@
 										<i class="fa fa-download crud-icon"></i>
 										Export
 										<span class="caret"></span>
-										<span class="sr-only">Toggle Dropdown</span>
+										<span class="sr-only">{t}Toggle Dropdown{/t}</span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
 {foreach item=format_data key=ext from=$export_formats}
@@ -149,33 +149,33 @@
 					<input class="crud-searchdata crud-search-active input-small form-control" name="search" data-type="text" type="text" value="">
 					<select class="crud-daterange crud-searchdata input-small form-control" name="range" data-fieldtype="date" style="display:none; ">
 						<option value="">- choose range -</option>
-						<option value="next_year" data-from="" data-to="">Next Year</option>
-						<option value="next_month" data-from="" data-to="">Next Month</option>
-						<option value="today" data-from="" data-to="">Today</option>
-						<option value="this_week_today" data-from="" data-to="">This Week up to today</option>
-						<option value="this_week_full" data-from="" data-to="">This full Week</option>
-						<option value="last_week" data-from="" data-to="">Last Week</option>
-						<option value="last_2weeks" data-from="" data-to="">Last two Weeks</option>
-						<option value="this_month" data-from="" data-to="">This Month</option>
-						<option value="last_month" data-from="" data-to="">Last Month</option>
-						<option value="last_3months" data-from="" data-to="">Last 3 Months</option>
-						<option value="last_6months" data-from="" data-to="">Last 6 Months</option>
-						<option value="this_year" data-from="" data-to="">This Year</option>
-						<option value="last_year" data-from="" data-to="">Last Year</option>
+						<option value="next_year" data-from="" data-to="">{t}Next Year{/t}</option>
+						<option value="next_month" data-from="" data-to="">{t}Next Month{/t}</option>
+						<option value="today" data-from="" data-to="">{t}Today{/t}</option>
+						<option value="this_week_today" data-from="" data-to="">{t}This Week up to today{/t}</option>
+						<option value="this_week_full" data-from="" data-to="">{t}This full Week{/t}</option>
+						<option value="last_week" data-from="" data-to="">{t}Last Week{/t}</option>
+						<option value="last_2weeks" data-from="" data-to="">{t}Last two Weeks{/t}</option>
+						<option value="this_month" data-from="" data-to="">{t}This Month{/t}</option>
+						<option value="last_month" data-from="" data-to="">{t}Last Month{/t}</option>
+						<option value="last_3months" data-from="" data-to="">{t}Last 3 Months{/t}</option>
+						<option value="last_6months" data-from="" data-to="">{t}Last 6 Months{/t}</option>
+						<option value="this_year" data-from="" data-to="">{t}This Year{/t}</option>
+						<option value="last_year" data-from="" data-to="">{t}Last Year{/t}</option>
 					</select>
 					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
 					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
 					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_search_column">
-						<option value="">All fields</option>
+						<option value="">{t}All fields{/t}</option>
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
 {/foreach}
-<!--						<option value="{$idx}" data-type="text">Check number</option>
-						<option value="{$idx}" data-type="datetime">Payment date</option>
-						<option value="{$idx}" data-type="float">Amount</option> -->
+<!--						<option value="{$idx}" data-type="text">{t}Check number{/t}</option>
+						<option value="{$idx}" data-type="datetime">{t}Payment date{/t}</option>
+						<option value="{$idx}" data-type="float">{t}Amount{/t}</option> -->
 					</select>
 					<span class="btn-group">
-						<a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">Go</a>
+						<a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">{t}Go{/t}</a>
 					</span>
 				</span>
 {if $admin == true || $refresh_button == true}
@@ -213,8 +213,8 @@
 				<div class="error_message"></div>
 			</div>
 			<div class="modal-footer ">
-				<button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
-				<button type="button" id="editModalCancelButton" class="btn btn-danger btn-lg" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+				<button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Update{/t}</button>
+				<button type="button" id="editModalCancelButton" class="btn btn-danger btn-lg" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}Cancel{/t}</button>
 			</div>
 			</form>
 		</div>
@@ -226,11 +226,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="deleteModalLabel">Delete this entry</h4>
+				<h4 class="modal-title custom_align" id="deleteModalLabel">{t}Delete this entry{/t}</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label class="col-md-offset-1 col-md-4 control-label" for="primary_key">ID</label>
+					<label class="col-md-offset-1 col-md-4 control-label" for="primary_key">{t}ID{/t}</label>
 					<div class="form-group input-group col-md-6">
 						<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
 						<input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
@@ -240,8 +240,8 @@
 				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
 			</div>
 			<div class="modal-footer ">
-				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Yes{/t}</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 		</form>
@@ -253,13 +253,13 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="debugModalLabel">Admin Debug Output</h4>
+				<h4 class="modal-title custom_align" id="debugModalLabel">{t}Admin Debug Output{/t}</h4>
 			</div>
 			<div class="modal-body">
 				<pre style="text-align: left; overflow: scroll; max-height: 600px;">{$debug_output}</pre>
 			</div>
 			<div class="modal-footer ">
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 	</div>

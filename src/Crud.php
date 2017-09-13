@@ -31,8 +31,7 @@
  * I do have several table alternate layouts already, I have no plans to setup additional templates
  * until everything else with it is working and getting widely implemented.
  *
- * Last Changed: $LastChangedDate$
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @version $Revision$
  * @copyright 2017
  * @package MyAdmin
@@ -42,9 +41,10 @@
  * @TODO Add order summary includable by login page
  */
 namespace MyCrud;
-use \sqlparser;
-use \TFSmarty;
-use \TFTable;
+use sqlparser;
+use TFSmarty;
+use TFTable;
+use MyCrud\CrudFunctionIterator;
 
 /**
  * Class Crud
@@ -76,19 +76,10 @@ class Crud
 	public $page_limits = [10, 25, 50, 100, -1];
 	public $page_limit = 100;
 	public $page_offset = 0;
-
-
-
-
+	public $insert_over_update = FALSE;
 	public $total_pages = 1;
 	public $page_links = NULL;
 	public $total_rows;
-
-
-
-
-
-
 	public $order_by = '';
 	public $order_dir = 'desc';
 	public $all_fields = FALSE;
@@ -145,14 +136,14 @@ class Crud
 	 * @param string $table_or_query the table name or sql query or function to use in the result
 	 * @param string $module optional module to associate w/ this query
 	 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public static function init($table_or_query, $module = 'default', $type = 'sql') {
 		// @codingStandardsIgnoreStart
 		if (isset($this) && $this instanceof self)
 			$crud = &$this;
 		else
-			$crud = new crud();
+			$crud = new self();
 		// @codingStandardsIgnoreEnd
 		$crud->apply_module_info($module);
 		$crud->column_templates[] = ['text' => '<h3>%title%</h3>', 'align' => 'r'];
@@ -285,14 +276,14 @@ class Crud
 	public function add_js_headers() {
 		add_js('bootstrap');
 		add_js('font-awesome');
-		$GLOBALS['tf']->add_html_head_js('<script type="text/javascript" src="/js/crud.js"></script>');
+		$GLOBALS['tf']->add_html_head_js_file('/js/crud.js');
 	}
 
 	/**
 	 * starts/displays the crud interface handler
 	 *
 	 * @param string $view optional default view, this defaults to the list view if not specified.  alternatively you can pass 'add' for the add interface
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function go($view = 'list') {
 		if ($this->ajax !== FALSE)
@@ -348,6 +339,8 @@ class Crud
 	public function ajax_edit_handler() {
 		$fields = $_POST;
 		$query_fields = [];
+		$insert_fields = [];
+		$insert_values = [];
 		$query_where = [];
 		$valid = TRUE;
 		$errors = [];
@@ -399,14 +392,12 @@ class Crud
 								}
 								break;
 							case 'trim':
-								if (isset($value)) {
+								if (isset($value))
 									$value = trim($value);
-								}
 								break;
 							case 'lower':
-								if (isset($value)) {
+								if (isset($value))
 									$value = strtolower($value);
-								}
 								break;
 							case 'in_array':
 								if (isset($value)) {
@@ -454,12 +445,17 @@ class Crud
 					$safe_value = $this->db->real_escape($value);
 				else
 					$safe_value = $value;
-				if ($field == $this->primary_key)
+				if ($field == $this->primary_key) {
 					$query_where[] = "{$field}='{$safe_value}'";
-				else {
+					$insert_fields[] = $field;
+					$insert_values[] = "'{$safe_value}'";
+				} else {
 					// see which fields are editable
-					if (!in_array($field, $this->disabled_fields))
+					if (!in_array($field, $this->disabled_fields)) {
 						$query_fields[] = "{$field}='{$safe_value}'";
+						$insert_fields[] = $field;
+						$insert_values[] = "'{$safe_value}'";
+					}
 				}
 			}
 		}
@@ -467,17 +463,21 @@ class Crud
 			//$this->log("Query Table {$query_table} Where " . implode(',', $query_where).' Class Where '.implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
 			$query_where = array_merge($query_where, $this->query_where[$query_table]);
 			// update database
-			$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
+			if ($this->insert_over_update == TRUE) {
+				$query = 'insert into '.$query_table.' ('.implode(', ', $insert_fields).') values ('.implode(', ', $insert_values).' where '.implode(' and ', $query_where);
+			} else {
+				$query = 'update '.$query_table.' set '.implode(', ', $query_fields).' where '.implode(' and ', $query_where);
+			}
 			if ($valid == TRUE) {
-				$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
-				//$this->db->query($query, __LINE__, __FILE__);
+				//$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
+				$this->db->query($query, __LINE__, __FILE__);
 				// send response for js handler
 				echo 'ok';
-				echo "<br>validation successful<br>i want to run query<div class='well'>{$query}</div>";
+				echo "<br>updated<br>ran query<div class='well'>{$query}</div>";
 			} else {
 				$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 				// send response for js handler
-				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.impode(', ', $error_fields);
+				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.implode(', ', $error_fields);
 			}
 		} else {
 			$this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
@@ -557,15 +557,14 @@ class Crud
 	/**
 	 * runs through all the query rows and builds up an array for use with other functions like export
 	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
+	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return void
 	 */
-	public function get_all_rows($result_type = MYSQL_ASSOC) {
+	public function get_all_rows($resultType = MYSQL_ASSOC) {
 		$this->run_list_query();
 		$this->rows = [];
-		while ($this->next_record($result_type)) {
+		while ($this->next_record($resultType))
 			$this->rows[] = $this->get_record();
-		}
 	}
 
 	/**
@@ -577,9 +576,8 @@ class Crud
 		// apply sorting
 		$this->run_list_query();
 		$json = [];
-		while ($this->db->next_record(MYSQL_ASSOC)) {
+		while ($this->db->next_record(MYSQL_ASSOC))
 			$json[] = $this->db->Record;
-		}
 		// send response for js handler
 		header('Content-type: application/json');
 		echo json_encode($json);
@@ -626,19 +624,16 @@ class Crud
 	public function join_handler($table, $joinArray) {
 			$condition_type = $joinArray->getType();					// AND, =
 			if ($condition_type == 'AND') {
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == 'EXPR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == 'OR') {
 				// expr should be statements to wrap around (   )  i think
-				foreach ($joinArray->GetMembers() as $member => $memberArray) {
+				foreach ($joinArray->GetMembers() as $member => $memberArray)
 					$this->join_handler($table, $memberArray);
-				}
 			} elseif ($condition_type == '=') {
 				//echo print_r($memberArray,true)."<br>";
 				//echo "Type:$type<br>";
@@ -848,8 +843,8 @@ class Crud
 		while ($db->next_record(MYSQL_ASSOC)) {
 			if ($db->Record['Comment'] == '')
 				$db->Record['Comment'] = ucwords(str_replace(
-					                                 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-					                                 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+													 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+													 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
 					$db->Record['Field']));
 			if (preg_match('/_custid$/m', $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
@@ -903,7 +898,11 @@ class Crud
 		return $count;
 	}
 
-
+	/**
+	 * @param string $order_by_field
+	 * @param string $order_direct
+	 * @return $this
+	 */
 	public function set_order($order_by_field = '', $order_direct = '') {
 		$this->order_by = $order_by_field ? $order_by_field : $this->order_by;
 		$this->order_dir = $order_direct ? $order_direct : $this->order_dir;
@@ -1011,9 +1010,8 @@ class Crud
 					//$this->log("Searching All Fields", __LINE__, __FILE__);
 					foreach ($this->tables as $table => $fields) {
 						foreach ($fields as $field_name => $field_data)
-						if (in_array($field_name, $this->fields)) {
+						if (in_array($field_name, $this->fields))
 							$search[] = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
-						}
 					}
 					$implode_type = 'or';
 				}
@@ -1043,7 +1041,7 @@ class Crud
 	 * @param bool|false|string $icon   optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
 	 * @param bool              $title
 	 * @param bool              $ima
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 *                                  an instance of the crud system.
 	 *                                  an instance of the crud system.
 	 */
@@ -1060,7 +1058,7 @@ class Crud
 	 * @param string $label optional text label for the button
 	 * @param string $status optional bootstrap status such as default,primary,success,info,warning or leave blank for default
 	 * @param bool|false|string $icon optional fontawesome icon name or FALSE to disable also can have like icon<space>active  to have the button pressed
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function add_title_search_button($terms, $label = '', $status = 'default', $icon = FALSE) {
 		$this->title_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
@@ -1071,7 +1069,7 @@ class Crud
 	 * adds additional parameters to the URL string used by the various ajax requests
 	 *
 	 * @param string $args additional string to add to the urls in the form of like  '&who=detain&what=rocks'
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_extra_url_args($args) {
 		$this->extra_url_args = $args;
@@ -1082,7 +1080,7 @@ class Crud
 	 * sets the interval in which the list of records will automatically update itself
 	 *
 	 * @param bool|false|int $auto_update FALSE to disable, or frequency in seconds to update the list of records automatically
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_auto_update($auto_update = FALSE) {
 		$this->auto_update = $auto_update;
@@ -1092,7 +1090,7 @@ class Crud
 	/**
 	 * enables the fluid table view which is a 100% wide table
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_fluid_container() {
 		$this->fluid_container = TRUE;
@@ -1102,7 +1100,7 @@ class Crud
 	/**
 	 * disables the fluid table view which is a 100% wide table
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_fluid_container() {
 		$this->fluid_container = TRUE;
@@ -1112,7 +1110,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_refresh_button() {
 		$this->refresh_button = TRUE;
@@ -1122,7 +1120,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_refresh_button() {
 		$this->refresh_button = TRUE;
@@ -1132,7 +1130,7 @@ class Crud
 	/**
 	 * enables the labels over field comment
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_labels() {
 		$this->use_labels = TRUE;
@@ -1142,7 +1140,7 @@ class Crud
 	/**
 	 * disables the labels over field comment
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_labels() {
 		$this->use_labels = TRUE;
@@ -1152,7 +1150,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_export_button() {
 		$this->export_button = TRUE;
@@ -1162,7 +1160,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_export_button() {
 		$this->export_button = TRUE;
@@ -1172,7 +1170,7 @@ class Crud
 	/**
 	 * enables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_print_button() {
 		$this->print_button = TRUE;
@@ -1182,7 +1180,7 @@ class Crud
 	/**
 	 * disables the refresh button on the list view
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_print_button() {
 		$this->print_button = TRUE;
@@ -1197,7 +1195,7 @@ class Crud
 	 * @param string $level
 	 * @param string $icon
 	 * @param string $page
-	 * @return \MyCrud\Crud
+	 * @return MyCrud\Crud
 	 * @internal param string $button the html for the button to add
 	 */
 	public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php') {
@@ -1264,9 +1262,8 @@ class Crud
 		if ($first < 2)
 			$first = 2;
 		for ($x = 0; $x < 4; $x++) {
-			if (!in_array($first + $x, $page_links) && $first + $x < $total_pages) {
+			if (!in_array($first + $x, $page_links) && $first + $x < $total_pages)
 				$page_links[] = $first + $x;
-			}
 		}
 		if (!in_array($total_pages, $page_links))
 			$page_links[] = $total_pages;
@@ -1291,8 +1288,8 @@ class Crud
 					[Privileges] => select,insert,update,references
 					[Comment] => Account ID
 		)))*/
-		$smarty = new TFSmarty();
-		$table = new TFTable;
+		$smarty = new \TFSmarty();
+		$table = new \TFTable;
 		if ($this->title == FALSE)
 			$table->set_title($this->table.' Records');
 		else
@@ -1352,15 +1349,15 @@ class Crud
 			'canceled' => 'warning',
 			'expired' => 'danger',
 			'terminated' => 'danger'
-		                                  ]
+										  ]
 		);
 		$table->set_template_dir('/templates/crud/');
-		//$table->set_filename('../crud/table.tpl');
-		//$table->set_filename('../crud/table1.tpl');
-		//$table->set_filename('../crud/table2.tpl');
-		//$table->set_filename('../crud/table3.tpl');
-		//$table->set_filename('../crud/table4.tpl');
-		$table->set_filename('../crud/table5.tpl');
+		//$table->set_filename('crud/table.tpl');
+		//$table->set_filename('crud/table1.tpl');
+		//$table->set_filename('crud/table2.tpl');
+		//$table->set_filename('crud/table3.tpl');
+		//$table->set_filename('crud/table4.tpl');
+		$table->set_filename('crud/table5.tpl');
 		$table->smarty->assign('primary_key', $this->primary_key);
 		$table->smarty->assign('choice', $this->choice);
 		$table->smarty->assign('admin', $this->admin);
@@ -1414,30 +1411,31 @@ class Crud
 	/**
 	 * goes to the next record in the result set
 	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
+	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return bool returns TRUE if it was able to get a record and we have an array result, otherwise returns FALSE
 	 */
-	public function next_record($result_type) {
+	public function next_record($resultType) {
 		if ($this->type == 'function') {
 			if (!isset($this->tables[$this->query]))
 				$this->tables[$this->query] = [];
 			//$this->log('ran is '.var_export($this->queries->ran, TRUE), __LINE__, __FILE__, 'debug');
 			$ran = $this->queries->ran;
-			$return = $this->queries->next_record($result_type);
+			$return = $this->queries->next_record($resultType);
 			if ($ran == FALSE) {
 				//$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
 				foreach ($this->queries->Record as $field => $value) {
 					$comment = ucwords(str_replace(
-						                   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-						                   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
-						                   $field));
+										   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+										   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+										   $field));
 					$this->add_field($field, $comment, FALSE, [], 'input');
 					$this->tables[$this->query] = $this->queries->Record;
-					$this->tables[$this->query]['Comment'] = $comment;
+					if (isset($this->tables[$this->query]['Comment']))
+						$this->tables[$this->query]['Comment'] = $comment;
 				}
 			}
 		} else {
-			$return = $this->db->next_record($result_type);
+			$return = $this->db->next_record($resultType);
 			//$this->log(json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
 		}
 		return $return;
@@ -1488,12 +1486,11 @@ class Crud
 	 * sets the title for the crud page setting both the web page title and the table title
 	 *
 	 * @param bool|string $title text of the title
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function set_title($title = FALSE) {
-		if ($title === FALSE) {
+		if ($title === FALSE)
 			$title = 'View '.$this->settings['TITLE'];
-		}
 		$this->title = $title;
 		return $this;
 	}
@@ -1505,9 +1502,8 @@ class Crud
 	 * @param array $validations an array of validations to apply
 	 */
 	public function add_field_validations($field, $validations) {
-		if (!isset($this->validations[$field])) {
+		if (!isset($this->validations[$field]))
 			$this->validations[$field] = [];
-		}
 		foreach ($validations as $validation)
 			if (!in_array($validation, $this->validations[$field]))
 				$this->validations[$field] = array_merge($this->validations[$field], $validations);
@@ -1519,9 +1515,8 @@ class Crud
 	 * @param array $validations an array with each element containing a $field => $validations  where $validations is an array of validations to apply and $field is the field name
 	 */
 	public function add_validations($validations) {
-		foreach ($validations as $field => $field_validations) {
+		foreach ($validations as $field => $field_validations)
 			$this->add_field_validations($field, $field_validations);
-		}
 	}
 
 	/**
@@ -1535,9 +1530,8 @@ class Crud
 		//echo "Got here $field $input_type <pre>" . print_r($data, TRUE) . "</pre><br>\n";
 		// FIXME get in_array working properly / add validations based on this
 		$this->input_types[$field] = [$input_type, $data];
-		if (in_array($this->input_types[$field][0], ['select', 'select_multiple'])) {
+		if (in_array($this->input_types[$field][0], ['select', 'select_multiple']))
 			$this->add_field_validations($field, ['in_array' => $this->input_types[$field][1]['values']]);
-		}
 	}
 
 	/**
@@ -1546,9 +1540,8 @@ class Crud
 	 * @param mixed $fields
 	 */
 	public function add_input_type_fields($fields) {
-		foreach ($fields as $field => $data) {
+		foreach ($fields as $field => $data)
 			$this->input_types[$field] = $data;
-		}
 	}
 
 	/**
@@ -1560,7 +1553,7 @@ class Crud
 	 * @param mixed $validations validations to apply
 	 * @param bool|string $input_type type of input
 	 * @param mixed $input_data data to use forpopulating the input type
-	 * @return \MyCrud\Crud
+	 * @return MyCrud\Crud
 	 */
 	public function add_field($field, $label = FALSE, $default = FALSE, $validations = FALSE, $input_type = FALSE, $input_data = FALSE) {
 		if (!in_array($field, $this->fields))
@@ -1582,9 +1575,8 @@ class Crud
 	 * @param array $fields an array of fields to add
 	 */
 	public function add_fields($fields) {
-		foreach ($fields as $field) {
+		foreach ($fields as $field)
 			$this->add_field($field);
-		}
 	}
 
 	/**
@@ -1656,11 +1648,11 @@ class Crud
 			return $this->labels[$field];
 		} else {
 			return ucwords(str_replace(
-				               [
+							   [
 				'_'
-				               ], [
+							   ], [
 				' '
-			                           ], $field));
+									   ], $field));
 		}
 	}
 
@@ -1698,9 +1690,8 @@ class Crud
 					switch ($type) {
 						case 'enum':
 							if (isset($matches['types']) && $matches['types'] != '') {
-								if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types)) {
+								if (preg_match_all("/('(?P<types>[^']*)',{0,1})/m", $matches['types'], $types))
 									$types = $types['types'];
-								}
 							}
 							$input_type = 'select';
 							$validations[] = ['in_array' => $types];
@@ -1835,9 +1826,8 @@ class Crud
 		$this->continue = TRUE;
 		$anything_set = FALSE;
 		foreach ($this->fields as $idx => $field) {
-			if (isset($this->defaults[$field])) {
+			if (isset($this->defaults[$field]))
 				$this->values[$field] = $this->defaults[$field];
-			}
 			if (isset($this->request[$field])) {
 				$this->values[$field] = $this->request[$field];
 				$this->set_vars[$field] = $this->values[$field];
@@ -1868,14 +1858,12 @@ class Crud
 								}
 								break;
 							case 'trim':
-								if (isset($this->values[$field])) {
+								if (isset($this->values[$field]))
 									$this->values[$field] = trim($this->values[$field]);
-								}
 								break;
 							case 'lower':
-								if (isset($this->values[$field])) {
+								if (isset($this->values[$field]))
 									$this->values[$field] = strtolower($this->values[$field]);
-								}
 								break;
 							case 'in_array':
 								if (isset($this->values[$field]) && !in_array($this->values[$field], $this->labels[$field])) {
@@ -1899,9 +1887,8 @@ class Crud
 				}
 			}
 		}
-		if ($anything_set === FALSE) {
+		if ($anything_set === FALSE)
 			$this->continue = FALSE;
-		}
 		if ($this->continue == TRUE && !verify_csrf('crud_order_form'))
 			$this->continue = FALSE;
 	}
@@ -1913,7 +1900,7 @@ class Crud
 	public function order_form() {
 		$edit_form = '';
 		if ($this->stage == 2) {
-			$table = new TFTable;
+			$table = new \TFTable;
 			$table->hide_table();
 			$table->set_options('style=" background-color: #DFEFFF; border: 1px solid #C2D7EF;border-radius: 10px; padding-right: 10px; padding-left: 10px;"');
 			$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
@@ -1923,9 +1910,8 @@ class Crud
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->set_vars[$field]) && !in_array($field, $this->error_fields) && $this->values[$field] != '') {
 					$value = $this->values[$field];
-					if (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value])) {
+					if (isset($this->labels[$field.'_a']) && isset($this->labels[$field.'_a'][$value]))
 						$value = $this->labels[$field.'_a'][$value];
-					}
 					if (isset($this->input_types[$field])) {
 						$input_type = $this->input_types[$field][0];
 						switch ($input_type) {
@@ -1952,7 +1938,7 @@ class Crud
 								break;
 							case 'select_multiple':
 							case 'select':
-								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 								break;
 							case 'raw':
 								$fieldText = $data;
@@ -1974,28 +1960,24 @@ class Crud
 								if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
 									if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
 										$text = $this->column_templates[$x]['fields'][$field]['text'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-										}
 									}
 									if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
 										$align = $this->column_templates[$x]['fields'][$field]['align'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-										}
 									}
 								} else {
 									if (isset($this->column_templates[$x]['text'])) {
 										$text = $this->column_templates[$x]['text'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-										}
 									}
 									if (isset($this->column_templates[$x]['align'])) {
 										$align = $this->column_templates[$x]['align'];
-										if ($this->debug === TRUE) {
+										if ($this->debug === TRUE)
 											//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-										}
 									}
 								}
 							}
@@ -2008,9 +1990,8 @@ class Crud
 								//var_dump($fieldText);
 								//echo "<br>";
 							}
-							if (!isset($fieldText)) {
+							if (!isset($fieldText))
 								$this->log("field $field Field Text: " . print_r($fieldText, TRUE), __LINE__, __FILE__, 'debug');
-							}
 							$text = str_replace(array('%title%','%field%'), array($label, $fieldText), $text);
 							$table->add_field($text, $align);
 							$table_pos++;
@@ -2034,7 +2015,7 @@ class Crud
 			$table->add_field($table->make_submit('Continue'));
 			$table->add_row();
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
+			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		} else {
 			foreach ($this->fields as $idx => $field) {
 				if (isset($this->input_types[$field])) {
@@ -2086,13 +2067,13 @@ class Crud
 							break;
 						case 'select_multiple':
 						case 'select':
-							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
 <div class="form-group">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
-	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="update_service_choices();" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
+	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
 </div>
 </div>
 '.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
@@ -2117,28 +2098,24 @@ class Crud
 							if (isset($this->column_templates[$x]['fields']) && isset($this->column_templates[$x]['fields'][$field])) {
 								if (isset($this->column_templates[$x]['fields'][$field]['text'])) {
 									$text = $this->column_templates[$x]['fields'][$field]['text'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['fields'][$field]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-									}
 								}
 								if (isset($this->column_templates[$x]['fields'][$field]['align'])) {
 									$align = $this->column_templates[$x]['fields'][$field]['align'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['fields'][$field]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-									}
 								}
 							} else {
 								if (isset($this->column_templates[$x]['text'])) {
 									$text = $this->column_templates[$x]['text'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['text'] set to "  .var_dump($text, TRUE) . "<br>";
-									}
 								}
 								if (isset($this->column_templates[$x]['align'])) {
 									$align = $this->column_templates[$x]['align'];
-									if ($this->debug === TRUE) {
+									if ($this->debug === TRUE)
 										//echo "this->column_templates[$x]['align'] set to "  .var_dump($align, TRUE) . "<br>";
-									}
 								}
 							}
 						}
@@ -2151,9 +2128,8 @@ class Crud
 							//var_dump($fieldText);
 							//echo "<br>";
 						}
-						if (!isset($fieldText)) {
+						if (!isset($fieldText))
 							$this->log("field $field Field Text: " . print_r($fieldText, TRUE), __LINE__, __FILE__, 'debug');
-						}
 						$text = str_replace(array('%title%','%field%'), array($label, $fieldText), $text);
 						$table->add_field($text, $align);
 					}
@@ -2170,8 +2146,8 @@ class Crud
 			$table->add_row();
 			$table->set_method('get');
 			add_output($table->get_table());
-			$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
-			$GLOBALS['tf']->add_html_head_js('<script src="js/customSelect/jquery.customSelect.min.js"></script>');
+			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
+			$GLOBALS['tf']->add_html_head_js_file('js/customSelect/jquery.customSelect.min.js');
 			*/
 		}
 		return $edit_form;
@@ -2189,7 +2165,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_delete() {
 		$this->delete_row = FALSE;
@@ -2199,7 +2175,7 @@ class Crud
 	/**
 	 * disables the checkboxes to the left of the rows for bulk actions
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_select_multiple() {
 		$this->select_multiple = FALSE;
@@ -2209,7 +2185,7 @@ class Crud
 	/**
 	 * disables the edit button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_edit() {
 		$this->edit_row = FALSE;
@@ -2219,7 +2195,7 @@ class Crud
 	/**
 	 * disables the add record button
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_add() {
 		$this->add_row = FALSE;
@@ -2229,7 +2205,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_initial_populate() {
 		$this->initial_populate = TRUE;
@@ -2239,7 +2215,7 @@ class Crud
 	/**
 	 * disables the delete button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_delete() {
 		$this->delete_row = TRUE;
@@ -2249,7 +2225,7 @@ class Crud
 	/**
 	 * enables the checkboxes to the left of the rows for bulk actions
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_select_multiple() {
 		$this->select_multiple = TRUE;
@@ -2259,7 +2235,7 @@ class Crud
 	/**
 	 * enables the edit button next to each row
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_edit() {
 		$this->edit_row = TRUE;
@@ -2269,7 +2245,7 @@ class Crud
 	/**
 	 * enables the add record button
 	 *
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function enable_add() {
 		$this->add_row = TRUE;
@@ -2280,7 +2256,7 @@ class Crud
 	 * disables a field from being edited
 	 *
 	 * @param string $field field name
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_field($field) {
 		if (!in_array($field, $this->disabled_fields))
@@ -2292,11 +2268,22 @@ class Crud
 	 * disables an array of fields from the edit function
 	 *
 	 * @param array $fields an array of fields
-	 * @return \MyCrud\Crud an instance of the crud system.
+	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function disable_fields($fields) {
 		foreach ($fields as $field)
 			$this->disable_field($field);
+		return $this;
+	}
+
+	/**
+	 * enables using insert over update
+	 *
+	 * @param bool $enable defaults to true
+	 * @return MyCrud\Crud an instance of the crud system.
+	 */
+	public function set_insert_over_update($enable = TRUE) {
+		$this->insert_over_update = $enable;
 		return $this;
 	}
 
@@ -2307,15 +2294,14 @@ class Crud
 	public function confirm_order() {
 		$this->confirm = TRUE;
 		add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
-		$table = new TFTable;
+		$table = new \TFTable;
 		$table->hide_table();
 		$table->set_method('get');
 		$table->set_options('width="500" cellpadding=5');
 		$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
 		$table->set_title($this->settings['TITLE'].' Order Summary');
-		if ($this->admin == TRUE && $this->limit_custid == TRUE) {
+		if ($this->admin == TRUE && $this->limit_custid == TRUE)
 			$table->add_hidden('custid', $this->custid);
-		}
 		$table->add_hidden('module', $this->module);
 		$table->add_hidden('pp_token', '');
 		$table->add_hidden('pp_payerid', '');
@@ -2345,15 +2331,14 @@ class Crud
 				$table->add_row();
 			}
 		}
-		if (SESSION_COOKIES == FALSE) {
+		if (SESSION_COOKIES == FALSE)
 			$this->returnURL .= '&sessionid='.urlencode($GLOBALS['tf']->session->sessionid);
-		}
 		if ($this->admin == TRUE) {
 			foreach ($this->admin_confirm_fields as $field => $data) {
 				switch ($data['type']) {
 					case 'select_multiple':
 					case 'select':
-						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="update_service_choices();" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
+						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
 						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$table->add_field($fieldText, 'l');
 						$table->add_row();
@@ -2380,8 +2365,8 @@ class Crud
 			'pend_custid' => $this->custid,
 			'pend_data' => myadmin_stringify($this->set_vars)
 		]
-		                 ), __LINE__, __FILE__);
-		//				$GLOBALS['tf']->add_html_head_js('<script async src="js/g_a.js" type="text/javascript" '.(WWW_TYPE == 'HTML5' ? '' : 'language="javascript"').'></script>');
+						 ), __LINE__, __FILE__);
+		//				$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		$this->continue = FALSE;
 	}
 
@@ -2826,59 +2811,6 @@ class Crud
 		}
 		echo "|}\n";
 		return $return;
-	}
-
-}
-
-
-/**
- *Crud class to handle iterating over the output of a local function and give an interface similar to the db class
- */
-Class CrudFunctionIterator {
-	public $function;
-	public $result;
-	public $size;
-	public $idx = -1;
-	public $ran = FALSE;
-	public $Record;
-	public $keys;
-
-	/**
-	 * CrudFunctionIterator constructor.
-	 *
-	 * @param $function
-	 */
-	public function __construct($function) {
-		$this->function = $function;
-	}
-
-	/**
-	 * runs the function and grabs the output from it applying it usually
-	 *
-	 * @return void
-	 */
-	public function run() {
-		function_requirements($this->function);
-		$this->result = call_user_func($this->function);
-		$this->ran = TRUE;
-		$this->size = count($this->result);
-		$this->keys = array_keys($this->result);
-	}
-
-	/**
-	 * grabs the next record in the current row if there is one.
-	 *
-	 * @param int $result_type the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
-	 * @return bool whether it was able to get an array or not
-	 */
-	 public function next_record($result_type) {
-		if ($this->ran == FALSE)
-			$this->run();
-		$this->idx++;
-		if ($this->idx >= $this->size)
-			return FALSE;
-		$this->Record = $this->result[$this->keys[$this->idx]];
-		return is_array($this->Record);
 	}
 
 }

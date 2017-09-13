@@ -1,11 +1,10 @@
 <?php
 /**
  * SSL Certificates List
- * Last Changed: $LastChangedDate: 2016-10-05 12:42:23 -0400 (Wed, 05 Oct 2016) $
- * @author detain
+ * @author Joe Huss <detain@interserver.net>
  * @copyright 2017
  * @package MyAdmin
- * @subpackage SSL
+ * @category SSL
  */
 use \MyCrud\Crud;
 
@@ -16,7 +15,7 @@ use \MyCrud\Crud;
  */
 function crud_ssl_list() {
 	$module = 'ssl';
-	$settings = get_module_settings($module);
+	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
 		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')
