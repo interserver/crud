@@ -2507,15 +2507,15 @@ class Crud
 		foreach ($fields as $field) {
 			//$this->log($field, __LINE__, __FILE__, 'debug');
 			if ($field == 'account_lid') {
-				$this->add_filter_link($field, '?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+				$this->add_filter_link($field, 'index.php?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
 			/*} elseif ($field == 'invoices_paid') {
 				$this->add_filter($field, array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple');*/
 			} elseif ($field == $this->settings['PREFIX'].'_name' && $this->admin == TRUE) {
-				$this->add_filter_link($field, "?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
+				$this->add_filter_link($field, "index.php?choice=none.view_host_server&module={$this->module}&name=%{$this->settings['PREFIX']}_name%", 'View Host Server', 'view_service');
 			/*} elseif ($field == $this->settings['PREFIX'].'_id') {
 				// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doing this*/
 			} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
-				$this->add_filter_link($field, '?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($this->admin == TRUE ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
+				$this->add_filter_link($field, 'index.php?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($this->admin == TRUE ? '2' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 			}
 		}
 
