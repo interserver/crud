@@ -35,7 +35,7 @@ function crud_innertell_pending_orders() {
 	server_rep,
 	server_date,
 	server_total_cost,
-	server_referer,
+	server_referrer,
 	server_location,
 	server_fraud,
 	server_mb_package_id,
