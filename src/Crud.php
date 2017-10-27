@@ -45,15 +45,14 @@ use sqlparser;
 use TFSmarty;
 use TFTable;
 use MyCrud\CrudFunctionIterator;
+use MyAdmin\Form;
 
 /**
  * Class Crud
  *
  * @package MyCrud
  */
-class Crud
-{
-	public $custid;
+class Crud extends Form {
 	public $limit_custid = FALSE;
 	public $ajax = FALSE;
 	public $debug = FALSE;
@@ -90,18 +89,12 @@ class Crud
 	public $add_row = TRUE;
 	public $query_where = [];
 	public $admin_confirm_fields = [];
-	public $fields = [];
 	public $query_fields = [];
 	public $search_terms = [];
 	// temp fields maybe from buy service class i think
 	public $disabled_fields = [];
 	public $filters = [];
-	public $values = [];
-	public $labels = [];
 	public $use_labels = FALSE;
-	public $defaults = [];
-	public $validations = [];
-	public $input_types = [];
 	public $column_templates = [];
 	public $tables = [];
 	// from the SQLParser or CrudFunctionIterator
@@ -343,8 +336,8 @@ class Crud
 		$insert_values = [];
 		$query_where = [];
 		$valid = TRUE;
-		$errors = [];
-		$error_fields = [];
+		$this->errors = [];
+		$this->error_fields = [];
 		foreach ($fields as $field => $value) {
 			// match up fields
 			if (isset($this->query_fields[$field])) {
@@ -379,15 +372,15 @@ class Crud
 							case 'int':
 								// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
 								if (isset($value) && $value != (int)$value) {
-									$errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
-									$error_fields[] = $field;
+									$this->errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
+									$this->error_fields[] = $field;
 									$valid = FALSE;
 								}
 								break;
 							case 'notags':
 								if ($value != strip_tags($value)) {
-									$errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
-									$error_fields[] = $field;
+									$this->errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
+									$this->error_fields[] = $field;
 									$valid = FALSE;
 								}
 								break;
@@ -406,8 +399,8 @@ class Crud
 										$value = [$value];
 									foreach ($value as $t_value) {
 										if (!in_array($t_value, $this->labels[$field])) {
-											$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
-											$error_fields[] = $field;
+											$this->errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
+											$this->error_fields[] = $field;
 											$valid = FALSE;
 										}
 										$values[] = $this->db->real_escape($t_value);
@@ -426,8 +419,8 @@ class Crud
 									$value = [$value];
 								foreach ($value as $t_value) {
 									if (!in_array($t_value, $validation['in_array'])) {
-										$errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
-										$error_fields[] = $field;
+										$this->errors[] = 'Invalid '.$this->label($field).' "'.$t_value.'"';
+										$this->error_fields[] = $field;
 										$valid = FALSE;
 									}
 									$values[] = $this->db->real_escape($t_value);
@@ -477,7 +470,7 @@ class Crud
 			} else {
 				$this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
 				// send response for js handler
-				echo 'There was an error with validation:<br>'.implode('<br>', $errors).' with the fields '.implode(', ', $error_fields);
+				echo 'There was an error with validation:<br>'.implode('<br>', $this->errors).' with the fields '.implode(', ', $this->error_fields);
 			}
 		} else {
 			$this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
@@ -1454,33 +1447,6 @@ class Crud
 			return $this->db->Record;
 	}
 
-	/**
-	 * displays an error message ot the user
-	 *
-	 * @param string $message the text of the error message
-	 */
-	public function error($message) {
-		dialog('Error', $message);
-	}
-
-	/**
-	 * logs a message
-	 *
-	 * @param string $message message to log
-	 * @param bool|false|int $line optional line your calling from to track down where the log messages originates easily to send w/ the log message
-	 * @param bool|false|string $file optional file your calling from to track down where the log messages originates easily to send w/ the log message
-	 * @param string $level level to log the message at, defaults to info
-	 */
-	public function log($message, $line = FALSE, $file = FALSE, $level = 'info') {
-		if ($line !== FALSE && $file !== FALSE)
-			myadmin_log('crud', $level, $message, $line, $file);
-		elseif ($line !== FALSE && $file == FALSE)
-			myadmin_log('crud', $level, $message, $line, __FILE__);
-		elseif ($line == FALSE && $file !== FALSE)
-			myadmin_log('crud', $level, $message, FALSE, $file);
-		else
-			myadmin_log('crud', $level, $message, __LINE__, __FILE__);
-	}
 
 	/**
 	 * sets the title for the crud page setting both the web page title and the table title
@@ -1495,166 +1461,6 @@ class Crud
 		return $this;
 	}
 
-	/**
-	 * adds validations to the given field
-	 *
-	 * @param string $field name of the field to associate these validations with
-	 * @param array $validations an array of validations to apply
-	 */
-	public function add_field_validations($field, $validations) {
-		if (!isset($this->validations[$field]))
-			$this->validations[$field] = [];
-		foreach ($validations as $validation)
-			if (!in_array($validation, $this->validations[$field]))
-				$this->validations[$field] = array_merge($this->validations[$field], $validations);
-	}
-
-	/**
-	 * adds validations for multiple fields
-	 *
-	 * @param array $validations an array with each element containing a $field => $validations  where $validations is an array of validations to apply and $field is the field name
-	 */
-	public function add_validations($validations) {
-		foreach ($validations as $field => $field_validations)
-			$this->add_field_validations($field, $field_validations);
-	}
-
-	/**
-	 * adds an input type field into the array of input types
-	 *
-	 * @param string $field the field name
-	 * @param string $input_type the input type to use for the field
-	 * @param array|bool|false $data optional data to use along with the input type
-	 */
-	public function add_input_type_field($field, $input_type, $data = FALSE) {
-		//echo "Got here $field $input_type <pre>" . print_r($data, TRUE) . "</pre><br>\n";
-		// FIXME get in_array working properly / add validations based on this
-		$this->input_types[$field] = [$input_type, $data];
-		if (in_array($this->input_types[$field][0], ['select', 'select_multiple']))
-			$this->add_field_validations($field, ['in_array' => $this->input_types[$field][1]['values']]);
-	}
-
-	/**
-	 * directs adds an array of input types
-	 *
-	 * @param mixed $fields
-	 */
-	public function add_input_type_fields($fields) {
-		foreach ($fields as $field => $data)
-			$this->input_types[$field] = $data;
-	}
-
-	/**
-	 * adds a field to the system
-	 *
-	 * @param string $field the field name
-	 * @param bool|false|string $label label for the field
-	 * @param mixed $default default value
-	 * @param mixed $validations validations to apply
-	 * @param bool|string $input_type type of input
-	 * @param mixed $input_data data to use forpopulating the input type
-	 * @return MyCrud\Crud
-	 */
-	public function add_field($field, $label = FALSE, $default = FALSE, $validations = FALSE, $input_type = FALSE, $input_data = FALSE) {
-		if (!in_array($field, $this->fields))
-			$this->fields[] = $field;
-		if ($label !== FALSE)
-			$this->set_label($field, $label);
-		if ($default !== FALSE)
-			$this->set_default($field, $default);
-		if ($validations !== FALSE)
-			$this->add_field_validations($field, $validations);
-		if ($input_type !== FALSE)
-			$this->add_input_type_field($field, $input_type, $input_data);
-		return $this;
-	}
-
-	/**
-	 * adds multiple fields to the system
-	 *
-	 * @param array $fields an array of fields to add
-	 */
-	public function add_fields($fields) {
-		foreach ($fields as $field)
-			$this->add_field($field);
-	}
-
-	/**
-	 * sets the default value for a field
-	 *
-	 * @param string $field the field name to set the default value of
-	 * @param string $value the default value for the field
-	 * @return $this
-	 */
-	public function set_default($field, $value) {
-		$this->defaults[$field] = $value;
-		return $this;
-	}
-
-	/**
-	 * sets default values for multiple fields
-	 *
-	 * @param array $defaults an array of    field => value
-	 * @return $this
-	 */
-	public function set_defaults($defaults) {
-		foreach ($defaults as $field => $value)
-			$this->set_default($field, $value);
-		return $this;
-	}
-
-	/**
-	 * sets the label for a field
-	 *
-	 * @param string $field field name
-	 * @param string $label label to apply to the field
-	 * @return $this
-	 */
-	public function set_label($field, $label) {
-		$this->labels[$field] = $label;
-		return $this;
-	}
-
-	/**
-	 * sets the labels for an array of fields
-	 *
-	 * @param array $labels array with elements in the form of  field => label
-	 * @return $this
-	 */
-	public function set_labels($labels) {
-		foreach ($labels as $field => $label)
-			$this->set_label($field, $label);
-		return $this;
-	}
-
-	/**
-	 * alias function for label()
-	 *
-	 * @param string $field field to get the label for
-	 * @return string the label
-	 */
-	public function get_label($field) {
-		return $this->label($field);
-	}
-
-	/**
-	 * gets the label for a field
-	 *
-	 * @param string $field field to get the label for
-	 * @return string the label
-	 */
-	public function label($field) {
-		if (isset($this->labels[$field])) {
-			return $this->labels[$field];
-		} else {
-			return ucwords(str_replace(
-							   [
-				'_'
-							   ], [
-				' '
-									   ], $field));
-		}
-	}
 
 	/**
 	 * adds an admin confirmation field
@@ -1823,72 +1629,7 @@ class Crud
 	 *
 	 */
 	public function validate_order() {
-		$this->continue = TRUE;
-		$anything_set = FALSE;
-		foreach ($this->fields as $idx => $field) {
-			if (isset($this->defaults[$field]))
-				$this->values[$field] = $this->defaults[$field];
-			if (isset($this->request[$field])) {
-				$this->values[$field] = $this->request[$field];
-				$this->set_vars[$field] = $this->values[$field];
-				$anything_set = TRUE;
-			}
-			if (isset($this->validations[$field])) {
-				foreach ($this->validations[$field] as $validation) {
-					if (!is_array($validation)) {
-						switch ($validation) {
-							case 'abs':
-								$this->values[$field] = abs($this->values[$field]);
-								break;
-							case 'int':
-								// TODO / FIXME _ check the isset() part here, if its not set i probably should fail it.
-								if (isset($this->values[$field]) && $this->values[$field] != (int)$this->values[$field]) {
-									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
-									$this->error_fields[] = $field;
-									$this->values[$field] = (int)$this->values[$field];
-									$this->continue = FALSE;
-								}
-								break;
-							case 'notags':
-								if ($this->values[$field] != strip_tags($this->values[$field])) {
-									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
-									$this->error_fields[] = $field;
-									$this->values[$field] = strip_tags($this->values[$field]);
-									$this->continue = FALSE;
-								}
-								break;
-							case 'trim':
-								if (isset($this->values[$field]))
-									$this->values[$field] = trim($this->values[$field]);
-								break;
-							case 'lower':
-								if (isset($this->values[$field]))
-									$this->values[$field] = strtolower($this->values[$field]);
-								break;
-							case 'in_array':
-								if (isset($this->values[$field]) && !in_array($this->values[$field], $this->labels[$field])) {
-									$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
-									$this->error_fields[] = $field;
-									$this->continue = FALSE;
-									$this->values[$field] = $this->defaults[$field];
-								}
-								break;
-						}
-					} else {
-						if (isset($validation['in_array'])) {
-							if (isset($this->values[$field]) && !in_array($this->values[$field], $validation['in_array'])) {
-								$this->errors[] = 'Invalid '.$this->label($field).' "'.$this->values[$field].'"';
-								$this->error_fields[] = $field;
-								$this->continue = FALSE;
-								$this->values[$field] = $this->defaults[$field];
-							}
-						}
-					}
-				}
-			}
-		}
-		if ($anything_set === FALSE)
-			$this->continue = FALSE;
+		parent::validate_order();
 		if ($this->continue == TRUE && !verify_csrf('crud_order_form'))
 			$this->continue = FALSE;
 	}
