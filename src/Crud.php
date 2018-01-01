@@ -2544,11 +2544,11 @@ class Crud extends Form {
 		echo "{|\n";
 		foreach ($this->rows as $Record) {
 			if ($first == TRUE) {
-					echo '!'.implode('!!', array_keys($Record)) . "\n";
+					echo '!'.implode('!!', array_keys($Record)).PHP_EOL;
 				$first = FALSE;
 			}
 			echo "|-\n";
-			echo '|'.implode('||', array_values($Record)) . "\n";
+			echo '|'.implode('||', array_values($Record)).PHP_EOL;
 		}
 		echo "|}\n";
 		return $return;
