@@ -47,7 +47,7 @@ function crud_dns_manager() {
 	<div class="row">
 		<div class="col-md-2 col-md-offset-2">
 			<div class="printer-hidden" style="vertical-align: middle;">
-				<label style="margin-top: 5px;">Add Domain to DNS</label>s
+				<label style="margin-top: 5px;">Add Domain to DNS</label>
 			</div>
 		</div>
 		<div class="col-md-3">
