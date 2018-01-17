@@ -48,7 +48,7 @@ function get_crud_funcs() {
 			'same_domain_accounts' => ['function' => 'same_domain_accounts&id=358805', 'title' => 'Accounts matching the @domain.com of client'],
 			'ssl_list' => ['function' => 'crud_ssl_list', 'title' => 'SSL Certificates'],
 			'vps_list' => ['function' => 'vps_list', 'title' => 'VPS List'],
-			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List']
+			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List'],
 		],
 		'info' => [
 			'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
@@ -57,7 +57,8 @@ function get_crud_funcs() {
 			'last_logins' => ['function' => 'crud_last_logins', 'title' => 'Last Logn Locations'],
 			'month_payment_totals' => ['function' => 'crud_month_payment_totals', 'title' => 'Payments This Month'],
 			'dns_manager' => ['function' => 'crud_dns_manager', 'title' => 'DNS Manager'],
-			'dns_editor' => ['function' => 'crud_dns_editor&id=68', 'title' => 'DNS Editor']
+			'dns_editor' => ['function' => 'crud_dns_editor&id=68', 'title' => 'DNS Editor'],
+			'view_invoices' => ['function' => 'crud_view_invoices', 'title' => 'View Invoices List'],
 		],
 		'warning' => [
 			'abuse' => ['function' => 'crud_abuse', 'title' => 'Abuse'],
@@ -92,8 +93,6 @@ function get_crud_funcs() {
 			'ssl' => ['function' => 'crud_ssl', 'title' => 'SSL Certificates'],
 			'templates' => ['function' => 'crud_templates', 'title' => 'Templates'],
 			'user_log' => ['function' => 'crud_user_log', 'title' => 'User Log'],
-			'view_invoices' => ['function' => 'crud_view_invoices', 'title' => 'View Invoices List'],
-			'view_invoices2' => ['function' => 'crud_view_invoices2', 'title' => 'View Invoices List'],
 			'vlans' => ['function' => 'crud_vlans', 'title' => 'IP VLAN Manager'],
 			'vps' => ['function' => 'crud_vps', 'title' => 'Virtual Private Servers'],
 			'vps_list_free_ips2' => ['function' => 'crud_vps_list_free_ips2', 'title' => 'Free/Available IPs For VPs Servers'],

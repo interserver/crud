@@ -59,6 +59,7 @@ class Crud extends Form {
 	public $refresh_button = TRUE;
 	public $export_button = TRUE;
 	public $print_button = TRUE;
+	public $use_html_fitering = TRUE;
 	public $module;
 	public $choice;
 	/* @var TFTable */
@@ -165,6 +166,11 @@ class Crud extends Form {
 		$crud->parse_tables();
 		$crud->default_filters();
 		return $crud;
+	}
+
+	public function set_use_html_filtering($enable = TRUE) {
+		$this->use_html_fitering = $enable;
+		return $this;
 	}
 
 	/**
@@ -2157,7 +2163,8 @@ class Crud extends Form {
 			$this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__, 'info');
 			return $value;
 		}
-		$value = htmlspecial($value);
+		if ($this->use_html_fitering == TRUE)
+			$value = htmlspecial($value);
 		$search = ['%field%', '%value%'];
 		$replace = [$field, $value];
 		foreach ($row as $row_field => $row_value) {
