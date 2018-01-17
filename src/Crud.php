@@ -105,7 +105,7 @@ class Crud extends Form {
 	public $db;
 	public $settings;
 	public $buttons = [];
-	public $header = [];
+	public $header = '';
 	public $header_buttons = [];
 	public $title_buttons = [];
 	public $fluid_container = FALSE;
