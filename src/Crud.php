@@ -54,6 +54,7 @@ use MyAdmin\Form;
  */
 class Crud extends Form {
 	public $limit_custid = FALSE;
+	public $custid_match = '/_custid$/m';
 	public $ajax = FALSE;
 	public $debug = FALSE;
 	public $refresh_button = TRUE;
@@ -104,6 +105,7 @@ class Crud extends Form {
 	public $db;
 	public $settings;
 	public $buttons = [];
+	public $header = [];
 	public $header_buttons = [];
 	public $title_buttons = [];
 	public $fluid_container = FALSE;
@@ -130,9 +132,10 @@ class Crud extends Form {
 	 * @param string $table_or_query the table name or sql query or function to use in the result
 	 * @param string $module optional module to associate w/ this query
 	 * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
+	 * @param string $account_match optional regex to amtch custid type field names
 	 * @return MyCrud\Crud an instance of the crud system.
 	 */
-	public static function init($table_or_query, $module = 'default', $type = 'sql') {
+	public static function init($table_or_query, $module = 'default', $type = 'sql', $account_match = '') {
 		// @codingStandardsIgnoreStart
 		if (isset($this) && $this instanceof self)
 			$crud = &$this;
@@ -145,6 +148,8 @@ class Crud extends Form {
 		$crud->column_templates[] = ['text' => '', 'align' => 'r'];
 		$crud->set_title();
 		$crud->apply_request_data();
+		if ($account_match != '')
+			$crud->set_custid_match($account_match);
 		if ($type == 'function') {
 			$crud->all_fields = TRUE;
 			$crud->type = $type;
@@ -170,6 +175,21 @@ class Crud extends Form {
 
 	public function set_use_html_filtering($enable = TRUE) {
 		$this->use_html_fitering = $enable;
+		return $this;
+	}
+
+	public function set_custid_match($match = TRUE) {
+		$this->custid_match = $match;
+		return $this;
+	}
+
+	public function set_header($header = TRUE) {
+		$this->header = $header;
+		return $this;
+	}
+
+	public function set_page_limit($page_limit = TRUE) {
+		$this->page_limit = $page_limit;
 		return $this;
 	}
 
@@ -845,7 +865,7 @@ class Crud extends Form {
 													 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
 													 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
 					$db->Record['Field']));
-			if (preg_match('/_custid$/m', $db->Record['Field'])) {
+			if (preg_match($this->custid_match, $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
 				if ($this->limit_custid == TRUE) {
 					if (count($this->search_terms) > 0)
@@ -1390,6 +1410,7 @@ class Crud extends Form {
 		$table->smarty->assign('order_dir', $this->order_dir);
 		$table->smarty->assign('edit_form', $this->order_form());
 		$table->smarty->assign('select_multiple', $this->select_multiple);
+		$table->smarty->assign('header', $this->header);
 		$table->smarty->assign('header_buttons', $this->header_buttons);
 		$table->smarty->assign('title_buttons', $this->title_buttons);
 		$table->smarty->assign('extra_url_args', $this->extra_url_args);

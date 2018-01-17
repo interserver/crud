@@ -5,6 +5,9 @@
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
 <div id="crud" class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
+{if $header != ''}
+	{$header}
+{/if}
 {if sizeof($header_buttons) > 0}
 	<div class="row">
 		<div class="col-md-12">
