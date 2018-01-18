@@ -15,7 +15,7 @@
         "create",
         "bootstrap"
     ],
-    "license": "LGPL-2.1",
+    "license": "LGPL-2.1-or-later",
     "authors": [
         {
             "name": "Joe Huss",
