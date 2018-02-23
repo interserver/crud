@@ -51,7 +51,7 @@ function crud_innertell_pending_orders() {
 	server_dedicated_os,
 	server_dedicated_cp,
 	server_dedicated_raid,
-	location.id AS server_location,
+	assets.id AS server_location,
 	dedicated_cpu.short_desc AS server_dedicated_cpu_desc,
 	dedicated_cpu.monthly_price AS server_dedicated_cpu_cost,
 	dedicated_memory.short_desc AS server_dedicated_memory_desc,
@@ -71,7 +71,7 @@ function crud_innertell_pending_orders() {
 FROM
 	servers
 		LEFT JOIN
-	location ON location.order_id = servers.server_id
+	assets ON assets.order_id = servers.server_id
 		LEFT JOIN
 	dedicated_cpu ON server_dedicated_cpu = dedicated_cpu.id
 		LEFT JOIN
