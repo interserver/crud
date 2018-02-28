@@ -1080,7 +1080,7 @@ class Crud extends Form {
 	 * @return MyCrud\Crud an instance of the crud system.
 	 */
 	public function add_title_search_button($terms, $label = '', $status = 'default', $icon = FALSE) {
-		$this->title_buttons[] = "<a class='btn btn-{$status} btn-lg' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+		$this->title_buttons[] = "<a class='btn btn-{$status}' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != FALSE ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
 		return $this;
 	}
 
