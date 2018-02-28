@@ -465,4 +465,5 @@ jQuery(document).ready(function () {
 	crud_setup_refresh();
 	sortTable(jQuery('.webhosting-list'),'asc');
 	jQuery("[data-toggle=tooltip]").tooltip();
+	$('#crud-table > thead > tr:first div.crud-header-buttons a.active').trigger('click');
 });
