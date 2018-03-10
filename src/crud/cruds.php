@@ -17,7 +17,7 @@ function get_crud_tables() {
 		'modules' => [],
 		'tables' => []
 	];
-	foreach (['domains', 'helpdesk', 'innertell', 'pdns'] as $module)
+	foreach (['domains', 'pdns'] as $module)
 		if (isset($GLOBALS[$module.'_dbh'])) {
 			$dbh = $GLOBALS[$module.'_dbh'];
 			$dbName = $dbh->database;
