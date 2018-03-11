@@ -1,53 +1,54 @@
 {
-    "name": "detain/crud",
-    "type": "library",
-    "description": "Advanced CRUD Class",
-    "keywords": [
-        "db",
-        "database",
-        "sql",
-        "crud",
-        "abstraction",
-        "list",
-        "edit",
-        "delete",
-        "add",
-        "create",
-        "bootstrap"
-    ],
-    "license": "LGPL-2.1-or-later",
-    "authors": [
-        {
-            "name": "Joe Huss",
-            "homepage": "https:\/\/my.interserver.net\/"
-        }
-    ],
-    "config": {
-        "bin-dir": "vendor\/bin",
-        "minimum-stability": "dev"
-    },
-    "repositories": [
-        {
-            "type": "svn",
-            "url": "https:\/\/creation.interserver.net\/svn\/db_abstraction"
-        }
-    ],
-    "require": {
-        "php": ">=5.4.0",
-        "crodas/sql-parser": "^0.1.5",
-        "detain/db_abstraction": ">=1.0.0",
-        "roave/security-advisories": "dev-master"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*",
-        "vlucas/phpdotenv": "*",
-        "codeclimate/php-test-reporter": "dev-master",
-        "satooshi/php-coveralls": "*",
-        "codacy/coverage": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "MyCrud\\": "src/"
-        }
-    }
+	"name": "detain/crud",
+	"type": "library",
+	"description": "Advanced CRUD Class",
+	"keywords": [
+		"db",
+		"database",
+		"sql",
+		"crud",
+		"abstraction",
+		"list",
+		"edit",
+		"delete",
+		"add",
+		"create",
+		"bootstrap"
+	],
+	"license": "LGPL-2.1-or-later",
+	"authors": [
+		{
+			"name": "Joe Huss",
+			"homepage": "https:\/\/my.interserver.net\/"
+		}
+	],
+	"config": {
+		"bin-dir": "vendor\/bin",
+		"minimum-stability": "dev"
+	},
+	"repositories": [
+		{
+			"type": "svn",
+			"url": "https:\/\/creation.interserver.net\/svn\/db_abstraction"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"crodas/sql-parser": "^0.1.5",
+		"detain/db_abstraction": ">=1.0.0",
+		"roave/security-advisories": "dev-master"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "*",
+		"phpunit/phpunit-mock-objects": "*",
+		"vlucas/phpdotenv": "*",
+		"codeclimate/php-test-reporter": "dev-master",
+		"satooshi/php-coveralls": "*",
+		"codacy/coverage": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"MyCrud\\": "src/"
+		}
+	}
 }
