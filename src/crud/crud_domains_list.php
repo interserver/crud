@@ -2,7 +2,7 @@
 /**
  * Domains List
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2017
+ * @copyright 2018
  * @package MyAdmin
  * @category Domains
  */
