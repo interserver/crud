@@ -13,7 +13,7 @@ use \MyCrud\Crud;
  * @return void
  */
 function crud_asset_racks() {
-	\MyCrud\Crud\Crud::init('select * from asset_racks')
+	Crud::init('select * from asset_racks')
 	->set_title('Asset Racks')
 	->go();
 }
