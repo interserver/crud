@@ -20,7 +20,7 @@ function same_domain_accounts() {
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
-		->add_row_button('none.edit_customer3&customer=%id%', 'Edit Customer', 'primary', 'user')
+		->add_row_button('none.edit_customer&customer=%id%', 'Edit Customer', 'primary', 'user')
 		->set_extra_url_args('&id='.$id)
 		->go();
 }

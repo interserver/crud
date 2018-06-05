@@ -2172,7 +2172,7 @@ class Crud extends Form {
 
 	/**
 	 * handles any type of special formatting that has been setup for that field , such as
-	 * displaying a specific field as a link to edit_customer3 or something like that
+	 * displaying a specific field as a link to edit_customer or something like that
 	 *
 	 * @param string $field the name of the field
 	 * @param array $row associative array of field =>value pairs
@@ -2276,7 +2276,7 @@ class Crud extends Form {
 		foreach ($fields as $field) {
 			//$this->log($field, __LINE__, __FILE__, 'debug');
 			if ($field == 'account_lid') {
-				$this->add_filter_link($field, 'index.php?choice=none.edit_customer3&customer=%account_id%', 'Edit Customer', 'view_customer');
+				$this->add_filter_link($field, 'index.php?choice=none.edit_customer&customer=%account_id%', 'Edit Customer', 'view_customer');
 			/*} elseif ($field == 'invoices_paid') {
 				$this->add_filter($field, array('1' => '<i class="fa fa-fw fa-check"></i>', '2' => '<i class="fa fa-fw fa-times"></i>'), 'simple');*/
 			} elseif ($field == $this->settings['PREFIX'].'_name' && $this->admin == TRUE) {
