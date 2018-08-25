@@ -35,8 +35,7 @@
 	"require": {
 		"php": ">=5.4.0",
 		"crodas/sql-parser": "^0.1.5",
-		"detain/db_abstraction": "dev-master",
-		"roave/security-advisories": "dev-master"
+		"detain/db_abstraction": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "*",
@@ -44,7 +43,8 @@
 		"vlucas/phpdotenv": "*",
 		"codeclimate/php-test-reporter": "dev-master",
 		"satooshi/php-coveralls": "*",
-		"codacy/coverage": "dev-master"
+		"codacy/coverage": "dev-master",
+		"roave/security-advisories": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
