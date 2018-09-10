@@ -21,7 +21,8 @@
  * @param bool $nullToMysqlNull
  * @return string the CSV
  */
-function array2Csv( array &$fields, $delimiter = ',', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
+function array2Csv(array &$fields, $delimiter = ',', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false)
+{
 	$out = fopen('php://output', 'wb');
 	fputcsv($out, $row);
 	fclose($out);
@@ -46,16 +47,17 @@ function array2Csv( array &$fields, $delimiter = ',', $enclosure = '"', $enclose
 				$output .= $key.$delimiter.$field.PHP_EOL;
 		}
 	}*/
-	foreach ($fields as $index => $field ) {
+	foreach ($fields as $index => $field) {
 		if ($field === null && $nullToMysqlNull) {
 			$output = '';
 			continue;
 		}
 		// Enclose fields containing $delimiter, $enclosure or whitespace
-		if ($encloseAll || preg_match( "/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field))
+		if ($encloseAll || preg_match("/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field)) {
 			$output .= $index.$delimiter.$enclosure.str_replace($enclosure, $enclosure . $enclosure, $field).$enclosure.PHP_EOL;
-		else
+		} else {
 			$output .= $index.$delimiter.$field.PHP_EOL;
+		}
 	}
 	return $output;
 }

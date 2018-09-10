@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_active_packages()
  * @return void
  */
-function crud_active_packages() {
-		Crud::init("select '__TBLNAME__' as module, count(*) AS packages
+function crud_active_packages()
+{
+	Crud::init("select '__TBLNAME__' as module, count(*) AS packages
  FROM
   __TABLE__
 WHERE

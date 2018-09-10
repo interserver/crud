@@ -14,7 +14,8 @@ use \MyCrud\Crud;
  *
  * @return void
  */
-function crud_backups_list() {
+function crud_backups_list()
+{
 	$module = 'backups';
 	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');

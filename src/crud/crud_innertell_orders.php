@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_innertell_orders()
  * @return void
  */
-function crud_innertell_orders() {
-		Crud::init('select server_id, username, server_hostname, server_status from servers', 'servers')
+function crud_innertell_orders()
+{
+	Crud::init('select server_id, username, server_hostname, server_status from servers', 'servers')
 		->set_title('Dedicated Server Orders')
 		->go();
 }

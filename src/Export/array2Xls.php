@@ -14,7 +14,8 @@
  * @param $headers
  * @return string the XLS
  */
-function array2Xls(array $fields, $headers) {
+function array2Xls(array $fields, $headers)
+{
 	function_requirements('phpExcellCommon');
 	return phpExcellCommon($fields, 'Excel5', $headers);
 }

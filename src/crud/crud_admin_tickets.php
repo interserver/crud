@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_admin_tickets()
  * @return void
  */
-function crud_admin_tickets() {
-		Crud::init("select swtickets.subject
+function crud_admin_tickets()
+{
+	Crud::init("select swtickets.subject
 , swtickets.ticketid
 , swtickets.ticketmaskid
 , swtickets.lastreplier

@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_renewals()
  * @return void
  */
-function crud_renewals() {
-		Crud::init('get_renewals', 'default', 'function')
+function crud_renewals()
+{
+	Crud::init('get_renewals', 'default', 'function')
 		->set_title('Renewals')
 		->go();
 }

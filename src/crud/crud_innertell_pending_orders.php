@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_innertell_pending_orders()
  * @return void
  */
-function crud_innertell_pending_orders() {
-		Crud::init('SELECT
+function crud_innertell_pending_orders()
+{
+	Crud::init('SELECT
 	servers.server_id,
 	server_custid,
 	server_ccname,

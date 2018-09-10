@@ -13,11 +13,12 @@ use \MyCrud\Crud;
  *
  * @return void
  */
-function crud_ssl_list() {
+function crud_ssl_list()
+{
 	$module = 'ssl';
 	$settings = \get_module_settings($module);
 	page_title($settings['TITLE'].' List');
-		Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
+	Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')

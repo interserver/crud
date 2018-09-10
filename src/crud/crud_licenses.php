@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_licenses()
  * @return void
  */
-function crud_licenses() {
-		Crud::init('select * from licenses', 'licenses')
+function crud_licenses()
+{
+	Crud::init('select * from licenses', 'licenses')
 		->set_title('Licenses')
 		->go();
 }

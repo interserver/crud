@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_queue_log()
  * @return void
  */
-function crud_queue_log() {
-		Crud::init('select * from queue_log')
+function crud_queue_log()
+{
+	Crud::init('select * from queue_log')
 		->set_title('Queue Log')
 		->go();
 }

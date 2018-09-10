@@ -12,7 +12,8 @@ use \MyCrud\Crud;
  * crud_view_invoices()
  * @return void
  */
-function crud_view_invoices() {
+function crud_view_invoices()
+{
 	$crud = Crud::init("select
 date_format(invoices_date, '%Y-%m-%d') as invoices_date,
 concat(
@@ -81,12 +82,13 @@ if (invoices_type = 1,
 ) as invoices_paid,
 invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__'")
 		->enable_labels()
-		->set_use_html_filtering(FALSE)
+		->set_use_html_filtering(false)
 		->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
 		->set_title('View Invoices List');
 	function_requirements('has_acl');
-	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config'))
+	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config')) {
 		$crud->disable_edit()
 			->disable_delete();
+	}
 	$crud->go();
 }

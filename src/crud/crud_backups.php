@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_backups()
  * @return void
  */
-function crud_backups() {
-		Crud::init('select * from backups', 'backups')
+function crud_backups()
+{
+	Crud::init('select * from backups', 'backups')
 		->set_title('Backups')
 		->go();
 }

@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_user_log()
  * @return void
  */
-function crud_user_log() {
-		Crud::init('select * from user_log')
+function crud_user_log()
+{
+	Crud::init('select * from user_log')
 		->set_title('User Log')
 		->go();
 }

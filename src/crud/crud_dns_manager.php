@@ -12,7 +12,8 @@ use \MyCrud\Crud;
  * crud_dns_manager()
  * @return void
  */
-function crud_dns_manager() {
+function crud_dns_manager()
+{
 	if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
 		function_requirements('validIp');
 		if (isset($GLOBALS['tf']->variables->request['ip']) && validIp($GLOBALS['tf']->variables->request['ip'])) {

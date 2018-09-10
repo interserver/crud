@@ -12,12 +12,13 @@ use \MyCrud\Crud;
  * returns an array of all the modules and tables
  *
  */
-function get_crud_tables() {
+function get_crud_tables()
+{
 	$return = [
 		'modules' => [],
 		'tables' => []
 	];
-	foreach (['domains', 'pdns'] as $module)
+	foreach (['domains', 'pdns'] as $module) {
 		if (isset($GLOBALS[$module.'_dbh'])) {
 			$dbh = $GLOBALS[$module.'_dbh'];
 			$dbName = $dbh->database;
@@ -30,6 +31,7 @@ function get_crud_tables() {
 				$return['tables'][$module][] = $table;
 			}
 		}
+	}
 	return $return;
 }
 
@@ -38,7 +40,8 @@ function get_crud_tables() {
  *
  * @return array an array of the various crud pages sorted into bootstrap levels indicating thier working level
  */
-function get_crud_funcs() {
+function get_crud_funcs()
+{
 	$functions = [
 		'success' => [
 			'admins' => ['function' => 'admins', 'title' => 'Administrator Role Assignments'],
@@ -117,18 +120,20 @@ function get_crud_funcs() {
  *
  * @return bool
  */
-function cruds() {
+function cruds()
+{
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
 		dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
-		return FALSE;
+		return false;
 	}
 	add_js('bootstrap');
 	page_title('CRUDs List');
 	$functions = get_crud_funcs();
 	$sizes = [];
-	foreach ($functions as $level => $functionsArray)
+	foreach ($functions as $level => $functionsArray) {
 		$sizes[$level] = count($functionsArray);
+	}
 	add_output("
 	<style type='text/css'>
 		.cruds.list-group {
@@ -199,8 +204,9 @@ function cruds() {
 			</a>";
 		}
 		$idx++;
-		if ($idx == count($levels))
+		if ($idx == count($levels)) {
 			$idx = 0;
+		}
 	}
 	$key = array_reverse($key);
 	add_output("

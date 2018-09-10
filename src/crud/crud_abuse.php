@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_abuse()
  * @return void
  */
-function crud_abuse() {
-		Crud::init('select * from abuse')
+function crud_abuse()
+{
+	Crud::init('select * from abuse')
 		->set_title('Abuse')
 		->go();
 }

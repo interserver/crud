@@ -12,8 +12,9 @@ use \MyCrud\Crud;
  * crud_form_manager()
  * @return void
  */
-function crud_form_manager() {
-		Crud::init('select * from forms')
+function crud_form_manager()
+{
+	Crud::init('select * from forms')
 		->set_title('Form Manager')
 		->go();
 }

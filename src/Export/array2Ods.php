@@ -14,7 +14,8 @@
  * @param $headers
  * @return string the XLS
  */
-function array2Ods(array $fields, $headers) {
+function array2Ods(array $fields, $headers)
+{
 	function_requirements('phpExcellCommon');
 	return phpExcellCommon($fields, 'OpenDocument', $headers);
 }

@@ -18,7 +18,8 @@
  * @throws \PHPExcel_Reader_Exception
  * @throws \PHPExcel_Writer_Exception
  */
-function phpExcellCommon(array &$rows, $type, $headers) {
+function phpExcellCommon(array &$rows, $type, $headers)
+{
 	/** Include PHPExcel */
 	require_once INCLUDE_ROOT.'/../vendor/phpoffice/phpexcel/Classes/PHPExcel.php';
 	// Create new PHPExcel object
@@ -57,8 +58,9 @@ function phpExcellCommon(array &$rows, $type, $headers) {
 	*/
 	// Rename worksheet
 	//$objPHPExcel->getActiveSheet()->setTitle('Simple');
-	if ($type == 'PDF')
+	if ($type == 'PDF') {
 		$objPHPExcel->getActiveSheet()->setShowGridlines(false);
+	}
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$objPHPExcel->setActiveSheetIndex(0);
 	if ($type == 'PDF') {
@@ -83,8 +85,9 @@ function phpExcellCommon(array &$rows, $type, $headers) {
 			);
 		}
 	}
-	foreach ($headers as $header)
+	foreach ($headers as $header) {
 		header($header);
+	}
 	$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, $type);
 	$objWriter->save('php://output');
 }

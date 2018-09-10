@@ -11,12 +11,13 @@ namespace MyCrud;
 /**
  *Crud class to handle iterating over the output of a local function and give an interface similar to the db class
  */
-Class CrudFunctionIterator {
+class CrudFunctionIterator
+{
 	public $function;
 	public $result;
 	public $size;
 	public $idx = -1;
-	public $ran = FALSE;
+	public $ran = false;
 	public $Record;
 	public $keys;
 
@@ -25,7 +26,8 @@ Class CrudFunctionIterator {
 	 *
 	 * @param $function
 	 */
-	public function __construct($function) {
+	public function __construct($function)
+	{
 		$this->function = $function;
 	}
 
@@ -34,10 +36,11 @@ Class CrudFunctionIterator {
 	 *
 	 * @return void
 	 */
-	public function run() {
+	public function run()
+	{
 		function_requirements($this->function);
 		$this->result = call_user_func($this->function);
-		$this->ran = TRUE;
+		$this->ran = true;
 		$this->size = count($this->result);
 		$this->keys = array_keys($this->result);
 	}
@@ -48,14 +51,16 @@ Class CrudFunctionIterator {
 	 * @param int $resultType the result type, can pass MYSQL_ASSOC, MYSQL_NUM, and other stuff
 	 * @return bool whether it was able to get an array or not
 	 */
-	 public function next_record($resultType) {
-		if ($this->ran == FALSE)
+	public function next_record($resultType)
+	{
+		if ($this->ran == false) {
 			$this->run();
+		}
 		$this->idx++;
-		if ($this->idx >= $this->size)
-			return FALSE;
+		if ($this->idx >= $this->size) {
+			return false;
+		}
 		$this->Record = $this->result[$this->keys[$this->idx]];
 		return is_array($this->Record);
 	}
-
 }
