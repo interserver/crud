@@ -1523,6 +1523,7 @@ class Crud extends Form
 		$table->smarty->assign('header_buttons', $this->header_buttons);
 		$table->smarty->assign('title_buttons', $this->title_buttons);
 		$table->smarty->assign('extra_url_args', $this->extra_url_args);
+		$table->smarty->assign('module', $this->module);
 		if ($this->edit_row == true) {
 			$this->buttons[] = $this->edit_button;
 		}

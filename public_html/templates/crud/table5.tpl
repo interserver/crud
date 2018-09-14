@@ -17,6 +17,9 @@
 					{$button}
 {/foreach}
 				</div>
+				{if isset($module) && $module == 'backups'}
+				<p>(For pricing and other information: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backup/">https://www.interserver.net/backup/</a>)</p>
+				{/if}
 			</div>
 		</div>
 	</div>
