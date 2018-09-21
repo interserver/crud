@@ -32,7 +32,7 @@ a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
 }
 .crud {
 	margin-bottom: 10px;
-	max-width: 1400px;
+	max-width: 1200px;
 }
 .crud-header-buttons {
 	position: absolute;
