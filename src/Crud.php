@@ -752,7 +752,7 @@ class Crud extends Form
 		///echo _debug_array($this->queries, TRUE);
 		//echo _debug_array($queries[0]->getJoins(), TRUE);
 		$joins = $queries[0]->getJoins();
-		if (count($joins) > 0) {
+		if (is_array($joins) && count($joins) > 0) {
 			foreach ($joins as $join => $joinArray) {
 				$table = $joinArray->getTable();											// accounts_ext, vps_masters
 				$table_alias = $joinArray->getAlias();
@@ -846,20 +846,24 @@ class Crud extends Form
 						$fType = $eMembers[0]->getType();
 						$fMembers = $eMembers[0]->getMembers();
 					} else {
-						if (count($fMembers) > 1) {
+						if (isset($fMembers) && count($fMembers) > 1) {
 							$fTable = $fMembers[0];
 							$fOrigField = $fMembers[1];
 						//$origField = $table.'.'.$origField;
 						} else {
 							$fTable = false;
-							$fOrigField = $fMembers[0];
+							$fOrigField = isset($fMembers) ? $fMembers[0] : false;
 						}
 						if (count($colArray) > 1) {
 							$field = $colArray[1];
 						} else {
 							$field = $origField;
 						}
-						$fields[$field] = ($table === false ? $origField : $table.'.'.$origField);
+						if((!isset($table) || $table === false) && isset($origField))
+							$fields[$field] = $origField;
+						elseif(isset($table) && isset($origField))
+							$fields[$field] = $table.'.'.$origField;
+						//$fields[$field] = $table === false ? $origField : $table.'.'.$origField;
 					}
 				}
 				//echo '<pre style="text-align: left;">';var_dump($exprs);echo '</pre>';
@@ -1459,7 +1463,7 @@ class Crud extends Form
 			$table->set_row_options('id="itemrow'.$idx.'"');
 			foreach ($record as $field =>$value) {
 				$table->add_field($this->decorate_field($field, $record));
-				if ($this->input_types[$field][0] == 'select_multiple') {
+				if (isset($this->input_types[$field]) && $this->input_types[$field][0] == 'select_multiple') {
 					$record[$field] = explode(',', $value);
 				}
 			}
