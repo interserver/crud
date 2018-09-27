@@ -1,15 +1,15 @@
 <?php
 /**
- * Domains List
+ * Domains List.
  * @author Joe Huss <detain@interserver.net>
  * @copyright 2018
- * @package MyAdmin
+ * 
  * @category Domains
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
- * Displays a list of all the Domains's available to your current session
+ * Displays a list of all the Domains's available to your current session.
  *
  * @return void
  */
@@ -22,9 +22,9 @@ function crud_domains_list()
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title($settings['TITLE'].' List')
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_new_'.$settings['PREFIX']), 'Order', 'primary', 'shopping-cart', 'Order '.$settings['TITLE'], 'client')
-		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], 'Active', 'info active')
-		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], 'Pending', 'info')
-		->add_title_search_button([[$settings['PREFIX'].'_status','in',['canceled','expired']]], 'Expired', 'info')
+		->add_title_search_button([[$settings['PREFIX'].'_status', '=', 'active']], 'Active', 'info active')
+		->add_title_search_button([[$settings['PREFIX'].'_status', 'in', ['pending','pending-setup','pend-approval']]], 'Pending', 'info')
+		->add_title_search_button([[$settings['PREFIX'].'_status', 'in',['canceled','expired']]], 'Expired', 'info')
 		->add_title_search_button([], 'All', 'info')
 		->disable_delete()
 		->disable_edit()
