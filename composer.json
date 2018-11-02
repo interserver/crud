@@ -43,9 +43,8 @@
 		"vlucas/phpdotenv": "*",
 		"codeclimate/php-test-reporter": "dev-master",
 		"satooshi/php-coveralls": "*",
-		"codacy/coverage": "dev-master",
-		"roave/security-advisories": "dev-master"
-	},
+		"codacy/coverage": "dev-master"
+    },
 	"autoload": {
 		"psr-4": {
 			"MyCrud\\": "src/"
