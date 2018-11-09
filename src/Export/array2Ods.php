@@ -17,5 +17,5 @@
 function array2Ods(array $fields, $headers)
 {
 	function_requirements('phpExcellCommon');
-	return phpExcellCommon($fields, 'OpenDocument', $headers);
+	return phpExcellCommon($fields, 'Ods', $headers);
 }

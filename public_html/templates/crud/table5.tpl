@@ -65,7 +65,7 @@
 									<ul class="dropdown-menu" role="menu">
 {foreach item=format_data key=ext from=$export_formats}
 										<li role="presentation" data-type="{$ext}">
-											<a href="" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this);">
+											<a href="#" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
 												<img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
 											</a>
 										</li>

@@ -167,7 +167,6 @@ function get_crud_url() {
  * @param that
  */
 function crud_export(that) {
-	event.preventDefault();
 	var obj = jQuery(that);
 	var parent = obj.parent();
 	var format = parent.attr('data-type');

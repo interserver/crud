@@ -17,5 +17,5 @@
 function array2Xls(array $fields, $headers)
 {
 	function_requirements('phpExcellCommon');
-	return phpExcellCommon($fields, 'Excel5', $headers);
+	return phpExcellCommon($fields, 'Xls', $headers);
 }

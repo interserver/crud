@@ -17,5 +17,5 @@
 function array2Xlsx(array $fields, $headers)
 {
 	function_requirements('phpExcellCommon');
-	return phpExcellCommon($fields, 'Excel2007', $headers);
+	return phpExcellCommon($fields, 'Xlsx', $headers);
 }
