@@ -1,5 +1,5 @@
 {literal}
-<style type="text/css">
+<style>
 	.filterable {
 		margin-top: 15px;
 	}
@@ -80,7 +80,7 @@
 	</div>
 </div>
 {literal}
-<script type="text/javascript">
+<script>
 	/*
 	Please consider that the JS part isn't production ready at all, I just code it to show the concept of merging filters and titles together !
 	*/

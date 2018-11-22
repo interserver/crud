@@ -271,7 +271,7 @@
 	</div>
 </div>
 {/if}
-<script type="text/javascript">
+<script>
 	var crud_rows = {$rows|json_encode};
 	var crud_primary_key = "{$primary_key}";
 	var crud_page_offset = {$page_offset};
@@ -283,5 +283,5 @@
 	var crud_search_terms = [];
 	var crud_total_count = "{$total_rows}";
 </script>
-<script type="text/javascript" src="/js/crud.js"></script>
+<script src="/js/crud.js"></script>
 <link rel="stylesheet" href="/css/crud_table5.css">

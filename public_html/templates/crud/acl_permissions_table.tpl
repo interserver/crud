@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
 	$(document).ready(function () {
 		$("#permissions_check_all").on("click", function () {
 			$("input.permission_checkbox").prop("checked", $(this).is(":checked"));

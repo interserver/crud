@@ -1,5 +1,5 @@
 {literal}
-<style type="text/css">
+<style>
 	.trash { color: #d15b47; }
 	.flag { color: #f89406; }
 	.panel-body { padding:0; }
