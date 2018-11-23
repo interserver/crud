@@ -33,7 +33,7 @@
  *
  * @author Joe Huss <detain@interserver.net>
  * @version $Revision$
- * @copyright 2018
+ * @copyright 2019
  * @package MyAdmin
  * @category Billing
  * @TODO Add API Interface to this
