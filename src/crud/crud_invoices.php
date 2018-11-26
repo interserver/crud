@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_invoices()
 {
 	Crud::init('select * from invoices')
-		->set_title('Invoices')
+		->set_title(_('Invoices'))
 		->go();
 }

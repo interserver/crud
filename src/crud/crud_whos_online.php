@@ -24,6 +24,6 @@ WHERE session_id IS NOT NULL
 AND account_id IS NOT NULL
 AND access_id IS NOT NULL")
 		->set_order('history_id', 'desc')
-		->set_title('Whos Online')
+		->set_title(_('Whos Online'))
 		->go();
 }

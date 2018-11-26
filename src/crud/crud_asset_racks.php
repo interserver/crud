@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_asset_racks()
 {
 	Crud::init('select * from asset_racks')
-	->set_title('Asset Racks')
+	->set_title(_('Asset Racks'))
 	->go();
 }

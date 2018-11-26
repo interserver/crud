@@ -16,6 +16,6 @@ function crud_vlans()
 {
 	add_output(alert('TODO', 'Get Adding a VLAN working well, maybe some totals/stats type bottom row'));
 	Crud::init('select * from vlans', 'domains')
-		->set_title('IP VLAN Manager')
+		->set_title(_('IP VLAN Manager'))
 		->go();
 }

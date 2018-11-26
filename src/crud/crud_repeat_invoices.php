@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_repeat_invoices()
 {
 	Crud::init('select * from repeat_invoices')
-		->set_title('Repeat Invoices')
+		->set_title(_('Repeat Invoices'))
 		->go();
 }

@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_domains()
 {
 	Crud::init('select * from domains', 'domains')
-		->set_title('Domains')
+		->set_title(_('Domains'))
 		->go();
 }

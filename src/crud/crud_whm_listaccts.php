@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_whm_listaccts()
 {
 	Crud::init('whm_get_accounts', 'default', 'function')
-		->set_title('Accounts List')
+		->set_title(_('Accounts List'))
 		->go();
 }

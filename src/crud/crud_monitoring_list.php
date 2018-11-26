@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_monitoring_list()
 {
 	Crud::init('get_monitoring_data', 'default', 'function')
-		->set_title('Monitored Systems')
+		->set_title(_('Monitored Systems'))
 		->go();
 }

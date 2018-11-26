@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_paypal_transactions()
 {
 	Crud::init('select * from paypal')
-		->set_title('Paypal Transactions')
+		->set_title(_('Paypal Transactions'))
 		->go();
 }

@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_session_log()
 {
 	Crud::init('select * from session_log')
-		->set_title('session log')
+		->set_title(_('session log'))
 		->go();
 }

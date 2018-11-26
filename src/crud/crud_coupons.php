@@ -16,6 +16,6 @@ function crud_coupons()
 {
 	add_output(alert('TODO', 'Add Adding Coupons, and improve the display'));
 	Crud::init('select id,customer,usable,applies,type,amount,name,onetime,account_lid from coupons left join accounts on account_id=customer')
-		->set_title('Coupons')
+		->set_title(_('Coupons'))
 		->go();
 }

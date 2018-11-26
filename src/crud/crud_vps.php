@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_vps()
 {
 	Crud::init('select * from vps', 'vps')
-		->set_title('Virtual Private Servers')
+		->set_title(_('Virtual Private Servers'))
 		->go();
 }

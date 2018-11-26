@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_licenses()
 {
 	Crud::init('select * from licenses', 'licenses')
-		->set_title('Licenses')
+		->set_title(_('Licenses'))
 		->go();
 }

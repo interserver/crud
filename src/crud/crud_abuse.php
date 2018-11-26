@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_abuse()
 {
 	Crud::init('select * from abuse')
-		->set_title('Abuse')
+		->set_title(_('Abuse'))
 		->go();
 }

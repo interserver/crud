@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_form_manager()
 {
 	Crud::init('select * from forms')
-		->set_title('Form Manager')
+		->set_title(_('Form Manager'))
 		->go();
 }

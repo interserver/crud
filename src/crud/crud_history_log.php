@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_history_log()
 {
 	Crud::init('select * from history_log')
-		->set_title('History Log')
+		->set_title(_('History Log'))
 		->go();
 }

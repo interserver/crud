@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_server_billing_stats()
 {
 	Crud::init('get_server_billing_stats', 'default', 'function')
-		->set_title('Server Billing Stats')
+		->set_title(_('Server Billing Stats'))
 		->go();
 }

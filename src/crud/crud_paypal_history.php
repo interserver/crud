@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_paypal_history()
 {
 	Crud::init('Get_PayPal_History')
-		->set_title('Paypal History')
+		->set_title(_('Paypal History'))
 		->go();
 }

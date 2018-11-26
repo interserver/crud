@@ -36,7 +36,7 @@ function crud_dns_manager()
 		}
 	}
 	Crud::init("select domains.id, domains.name, records.content from domains left join records on domains.id=records.domain_id and records.type='A' and (records.name=domains.name or records.name='')", 'pdns', 'sql', '/^account$/m')
-		->set_title('DNS Manager')
+		->set_title(_('DNS Manager'))
 		->disable_delete()
 		->disable_edit()
 		->enable_labels()

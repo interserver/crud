@@ -15,6 +15,6 @@ use \MyCrud\Crud;
 function crud_fantastico_list()
 {
 	Crud::init('get_fantastico_list', 'licenses', 'function')
-		->set_title('Fantastico License List')
+		->set_title(_('Fantastico License List'))
 		->go();
 }

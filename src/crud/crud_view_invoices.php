@@ -84,7 +84,7 @@ invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id 
 		->enable_labels()
 		->set_use_html_filtering(false)
 		->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
-		->set_title('View Invoices List');
+		->set_title(_('View Invoices List'));
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config')) {
 		$crud->disable_edit()

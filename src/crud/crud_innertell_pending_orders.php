@@ -89,6 +89,6 @@ FROM
 	dedicated_os ON server_dedicated_os = dedicated_os.id
 		LEFT JOIN
 	dedicated_cp ON server_dedicated_cp = dedicated_cp.id', 'servers')
-		->set_title('Pending Dedicated Server Orders')
+		->set_title(_('Pending Dedicated Server Orders'))
 		->go();
 }

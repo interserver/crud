@@ -60,6 +60,6 @@ WHERE
 								 ON swstaffassigns.staffid = swstaff.staffid
 								 WHERE
 								   swstaff.email = '__LOGIN__')", 'helpdesk')
-		->set_title('Admin Tickets')
+		->set_title(_('Admin Tickets'))
 		->go();
 }
