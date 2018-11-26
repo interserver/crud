@@ -18,7 +18,7 @@
 {/foreach}
 				</div>
 				{if isset($module) && $module == 'backups'}
-				<p>(For pricing and more information: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>)</p>
+				<p>({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>)</p>
 				{/if}
 			</div>
 		</div>
@@ -52,13 +52,13 @@
 {if $print_button == true}
 									<button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
 										<i class="fa fa-print crud-icon"></i>
-										Print
+										{t}Print{/t}
 									</button>
 {/if}
 {if $export_button == true}
 									<button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
 										<i class="fa fa-download crud-icon"></i>
-										Export
+										{t}Export{/t}
 										<span class="caret"></span>
 										<span class="sr-only">{t}Toggle Dropdown{/t}</span>
 									</button>
@@ -141,15 +141,15 @@
 {/foreach}
 					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href=""><span class="glyphicon glyphicon-chevron-right"></span></a></li>
 				</ul>
-				<div class="btn-group row-counts nav-rows " role="group"  aria-label="Rows Per Page">
+				<div class="btn-group row-counts nav-rows " role="group"  aria-label="{t}Rows Per Page{/t}">
 {foreach from=$page_limits item=$limit}
 {if $limit <= $total_rows}
-					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}All{else}{$limit}{/if}</button>
+					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
 {/if}
 {/foreach}
 				</div>
 				<a id="crud-search" class="btn btn-sm btn-primary crud-search" href="" title="Search" data-tile="Search">
-					<span class="fa fa-search fa-fw"></span> Search
+					<span class="fa fa-search fa-fw"></span> {t}Search{/t}
 				</a>
 				<span id="crud-search-more" class="crud-search form-inline" style="display: none;">
 					<input class="crud-searchdata crud-search-active input-small form-control" name="search" data-type="text" type="text" value="">
@@ -187,12 +187,12 @@
 {if $admin == true || $refresh_button == true}
 				<span class="btn-group nav-rows">
 {if $admin == true}
-					<a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="Debug Output" data-title="Debug Output" >
+					<a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
 						<span class="fa fa-bug fa-fw"></span>
 					</a>
 {/if}
 {if $refresh_button == true}
-					<a class="btn btn-sm btn-info refresh" href="" title="Refresh Table" data-title="Refresh Table" >
+					<a class="btn btn-sm btn-info refresh" href="" title="{t}Refresh Table{/t}" data-title="{t}Refresh Table{/t}" >
 						<span class="fa fa-refresh fa-fw"></span>
 					</a>
 {/if}
@@ -210,9 +210,9 @@
 		<div class="modal-content">
 			<form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=edit{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="close" data-dismiss="modal" aria-label="{t}Close{/t}"><span aria-hidden="true">&times;</span></button>
 				<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button> -->
-				<h4 class="modal-title custom_align" id="editModalLabel">Edit {$title} Details</h4>
+				<h4 class="modal-title custom_align" id="editModalLabel">{t}Edit{/t} {$title} {t}Details{/t}</h4>
 			</div>
 			<div class="modal-body">
 				{$edit_form}
@@ -243,7 +243,7 @@
 					</div>
 				</div>
 				<div class="error_message" style="text-align: left;"></div>
-				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this Record?</div>
+				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> {t}Are you sure you want to delete this Record?{/t}</div>
 			</div>
 			<div class="modal-footer ">
 				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Yes{/t}</button>
