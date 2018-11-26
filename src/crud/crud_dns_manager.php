@@ -40,7 +40,7 @@ function crud_dns_manager()
 		->disable_delete()
 		->disable_edit()
 		->enable_labels()
-		->set_labels(['id' => 'ID', 'name' => 'Domain Name', 'content' => 'IP Address'])
+		->set_labels(['id' => _('ID'), 'name' => _('Domain Name'), 'content' => _('IP Address')])
 		->set_header('
 <form>
 	<input type="hidden" name="choice" value="none.crud_dns_manager">
@@ -48,16 +48,16 @@ function crud_dns_manager()
 	<div class="row">
 		<div class="col-md-2 col-md-offset-2">
 			<div class="printer-hidden" style="vertical-align: middle;">
-				<label style="margin-top: 5px;">Add Domain to DNS</label>
+				<label style="margin-top: 5px;">'._('Add Domain to DNS').'</label>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="printer-hidden">
 				<div class="input-group">
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-default" aria-label="Domain Name" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
+						<button type="button" class="btn btn-default" aria-label="'._('Domain Name').'" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
 					</div>
-					<input class="form-control" aria-label="Domain Name" placeholder="Domain like mycoolsite.com" name="domain">
+					<input class="form-control" aria-label="'._('Domain Name').'" placeholder="'._('Domain like').' mycoolsite.com" name="domain">
 				</div>
 			</div>
 		</div>
@@ -65,21 +65,21 @@ function crud_dns_manager()
 			<div class="printer-hidden">
 				<div class="input-group">
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-default" aria-label="IP Address" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
+						<button type="button" class="btn btn-default" aria-label="'._('IP Address').'" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
 					</div>
-					<input class="form-control" aria-label="IP Address" placeholder="IP Address like 0.0.0.0" name="ip">
+					<input class="form-control" aria-label="'._('IP Address').'" placeholder="'._('IP Address like').' 0.0.0.0" name="ip">
 				</div>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="printer-hidden">
-				<input class="form-control btn btn-default" type="submit" value="Add DNS Entry">
+				<input class="form-control btn btn-default" type="submit" value="'._('Add DNS Entry').'">
 			</div>
 		</div>
 	</div>
 </form>
 ')
-		->add_row_button('none.basic_dns_editor&edit=%id%', 'Edit DNS Records for this Domain', 'primary', 'cog')
-		->add_row_button('none.dns_delete&id=%id%', 'Delete this Domain and its Records from DNS', 'danger', 'trash')
+		->add_row_button('none.basic_dns_editor&edit=%id%', _('Edit DNS Records for this Domain'), 'primary', 'cog')
+		->add_row_button('none.dns_delete&id=%id%', _('Delete this Domain and its Records from DNS'), 'danger', 'trash')
 		->go();
 }
