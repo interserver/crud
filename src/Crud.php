@@ -111,8 +111,8 @@ class Crud extends Form
 	public $header_buttons = [];
 	public $title_buttons = [];
 	public $fluid_container = false;
-	public $edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="Edit"><i class="fa fa-fw fa-pencil"></i></button>';
-	public $delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="Delete"><i class="fa fa-fw fa-trash"></i></button>';
+	public $edit_button = '';
+	public $delete_button = '';
 	public $extra_url_args = '';
 	public $request = [];
 	public $admin = false;
@@ -127,6 +127,8 @@ class Crud extends Form
 	 */
 	public function __construct()
 	{
+            $this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
+            $this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
 	}
 
 	/**
@@ -2216,7 +2218,7 @@ class Crud extends Form
 		$table->set_method('get');
 		$table->set_options('width="500" cellpadding=5');
 		$table->set_form_options('id="orderform" onsubmit="document.getElementsByName('."'confirm'".')[0].disabled = TRUE; return TRUE;"');
-		$table->set_title($this->settings['TITLE'].' Order Summary');
+		$table->set_title($this->settings['TITLE'].' '._('Order Summary'));
 		if ($this->admin == true && $this->limit_custid == true) {
 			$table->add_hidden('custid', $this->custid);
 		}
@@ -2283,8 +2285,7 @@ class Crud extends Form
 			'pend_timestamp' => mysql_now(),
 			'pend_custid' => $this->custid,
 			'pend_data' => myadmin_stringify($this->set_vars)
-		]
-						 ), __LINE__, __FILE__);
+		]), __LINE__, __FILE__);
 		//				$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		$this->continue = false;
 	}
