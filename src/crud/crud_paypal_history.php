@@ -14,7 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_paypal_history()
 {
-	Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid ORDER BY paypal.`when` DESC')
+	Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid')
 		->set_title(_('Paypal History'))
+		->set_order('history_timestamp', 'desc')
 		->go();
 }
