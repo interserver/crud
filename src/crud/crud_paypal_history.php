@@ -19,5 +19,7 @@ function crud_paypal_history()
 		->enable_labels()
 		->set_labels(['owner' => 'Owner', 'txn_id' => 'Transaction ID', 'payment_status' => 'Status', 'history_timestamp' => 'When', 'payer_email' => 'Email', 'payment_gross' => 'Amount'])
 		->set_order('history_timestamp', 'desc')
+		->disable_edit()
+		->disable_delete()
 		->go();
 }
