@@ -53,6 +53,7 @@ function get_crud_funcs()
 			'vps_list' => ['function' => 'vps_list', 'title' => 'VPS List'],
 			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List'],
 			'dns_manager' => ['function' => 'crud_dns_manager', 'title' => 'DNS Manager'],
+			'paypal_history' => ['function' => 'crud_paypal_history', 'title' => 'Paypal History'],
 		],
 		'info' => [
 			'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
@@ -81,7 +82,6 @@ function get_crud_funcs()
 			'licenses' => ['function' => 'crud_licenses', 'title' => 'Licenses'],
 			'monitoring_list' => ['function' => 'crud_monitoring_list', 'title' => 'Monitored Systems'],
 			'packages' => ['function' => 'crud_packages', 'title' => 'Your Packages'],
-			'paypal_history' => ['function' => 'crud_paypal_history', 'title' => 'Paypal History'],
 			'paypal_transactions' => ['function' => 'crud_paypal_transactions', 'title' => 'Paypal Transactions'],
 			'queue_log' => ['function' => 'crud_queue_log', 'title' => 'Queue Log'],
 			'renewals' => ['function' => 'crud_renewals', 'title' => 'Renewals'],
