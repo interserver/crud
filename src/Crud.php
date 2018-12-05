@@ -761,7 +761,7 @@ class Crud extends Form
 				//var_export($table_alias);
 				$join_type = $joinArray->getType();										// LEFT JOIN
 				//echo "Table {$table} Join Type {$join_type}<br>";
-				if (!in_array($join_type, ['LEFT JOIN', 'LEFT OUTER JOIN'])) {
+				if (!in_array($join_type, ['INNER JOIN', 'LEFT JOIN', 'LEFT OUTER JOIN'])) {
 					$this->log("Don't know how to handle Join Type {$join_type}", __LINE__, __FILE__, 'warning');
 				} else {
 					$this->join_handler($table, $joinArray->getCondition());
