@@ -16,6 +16,7 @@ function crud_dns_manager()
 {
 	if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
 		function_requirements('validIp');
+		function_requirements('add_dns_domain');
 		if (isset($GLOBALS['tf']->variables->request['ip']) && validIp($GLOBALS['tf']->variables->request['ip'])) {
 			$ip = trim($GLOBALS['tf']->variables->request['ip']);
 			if (isset($GLOBALS['tf']->variables->request['domain']) && trim($GLOBALS['tf']->variables->request['domain']) != '') {
