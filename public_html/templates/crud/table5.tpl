@@ -4,6 +4,17 @@
 {if isset($row_buttons)}
 	{assign var=titcolspan value=$titcolspan + 1}
 {/if}
+<link rel="stylesheet" type="text/css" href="css/breadcrum.css">
+<div class="container-fluid">
+	<div class="row" style="margin-top: -10px;">
+		<div class="col-md-12">
+			<div class="breadcrumb">
+				<a href="/">Home</a>
+				<a class="active text-capitalize">{$module}</a>
+			</div>
+		</div>
+	</div>
+</div>
 <div id="crud" class="crud {if $fluid_container == true}container-fluid{else}container{/if}">
 {if $header != ''}
 	{$header}
