@@ -6,7 +6,7 @@
 {/if}
 <link rel="stylesheet" type="text/css" href="css/breadcrum.css">
 <div class="container-fluid">
-	<div class="row" style="margin-top: -10px;">
+	<div class="row" style="margin-top: -15px;">
 		<div class="col-md-12">
 			<div class="breadcrumb">
 				<a href="/">Home</a>
