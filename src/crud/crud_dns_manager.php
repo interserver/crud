@@ -30,7 +30,7 @@ function crud_dns_manager()
 					$domain = trim($domain);
 					if ($domain != '') {
 						$result = add_dns_domain($domain, $ip);
-						add_output($result['status_text']);
+						add_output('<div class="container alert alert-danger">'.$result['status_text'].'</div>');
 					}
 				}
 			}
