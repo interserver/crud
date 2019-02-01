@@ -8,7 +8,7 @@
 <div class="container-fluid">
 	<div class="row" style="margin-top: -15px;">
 		<div class="col-md-12">
-			<div class="breadcrumb">
+			<div class="breadcrumb" style="background: transparent;">
 				<a href="/">Home</a>
 				<a class="active text-capitalize">{$module}</a>
 			</div>
