@@ -181,7 +181,8 @@ function cruds()
 				</a>");
 		}
 	}
-	add_output('
+	add_output(
+		'
 			</div>
 		</div>
 	</div>'
@@ -209,7 +210,8 @@ function cruds()
 		}
 	}
 	$key = array_reverse($key);
-	add_output("
+	add_output(
+		"
 	<div class='panel panel-primary cruds list-group'>
 		<div class='panel-heading' role='tab' id='headingTwo'>
 				<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>

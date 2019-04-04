@@ -127,8 +127,8 @@ class Crud extends Form
 	 */
 	public function __construct()
 	{
-            $this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
-            $this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
+		$this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
+		$this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
 	}
 
 	/**
@@ -861,10 +861,11 @@ class Crud extends Form
 						} else {
 							$field = $origField;
 						}
-						if((!isset($table) || $table === false) && isset($origField))
+						if ((!isset($table) || $table === false) && isset($origField)) {
 							$fields[$field] = $origField;
-						elseif(isset($table) && isset($origField))
+						} elseif (isset($table) && isset($origField)) {
 							$fields[$field] = $table.'.'.$origField;
+						}
 						//$fields[$field] = $table === false ? $origField : $table.'.'.$origField;
 					}
 				}
@@ -921,9 +922,10 @@ class Crud extends Form
 		while ($db->next_record(MYSQL_ASSOC)) {
 			if ($db->Record['Comment'] == '') {
 				$db->Record['Comment'] = ucwords(str_replace(
-													 ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-													 ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
-					$db->Record['Field']));
+					['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+					['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+					$db->Record['Field']
+				));
 			}
 			if (preg_match($this->custid_match, $db->Record['Field'])) {
 				//$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
@@ -1474,7 +1476,9 @@ class Crud extends Form
 			$idx++;
 		}
 		$count = $this->get_count();
-		$table->smarty->assign('label_rep', [
+		$table->smarty->assign(
+			'label_rep',
+			[
 			'active' => 'success',
 			'pending' => 'info',
 			'locked' => 'danger',
@@ -1566,9 +1570,10 @@ class Crud extends Form
 				//$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
 				foreach ($this->queries->Record as $field => $value) {
 					$comment = ucwords(str_replace(
-										   ['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
-										   ['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
-										   $field));
+						['ssl_', 'vps_', '_id', '_lid', '_ip', '_'],
+						['SSL_', 'VPS_', ' ID', ' Login Name', ' IP', ' '],
+						$field
+					));
 					$this->add_field($field, $comment, false, [], 'input');
 					$this->tables[$this->query] = $this->queries->Record;
 					if (isset($this->tables[$this->query]['Comment'])) {

@@ -18,29 +18,28 @@ function crud_dns_manager()
 		function_requirements('validIp');
 		function_requirements('add_dns_domain');
 		if (isset($GLOBALS['tf']->variables->request['ip'])) {
-            if (validIp($GLOBALS['tf']->variables->request['ip'])) {
-                $ip = trim($GLOBALS['tf']->variables->request['ip']);
-                if (isset($GLOBALS['tf']->variables->request['domain']) && trim($GLOBALS['tf']->variables->request['domain']) != '') {
-                    $domain = trim($GLOBALS['tf']->variables->request['domain']);
-                    $result = add_dns_domain($domain, $ip);
-                    myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = ".json_encode($result), __LINE__, __FILE__);
-                    add_output($result['status_text']);
-                }
-                if (isset($GLOBALS['tf']->variables->request['domains']) && !in_array(trim($GLOBALS['tf']->variables->request['domains']), ['', 'Domain Names...'])) {
-                    $domains = explode("\n", $GLOBALS['tf']->variables->request['domains']);
-                    foreach ($domains as $domain) {
-                        $domain = trim($domain);
-                        if ($domain != '') {
-                            $result = add_dns_domain($domain, $ip);
-                            add_output('<div class="container alert alert-danger">'.$result['status_text'].'</div>');
-                        }
-                    }
-                }
-            } else {
-                add_output('<div class="container alert alert-danger">Invalid IP '.$GLOBALS['tf']->variables->request['ip'].'</div>');
-            }
-            
-        }
+			if (validIp($GLOBALS['tf']->variables->request['ip'])) {
+				$ip = trim($GLOBALS['tf']->variables->request['ip']);
+				if (isset($GLOBALS['tf']->variables->request['domain']) && trim($GLOBALS['tf']->variables->request['domain']) != '') {
+					$domain = trim($GLOBALS['tf']->variables->request['domain']);
+					$result = add_dns_domain($domain, $ip);
+					myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = ".json_encode($result), __LINE__, __FILE__);
+					add_output($result['status_text']);
+				}
+				if (isset($GLOBALS['tf']->variables->request['domains']) && !in_array(trim($GLOBALS['tf']->variables->request['domains']), ['', 'Domain Names...'])) {
+					$domains = explode("\n", $GLOBALS['tf']->variables->request['domains']);
+					foreach ($domains as $domain) {
+						$domain = trim($domain);
+						if ($domain != '') {
+							$result = add_dns_domain($domain, $ip);
+							add_output('<div class="container alert alert-danger">'.$result['status_text'].'</div>');
+						}
+					}
+				}
+			} else {
+				add_output('<div class="container alert alert-danger">Invalid IP '.$GLOBALS['tf']->variables->request['ip'].'</div>');
+			}
+		}
 	}
 	Crud::init("select domains.id, domains.name, records.content from domains left join records on domains.id=records.domain_id and records.type='A' and (records.name=domains.name or records.name='')", 'pdns', 'sql', '/^account$/m')
 		->set_title(_('DNS Manager'))
