@@ -992,8 +992,8 @@ class Crud extends Form
 	 */
 	public function set_order($order_by_field = '', $order_direct = '')
 	{
-		$this->order_by = $order_by_field ? $order_by_field : $this->order_by;
-		$this->order_dir = $order_direct ? $order_direct : $this->order_dir;
+		$this->order_by = !isset($this->request['order_by']) && $order_by_field ? $order_by_field : $this->order_by;
+		$this->order_dir = !isset($this->request['order_dir']) && $order_direct ? $order_direct : $this->order_dir;
 		return $this;
 	}
 
