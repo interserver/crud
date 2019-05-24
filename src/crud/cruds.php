@@ -54,9 +54,9 @@ function get_crud_funcs()
 			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List'],
 			'dns_manager' => ['function' => 'crud_dns_manager', 'title' => 'DNS Manager'],
 			'paypal_history' => ['function' => 'crud_paypal_history', 'title' => 'Paypal History'],
+            'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
 		],
 		'info' => [
-			'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
 			'customers' => ['function' => 'crud_customers', 'title' => 'Customers'],
 			'licenses_list' => ['function' => 'crud_licenses_list', 'title' => 'License List'],
 			'last_logins' => ['function' => 'crud_last_logins', 'title' => 'Last Logn Locations'],
