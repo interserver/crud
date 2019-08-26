@@ -51,5 +51,7 @@ function phpExcellCommon(array &$rows, $type, $headers)
 		header($header);
 	}
 	$objWriter = IOFactory::createWriter($spreadsheet, $type);
+	ob_end_clean();
 	$objWriter->save('php://output');
+	die();
 }
