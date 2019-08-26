@@ -54,9 +54,9 @@ function get_crud_funcs()
 			'webhosting_list' => ['function' => 'crud_webhosting_list', 'title' => 'Website List'],
 			'dns_manager' => ['function' => 'crud_dns_manager', 'title' => 'DNS Manager'],
 			'paypal_history' => ['function' => 'crud_paypal_history', 'title' => 'Paypal History'],
+            'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
 		],
 		'info' => [
-			'coupons' => ['function' => 'crud_coupons', 'title' => 'Coupons'],
 			'customers' => ['function' => 'crud_customers', 'title' => 'Customers'],
 			'licenses_list' => ['function' => 'crud_licenses_list', 'title' => 'License List'],
 			'last_logins' => ['function' => 'crud_last_logins', 'title' => 'Last Logn Locations'],
@@ -181,7 +181,8 @@ function cruds()
 				</a>");
 		}
 	}
-	add_output('
+	add_output(
+		'
 			</div>
 		</div>
 	</div>'
@@ -209,7 +210,8 @@ function cruds()
 		}
 	}
 	$key = array_reverse($key);
-	add_output("
+	add_output(
+		"
 	<div class='panel panel-primary cruds list-group'>
 		<div class='panel-heading' role='tab' id='headingTwo'>
 				<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>

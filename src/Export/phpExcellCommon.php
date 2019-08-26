@@ -10,7 +10,6 @@
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-
 /**
  * converts an array into a PHP Excell
  *
@@ -24,21 +23,21 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 function phpExcellCommon(array &$rows, $type, $headers)
 {
-    require_once(__DIR__.'/../../../../phpoffice/phpspreadsheet/src/Bootstrap.php');
-    $spreadsheet = new Spreadsheet();
+	require_once(__DIR__.'/../../../../phpoffice/phpspreadsheet/src/Bootstrap.php');
+	$spreadsheet = new Spreadsheet();
 
-    // Set document properties
-    $spreadsheet->getProperties()->setCreator('InterServer, Inc')
-        ->setLastModifiedBy('InterServer, Inc')
-        ->setTitle("{$type} Table Export")
-        ->setSubject("{$type} Table Export")
-        ->setDescription('Here is the exported information you requested.')
-        ->setKeywords('table interserver myadmin export')
-        ->setCategory('Exports');
+	// Set document properties
+	$spreadsheet->getProperties()->setCreator('InterServer, Inc')
+		->setLastModifiedBy('InterServer, Inc')
+		->setTitle("{$type} Table Export")
+		->setSubject("{$type} Table Export")
+		->setDescription('Here is the exported information you requested.')
+		->setKeywords('table interserver myadmin export')
+		->setCategory('Exports');
 	$spreadsheet->setActiveSheetIndex(0);
 	$spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(false);
-    $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
-    $spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
+	$spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
+	$spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
 	$spreadsheet->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);
 	$spreadsheet->getActiveSheet()->fromArray($rows);
 	if ($type == 'Pdf') {
@@ -46,7 +45,7 @@ function phpExcellCommon(array &$rows, $type, $headers)
 	}
 	$spreadsheet->setActiveSheetIndex(0);
 	if ($type == 'Pdf') {
-        IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::class);
+		IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::class);
 	}
 	foreach ($headers as $header) {
 		header($header);
