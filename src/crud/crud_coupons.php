@@ -34,6 +34,7 @@ IF(applies = -1,'"._('All Packages')."',IF(applies = 0,'"._('No Packages')."',ap
 module
 FROM coupons 
 LEFT JOIN accounts ON accounts.account_id = customer
+where name not in (select account_value from accounts_ext where account_key='referrer_coupon')
 ")
 		->set_title(_('Coupons'))
         ->enable_labels()
