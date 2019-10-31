@@ -12,7 +12,7 @@ use \MyCrud\Crud;
  * crud_query_log()
  * @return void
  */
-function crud_query_log()
+function crud_query_log($custid = null)
 {
 	function_requirements('has_acl');
     if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
@@ -23,7 +23,7 @@ function crud_query_log()
 		$custid = $GLOBALS['tf']->variables->request['custid'];
 	elseif (isset($GLOBALS['tf']->variables->request['customer']))
 		$custid = $GLOBALS['tf']->variables->request['customer'];
-	Crud::init('select * from query_log' . (isset($custid) ? ' where history_owner='.$custid : ''))
+	Crud::init('select * from query_log' . (!is_null($custid) ? ' where history_owner='.$custid : ''))
 		->set_order('history_timestamp', 'desc')
         	->disable_delete()
 	        ->disable_edit()
