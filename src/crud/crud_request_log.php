@@ -35,8 +35,8 @@ request_timestamp: 2015-10-06 00:16:44
 		$custid = $GLOBALS['tf']->variables->request['customer'];
 	Crud::init('select * from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
 		->set_order('request_timestamp', 'desc')
-			->disable_delete()
-			->disable_edit()
+		->disable_delete()
+		->disable_edit()
 		->enable_fluid_container()
 		->set_title(_('Request Log'))
 		->go();
