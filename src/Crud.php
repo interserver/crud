@@ -2359,7 +2359,7 @@ class Crud extends Form
 				} elseif ($filter['type'] == 'simple') {
 					$value = str_replace(array_keys($filter['value']), array_values($filter['value']), $value);
 				} elseif ($filter['type'] == 'function') {
-					eval('$value = '.$filter['value'].'($field, $value);');
+					$value = call_user_func_array($filter['value'], [$field, $value]);
 				}
 			}
 		}

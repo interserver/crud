@@ -8,6 +8,16 @@
  */
 use \MyCrud\Crud;
 
+function request_log_decorate($field, $value) {
+	$new = json_decode($value, true);
+	if (is_null($new)) {
+		return $value;
+	}
+	$new = json_encode($new, JSON_PRETTY_PRINT);
+	$new = '<pre style="text-align: left;">'.$new.'</pre>';
+	return $new;
+}
+
 /**
  * @return void
  */
@@ -33,10 +43,13 @@ request_timestamp: 2015-10-06 00:16:44
 		$custid = $GLOBALS['tf']->variables->request['custid'];
 	elseif (isset($GLOBALS['tf']->variables->request['customer']))
 		$custid = $GLOBALS['tf']->variables->request['customer'];
-	Crud::init('select * from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
+	Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
 		->set_order('request_timestamp', 'desc')
+		->set_use_html_filtering(false)
 		->disable_delete()
 		->disable_edit()
+		->add_filter('request_request', 'request_log_decorate', 'function')
+		->add_filter('request_result', 'request_log_decorate', 'function')
 		->enable_fluid_container()
 		->set_title(_('Request Log'))
 		->go();
