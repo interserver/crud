@@ -43,7 +43,7 @@ request_timestamp: 2015-10-06 00:16:44
 		$custid = $GLOBALS['tf']->variables->request['custid'];
 	elseif (isset($GLOBALS['tf']->variables->request['customer']))
 		$custid = $GLOBALS['tf']->variables->request['customer'];
-	Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
+	Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_service, request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
 		->set_order('request_timestamp', 'desc')
 		->set_use_html_filtering(false)
 		->disable_delete()
