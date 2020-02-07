@@ -18,11 +18,11 @@ function crud_vps_list()
 	$module = 'vps';
 	$settings = \get_module_settings($module);
 	page_title(_($settings['TITLE']).' '._('List'));
-	Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, CONCAT(`{$settings['PREFIX']}_hostname`, ' (', `{$settings['PREFIX']}_comment`,' )') as {$settings['PREFIX']}_hostname, {$settings['PREFIX']}_status, services_name, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
+	Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, {$settings['PREFIX']}_cost, {$settings['PREFIX']}_hostname, {$settings['TABLE']}.{$settings['PREFIX']}_ip, {$settings['PREFIX']}_status, services_name, {$settings['PREFIX']}_comment from {$settings['TABLE']} left join {$settings['PREFIX']}_masters on {$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title(_($settings['TITLE']).' '._('List'))
 		->enable_labels()
-		->set_labels([$settings['PREFIX'].'_id' => _('ID'),$settings['PREFIX'].'_hostname' => _('Hostname'), $settings['PREFIX'].'_cost' => _('Cost'), $settings['PREFIX'].'_status' => _('Status'), $settings['PREFIX'].'_name' => _('Server'), $settings['PREFIX'].'_comment' => _('Comments'), 'services_name' => _('Package')])
+		->set_labels([$settings['PREFIX'].'_id' => _('ID'),$settings['PREFIX'].'_hostname' => _('Hostname'), $settings['PREFIX'].'_ip' => _('IP'), $settings['PREFIX'].'_cost' => _('Cost'), $settings['PREFIX'].'_status' => _('Status'), $settings['PREFIX'].'_name' => _('Server'), $settings['PREFIX'].'_comment' => _('Comments'), 'services_name' => _('Package')])
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), _('Order'), 'primary', 'shopping-cart', _('Order').' '._($settings['TITLE']), 'client')
 		->add_title_search_button([[$settings['PREFIX'].'_status','=','active']], _('Active'), 'info active')
 		->add_title_search_button([[$settings['PREFIX'].'_status','in',['pending','pending-setup','pend-approval']]], _('Pending'), 'info')
