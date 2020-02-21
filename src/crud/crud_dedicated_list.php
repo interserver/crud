@@ -16,7 +16,7 @@ function crud_dedicated_list()
 {
 	Crud::init('select server_id, account_lid, server_hostname, server_status from servers left join accounts on account_id=server_custid', 'servers')
 		->set_title(_('Dedicated List'))
-		->set_order('server_status', 'asc')
+		->set_order('server_id', 'desc')
 		->enable_labels()
 		->set_labels(['server_id' => _('ID'),'account_lid' => _('Client'),'server_hostname' =>  _('Server Name'), 'server_status' => _('Status')])
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_server'), _('Order'), 'primary', 'shopping-cart', _('Order Server'), 'client')
