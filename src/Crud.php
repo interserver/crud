@@ -1494,7 +1494,18 @@ class Crud extends Form
 		//$table->set_filename('crud/table2.tpl');
 		//$table->set_filename('crud/table3.tpl');
 		//$table->set_filename('crud/table4.tpl');
-		$table->set_filename('crud/table5.tpl');
+		$theme = $GLOBALS['tf']->default_theme;
+		if (in_array($theme, ['adminlte', 'adminlteMaterial'])) {
+			page_heading(''.ucfirst($this->settings['TITLE']).' List');
+			breadcrums(['home' => 'Home', 'view_'.$this->module.'_list' => ucfirst($this->module)]);
+		}
+		if ($theme == 'adminlte') {
+			$table->set_filename('crud/tableAdminLte.tpl');
+		} elseif ($theme == 'adminlteMaterial') {
+			$table->set_filename('crud/tableAdminLteMaterial.tpl');
+		} else {
+			$table->set_filename('crud/table5.tpl');
+		}
 		$table->smarty->assign('primary_key', $this->primary_key);
 		$table->smarty->assign('choice', $this->choice);
 		$table->smarty->assign('admin', $this->admin);
