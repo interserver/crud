@@ -120,6 +120,10 @@ class Crud extends Form
 	 * @var FALSE|int $auto_update FALSE to disable, or frequency in seconds to update the list of records automatically
 	 */
 	public $auto_update = false;
+	/**
+	* Layout/Theme variable
+	*/
+	public $theme;
 
 	/**
 	 * constructor class
@@ -129,6 +133,7 @@ class Crud extends Form
 	{
 		$this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
 		$this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
+		$this->theme = $GLOBALS['tf']->default_theme;
 	}
 
 	/**
@@ -1151,7 +1156,11 @@ class Crud extends Form
 	public function add_header_button($link, $label = '', $status = 'default', $icon = false, $title = false, $ima = false)
 	{
 		if ($ima == false || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid']))) {
-			$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+			if ($this->theme == 'adminlteMaterial') {
+				$this->header_buttons[] = "<a class='btn bg-primary btn-raised margin btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'>&nbsp;</i> " : '') . "{$label}</a>";
+			} else {
+				$this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+			}
 		}
 		return $this;
 	}
@@ -1167,7 +1176,13 @@ class Crud extends Form
 	 */
 	public function add_title_search_button($terms, $label = '', $status = 'default', $icon = false)
 	{
-		$this->title_buttons[] = "<a class='btn btn-{$status}' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+		if ($this->theme == 'adminlteMaterial') {
+			$this->title_buttons[] = "<a class='btn btn-{$status} btn-raised btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+		} elseif ($this->theme == 'adminlte') {
+			$this->title_buttons[] = "<a class='btn btn-{$status} btn-sm' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+		} else {
+			$this->title_buttons[] = "<a class='btn btn-{$status}' onclick='crud_search(this, ".json_encode($terms).");'>" . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+		}
 		return $this;
 	}
 
@@ -1321,12 +1336,20 @@ class Crud extends Form
 		//$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
 		$link = str_replace(['%id%', '+\'\''], ['\'+get_crud_row_id(this)', ''], $link);
 		//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
-		$button = '<button type="button" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
+		if ($this->theme == 'adminlteMaterial') {
+			$button = '<button type="button" class="text-primary text-center" style="background: none;border: none;" onclick="window.location=\''.$page.'?choice='.$link.';"';
+		} else {
+			$button = '<button type="button" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
+		}
 		if ($title != '') {
 			$button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
 		}
 		if ($icon != '') {
-			$button .= '<i class="fa fa-fw fa-'.$icon.'"></i>';
+			if ($this->theme == 'adminlteMaterial') {
+				$button .= '<i class="fa fa-fw fa-'.$icon.' fa-lg"></i>';
+			} else {
+				$button .= '<i class="fa fa-fw fa-'.$icon.'"></i>';
+			}
 		}
 		//$button .= '</a>';
 		$button .= '</button>';
@@ -1494,7 +1517,17 @@ class Crud extends Form
 		//$table->set_filename('crud/table2.tpl');
 		//$table->set_filename('crud/table3.tpl');
 		//$table->set_filename('crud/table4.tpl');
-		$table->set_filename('crud/table5.tpl');
+		if (in_array($this->theme, ['adminlte', 'adminlteMaterial'])) {
+			page_heading(''.ucfirst($this->settings['TITLE']).' List');
+			breadcrums(['home' => 'Home', 'view_'.$this->module.'_list' => ucfirst($this->module)]);
+		}
+		if ($this->theme == 'adminlte') {
+			$table->set_filename('crud/tableAdminLte.tpl');
+		} elseif ($this->theme == 'adminlteMaterial') {
+			$table->set_filename('crud/tableAdminLteMaterial.tpl');
+		} else {
+			$table->set_filename('crud/table5.tpl');
+		}
 		$table->smarty->assign('primary_key', $this->primary_key);
 		$table->smarty->assign('choice', $this->choice);
 		$table->smarty->assign('admin', $this->admin);

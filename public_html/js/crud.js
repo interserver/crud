@@ -239,11 +239,11 @@ function crud_update_pager() {
 	page_links[page_links.length] = crud_total_pages;
 	var page_html = '', page_offset;
 	for (x = 0; x < page_links.length; x++) {
-		page_html = page_html + '<li class="crud-page';
+		page_html = page_html + '<li class="page-item crud-page';
 		page_offset = ((page_links[x] - 1) * crud_page_limit);
 		if (crud_page_offset == page_offset)
 			page_html = page_html + ' active';
-		page_html = page_html + '"><a href="" class="" data-offset="'+page_offset+'">'+page_links[x]+'</a></li>';
+		page_html = page_html + '"><a href="" class="page-link" data-offset="'+page_offset+'">'+page_links[x]+'</a></li>';
 	}
 	jQuery('.crud .pagination li.crud-page').remove();
 	jQuery('.crud .pagination #crud-pager-prev').after(page_html);
