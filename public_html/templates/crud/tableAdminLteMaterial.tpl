@@ -2,15 +2,55 @@
 <div class="row">
     <div class="col-md-12">
         {if isset($module) && $module == 'backups'}
-        <div class="alert alert-default">({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>)</div>
+        <div class="box box-solid">
+            <div class="box-header">
+                <h5 style="margin:0"><i class="fa fa-bullhorn"> &nbsp;</i><span>For pricing and more information about backups. Kindly visit:  <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a></span></h5>
+            </div>
+        </div>
         {/if}
-        <div class="card">
-            <div class="card-header text-right">
-                <div class="row float-right">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <div class="row pull-right">
+                    {if $print_button == true || $export_button == true}
+                    <div id="print_expo_btns" class="col-md export pull-right printer-hidden pl-2">
+                        <div class="btn-group">
+                        {if $print_button == true}
+                            <button class="btn btn-sm btn-raised btn-default" type="button" data-toggle="tooltip" title="Print" onClick="crud_print();">
+                                <i class="fa fa-print crud-icon"></i>{t}Print{/t}
+                            </button>
+                        {/if}
+                        {if $export_button == true}
+                            <button class="btn btn-sm btn-raised btn-default dropdown-toggle" data-toggle="tooltip" type="button" title="Export data in any format" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-download crud-icon"></i>
+                                {t}Export{/t}
+                                <span class="caret"></span>
+                                <span class="sr-only">{t}Toggle Dropdown{/t}</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                            {foreach item=format_data key=ext from=$export_formats}
+                                <li role="presentation" data-type="{$ext}">
+                                    <a href="#" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
+                                        <img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
+                                    </a>
+                                </li>
+                            {/foreach}
+                            </ul>
+                        {/if}
+                        </div>
+                    </div>
+                    {/if}
+                    {if sizeof($title_buttons) > 0}
+                    <div id="title_btns" class="col-md-auto printer-hidden pull-right pl-2">
+                        {foreach item=button from=$title_buttons}
+                            {$button}
+                        {/foreach}
+                        
+                    </div>
+                    {/if}
                     {if $total_pages > 1}
-                    <div id="search_btns" class="col-md-auto printer-hidden text-right pl-2">
+                    <div id="search_btns" class="col-md printer-hidden pull-right pl-2">
                         <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
-                            <a id="crud-search" class="btn btn-sm btn-primary" href="" title="Search" data-tile="Search">
+                            <a id="crud-search" class="btn btn-raised btn-sm btn-primary" href="" title="Search" data-tile="Search">
                                 <span class="fa fa-search fa-fw"></span> {t}Search{/t}
                             </a>
                             <span id="crud-search-more" class="crud-search form-inline float-right" style="display: none;">
@@ -40,60 +80,23 @@
                                     {/foreach}
                                 </select>
                                 <span class="btn-group">
-                                    <a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">{t}Go{/t}</a>
+                                    <a class="btn btn-sm btn-raised btn-primary" href="" data-search="1" id="crud_search_button">{t}Go{/t}</a>
                                 </span>
                             </span>
                         </form>
                     </div>
                     {/if}
-                    <div id="header_btns" class="col-md-auto printer-hidden text-right pl-2">
-                        <div class="btn-group">
+                    <div id="header_btns" class="col-md printer-hidden pull-right pl-2">
+                        <div class="btn-raised">
                         {foreach item=button from=$header_buttons}
-                            {$button}
+                            {$button}&nbsp;
                         {/foreach}
                         </div>
                     </div>
-                    {if $print_button == true || $export_button == true}
-                    <div id="print_expo_btns" class="col-md-auto export pull-right printer-hidden pl-2">
-                        <div class="btn-group">
-                        {if $print_button == true}
-                            <button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
-                                <i class="fa fa-print crud-icon"></i>{t}Print{/t}
-                            </button>
-                        {/if}
-                        {if $export_button == true}
-                            <button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-download crud-icon"></i>
-                                {t}Export{/t}
-                                <span class="caret"></span>
-                                <span class="sr-only">{t}Toggle Dropdown{/t}</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                            {foreach item=format_data key=ext from=$export_formats}
-                                <li role="presentation" data-type="{$ext}">
-                                    <a href="#" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
-                                        <img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
-                                    </a>
-                                </li>
-                            {/foreach}
-                            </ul>
-                        {/if}
-                        </div>
-                    </div>
-                    {/if}
-                    {if sizeof($title_buttons) > 0}
-                    <div id="title_btns" class="col-md-auto printer-hidden pl-2">
-                        <div class="btn-group">
-                        {foreach item=button from=$title_buttons}
-                            {$button}
-                        {/foreach}
-                        </div>
-                    </div>
-                    {/if}
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
+            <div class="box-body">
             {if $select_multiple == true}
 	            {assign var=titcolspan value=$titcolspan + 1}
             {/if}
@@ -110,7 +113,7 @@
 			        <div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
                 {/if}
 			        <div class="table-responsive">
-				        <table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
+				        <table id="crud-table" class="crud-table table table-condensed table-striped">
                         {if isset($title) || isset($table_headers)}
 					        <thead class="">
                             {if isset($table_headers)}
@@ -172,32 +175,32 @@
                     <div class="btn-group row-counts" role="group"  aria-label="{t}Rows Per Page{/t}">
     {foreach from=$page_limits item=$limit}
     {if $limit <= $total_rows}
-                        <button type="button" class="btn btn-default btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
+                        <button type="button" class="btn btn-raised btn-default btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
     {/if}
     {/foreach}
                     </div>
                     
     {if $admin == true || $refresh_button == true}
-                    <span class="btn-group nav-rows">
+                    <!-- <span class="btn-group nav-rows">
     {if $admin == true}
-                        <a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
+                        <a class="btn btn-raised btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
                             <span class="fa fa-bug fa-fw"></span>
                         </a>
     {/if}
     {if $refresh_button == true}
-                        <a class="btn btn-sm btn-info refresh" href="" title="{t}Refresh Table{/t}" data-title="{t}Refresh Table{/t}" >
-                            <span class="fas fa-sync fa-fw"></span>
+                        <a class="btn btn-raised btn-sm btn-info refresh" href="" title="{t}Refresh Table{/t}" data-title="{t}Refresh Table{/t}" >
+                            <span class="fa fa-refresh fa-fw"></span>
                         </a>
     {/if}
-                    </span>
+                    </span> -->
     {/if}
             {/if}
             </form>
         </div>
         <div class="col-md-6 float-right">
             {if $total_pages > 1}
-            <nav aria-label="Page navigation float-right" class="crud">
-                <ul class="pagination justify-content-end">
+            <nav aria-label="Page" class="crud btn-group pull-right">
+                <ul class="pagination pagination-sm no-margin pull-right">
                     <li id="crud-pager-prev" class="page-item {if $page == 1}disabled{/if}">
                         <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
@@ -237,23 +240,32 @@
 <script src="/templates/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
 <script>
 jQuery(function() {
-	$('#title_btns > .btn-group > a.active').trigger('click');
+	$('#title_btns > a.active').trigger('click');
     $('.row-counts > .active').addClass('btn-primary');
     $('.row-counts > .btn').on('click', function(){
+        $('.row-counts > button').each(function(){
+            $(this).removeClass('btn-primary');
+        });
         $(this).addClass('btn-primary');
+    });
+    $('#title_btns > .btn').on('click', function(){
+        $('#title_btns > .btn').each(function(){
+            $(this).removeClass('active');
+        });
+        $(this).addClass('active');
     });
 });
 </script>
 <style>
-a.btn-info:link, a.btn-info:active, a.btn-info:visited, a.btn-info:hover {
-    font-size: inherit;
-}
 div.dataTables_length label, div.dataTables_filter label {
     text-align: left;
     white-space: nowrap;
 }
 div.dataTables_filter {
     text-align: right;
+}
+#crud-search-more > .form-group {
+    margin: 0;
 }
 </style>
 
