@@ -238,6 +238,12 @@
 <script>
 jQuery(function() {
 	$('#title_btns > .btn-group > a.active').trigger('click');
+    $('#title_btns > .btn-group > a').on('click', function(){
+        $('#title_btns > .btn-group > a').each(function(){
+            $(this).removeClass('active');
+        });
+        $(this).addClass('active');
+    });
     $('.row-counts > .active').addClass('btn-primary');
     $('.row-counts > .btn').on('click', function(){
         $(this).addClass('btn-primary');
