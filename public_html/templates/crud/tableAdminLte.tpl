@@ -2,7 +2,18 @@
 <div class="row">
     <div class="col-md-12">
         {if isset($module) && $module == 'backups'}
-        <div class="alert alert-default">({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>)</div>
+        <script>
+        $(function() {
+            $(document).Toasts('create', {
+                class: 'bg-info',
+                body: 'For pricing and more information visit our website <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>',
+                title: 'Info',
+                subtitle: '',
+                fixed: false,
+                icon: 'fas fa-bullhorn fa-lg',
+            });
+        });
+        </script>
         {/if}
         <div class="card">
             <div class="card-header text-right">
