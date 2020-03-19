@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/templates/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
+<link rel="stylesheet" href="/lib/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
 <div class="row">
     <div class="col-md-12">
         {if isset($module) && $module == 'backups'}
@@ -236,8 +236,8 @@
 </script>
 <script src="/js/crud.js"></script>
 <link rel="stylesheet" href="/css/crud_table5.css">
-<script src="/templates/adminlte/plugins/datatables/jquery.dataTables.js"></script>
-<script src="/templates/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+<script src="/lib/admin-lte/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/lib/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
 <script>
 jQuery(function() {
 	$('#title_btns > a.active').trigger('click');
