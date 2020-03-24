@@ -116,6 +116,8 @@ class Crud extends Form
 	public $extra_url_args = '';
 	public $request = [];
 	public $admin = false;
+	public $output = '';
+	public $return_output = false;
 	/**
 	 * @var FALSE|int $auto_update FALSE to disable, or frequency in seconds to update the list of records automatically
 	 */
@@ -184,6 +186,25 @@ class Crud extends Form
 		$crud->parse_tables();
 		$crud->default_filters();
 		return $crud;
+	}
+	
+	/**
+	* controls whether or not the output is returned or sent to the normal output handler
+	* 
+	* @param bool $return_output
+	* @return Crud
+	*/
+	public function set_return_output($return_output) {
+		$this->return_output = $return_output;
+		return $this;
+	}
+	
+	public function add_output($output) {
+		if ($this->return_output == true) {
+			$this->output .= $output;
+		} else {
+			add_output($output);
+		}
 	}
 
 	public function set_use_html_filtering($enable = true)
@@ -349,7 +370,11 @@ class Crud extends Form
 				$this->order_form();
 				break;
 		}
-		return $this;
+		if ($this->return_output == true) {
+			return $this->output;
+		} else {
+			return $this;
+		}
 	}
 
 	/**
@@ -678,7 +703,7 @@ class Crud extends Form
 		$this->queries = $parser->parse($query);
 		$this->parse_query_fields();
 		//_debug_array($queries);
-		//add_output('<pre style="text-align: left;">'.print_r($queries, TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries, TRUE).'</pre>');
 	}
 
 	/**
@@ -718,7 +743,7 @@ class Crud extends Form
 						$member1Table = $member1Members[0];
 						$member1Field = $member1Members[1];
 					}
-					//add_output("adding table {$member1Table}");
+					//$this->add_output("adding table {$member1Table}");
 					if (!isset($this->query_where[$member1Table])) {
 						$this->query_where[$member1Table] = [];
 					}
@@ -774,29 +799,29 @@ class Crud extends Form
 			}
 		}
 		// accounts_ext
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getTable(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getTable(), TRUE).'</pre>');
 		// LEFT JOIN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getType(), TRUE).'</pre>');
 		// =
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getType(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getType(), TRUE).'</pre>');
 		// array('accounts', 'account_id')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getMembers(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[0]->getMembers(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getType(), TRUE).'</pre>');
 		// array('accounts_ext', 'account_id')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getMembers(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[0]->getMembers()[1]->getMembers(), TRUE).'</pre>');
 		// =
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getType(), TRUE).'</pre>');
 		// COLUMN
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getType(), TRUE).'</pre>');
 		// array('accounts_ext', 'account_key')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getMembers(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[0]->getMembers(), TRUE).'</pre>');
 		// VALUE
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getType(), TRUE).'</pre>');
 		// array('roles', '2')
-		//add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($queries[0]->getJoins()[0]->getCondition()->getMembers()[1]->getMembers()[1]->getMembers(), TRUE).'</pre>');
 		/*
 		$columns = $queries[0]->getColumns();
 		echo '<pre style="text-align: left;">';
@@ -882,7 +907,7 @@ class Crud extends Form
 		if (isset($fields)) {
 			$this->query_fields = $fields;
 		}
-		//add_output('<pre style="text-align: left;">'.print_r($fields, TRUE).'</pre>');
+		//$this->add_output('<pre style="text-align: left;">'.print_r($fields, TRUE).'</pre>');
 	}
 
 	/**
@@ -1580,8 +1605,8 @@ class Crud extends Form
 		$table->smarty->assign('labels', $this->labels);
 		$table->smarty->assign('rows', $rows);
 		$this->add_js_headers();
-		add_output($table->get_table());
-		//add_output('<pre style="text-align: left;">'. print_r($this->tables, TRUE).'</pre>');
+		$this->add_output($table->get_table());
+		//$this->add_output('<pre style="text-align: left;">'. print_r($this->tables, TRUE).'</pre>');
 	}
 
 	/**
@@ -1936,7 +1961,7 @@ class Crud extends Form
 							$table_pos++;
 						}
 						*/
-						add_output($fieldText);
+						$this->add_output($fieldText);
 					}
 				}
 				if ($table_pos >= 4) {
@@ -1953,7 +1978,7 @@ class Crud extends Form
 			$table->set_colspan(4);
 			$table->add_field($table->make_submit('Continue'));
 			$table->add_row();
-			add_output($table->get_table());
+			$this->add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 		} else {
 			foreach ($this->fields as $idx => $field) {
@@ -2086,7 +2111,7 @@ class Crud extends Form
 			$table->add_field($table->make_submit('Continue to next step', FALSE, TRUE));
 			$table->add_row();
 			$table->set_method('get');
-			add_output($table->get_table());
+			$this->add_output($table->get_table());
 			$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
 			$GLOBALS['tf']->add_html_head_js_file('js/customSelect/jquery.customSelect.min.js');
 			*/
@@ -2250,7 +2275,7 @@ class Crud extends Form
 	public function confirm_order()
 	{
 		$this->confirm = true;
-		add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
+		$this->add_output('Order not yet completed.  Click on one of the payment options below to complete the order.<br><br>');
 		$table = new \TFTable;
 		$table->hide_table();
 		$table->set_method('get');

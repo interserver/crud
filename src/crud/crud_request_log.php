@@ -21,7 +21,7 @@ function request_log_decorate($field, $value) {
 /**
  * @return void
  */
-function crud_request_log($custid = null)
+function crud_request_log($custid = null, $return_output = false)
 {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
@@ -43,14 +43,18 @@ request_timestamp: 2015-10-06 00:16:44
 		$custid = $GLOBALS['tf']->variables->request['custid'];
 	elseif (isset($GLOBALS['tf']->variables->request['customer']))
 		$custid = $GLOBALS['tf']->variables->request['customer'];
-	Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_service, request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
+	$crud = Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_service, request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
 		->set_order('request_timestamp', 'desc')
 		->set_use_html_filtering(false)
+		->set_return_output($return_output)
 		->disable_delete()
 		->disable_edit()
 		->add_filter('request_request', 'request_log_decorate', 'function')
 		->add_filter('request_result', 'request_log_decorate', 'function')
 		->enable_fluid_container()
-		->set_title(_('Request Log'))
-		->go();
+		->set_title(_('Request Log'));
+	$return = $crud->go();
+	if ($return_output == true) {
+		return $return;
+	}
 }
