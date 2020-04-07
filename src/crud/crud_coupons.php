@@ -34,7 +34,7 @@ IF(applies = -1,'"._('All Packages')."',IF(applies = 0,'"._('No Packages')."',ap
 module
 FROM coupons 
 LEFT JOIN accounts ON accounts.account_id = customer
-where amount=0.01
+where amount != 0.01
 ")
 		->set_title(_('Coupons'))
 		->enable_labels()
