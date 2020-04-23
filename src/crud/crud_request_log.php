@@ -25,7 +25,9 @@ function crud_request_log($custid = null, $return_output = false)
 {
 	function_requirements('has_acl');
 	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
-		dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
+		if (is_null($custid)) {
+			dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
+		}
 		return false;
 	}
 /*
