@@ -200,7 +200,7 @@ function crud_load_page(callback) {
 		}
 		crud_update_pager();
 		//console.log(json);
-		jQuery("[data-toggle=tooltip]").tooltip();
+		//jQuery("[data-toggle=tooltip]").tooltip();
 		console.log("page finished loading "+crud_rows.length+" rows");
 		if (typeof callback != "undefined") {
 			callback();
@@ -463,6 +463,6 @@ jQuery(document).ready(function () {
 	crud_setup_binds();
 	crud_setup_refresh();
 	sortTable(jQuery('.webhosting-list'),'asc');
-	jQuery("[data-toggle=tooltip]").tooltip();
+	//jQuery("[data-toggle=tooltip]").tooltip();
 	$('#crud-table > thead > tr:first div.crud-header-buttons a.active').trigger('click');
 });
