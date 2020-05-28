@@ -23,7 +23,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 function phpExcellCommon(array &$rows, $type, $headers)
 {
-	require_once(__DIR__.'/../../../../phpoffice/phpspreadsheet/src/Bootstrap.php');
 	$spreadsheet = new Spreadsheet();
 
 	// Set document properties
