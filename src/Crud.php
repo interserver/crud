@@ -248,7 +248,7 @@ class Crud extends Form
 				$this->db = get_module_db($this->module);
 			} elseif (isset($GLOBALS[$module.'_dbh'])) {
 				$this->module = $module;
-				$this->settings = null;
+				$this->settings = get_module_settings(get_module_name($module));
 				$this->db = get_module_db($this->module);
 			} else {
 				$this->module = get_module_name($module);
