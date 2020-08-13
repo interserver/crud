@@ -1,12 +1,12 @@
 <?php
-
 /**
  * Backups List
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2019
+ * @copyright 2020
  * @package MyAdmin
  * @category Backups
  */
+
 use \MyCrud\Crud;
 
 /**

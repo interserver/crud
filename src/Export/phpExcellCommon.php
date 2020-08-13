@@ -2,7 +2,7 @@
 /**
  * Converts an Array to PHP Excell
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2019
+ * @copyright 2020
  * @package MyAdmin
  * @category PHP Excell
  */
