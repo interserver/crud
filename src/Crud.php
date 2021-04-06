@@ -416,6 +416,10 @@ class Crud extends Form
 	 */
 	public function ajax_edit_handler()
 	{
+		if ($this->edit_row == false) {
+			echo 'Editing Disabled';
+			return false;
+		}
 		$fields = $_POST;
 		$query_fields = [];
 		$insert_fields = [];
