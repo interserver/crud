@@ -41,6 +41,18 @@ function crud_dns_manager()
 			}
 		}
 	}
+	$strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
+	if ($GLOBALS['tf']->default_theme != 'adminlte') {
+		$ip_icon = '<div class="input-group-btn">
+			<button type="button" class="btn btn-default" aria-label="'._('IP Address').'" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
+		</div>';
+		$domain_icon = '<div class="input-group-btn">
+			<button type="button" class="btn btn-default" aria-label="'._('Domain Name').'" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
+		</div>';
+	} else {
+		$ip_icon = '';
+		$domain_icon = '';
+	}
 	Crud::init("select domains.id, domains.name, records.content from domains left join records on domains.id=records.domain_id and records.type='A' and (records.name=domains.name or records.name='')", 'pdns', 'sql', '/^account$/m')
 		->set_title(_('DNS Manager'))
 		->disable_delete()
@@ -60,9 +72,7 @@ function crud_dns_manager()
 		<div class="col-md-3">
 			<div class="printer-hidden">
 				<div class="input-group">
-					<div class="input-group-btn">
-						<button type="button" class="btn btn-default" aria-label="'._('Domain Name').'" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
-					</div>
+					'.$domain_icon.'
 					<input class="form-control form-control-sm" aria-label="'._('Domain Name').'" placeholder="'._('Domain like').' mycoolsite.com" name="domain">
 				</div>
 			</div>
@@ -70,16 +80,14 @@ function crud_dns_manager()
 		<div class="col-md-3">
 			<div class="printer-hidden">
 				<div class="input-group">
-					<div class="input-group-btn">
-						<button type="button" class="btn btn-default" aria-label="'._('IP Address').'" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
-					</div>
+					'.$ip_icon.'
 					<input class="form-control form-control-sm" aria-label="'._('IP Address').'" placeholder="'._('IP Address like').' 0.0.0.0" name="ip">
 				</div>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="printer-hidden">
-				<input class="form-control form-control-sm btn '.$GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary' : 'btn-default'.'" type="submit" value="'._('Add DNS Entry').'">
+				<input class="form-control form-control-sm btn '. $strClass .'" type="submit" value="'._('Add DNS Entry').'">
 			</div>
 		</div>
 	</div>
