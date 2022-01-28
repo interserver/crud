@@ -51,8 +51,8 @@ function crud_dns_manager()
 <form>
 	<input type="hidden" name="choice" value="none.crud_dns_manager">
 	<input type="hidden" name="new" value="1">
-	<div class="row">
-		<div class="col-md-2 col-md-offset-2">
+	<div class="row mb-4">
+		<div class="col-md-2 col-md-offset-2 text-right">
 			<div class="printer-hidden" style="vertical-align: middle;">
 				<label style="margin-top: 5px;">'._('Add Domain to DNS').'</label>
 			</div>
@@ -63,7 +63,7 @@ function crud_dns_manager()
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-default" aria-label="'._('Domain Name').'" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
 					</div>
-					<input class="form-control" aria-label="'._('Domain Name').'" placeholder="'._('Domain like').' mycoolsite.com" name="domain">
+					<input class="form-control form-control-sm" aria-label="'._('Domain Name').'" placeholder="'._('Domain like').' mycoolsite.com" name="domain">
 				</div>
 			</div>
 		</div>
@@ -73,13 +73,13 @@ function crud_dns_manager()
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-default" aria-label="'._('IP Address').'" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
 					</div>
-					<input class="form-control" aria-label="'._('IP Address').'" placeholder="'._('IP Address like').' 0.0.0.0" name="ip">
+					<input class="form-control form-control-sm" aria-label="'._('IP Address').'" placeholder="'._('IP Address like').' 0.0.0.0" name="ip">
 				</div>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="printer-hidden">
-				<input class="form-control btn btn-default" type="submit" value="'._('Add DNS Entry').'">
+				<input class="form-control form-control-sm btn '.$GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary' : 'btn-default'.'" type="submit" value="'._('Add DNS Entry').'">
 			</div>
 		</div>
 	</div>
