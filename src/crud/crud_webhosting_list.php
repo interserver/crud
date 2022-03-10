@@ -32,6 +32,6 @@ function crud_webhosting_list()
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
-		->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' ? '' : '4') : '').'&id=%id%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
+		->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? ($GLOBALS['tf']->ima == 'admin' || $GLOBALS['tf']->default_theme == 'adminlte' ? '' : '4') : '').'&id=%id%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
 		->go();
 }
