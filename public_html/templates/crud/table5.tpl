@@ -39,14 +39,14 @@
 			<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
 {/if}
 			<div class="table-responsive">
-				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
+				<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-sm">
 {if isset($title) || isset($table_headers)}
 					<thead class="">
 {if isset($title)}
 						<tr>
 							<th colspan="{$titcolspan}">
 {if sizeof($title_buttons) > 0}
-								<div class="crud-header-buttons pull-left printer-hidden">
+								<div class="crud-header-buttons float-left printer-hidden">
 									<div class="btn-group">
 {foreach item=button from=$title_buttons}
 										{$button}
@@ -56,15 +56,15 @@
 {/if}
 								<span class="crud-title">{$title}</span>
 {if $print_button == true || $export_button == true}
-								<div class="export btn-group pull-right printer-hidden">
+								<div class="export btn-group float-right printer-hidden">
 {if $print_button == true}
-									<button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
+									<button class="btn btn-sm btn-secondary" type="button" title="Print" onClick="crud_print();">
 										<i class="fa fa-print crud-icon"></i>
 										{t}Print{/t}
 									</button>
 {/if}
 {if $export_button == true}
-									<button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
+									<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
 										<i class="fa fa-download crud-icon"></i>
 										{t}Export{/t}
 										<span class="caret"></span>
@@ -152,7 +152,7 @@
 				<div class="btn-group row-counts nav-rows " role="group"  aria-label="{t}Rows Per Page{/t}">
 {foreach from=$page_limits item=$limit}
 {if $limit <= $total_rows}
-					<button type="button" class="btn btn-default {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
+					<button type="button" class="btn btn-secondary {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
 {/if}
 {/foreach}
 				</div>
@@ -160,8 +160,8 @@
 					<span class="fa fa-search fa-fw"></span> {t}Search{/t}
 				</a>
 				<span id="crud-search-more" class="crud-search form-inline" style="display: none;">
-					<input class="crud-searchdata crud-search-active input-small form-control" name="search" data-type="text" type="text" value="">
-					<select class="crud-daterange crud-searchdata input-small form-control" name="range" data-fieldtype="date" style="display:none; ">
+					<input class="crud-searchdata crud-search-active form-control-small form-control" name="search" data-type="text" type="text" value="">
+					<select class="crud-daterange crud-searchdata form-control-small form-control" name="range" data-fieldtype="date" style="display:none; ">
 						<option value="">- choose range -</option>
 						<option value="next_year" data-from="" data-to="">{t}Next Year{/t}</option>
 						<option value="next_month" data-from="" data-to="">{t}Next Month{/t}</option>
@@ -177,9 +177,9 @@
 						<option value="this_year" data-from="" data-to="">{t}This Year{/t}</option>
 						<option value="last_year" data-from="" data-to="">{t}Last Year{/t}</option>
 					</select>
-					<input class="crud-searchdata crud-datepicker-from input-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
-					<input class="crud-searchdata crud-datepicker-to input-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
-					<select class="crud-data crud-columns-select input-small form-control" name="column" id="crud_search_column">
+					<input class="crud-searchdata crud-datepicker-from form-control-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+					<input class="crud-searchdata crud-datepicker-to form-control-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+					<select class="crud-data crud-columns-select form-control-small form-control" name="column" id="crud_search_column">
 						<option value="">{t}All fields{/t}</option>
 {foreach from=$labels key=idx item=value}
 						<option value="{$idx}" data-type="int">{$value}</option>
@@ -244,7 +244,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label class="col-md-offset-1 col-md-4 control-label" for="primary_key">{t}ID{/t}</label>
+					<label class="offset-md-1 col-md-4 col-form-label" for="primary_key">{t}ID{/t}</label>
 					<div class="form-group input-group col-md-6">
 						<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
 						<input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
@@ -255,7 +255,7 @@
 			</div>
 			<div class="modal-footer ">
 				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Yes{/t}</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 		</form>
@@ -273,7 +273,7 @@
 				<pre style="text-align: left; overflow: scroll; max-height: 600px;">{$debug_output}</pre>
 			</div>
 			<div class="modal-footer ">
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 	</div>

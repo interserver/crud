@@ -13,7 +13,7 @@
 font-size: 12px;
 }
 </style>
-				<table id="permissions_table" class="table table-condensed table-striped table-hover">
+				<table id="permissions_table" class="table table-sm table-striped table-hover">
 				<thead>
 					<tr class="table-row">
 						<th class="text-center">

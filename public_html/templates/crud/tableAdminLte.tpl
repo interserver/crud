@@ -54,15 +54,15 @@
                         </div>
                     </div>
                     {if $print_button == true || $export_button == true}
-                    <div id="print_expo_btns" class="col-md-auto export pull-right printer-hidden pl-2">
+                    <div id="print_expo_btns" class="col-md-auto export float-right printer-hidden pl-2">
                         <div class="btn-group">
                         {if $print_button == true}
-                            <button class="btn btn-sm btn-default" type="button" title="Print" onClick="crud_print();">
+                            <button class="btn btn-sm btn-secondary" type="button" title="Print" onClick="crud_print();">
                                 <i class="fa fa-print crud-icon"></i>{t}Print{/t}
                             </button>
                         {/if}
                         {if $export_button == true}
-                            <button class="btn btn-sm btn-default dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-download crud-icon"></i>
                                 {t}Export{/t}
                                 <span class="caret"></span>
@@ -110,7 +110,7 @@
 			        <div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
                 {/if}
 			        <div class="table-responsive">
-				        <table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-condensed">
+				        <table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-sm">
                         {if isset($title) || isset($table_headers)}
 					        <thead class="">
                             {if isset($table_headers)}
@@ -172,7 +172,7 @@
                     <div class="btn-group row-counts" role="group"  aria-label="{t}Rows Per Page{/t}">
     {foreach from=$page_limits item=$limit}
     {if $limit <= $total_rows}
-                        <button type="button" class="btn btn-default btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
+                        <button type="button" class="btn btn-secondary btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
     {/if}
     {/foreach}
                     </div>

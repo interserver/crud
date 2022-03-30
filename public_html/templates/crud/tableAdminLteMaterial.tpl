@@ -10,17 +10,17 @@
         {/if}
         <div class="box box-solid">
             <div class="box-header with-border">
-                <div class="row pull-right">
+                <div class="row float-right">
                     {if $print_button == true || $export_button == true}
-                    <div id="print_expo_btns" class="col-md export pull-right printer-hidden pl-2">
+                    <div id="print_expo_btns" class="col-md export float-right printer-hidden pl-2">
                         <div class="btn-group">
                         {if $print_button == true}
-                            <button class="btn btn-sm btn-raised btn-default" type="button" data-toggle="tooltip" title="Print" onClick="crud_print();">
+                            <button class="btn btn-sm btn-raised btn-secondary" type="button" data-toggle="tooltip" title="Print" onClick="crud_print();">
                                 <i class="fa fa-print crud-icon"></i>{t}Print{/t}
                             </button>
                         {/if}
                         {if $export_button == true}
-                            <button class="btn btn-sm btn-raised btn-default dropdown-toggle" data-toggle="tooltip" type="button" title="Export data in any format" data-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-sm btn-raised btn-secondary dropdown-toggle" data-toggle="tooltip" type="button" title="Export data in any format" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-download crud-icon"></i>
                                 {t}Export{/t}
                                 <span class="caret"></span>
@@ -40,7 +40,7 @@
                     </div>
                     {/if}
                     {if sizeof($title_buttons) > 0}
-                    <div id="title_btns" class="col-md-auto printer-hidden pull-right pl-2">
+                    <div id="title_btns" class="col-md-auto printer-hidden float-right pl-2">
                         {foreach item=button from=$title_buttons}
                             {$button}
                         {/foreach}
@@ -48,7 +48,7 @@
                     </div>
                     {/if}
                     {if $total_pages > 1}
-                    <div id="search_btns" class="col-md printer-hidden pull-right pl-2">
+                    <div id="search_btns" class="col-md printer-hidden float-right pl-2">
                         <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
                             <a id="crud-search" class="btn btn-raised btn-sm btn-primary" href="" title="Search" data-tile="Search">
                                 <span class="fa fa-search fa-fw"></span> {t}Search{/t}
@@ -86,7 +86,7 @@
                         </form>
                     </div>
                     {/if}
-                    <div id="header_btns" class="col-md printer-hidden pull-right pl-2">
+                    <div id="header_btns" class="col-md printer-hidden float-right pl-2">
                         <div class="btn-raised">
                         {foreach item=button from=$header_buttons}
                             {$button}&nbsp;
@@ -113,7 +113,7 @@
 			        <div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
                 {/if}
 			        <div class="table-responsive">
-				        <table id="crud-table" class="crud-table table table-condensed table-striped">
+				        <table id="crud-table" class="crud-table table table-sm table-striped">
                         {if isset($title) || isset($table_headers)}
 					        <thead class="">
                             {if isset($table_headers)}
@@ -175,7 +175,7 @@
                     <div class="btn-group row-counts" role="group"  aria-label="{t}Rows Per Page{/t}">
     {foreach from=$page_limits item=$limit}
     {if $limit <= $total_rows}
-                        <button type="button" class="btn btn-raised btn-default btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
+                        <button type="button" class="btn btn-raised btn-secondary btn-sm {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
     {/if}
     {/foreach}
                     </div>
@@ -199,8 +199,8 @@
         </div>
         <div class="col-md-6 float-right">
             {if $total_pages > 1}
-            <nav aria-label="Page" class="crud btn-group pull-right">
-                <ul class="pagination pagination-sm no-margin pull-right">
+            <nav aria-label="Page" class="crud btn-group float-right">
+                <ul class="pagination pagination-sm no-margin float-right">
                     <li id="crud-pager-prev" class="page-item {if $page == 1}disabled{/if}">
                         <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>

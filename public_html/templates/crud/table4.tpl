@@ -3,7 +3,7 @@
 	.filterable {
 		margin-top: 15px;
 	}
-	.filterable .panel-heading .pull-right {
+	.filterable .card-header .float-right {
 		margin-top: -20px;
 	}
 	.filterable .filters input[disabled] {
@@ -31,13 +31,13 @@
 {/literal}
 <div class="container">
 	<div class="row">
-		<div class="panel panel-primary filterable">
-			<div class="panel-heading">
+		<div class="card bg-primary text-white filterable">
+			<div class="card-header">
 {if isset($title)}
-				<h3 class="panel-title">{$title}</h3>
+				<h3 class="card-title">{$title}</h3>
 {/if}
-				<div class="pull-right">
-					<button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> {t}Filter{/t}</button>
+				<div class="float-right">
+					<button class="btn btn-secondary btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> {t}Filter{/t}</button>
 				</div>
 			</div>
 			<table class="table table-hover">
