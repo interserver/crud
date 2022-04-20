@@ -189,10 +189,10 @@ class Crud extends Form
 		$crud->default_filters();
 		return $crud;
 	}
-	
+
 	/**
 	* controls whether or not the output is returned or sent to the normal output handler
-	* 
+	*
 	* @param bool $return_output
 	* @return Crud
 	*/
@@ -200,7 +200,7 @@ class Crud extends Form
 		$this->return_output = $return_output;
 		return $this;
 	}
-	
+
 	public function add_output($output) {
 		if ($this->return_output == true) {
 			$this->output .= $output;
@@ -1368,9 +1368,9 @@ class Crud extends Form
 		$link = str_replace(['%id%', '+\'\''], ['\'+get_crud_row_id(this)', ''], $link);
 		//$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
 		if ($this->theme == 'adminlteMaterial') {
-			$button = '<button type="button" class="text-primary text-center" style="background: none;border: none;" onclick="window.location=\''.$page.'?choice='.$link.';"';
+			$button = '<button type="button" alt="'.$title.'" class="text-primary text-center" style="background: none;border: none;" onclick="window.location=\''.$page.'?choice='.$link.';"';
 		} else {
-			$button = '<button type="button" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
+			$button = '<button type="button" alt="'.$title.'" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
 		}
 		if ($title != '') {
 			$button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
