@@ -22,21 +22,21 @@
 {/if}
 					<div class="btn-group float-right">
 						<button class="btn btn-primary btn-xs panel-reset-settings" type="button" title="Reset Panel Settings to Default State">
-							<i class="glyphicon glyphicon-off"></i>
+							<i class="fa fa-power-off"></i>
 						</button>
 						<button class="panel-collapse btn btn-primary btn-xs" title="Expand or Collapse Panel">
-							<i class="glyphicon glyphicon-chevron-down"></i>
+							<i class="fa fa-chevron-down"></i>
 						</button>
 					</div>
 					<div class="float-right action-buttons">
 						<div class="btn-group float-right">
 							<button type="button" class="btn btn-secondary btn-xs dropdown-toggle" data-toggle="dropdown">
-								<span class="glyphicon glyphicon-list"></span>
+								<span class="fa fa-list"></span>
 							</button>
 							<ul class="dropdown-menu slidedown">
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span>{t}Edit{/t}</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-trash"></span>{t}Delete{/t}</a></li>
-								<li><a href="//www.interserver.net"><span class="glyphicon glyphicon-flag"></span>{t}Flag{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="fa fa-pencil"></span>{t}Edit{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="fa fa-trash"></span>{t}Delete{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="fa fa-flag"></span>{t}Flag{/t}</a></li>
 							</ul>
 						</div>
 					</div>
@@ -52,9 +52,9 @@
 								</label>
 							</div>
 							<div class="float-right action-buttons">
-								<a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-								<a href="//www.interserver.net" class="flag"><span class="glyphicon glyphicon-flag"></span></a>
+								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
 						<li class="list-group-item">
@@ -65,9 +65,9 @@
 								</label>
 							</div>
 							<div class="float-right action-buttons">
-								<a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-								<a href="//www.interserver.net" class="flag"><span class="glyphicon glyphicon-flag"></span></a>
+								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
 						<li class="list-group-item">
@@ -78,9 +78,9 @@
 								</label>
 							</div>
 							<div class="float-right action-buttons">
-								<a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-								<a href="//www.interserver.net" class="flag"><span class="glyphicon glyphicon-flag"></span></a>
+								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
 						<li class="list-group-item">
@@ -91,9 +91,9 @@
 								</label>
 							</div>
 							<div class="float-right action-buttons">
-								<a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-								<a href="//www.interserver.net" class="flag"><span class="glyphicon glyphicon-flag"></span></a>
+								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
 						<li class="list-group-item">
@@ -104,9 +104,9 @@
 								</label>
 							</div>
 							<div class="float-right action-buttons">
-								<a href="//www.interserver.net"><span class="glyphicon glyphicon-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-								<a href="//www.interserver.net" class="flag"><span class="glyphicon glyphicon-flag"></span></a>
+								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
 					</ul>

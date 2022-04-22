@@ -37,7 +37,7 @@
 				<h3 class="card-title">{$title}</h3>
 {/if}
 				<div class="float-right">
-					<button class="btn btn-secondary btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> {t}Filter{/t}</button>
+					<button class="btn btn-secondary btn-xs btn-filter"><span class="fa fa-filter"></span> {t}Filter{/t}</button>
 				</div>
 			</div>
 			<table class="table table-hover">
@@ -68,9 +68,9 @@
 						</td>
 {/section}
 						<td>
-							<a href="#" style="padding-right: 10px;" title="Edit User"><i class="glyphicon glyphicon-edit color-blue"></i></a>
-							<a href="#" style="padding-right: 10px;" title="Account History"><i class="glyphicon glyphicon-time color-green"></i></a>
-							<a href="#" style="padding-right: 10px;" title="Delete User"><i class="glyphicon glyphicon-remove-sign color-red"></i></a>
+							<a href="#" style="padding-right: 10px;" title="Edit User"><i class="fa fa-edit color-blue"></i></a>
+							<a href="#" style="padding-right: 10px;" title="Account History"><i class="fa fa-clock-o color-green"></i></a>
+							<a href="#" style="padding-right: 10px;" title="Delete User"><i class="fa fa-times-circle color-red"></i></a>
 						</td>
 					</tr>
 {/section}

@@ -143,11 +143,11 @@
 		<div class="col-md-12 crud-nav-bar">
 			<div class="nav-crud">
 				<ul class="pagination">
-					<li id="crud-pager-prev" class="{if $page == 1}disabled{/if}"><a href=""><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+					<li id="crud-pager-prev" class="{if $page == 1}disabled{/if}"><a href=""><span class="fa fa-chevron-left"></span></a></li>
 {foreach item=pager from=$page_links}
 					<li class="crud-page {if $pager == $page}active{/if}"><a href="" class="" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
 {/foreach}
-					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href=""><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href=""><span class="fa fa-chevron-right"></span></a></li>
 				</ul>
 				<div class="btn-group row-counts nav-rows " role="group"  aria-label="{t}Rows Per Page{/t}">
 {foreach from=$page_limits item=$limit}
@@ -219,7 +219,7 @@
 			<form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=edit{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="{t}Close{/t}"><span aria-hidden="true">&times;</span></button>
-				<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button> -->
+				<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button> -->
 				<h4 class="modal-title custom_align" id="editModalLabel">{t}Edit{/t} {$title} {t}Details{/t}</h4>
 			</div>
 			<div class="modal-body">
@@ -227,8 +227,8 @@
 				<div class="error_message"></div>
 			</div>
 			<div class="modal-footer ">
-				<button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Update{/t}</button>
-				<button type="button" id="editModalCancelButton" class="btn btn-danger btn-lg" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}Cancel{/t}</button>
+				<button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="fa fa-check-circle"></span> {t}Update{/t}</button>
+				<button type="button" id="editModalCancelButton" class="btn btn-danger btn-lg" data-dismiss="modal"><span class="fa fa-remove"></span> {t}Cancel{/t}</button>
 			</div>
 			</form>
 		</div>
@@ -239,7 +239,7 @@
 		<form accept-charset="UTF-8" role="form" id="deleteModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=delete{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
 				<h4 class="modal-title custom_align" id="deleteModalLabel">{t}Delete this entry{/t}</h4>
 			</div>
 			<div class="modal-body">
@@ -251,11 +251,11 @@
 					</div>
 				</div>
 				<div class="error_message" style="text-align: left;"></div>
-				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> {t}Are you sure you want to delete this Record?{/t}</div>
+				<div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> {t}Are you sure you want to delete this Record?{/t}</div>
 			</div>
 			<div class="modal-footer ">
-				<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> {t}Yes{/t}</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
+				<button type="submit" class="btn btn-success" ><span class="fa fa-check-circle"></span> {t}Yes{/t}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="fa fa-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 		</form>
@@ -266,14 +266,14 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
 				<h4 class="modal-title custom_align" id="debugModalLabel">{t}Admin Debug Output{/t}</h4>
 			</div>
 			<div class="modal-body">
 				<pre style="text-align: left; overflow: scroll; max-height: 600px;">{$debug_output}</pre>
 			</div>
 			<div class="modal-footer ">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> {t}No{/t}</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="fa fa-remove"></span> {t}No{/t}</button>
 			</div>
 		</div>
 	</div>
