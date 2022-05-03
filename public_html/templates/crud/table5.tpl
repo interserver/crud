@@ -246,7 +246,7 @@
 				<div class="form-group">
 					<label class="offset-md-1 col-md-4 col-form-label" for="primary_key">{t}ID{/t}</label>
 					<div class="form-group input-group col-md-6">
-						<span class="input-group-addon"><i class="fa fa-fw fa-info"></i></span>
+						<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
 						<input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
 					</div>
 				</div>
