@@ -32,12 +32,15 @@ function crud_vps_templates()
 		$templateTypes[intval($db->Record['st_id'])] = $db->Record['st_name'];
 	$crud = Crud::init('select template_id, template_type, template_os, template_version, template_bits, template_file, template_available, template_name, template_dir from vps_templates')
 		->set_title(_('Templates'))
-		->add_filter('template_type', 'decorate_vps_templates', 'function')
-		->add_filter('template_available', 'decorate_vps_templates', 'function')
-		->enable_fluid_container();
+		//->add_filter('template_type', 'decorate_vps_templates', 'function')
+		//->add_filter('template_available', 'decorate_vps_templates', 'function')
+		->enable_fluid_container()
+		->enable_labels()
+		->set_labels(['template_id' => 'ID','template_type' => 'Type','template_os' => 'OS','template_version' => 'Version','template_bits' => 'Bits','template_file' => 'File','template_available' => 'Available','template_name' => 'Name','template_dir' => 'Dir']);
 	$crud->add_input_type_field('template_type', 'select', ['values' => array_keys($templateTypes), 'labels' => array_values($templateTypes), 'default' => false]);
 	$crud->add_field_validations('template_type', [['in_array' => array_keys($templateTypes)]]);
+	$crud->stage = 2;
 	$crud
-		->go();
+		->go('add');
 	bdump($crud);
 }
