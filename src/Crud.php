@@ -2003,7 +2003,7 @@ class Crud extends Form
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
-<div class="form-group">
+<div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
@@ -2016,7 +2016,7 @@ class Crud extends Form
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
-<div class="form-group">
+<div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
@@ -2029,7 +2029,7 @@ class Crud extends Form
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
-<div class="form-group">
+<div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<textarea rows="2" class="form-control" placeholder="'.$label.'">'.$value.'</textarea>
@@ -2041,7 +2041,7 @@ class Crud extends Form
 						case 'select':
 							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
-<div class="form-group">
+<div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>

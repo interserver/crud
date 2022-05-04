@@ -243,7 +243,7 @@
 				<h4 class="modal-title custom_align" id="deleteModalLabel">{t}Delete this entry{/t}</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				<div class="form-group row">
 					<label class="offset-md-1 col-md-4 col-form-label" for="primary_key">{t}ID{/t}</label>
 					<div class="form-group input-group col-md-6">
 						<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
