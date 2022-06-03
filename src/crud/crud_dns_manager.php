@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CRUD System
  * @author Joe Huss <detain@interserver.net>
@@ -6,6 +7,7 @@
  * @package MyAdmin
  * @category Admin
  */
+
 use \MyCrud\Crud;
 
 /**
@@ -14,6 +16,7 @@ use \MyCrud\Crud;
  */
 function crud_dns_manager()
 {
+	
 	if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
 		function_requirements('validIp');
 		function_requirements('add_dns_domain');
@@ -23,7 +26,7 @@ function crud_dns_manager()
 				if (isset($GLOBALS['tf']->variables->request['domain']) && trim($GLOBALS['tf']->variables->request['domain']) != '') {
 					$domain = trim($GLOBALS['tf']->variables->request['domain']);
 					$result = add_dns_domain($domain, $ip);
-					myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = ".json_encode($result), __LINE__, __FILE__);
+					myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = " . json_encode($result), __LINE__, __FILE__);
 					add_output($result['status_text']);
 				}
 				if (isset($GLOBALS['tf']->variables->request['domains']) && !in_array(trim($GLOBALS['tf']->variables->request['domains']), ['', 'Domain Names...'])) {
@@ -32,22 +35,22 @@ function crud_dns_manager()
 						$domain = trim($domain);
 						if ($domain != '') {
 							$result = add_dns_domain($domain, $ip);
-							add_output('<div class="container alert alert-danger">'.$result['status_text'].'</div>');
+							add_output('<div class="container alert alert-danger">' . $result['status_text'] . '</div>');
 						}
 					}
 				}
 			} else {
-				add_output('<div class="container alert alert-danger">Invalid IP '.$GLOBALS['tf']->variables->request['ip'].'</div>');
+				add_output('<div class="container alert alert-danger">Invalid IP ' . $GLOBALS['tf']->variables->request['ip'] . '</div>');
 			}
 		}
 	}
 	$strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
 	if ($GLOBALS['tf']->default_theme != 'adminlte') {
 		$ip_icon = '<div class="input-group-btn">
-			<button type="button" class="btn btn-default" aria-label="'._('IP Address').'" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
+			<button type="button" class="btn btn-default" aria-label="' . _('IP Address') . '" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
 		</div>';
 		$domain_icon = '<div class="input-group-btn">
-			<button type="button" class="btn btn-default" aria-label="'._('Domain Name').'" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
+			<button type="button" class="btn btn-default" aria-label="' . _('Domain Name') . '" style="padding: 0px;"><img src="/images/myadmin/domain.png" border="0" style="width: 32px;"></button>
 		</div>';
 	} else {
 		$ip_icon = '';
@@ -66,34 +69,34 @@ function crud_dns_manager()
 	<div class="row mb-4">
 		<div class="col-md-2 col-md-offset-2 text-right">
 			<div class="printer-hidden" style="vertical-align: middle;">
-				<label style="margin-top: 5px;">'._('Add Domain to DNS').'</label>
+				<label style="margin-top: 5px;">' . _('Add Domain to DNS') . '</label>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="printer-hidden">
 				<div class="input-group">
-					'.$domain_icon.'
-					<input class="form-control form-control-sm" aria-label="'._('Domain Name').'" placeholder="'._('Domain like').' mycoolsite.com" name="domain">
+					' . $domain_icon . '
+					<input class="form-control form-control-sm" aria-label="' . _('Domain Name') . '" placeholder="' . _('Domain like') . ' mycoolsite.com" name="domain">
 				</div>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="printer-hidden">
 				<div class="input-group">
-					'.$ip_icon.'
-					<input class="form-control form-control-sm" aria-label="'._('IP Address').'" placeholder="'._('IP Address like').' 0.0.0.0" name="ip">
+					' . $ip_icon . '
+					<input class="form-control form-control-sm" aria-label="' . _('IP Address') . '" placeholder="' . _('IP Address like') . ' 0.0.0.0" name="ip">
 				</div>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="printer-hidden">
-				<input class="form-control form-control-sm btn '. $strClass .'" type="submit" value="'._('Add DNS Entry').'">
+				<input class="form-control form-control-sm btn ' . $strClass . '" type="submit" value="' . _('Add DNS Entry') . '">
 			</div>
 		</div>
 	</div>
 </form>
 ')
-		->add_row_button('none.basic_dns_editor&edit=%id%', _('Edit DNS Records for this Domain'), 'primary', 'cog')
+		->add_row_button('none.dns_editor&edit=%id%', _('Edit DNS Records for this Domain'), 'primary', 'cog')
 		->add_row_button('none.dns_delete&id=%id%', _('Delete this Domain and its Records from DNS'), 'danger', 'trash')
 		->go();
 }
