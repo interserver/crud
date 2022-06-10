@@ -16,7 +16,7 @@ use \MyCrud\Crud;
  */
 function crud_dns_manager()
 {
-	
+
 	if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
 		function_requirements('validIp');
 		function_requirements('add_dns_domain');
@@ -28,6 +28,8 @@ function crud_dns_manager()
 					$result = add_dns_domain($domain, $ip);
 					myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = " . json_encode($result), __LINE__, __FILE__);
 					add_output($result['status_text']);
+				} else {
+					flash_message('error', 'Domain name is required');
 				}
 				if (isset($GLOBALS['tf']->variables->request['domains']) && !in_array(trim($GLOBALS['tf']->variables->request['domains']), ['', 'Domain Names...'])) {
 					$domains = explode("\n", $GLOBALS['tf']->variables->request['domains']);
@@ -35,14 +37,16 @@ function crud_dns_manager()
 						$domain = trim($domain);
 						if ($domain != '') {
 							$result = add_dns_domain($domain, $ip);
-							add_output('<div class="container alert alert-danger">' . $result['status_text'] . '</div>');
+							flash_message('error', $result['status_text']);
 						}
 					}
 				}
 			} else {
-				add_output('<div class="container alert alert-danger">Invalid IP ' . $GLOBALS['tf']->variables->request['ip'] . '</div>');
+				flash_message('error', 'Invalid IP ' . $GLOBALS['tf']->variables->request['ip']);
 			}
 		}
+		$domain = isset($GLOBALS['tf']->variables->request['domain']) ? $GLOBALS['tf']->variables->request['domain'] : '';
+		$ip = isset($GLOBALS['tf']->variables->request['ip']) ? $GLOBALS['tf']->variables->request['ip'] : '';
 	}
 	$strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
 	if ($GLOBALS['tf']->default_theme != 'adminlte') {
@@ -76,7 +80,7 @@ function crud_dns_manager()
 			<div class="printer-hidden">
 				<div class="input-group">
 					' . $domain_icon . '
-					<input class="form-control form-control-sm" aria-label="' . _('Domain Name') . '" placeholder="' . _('Domain like') . ' mycoolsite.com" name="domain">
+					<input class="form-control form-control-sm" aria-label="' . _('Domain Name') . '" placeholder="' . _('Domain like') . ' mycoolsite.com" name="domain" value="' . $domain . '">
 				</div>
 			</div>
 		</div>
@@ -84,7 +88,7 @@ function crud_dns_manager()
 			<div class="printer-hidden">
 				<div class="input-group">
 					' . $ip_icon . '
-					<input class="form-control form-control-sm" aria-label="' . _('IP Address') . '" placeholder="' . _('IP Address like') . ' 0.0.0.0" name="ip">
+					<input class="form-control form-control-sm" aria-label="' . _('IP Address') . '" placeholder="' . _('IP Address like') . ' 0.0.0.0" name="ip" value="' . $ip . '">
 				</div>
 			</div>
 		</div>
