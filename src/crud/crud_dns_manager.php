@@ -16,7 +16,6 @@ use \MyCrud\Crud;
  */
 function crud_dns_manager()
 {
-
 	if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
 		function_requirements('validIp');
 		function_requirements('add_dns_domain');
@@ -45,9 +44,9 @@ function crud_dns_manager()
 				flash_message('error', 'Invalid IP ' . $GLOBALS['tf']->variables->request['ip']);
 			}
 		}
-		$domain = isset($GLOBALS['tf']->variables->request['domain']) ? $GLOBALS['tf']->variables->request['domain'] : '';
-		$ip = isset($GLOBALS['tf']->variables->request['ip']) ? $GLOBALS['tf']->variables->request['ip'] : '';
 	}
+	$domain = isset($GLOBALS['tf']->variables->request['domain']) ? $GLOBALS['tf']->variables->request['domain'] : '';
+	$ip = isset($GLOBALS['tf']->variables->request['ip']) ? $GLOBALS['tf']->variables->request['ip'] : '';
 	$strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
 	if ($GLOBALS['tf']->default_theme != 'adminlte') {
 		$ip_icon = '<div class="input-group-btn">
