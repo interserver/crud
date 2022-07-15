@@ -2513,7 +2513,7 @@ class Crud extends Form
 			/*} elseif ($field == $this->settings['PREFIX'].'_id') {
 				// @TODO distinguish between like vps_masters.vps_id and vps.vps_id type fields before doing this*/
 			} elseif ($field == $this->settings['TITLE_FIELD'] || (isset($this->settings['TITLE_FIELD2']) && $field == $this->settings['TITLE_FIELD2'])) {
-				$this->add_filter_link($field, 'index.php?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($this->admin == true ? '' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
+				$this->add_filter_link($field, 'index.php?choice=none.view_'.$this->settings['PREFIX'].($this->module == 'webhosting' ? ($this->theme == 'adminlte' || $this->admin == true ? '' : '4') : '').'&id=%'.$this->settings['PREFIX'].'_id%', 'View '.$this->settings['TITLE'], 'view_service');
 			}
 		}
 	}
