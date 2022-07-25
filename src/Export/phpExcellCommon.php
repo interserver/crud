@@ -46,9 +46,9 @@ function phpExcellCommon(array &$rows, $type, $headers)
 	if ($type == 'Pdf') {
 		IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::class);
 	}
-	foreach ($headers as $header) {
-		header($header);
-	}
+    if (is_iterable($headers))
+	    foreach ($headers as $header)
+		    header($header);
 	$objWriter = IOFactory::createWriter($spreadsheet, $type);
 	ob_end_clean();
 	$objWriter->save('php://output');
