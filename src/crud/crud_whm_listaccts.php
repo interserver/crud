@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_whm_listaccts()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_whm_listaccts()
 {
-	Crud::init('whm_get_accounts', 'default', 'function')
-		->set_title(_('Accounts List'))
-		->go();
+    Crud::init('whm_get_accounts', 'default', 'function')
+        ->set_title(_('Accounts List'))
+        ->go();
 }

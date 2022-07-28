@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_dns_editor()
@@ -14,11 +14,11 @@ use \MyCrud\Crud;
  */
 function crud_dns_editor()
 {
-	function_requirements('class.Crud');
-	$domain_id = (int)$GLOBALS['tf']->variables->request['id'];
-	Crud::init("select * from records where domain_id='{$domain_id}'", 'pdns')
-		->set_title(_('DNS Editor'))
-		->enable_fluid_container()
-		->set_extra_url_args('&id='.$domain_id)
-		->go();
+    function_requirements('class.Crud');
+    $domain_id = (int)$GLOBALS['tf']->variables->request['id'];
+    Crud::init("select * from records where domain_id='{$domain_id}'", 'pdns')
+        ->set_title(_('DNS Editor'))
+        ->enable_fluid_container()
+        ->set_extra_url_args('&id='.$domain_id)
+        ->go();
 }

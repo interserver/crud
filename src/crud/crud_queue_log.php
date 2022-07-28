@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_queue_log()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_queue_log()
 {
-	Crud::init('select * from queue_log')
-		->set_title(_('Queue Log'))
-		->go();
+    Crud::init('select * from queue_log')
+        ->set_title(_('Queue Log'))
+        ->go();
 }

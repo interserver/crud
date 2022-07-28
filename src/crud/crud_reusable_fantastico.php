@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_reusable_fantastico()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_reusable_fantastico()
 {
-	Crud::init('get_reusable_fantastico', 'licenses', 'function')
-		->set_title(_('Reusable Fantastico'))
-		->go();
+    Crud::init('get_reusable_fantastico', 'licenses', 'function')
+        ->set_title(_('Reusable Fantastico'))
+        ->go();
 }

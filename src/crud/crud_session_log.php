@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_session_log()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_session_log()
 {
-	Crud::init('select * from session_log')
-		->set_title(_('session log'))
-		->go();
+    Crud::init('select * from session_log')
+        ->set_title(_('session log'))
+        ->go();
 }

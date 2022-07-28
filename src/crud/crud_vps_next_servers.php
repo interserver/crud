@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_vps_next_servers()
@@ -14,9 +14,9 @@ use \MyCrud\Crud;
  */
 function crud_vps_next_servers()
 {
-	Crud::init('get_vps_next_servers', 'vps', 'function')
-		->set_title(_('VPS Next Setup Servers'))
-		->disable_delete()
-		->disable_edit()
-		->go();
+    Crud::init('get_vps_next_servers', 'vps', 'function')
+        ->set_title(_('VPS Next Setup Servers'))
+        ->disable_delete()
+        ->disable_edit()
+        ->go();
 }

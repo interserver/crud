@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_monitoring_list()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_monitoring_list()
 {
-	Crud::init('get_monitoring_data', 'default', 'function')
-		->set_title(_('Monitored Systems'))
-		->go();
+    Crud::init('get_monitoring_data', 'default', 'function')
+        ->set_title(_('Monitored Systems'))
+        ->go();
 }

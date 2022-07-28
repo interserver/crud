@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_vlans()
@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_vlans()
 {
-	add_output(alert('TODO', 'Get Adding a VLAN working well, maybe some totals/stats type bottom row'));
-	Crud::init('select * from vlans', 'domains')
-		->set_title(_('IP VLAN Manager'))
-		->go();
+    add_output(alert('TODO', 'Get Adding a VLAN working well, maybe some totals/stats type bottom row'));
+    Crud::init('select * from vlans', 'domains')
+        ->set_title(_('IP VLAN Manager'))
+        ->go();
 }

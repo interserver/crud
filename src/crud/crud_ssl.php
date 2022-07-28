@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_ssl()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_ssl()
 {
-	Crud::init('select * from ssl_certs', 'ssl')
-		->set_title(_('SSL Certificates'))
-		->go();
+    Crud::init('select * from ssl_certs', 'ssl')
+        ->set_title(_('SSL Certificates'))
+        ->go();
 }

@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_forum_rss()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_forum_rss()
 {
-	Crud::init('get_forum_rss', 'default', 'function')
-		->set_title(_('Latest Forum Posts'))
-		->go();
+    Crud::init('get_forum_rss', 'default', 'function')
+        ->set_title(_('Latest Forum Posts'))
+        ->go();
 }

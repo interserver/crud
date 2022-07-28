@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_renewals()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_renewals()
 {
-	Crud::init('get_renewals', 'default', 'function')
-		->set_title(_('Renewals'))
-		->go();
+    Crud::init('get_renewals', 'default', 'function')
+        ->set_title(_('Renewals'))
+        ->go();
 }

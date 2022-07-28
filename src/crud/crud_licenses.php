@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_licenses()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_licenses()
 {
-	Crud::init('select * from licenses', 'licenses')
-		->set_title(_('Licenses'))
-		->go();
+    Crud::init('select * from licenses', 'licenses')
+        ->set_title(_('Licenses'))
+        ->go();
 }

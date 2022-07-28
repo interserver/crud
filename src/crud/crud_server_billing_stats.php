@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_server_billing_stats()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_server_billing_stats()
 {
-	Crud::init('get_server_billing_stats', 'default', 'function')
-		->set_title(_('Server Billing Stats'))
-		->go();
+    Crud::init('get_server_billing_stats', 'default', 'function')
+        ->set_title(_('Server Billing Stats'))
+        ->go();
 }

@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_innertell_pending_orders_new()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_innertell_pending_orders_new()
 {
-	Crud::init("select servers.server_id
+    Crud::init("select servers.server_id
 	 , servers.username
 	 , servers.ccname
 	 , servers.exp
@@ -60,6 +60,6 @@ ON vlans_comment LIKE concat('%', server_hostname)
 GROUP BY
   servers.username
 ", 'servers')
-		->set_title(_('Pending Server Orders'))
-		->go();
+        ->set_title(_('Pending Server Orders'))
+        ->go();
 }

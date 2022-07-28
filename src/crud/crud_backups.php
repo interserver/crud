@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_backups()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_backups()
 {
-	Crud::init('select * from backups', 'backups')
-		->set_title(_('Backups'))
-		->go();
+    Crud::init('select * from backups', 'backups')
+        ->set_title(_('Backups'))
+        ->go();
 }

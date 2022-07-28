@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_innertell_orders()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_innertell_orders()
 {
-	Crud::init('select server_id, username, server_hostname, server_status from servers', 'servers')
-		->set_title(_('Dedicated Server Orders'))
-		->go();
+    Crud::init('select server_id, username, server_hostname, server_status from servers', 'servers')
+        ->set_title(_('Dedicated Server Orders'))
+        ->go();
 }

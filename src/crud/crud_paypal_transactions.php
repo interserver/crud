@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_paypal_transactions()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_paypal_transactions()
 {
-	Crud::init('select * from paypal')
-		->set_title(_('Paypal Transactions'))
-		->go();
+    Crud::init('select * from paypal')
+        ->set_title(_('Paypal Transactions'))
+        ->go();
 }

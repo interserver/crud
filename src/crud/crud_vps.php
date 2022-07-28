@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_vps()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_vps()
 {
-	Crud::init('select * from vps', 'vps')
-		->set_title(_('Virtual Private Servers'))
-		->go();
+    Crud::init('select * from vps', 'vps')
+        ->set_title(_('Virtual Private Servers'))
+        ->go();
 }

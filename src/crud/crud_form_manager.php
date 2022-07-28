@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_form_manager()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_form_manager()
 {
-	Crud::init('select * from forms')
-		->set_title(_('Form Manager'))
-		->go();
+    Crud::init('select * from forms')
+        ->set_title(_('Form Manager'))
+        ->go();
 }

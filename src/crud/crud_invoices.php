@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_invoices()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_invoices()
 {
-	Crud::init('select * from invoices')
-		->set_title(_('Invoices'))
-		->go();
+    Crud::init('select * from invoices')
+        ->set_title(_('Invoices'))
+        ->go();
 }

@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_paypal_history()
@@ -14,12 +14,12 @@ use \MyCrud\Crud;
  */
 function crud_paypal_history()
 {
-	Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid')
-		->set_title(_('Paypal History'))
-		->enable_labels()
-		->set_labels(['owner' => 'Owner', 'txn_id' => 'Transaction ID', 'payment_status' => 'Status', 'history_timestamp' => 'When', 'payer_email' => 'Email', 'payment_gross' => 'Amount'])
-		->set_order('history_timestamp', 'desc')
-		->disable_edit()
-		->disable_delete()
-		->go();
+    Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid')
+        ->set_title(_('Paypal History'))
+        ->enable_labels()
+        ->set_labels(['owner' => 'Owner', 'txn_id' => 'Transaction ID', 'payment_status' => 'Status', 'history_timestamp' => 'When', 'payer_email' => 'Email', 'payment_gross' => 'Amount'])
+        ->set_order('history_timestamp', 'desc')
+        ->disable_edit()
+        ->disable_delete()
+        ->go();
 }

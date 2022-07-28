@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_fantastico_list()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_fantastico_list()
 {
-	Crud::init('get_fantastico_list', 'licenses', 'function')
-		->set_title(_('Fantastico License List'))
-		->go();
+    Crud::init('get_fantastico_list', 'licenses', 'function')
+        ->set_title(_('Fantastico License List'))
+        ->go();
 }

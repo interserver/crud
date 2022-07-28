@@ -6,14 +6,14 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * @return void
  */
 function crud_asset_locations()
 {
-	Crud::init('select * from asset_locations')
-	->set_title(_('Asset Locations'))
-	->go();
+    Crud::init('select * from asset_locations')
+    ->set_title(_('Asset Locations'))
+    ->go();
 }

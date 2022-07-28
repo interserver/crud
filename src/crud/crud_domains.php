@@ -6,7 +6,7 @@
  * @package MyAdmin
  * @category Admin
  */
-use \MyCrud\Crud;
+use MyCrud\Crud;
 
 /**
  * crud_domains()
@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_domains()
 {
-	Crud::init('select * from domains', 'domains')
-		->set_title(_('Domains'))
-		->go();
+    Crud::init('select * from domains', 'domains')
+        ->set_title(_('Domains'))
+        ->go();
 }
