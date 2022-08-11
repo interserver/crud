@@ -2,7 +2,7 @@
 <div class="row">
 	<div class="col-md-12">
 		{if isset($module) && $module == 'backups'}
-		<div class="alert alert-default">({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/backups/">https://www.interserver.net/backups/</a>)</div>
+		<div class="alert alert-default">({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/storage/">https://www.interserver.net/storage/</a>)</div>
 		{/if}
 		<div class="card">
 			<div class="card-header text-right">
