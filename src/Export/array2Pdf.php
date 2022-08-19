@@ -14,7 +14,7 @@
  * @param $headers
  * @return string the PDF
  */
-function array2Pdf(array $fields, $headers)
+function array2Pdf(array $fields, $headers = [])
 {
 	function_requirements('phpExcellCommon');
 	return phpExcellCommon($fields, 'Pdf', $headers);

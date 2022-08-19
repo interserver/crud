@@ -14,7 +14,7 @@
  * @param $headers
  * @return string the XLSX
  */
-function array2Xlsx(array $fields, $headers)
+function array2Xlsx(array $fields, $headers = [])
 {
 	function_requirements('phpExcellCommon');
 	return phpExcellCommon($fields, 'Xlsx', $headers);

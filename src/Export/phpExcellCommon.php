@@ -21,7 +21,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  * @throws \PHPExcel_Reader_Exception
  * @throws \PHPExcel_Writer_Exception
  */
-function phpExcellCommon(array &$rows, $type, $headers)
+function phpExcellCommon(array &$rows, $type, $headers = [])
 {
 	$spreadsheet = new Spreadsheet();
 
