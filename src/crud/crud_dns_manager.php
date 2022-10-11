@@ -26,7 +26,7 @@ function crud_dns_manager()
 					$domain = trim($GLOBALS['tf']->variables->request['domain']);
 					$result = add_dns_domain($domain, $ip);
 					myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = " . json_encode($result), __LINE__, __FILE__);
-					add_output($result['status_text']);
+					flash_message('info', $result['status_text'], 'dns_manager');
 				} else {
 					flash_message('error', 'Domain name is required');
 				}
