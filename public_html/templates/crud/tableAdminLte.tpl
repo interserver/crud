@@ -109,7 +109,7 @@
 				{if $refresh_button == true}
 					<div class="refresh-container"><i class="refresh-spinner fa fa-spinner fa-spin fa-2x"></i></div>
 				{/if}
-					<div class="table-responsive">
+					<div class="table">
 						<table id="crud-table" class="crud-table table table-bordred table-striped table-hover table-sm">
 						{if isset($title) || isset($table_headers)}
 							<thead class="">
