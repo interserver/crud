@@ -55,6 +55,7 @@ use MyAdmin\Form;
  */
 class Crud extends Form
 {
+    public $limit_custid_role = false;
 	public $limit_custid = false;
 	public $custid_match = '/_custid$/m';
 	public $ajax = false;
@@ -233,6 +234,11 @@ class Crud extends Form
 		return $this;
 	}
 
+    public function set_limit_custid_role($role = false) {
+        $this->limit_custid_role = $role;
+        return $this;
+    }
+
 	/**
 	 * applies the module info setting up the local module, settings, and db variables
 	 *
@@ -328,10 +334,13 @@ class Crud extends Form
 		$this->total_rows = $count;
 
 		if ($this->admin == true) {
-			if (isset($this->request['custid'])) {
-				$this->custid = $this->request['custid'];
-			//$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__, 'debug');
-			} else {
+            if (isset($this->request['custid'])) {
+                $this->custid = $this->request['custid'];
+                //$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__, 'debug');
+            } elseif ($this->limit_custid_role !== false) {
+                function_requirements('has_acl');
+                $this->limit_custid = !has_acl($this->limit_custid_role);
+            } else {
 				$this->limit_custid = false;
 				//$this->log("Disabling CustID Limiting", __LINE__, __FILE__, 'debug');
 			}
