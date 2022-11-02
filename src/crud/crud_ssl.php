@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_ssl()
 {
 	Crud::init('select * from ssl_certs', 'ssl')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('SSL Certificates'))
 		->go();
 }

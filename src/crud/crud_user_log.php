@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_user_log()
 {
 	Crud::init('select * from user_log')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('User Log'))
 		->go();
 }

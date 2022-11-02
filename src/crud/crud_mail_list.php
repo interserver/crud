@@ -20,6 +20,7 @@ function crud_mail_list()
 	$settings = \get_module_settings($module);
 	page_title(_($settings['TITLE']).' '._('List'));
 	Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, repeat_invoices_cost, {$settings['PREFIX']}_username, {$settings['PREFIX']}_status, services_name from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}' left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
+        ->set_limit_custid_role('list_all')
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title(_($settings['TITLE']).' '._('List'))
 		->enable_labels()

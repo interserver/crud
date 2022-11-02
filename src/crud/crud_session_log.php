@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_session_log()
 {
 	Crud::init('select * from session_log')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('session log'))
 		->go();
 }

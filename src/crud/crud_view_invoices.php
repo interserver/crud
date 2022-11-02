@@ -81,6 +81,7 @@ if (invoices_type = 1,
  ''
 ) as invoices_paid,
 invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__'")
+        ->set_limit_custid_role('list_all')
 		->enable_labels()
 		->set_use_html_filtering(false)
 		->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])

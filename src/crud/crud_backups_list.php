@@ -20,6 +20,7 @@ $module = 'backups';
 $settings = \get_module_settings($module);
 	page_title(_('Storage / Backups').' '._('List'));
 	Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, {$settings['PREFIX']}_name, ifnull(repeat_invoices_cost, 0.00) as {$settings['PREFIX']}_cost, {$settings['PREFIX']}_username, {$settings['PREFIX']}_status, services_name from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}' left join {$settings['PREFIX']}_masters on {$settings['TABLE']}.{$settings['PREFIX']}_server={$settings['PREFIX']}_masters.{$settings['PREFIX']}_id left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
+        ->set_limit_custid_role('list_all')
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title(_('Storage / Backups').' '._('List'))
 		->enable_labels()

@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_innertell_orders()
 {
 	Crud::init('select server_id, username, server_hostname, server_status from servers', 'servers')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Dedicated Server Orders'))
 		->go();
 }

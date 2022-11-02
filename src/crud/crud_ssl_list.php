@@ -19,6 +19,7 @@ function crud_ssl_list()
 	$settings = \get_module_settings($module);
 	page_title(_($settings['TITLE']).' '._('List'));
 	Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
+        ->set_limit_custid_role('list_all')
 		->set_order($settings['PREFIX'].'_status', 'asc')
 		->set_title(_($settings['TITLE']).' '._('List'))
 		->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.buy_'.$settings['PREFIX']), _('Order'), 'primary', 'shopping-cart', _('Order').' '._($settings['TITLE']), 'client')

@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_server_actions()
 {
 	Crud::init("select vps_hostname, history_new_value, history_timestamp from history_log left join vps on vps_id=history_type where history_section='vpsqueueold' and vps_id is not NULL", 'vps')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Recent Server Commands'))
 		->go();
 }

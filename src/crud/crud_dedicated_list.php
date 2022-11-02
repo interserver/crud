@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_dedicated_list()
 {
 	Crud::init('select server_id, account_lid, server_hostname, server_status from servers left join accounts on account_id=server_custid', 'servers')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Dedicated List'))
 		->set_order('server_id', 'desc')
 		->enable_labels()

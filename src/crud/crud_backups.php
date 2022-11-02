@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_backups()
 {
 	Crud::init('select * from backups', 'backups')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Backups'))
 		->go();
 }

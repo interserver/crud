@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_invoices()
 {
 	Crud::init('select * from invoices')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Invoices'))
 		->go();
 }

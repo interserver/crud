@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_queue_log()
 {
 	Crud::init('select * from queue_log')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Queue Log'))
 		->go();
 }

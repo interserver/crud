@@ -15,6 +15,7 @@ use \MyCrud\Crud;
 function crud_domains()
 {
 	Crud::init('select * from domains', 'domains')
+        ->set_limit_custid_role('list_all')
 		->set_title(_('Domains'))
 		->go();
 }
