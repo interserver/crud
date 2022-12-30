@@ -381,6 +381,7 @@ class Crud extends Form
 				$this->order_form();
 				break;
 		}
+        \Tracy\Debugger::barDump($this, 'Crud');
 		if ($this->return_output == true) {
 			return $this->output;
 		} else {
@@ -713,8 +714,8 @@ class Crud extends Form
 		}
 		//require_once(INCLUDE_ROOT.'/../vendor/autoload.php');
 		//require_once(INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/SQLParser.php');
-		require_once INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/autoload.php';
-		$parser = new SQLParser;
+		//require_once INCLUDE_ROOT.'/../vendor/crodas/sql-parser/src/autoload.php';
+		$parser = new \SQLParser;
 		$this->queries = $parser->parse($query);
 		$this->parse_query_fields();
 		//_debug_array($queries);
@@ -1012,7 +1013,7 @@ class Crud extends Form
 			$db->next_record(MYSQL_NUM);
 			$count = $db->f(0);
 		} else {
-			if (preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
+			if (!is_null($this->query) && preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
 				$from = $matches[1];
 				if (count($this->search_terms) > 0) {
 					if ($this->queries[0]->hasWhere() == false) {
