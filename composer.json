@@ -34,7 +34,7 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
-		"crodas/sql-parser": "^0.1.5",
+		"crodas/sql-parser": *",
 		"detain/db_abstraction": "dev-master"
 	},
 	"require-dev": {
