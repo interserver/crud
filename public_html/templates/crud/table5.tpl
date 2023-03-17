@@ -144,7 +144,7 @@
 			<div class="nav-crud">
             <nav class="nav-crud" aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li class="page-item {if $page == 1}disabled{/if}">
+                    <li id="crud-pager-prev" class="page-item {if $page == 1}disabled{/if}">
                         <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
@@ -153,7 +153,7 @@
 {foreach item=pager from=$page_links}
                     <li class="crud-page page-item {if $pager == $page}active{/if}"><a href="#" class="page-link" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
 {/foreach}
-                    <li class="page-item {if $page >= $total_pages}disabled{/if}">
+                    <li id="crud-pager-next" class="page-item {if $page >= $total_pages}disabled{/if}">
                         <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
