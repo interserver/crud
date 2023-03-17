@@ -356,6 +356,8 @@ class Crud extends Form
 	{
 		add_js('bootstrap');
 		add_js('font-awesome');
+        add_js('tempusdominus');
+        $GLOBALS['tf']->add_html_head_js_file('/lib/twbs-pagination/jquery.twbsPagination.js');
 		$GLOBALS['tf']->add_html_head_js_file('/js/crud.js');
 	}
 

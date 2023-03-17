@@ -142,71 +142,82 @@
 		{if $total_pages > 1}
 		<div class="col-md-12 crud-nav-bar">
 			<div class="nav-crud">
-				<ul class="pagination">
-					<li id="crud-pager-prev" class="{if $page == 1}disabled{/if}"><a href=""><span class="fa fa-chevron-left"></span></a></li>
+            <nav class="nav-crud" aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item {if $page == 1}disabled{/if}">
+                        <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
 {foreach item=pager from=$page_links}
-					<li class="crud-page {if $pager == $page}active{/if}"><a href="" class="" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
+                    <li class="crud-page page-item {if $pager == $page}active{/if}"><a href="#" class="page-link" data-offset="{($pager - 1) * $page_limit}">{$pager}</a></li>
 {/foreach}
-					<li id="crud-pager-next" class="{if $page >= $total_pages}disabled{/if}"><a href=""><span class="fa fa-chevron-right"></span></a></li>
-				</ul>
-				<div class="btn-group row-counts nav-rows " role="group"  aria-label="{t}Rows Per Page{/t}">
+                    <li class="page-item {if $page >= $total_pages}disabled{/if}">
+                        <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="btn-group row-counts nav-rows " role="group"  aria-label="{t}Rows Per Page{/t}">
 {foreach from=$page_limits item=$limit}
 {if $limit <= $total_rows}
-					<button type="button" class="btn btn-secondary {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
+                    <button type="button" class="btn btn-secondary {if $page_limit == $limit}active{/if}" data-limit="{$limit}">{if $limit == -1}{t}All{/t}{else}{$limit}{/if}</button>
 {/if}
 {/foreach}
-				</div>
-				<a id="crud-search" class="btn btn-sm btn-primary crud-search" href="" title="Search" data-tile="Search">
-					<span class="fa fa-search fa-fw"></span> {t}Search{/t}
-				</a>
-				<span id="crud-search-more" class="crud-search form-inline" style="display: none;">
-					<input class="crud-searchdata crud-search-active form-control-small form-control" name="search" data-type="text" type="text" value="">
-					<select class="crud-daterange crud-searchdata form-control-small form-control" name="range" data-fieldtype="date" style="display:none; ">
-						<option value="">- choose range -</option>
-						<option value="next_year" data-from="" data-to="">{t}Next Year{/t}</option>
-						<option value="next_month" data-from="" data-to="">{t}Next Month{/t}</option>
-						<option value="today" data-from="" data-to="">{t}Today{/t}</option>
-						<option value="this_week_today" data-from="" data-to="">{t}This Week up to today{/t}</option>
-						<option value="this_week_full" data-from="" data-to="">{t}This full Week{/t}</option>
-						<option value="last_week" data-from="" data-to="">{t}Last Week{/t}</option>
-						<option value="last_2weeks" data-from="" data-to="">{t}Last two Weeks{/t}</option>
-						<option value="this_month" data-from="" data-to="">{t}This Month{/t}</option>
-						<option value="last_month" data-from="" data-to="">{t}Last Month{/t}</option>
-						<option value="last_3months" data-from="" data-to="">{t}Last 3 Months{/t}</option>
-						<option value="last_6months" data-from="" data-to="">{t}Last 6 Months{/t}</option>
-						<option value="this_year" data-from="" data-to="">{t}This Year{/t}</option>
-						<option value="last_year" data-from="" data-to="">{t}Last Year{/t}</option>
-					</select>
-					<input class="crud-searchdata crud-datepicker-from form-control-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
-					<input class="crud-searchdata crud-datepicker-to form-control-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
-					<select class="crud-data crud-columns-select form-control-small form-control" name="column" id="crud_search_column">
-						<option value="">{t}All fields{/t}</option>
+                </div>
+                <a id="crud-search" class="btn btn-sm btn-primary crud-search" href="" title="Search" data-tile="Search">
+                    <span class="fa fa-search fa-fw"></span> {t}Search{/t}
+                </a>
+                <span id="crud-search-more" class="crud-search form-inline" style="display: none;">
+                    <input class="crud-searchdata crud-search-active form-control-small form-control" name="search" data-type="text" type="text" value="">
+                    <select class="crud-daterange crud-searchdata form-control-small form-control" name="range" data-fieldtype="date" style="display:none; ">
+                        <option value="">- choose range -</option>
+                        <option value="next_year" data-from="" data-to="">{t}Next Year{/t}</option>
+                        <option value="next_month" data-from="" data-to="">{t}Next Month{/t}</option>
+                        <option value="today" data-from="" data-to="">{t}Today{/t}</option>
+                        <option value="this_week_today" data-from="" data-to="">{t}This Week up to today{/t}</option>
+                        <option value="this_week_full" data-from="" data-to="">{t}This full Week{/t}</option>
+                        <option value="last_week" data-from="" data-to="">{t}Last Week{/t}</option>
+                        <option value="last_2weeks" data-from="" data-to="">{t}Last two Weeks{/t}</option>
+                        <option value="this_month" data-from="" data-to="">{t}This Month{/t}</option>
+                        <option value="last_month" data-from="" data-to="">{t}Last Month{/t}</option>
+                        <option value="last_3months" data-from="" data-to="">{t}Last 3 Months{/t}</option>
+                        <option value="last_6months" data-from="" data-to="">{t}Last 6 Months{/t}</option>
+                        <option value="this_year" data-from="" data-to="">{t}This Year{/t}</option>
+                        <option value="last_year" data-from="" data-to="">{t}Last Year{/t}</option>
+                    </select>
+                    <input class="crud-searchdata crud-datepicker-from form-control-small form-control" name="date_from" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+                    <input class="crud-searchdata crud-datepicker-to form-control-small form-control" name="date_to" style="display:none; " data-type="datetime" data-fieldtype="date" type="text" value="">
+                    <select class="crud-data crud-columns-select form-control-small form-control" name="column" id="crud_search_column">
+                        <option value="">{t}All fields{/t}</option>
 {foreach from=$labels key=idx item=value}
-						<option value="{$idx}" data-type="int">{$value}</option>
+                        <option value="{$idx}" data-type="int">{$value}</option>
 {/foreach}
-<!--						<option value="{$idx}" data-type="text">{t}Check number{/t}</option>
-						<option value="{$idx}" data-type="datetime">{t}Payment date{/t}</option>
-						<option value="{$idx}" data-type="float">{t}Amount{/t}</option> -->
-					</select>
-					<span class="btn-group">
-						<a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">{t}Go{/t}</a>
-					</span>
-				</span>
+<!--                        <option value="{$idx}" data-type="text">{t}Check number{/t}</option>
+                        <option value="{$idx}" data-type="datetime">{t}Payment date{/t}</option>
+                        <option value="{$idx}" data-type="float">{t}Amount{/t}</option> -->
+                    </select>
+                    <span class="btn-group">
+                        <a class="btn btn-sm btn-primary" href="" data-search="1" id="crud_search_button">{t}Go{/t}</a>
+                    </span>
+                </span>
 {if $admin == true || $refresh_button == true}
-				<span class="btn-group nav-rows">
+                <span class="btn-group nav-rows">
 {if $admin == true}
-					<a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
-						<span class="fa fa-bug fa-fw"></span>
-					</a>
+                    <a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
+                        <span class="fa fa-bug fa-fw"></span>
+                    </a>
 {/if}
 {if $refresh_button == true}
-					<a class="btn btn-sm btn-info refresh" href="" title="{t}Refresh Table{/t}" data-title="{t}Refresh Table{/t}" >
-						<span class="fa fa-refresh fa-fw"></span>
-					</a>
+                    <a class="btn btn-sm btn-info refresh" href="" title="{t}Refresh Table{/t}" data-title="{t}Refresh Table{/t}" >
+                        <span class="fa fa-refresh fa-fw"></span>
+                    </a>
 {/if}
-				</span>
+                </span>
 {/if}
-			</div>
+            </nav>
 		</div>
 		{/if}
 		</form>
