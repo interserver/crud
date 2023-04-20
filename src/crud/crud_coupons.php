@@ -33,5 +33,6 @@ function crud_coupons()
 		->disable_delete()
 		->disable_edit()
 		->enable_fluid_container()
+        ->add_row_button('none.edit_coupon&id=%id%', _('Edit Coupon'), 'primary', 'cog')
 		->go();
 }

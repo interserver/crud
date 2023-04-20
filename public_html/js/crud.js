@@ -1,12 +1,9 @@
 /**
- * processing submit buttons and handles the responses
- *
- * @param what the form your submitting (ie edit, add, delete)
- * @param that the this object that triggered the call
- *
- * @returns {Boolean}
- */
-
+* updates the table sort
+*
+* @param table
+* @param order
+*/
 function sortTable(table, order) {
 		console.log("sort-table");
     var asc   = order === 'asc',
@@ -21,6 +18,14 @@ function sortTable(table, order) {
     }).appendTo(tbody);
 }
 
+/**
+ * processing submit buttons and handles the responses
+ *
+ * @param what the form your submitting (ie edit, add, delete)
+ * @param that the this object that triggered the call
+ *
+ * @returns {Boolean}
+ */
 function crud_submit_handler(what, that) {
 	var disabled = jQuery("#"+what+"ModalForm input[disabled], #"+what+"ModalForm select[disabled]");
 	disabled.removeAttr("disabled");

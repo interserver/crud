@@ -1530,18 +1530,6 @@ class Crud extends Form
 			$idx++;
 		}
 		$count = $this->get_count();
-		$table->smarty->assign(
-			'label_rep',
-			[
-			'active' => 'success',
-			'pending' => 'info',
-			'locked' => 'danger',
-			'suspended' => 'warning',
-			'canceled' => 'warning',
-			'expired' => 'danger',
-			'terminated' => 'danger'
-										  ]
-		);
 		$table->set_template_dir('/templates/crud/');
 		//$table->set_filename('crud/table.tpl');
 		//$table->set_filename('crud/table1.tpl');
@@ -1562,9 +1550,6 @@ class Crud extends Form
 		} else {
 			$table->set_filename('crud/table5.tpl');
 		}
-		$table->smarty->assign('primary_key', $this->primary_key);
-		$table->smarty->assign('choice', $this->choice);
-		$table->smarty->assign('admin', $this->admin);
 		if ($this->admin == true) {
 			$debug = $this;
 			unset($debug->db);
@@ -1578,41 +1563,59 @@ class Crud extends Form
 		//echo 'pages'.$total_pages;
 		$this->total_pages = $this->get_total_pages($count);
 		$this->page_links = $this->get_page_links($page, $this->total_pages);
-		$table->smarty->assign('fluid_container', $this->fluid_container);
-		$table->smarty->assign('refresh_button', $this->refresh_button);
-		$table->smarty->assign('export_button', $this->export_button);
+        $assign = [
+            'label_rep' => [
+                'active' => 'success',
+                'pending' => 'info',
+                'locked' => 'danger',
+                'suspended' => 'warning',
+                'canceled' => 'warning',
+                'expired' => 'danger',
+                'terminated' => 'danger'
+            ],
+            'primary_key' => $this->primary_key,
+            'choice' => $this->choice,
+            'admin' => $this->admin,
+            'fluid_container' => $this->fluid_container,
+            'refresh_button' => $this->refresh_button,
+            'export_button' => $this->export_button,
+            'print_button' => $this->print_button,
+            'page_links' => $this->page_links,
+            'total_rows' => $count,
+            'total_pages' => $this->total_pages,
+            'page_limits' => $this->page_limits,
+            'page' => $page,
+            'page_limit' => $this->page_limit,
+            'page_offset' => $this->page_offset,
+            'order_by' => $this->order_by,
+            'order_dir' => $this->order_dir,
+            'edit_form' => $this->order_form(),
+            'select_multiple' => $this->select_multiple,
+            'header' => $this->header,
+            'header_buttons' => $this->header_buttons,
+            'title_buttons' => $this->title_buttons,
+            'extra_url_args' => $this->extra_url_args,
+            'module' => $this->module,
+            'add_row' => $this->add_row,
+            'labels' => $this->labels,
+            'rows' => $rows,
+        ];
 		if ($this->export_button == true) {
-			$table->smarty->assign('export_formats', $this->get_export_formats());
+			$assign['export_formats'] = $this->get_export_formats();
 		}
-		$table->smarty->assign('print_button', $this->print_button);
-		$table->smarty->assign('page_links', $this->page_links);
-		$table->smarty->assign('total_rows', $count);
-		$table->smarty->assign('total_pages', $this->total_pages);
-		$table->smarty->assign('page_limits', $this->page_limits);
-		$table->smarty->assign('page', $page);
-		$table->smarty->assign('page_limit', $this->page_limit);
-		$table->smarty->assign('page_offset', $this->page_offset);
-		$table->smarty->assign('order_by', $this->order_by);
-		$table->smarty->assign('order_dir', $this->order_dir);
-		$table->smarty->assign('edit_form', $this->order_form());
-		$table->smarty->assign('select_multiple', $this->select_multiple);
-		$table->smarty->assign('header', $this->header);
-		$table->smarty->assign('header_buttons', $this->header_buttons);
-		$table->smarty->assign('title_buttons', $this->title_buttons);
-		$table->smarty->assign('extra_url_args', $this->extra_url_args);
-		$table->smarty->assign('module', $this->module);
-		if ($this->edit_row == true) {
-			$this->buttons[] = $this->edit_button;
-		}
-		if ($this->delete_row == true) {
-			$this->buttons[] = $this->delete_button;
-		}
-		if (count($this->buttons) > 0) {
-			$table->smarty->assign('row_buttons', $this->buttons);
-		}
-		$table->smarty->assign('add_row', $this->add_row);
-		$table->smarty->assign('labels', $this->labels);
-		$table->smarty->assign('rows', $rows);
+        if ($this->edit_row == true) {
+            $this->buttons[] = $this->edit_button;
+        }
+        if ($this->delete_row == true) {
+            $this->buttons[] = $this->delete_button;
+        }
+        if (count($this->buttons) > 0) {
+            $assign['row_buttons'] = $this->buttons;
+        }
+        \Tracy\Debugger::barDump($assign, 'Crud Smarty Assign');
+        \Tracy\Debugger::barDump($table, 'Crud TFTable');
+        $GLOBALS['tf']->add_html_head_js_string('let assign = '.json_encode($assign).';');
+        $table->smarty->assign($assign);
 		$this->add_js_headers();
 		$this->add_output($table->get_table());
 		//$this->add_output('<pre style="text-align: left;">'. print_r($this->tables, TRUE).'</pre>');
