@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
+
+use \MyCrud\Crud;
+
 require_once __DIR__.'/../../../../../include/functions.inc.php';
 add_js('bootstrap');
-function_requirements('class.Crud');
 $cmd = 'ls ' . INCLUDE_ROOT . '/forms/*json;';
 $files = explode("\n", trim(`$cmd`));
 $function_req = '';

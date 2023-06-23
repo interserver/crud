@@ -14,7 +14,6 @@ use \MyCrud\Crud;
  */
 function same_domain_accounts()
 {
-	function_requirements('class.Crud');
 	$id = (int)$GLOBALS['tf']->variables->request['id'];
 	Crud::init("select account_id,account_lid,account_status from accounts where account_lid like (select concat('%',substring(account_lid, locate('@', account_lid))) from accounts where account_id={$id})")
 		->set_title(_('Accounts matching the').' @domain.com '._('of client').' '.$id)
