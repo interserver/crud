@@ -1470,8 +1470,6 @@ class Crud extends Form
 					[Comment] => Account ID
 		)))*/
 		$smarty = new \TFSmarty();
-        foreach (['strtoupper', 'in_array', 'json_encode'] as $function)
-            $smarty->registerPlugin('modifier', $function, $function);
 		$table = new \TFTable;
 		if ($this->title == false) {
 			$table->set_title($this->table.' Records');
