@@ -1610,9 +1610,9 @@ class Crud extends Form
         if (count($this->buttons) > 0) {
             $assign['row_buttons'] = $this->buttons;
         }
-        \Tracy\Debugger::barDump($assign, 'Crud Smarty Assign');
-        \Tracy\Debugger::barDump($table, 'Crud TFTable');
-        $GLOBALS['tf']->add_html_head_js_string('let assign = '.json_encode($assign).';');
+        \Tracy\Debugger::barDump($assign, 'Crud '.$this->title.' Smarty Assign');
+        \Tracy\Debugger::barDump($table, 'Crud '.$this->title.' TFTable');
+        //$GLOBALS['tf']->add_html_head_js_string('let assign'.str_replace('-','_',slugify($this->title)).' = '.json_encode($assign).';');
         $table->smarty->assign($assign);
 		$this->add_js_headers();
 		$this->add_output($table->get_table());
