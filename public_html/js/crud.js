@@ -191,25 +191,29 @@ function crud_export(that) {
 function crud_load_page(callback) {
 	$.getJSON(get_crud_url(), { }, function(json) {
 		crud_rows = json;
-		var empty = document.getElementById('itemrowempty').innerHTML;
-		var x, row;
-		jQuery('#crud-table tbody').html('');
-		jQuery('#crud-table tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
-		for(var x = 0; x < json.length; x++) {
-			//row = replaceAll(empty, 'display: none;','');
-			row = empty;
-			for (var field in json[x]) {
-				row = replaceAll(row, '%'+field+'%', json[x][field]);
-			}
-			jQuery('#crud-table tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
-		}
-		crud_update_pager();
-		//console.log(json);
-		//jQuery("[data-toggle=tooltip]").tooltip();
-		console.log("page finished loading "+crud_rows.length+" rows");
-		if (typeof callback != "undefined") {
-			callback();
-		}
+        if (document.getElementById('itemrowempty') != null) {
+		    var empty = document.getElementById('itemrowempty').innerHTML;
+		    var x, row;
+		    jQuery('#crud-table tbody').html('');
+		    jQuery('#crud-table tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
+		    for(var x = 0; x < json.length; x++) {
+			    //row = replaceAll(empty, 'display: none;','');
+			    row = empty;
+			    for (var field in json[x]) {
+				    row = replaceAll(row, '%'+field+'%', json[x][field]);
+			    }
+			    jQuery('#crud-table tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
+		    }
+		    crud_update_pager();
+		    //console.log(json);
+		    //jQuery("[data-toggle=tooltip]").tooltip();
+		    console.log("page finished loading "+crud_rows.length+" rows");
+		    if (typeof callback != "undefined") {
+			    callback();
+		    }
+        } else {
+            jQuery('#crud').html('No records.');
+        }
 	});
 sortTable(jQuery('.webhosting-list'),'asc');
 }
