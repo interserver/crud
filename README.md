@@ -28,3 +28,13 @@ interfaces such as a CLI or ANSI Terminal GUI, Windows/OS Native programs, and e
 interfaces with relative ease only having to add the code for basic components of each once. Although
 I do have several table alternate layouts already, I have no plans to setup additional templates
 until everything else with it is working and getting widely implemented.
+
+## SQL Parsers
+
+Here are some sql parsers to check out to find the best to use
+
+* [greenlion/PHP-SQL-Parser: A pure PHP SQL (non validating) parser w/ focus on MySQL dialect of SQL](https://github.com/greenlion/PHP-SQL-Parser)
+* [phpmyadmin/sql-parser: A validating SQL lexer and parser with a focus on MySQL dialect.](https://github.com/phpmyadmin/sql-parser)
+* [iamcal/SQLParser: Parse MySQL schemas in PHP, fast](https://github.com/iamcal/SQLParser)
+* [crodas/SQLParser: SQL-Parser](https://github.com/crodas/SQLParser)
+* [SQLFTW/sqlftw: SQL lexer, parser, model and static analysis in PHP (for MySQL dialect)](https://github.com/SQLFTW/sqlftw)
