@@ -1148,7 +1148,7 @@ class Crud extends Form
 			}
 			foreach ($this->search_terms as $search_term) {
 				//$this->log("Processing search " . json_encode($search_term), __LINE__, __FILE__, 'debug');
-				list($field, $oper, $value) = $search_term;
+				[$field, $oper, $value] = $search_term;
 				$found = false;
 				foreach ($this->tables as $table => $fields) {
 					if (isset($fields[$field])) {
@@ -1908,11 +1908,11 @@ class Crud extends Form
 						switch ($input_type) {
 							case 'input':
 								$value = $this->values[$field];
-								$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), false, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
+								$fieldText = ($data['prefixhtml'] ?? '') . $table->make_input($field, $value, ($data['length'] ?? 30), false, ($data['extra'] ?? '')) . ($data['extrahtml'] ?? '');
 								break;
 							case 'select_multiple':
 							case 'select':
-								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
+								$fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], ($this->set_vars[$field] ?? $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.($data['extra'] ?? '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
 								break;
 							case 'raw':
 								$fieldText = $data;
@@ -2007,7 +2007,7 @@ class Crud extends Form
 						case 'label':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
+							$fieldText = ($data['prefixhtml'] ?? '').'
 <div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
@@ -2015,12 +2015,12 @@ class Crud extends Form
 	<input type="text" class="form-control" disabled="disabled" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="'.$value.'" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 </div>
 </div>
-'.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
+'.($data['extrahtml'] ?? '');
 							break;
 						case 'input':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
+							$fieldText = ($data['prefixhtml'] ?? '').'
 <div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
@@ -2028,32 +2028,32 @@ class Crud extends Form
 	<input type="text" class="form-control" name="'.$field.'" id="'.$field.'" onchange="update_inputs(\"'.$field.'\", this);" value="'.$value.'" placeholder="'.$label.'" autocomplete="off" style="width: 100%;">
 </div>
 </div>
-'.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
+'.($data['extrahtml'] ?? '');
 							break;
 						case 'textarea':
 							$value = $this->values[$field];
 							// $fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '') . $table->make_input($field, $value, (isset($data['length']) ? $data['length'] : 30), FALSE, (isset($data['extra']) ? $data['extra'] : '')) . (isset($data['extrahtml']) ? $data['extrahtml'] : '');
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
+							$fieldText = ($data['prefixhtml'] ?? '').'
 <div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<textarea rows="2" class="form-control" placeholder="'.$label.'">'.$value.'</textarea>
 </div>
 </div>
-'.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
+'.($data['extrahtml'] ?? '');
 							break;
 						case 'select_multiple':
 						case 'select':
 							// $fieldText = make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple' : ''));
-							$fieldText = (isset($data['prefixhtml']) ? $data['prefixhtml'] : '').'
+							$fieldText = ($data['prefixhtml'] ?? '').'
 <div class="form-group row">
 <label class="col-md-offset-1 col-md-4 control-label" for="'.$field.'">'.$label.'</label>
 <div class="form-group input-group col-md-6">
 	<div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
-	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['extra']) ? $data['extra'] : '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
+	'.make_select(($input_type == 'select_multiple' ? $field.'[]' : $field), $data['values'], $data['labels'], ($this->set_vars[$field] ?? $data['default']), 'id="'.$field.'" class="form-control customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.($data['extra'] ?? '') . ($input_type == 'select_multiple' ? ' multiple style="height: ' .(14+(17*count($data['values']))). 'px;"' : '')).'
 </div>
 </div>
-'.(isset($data['extrahtml']) ? $data['extrahtml'] : '');
+'.($data['extrahtml'] ?? '');
 							break;
 						case 'raw':
 							$fieldText = $data;
@@ -2333,14 +2333,14 @@ class Crud extends Form
 				switch ($data['type']) {
 					case 'select_multiple':
 					case 'select':
-						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], (isset($this->set_vars[$field]) ? $this->set_vars[$field] : $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.(isset($data['data']['extra']) ? $data['data']['extra'] : '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
+						$fieldText = make_select(($data['type'] == 'select_multiple' ? $field.'[]' : $field), $data['data']['values'], $data['data']['labels'], ($this->set_vars[$field] ?? $data['data']['default']), 'id="'.$field.'" class="customsel" onChange="if (typeof update_service_choices != \'undefined\') { update_service_choices(); }" '.($data['data']['extra'] ?? '') . ($data['type'] == 'select_multiple' ? ' multiple' : ''));
 						$table->add_field('<b>'.$data['label'].'</b>', 'l');
 						$table->add_field($fieldText, 'l');
 						$table->add_row();
 						break;
 					case 'input':
 						$table->add_field('<b>'.$data['label'].'</b>', 'l');
-						$table->add_field($table->make_input($field, $data['value'], (isset($data['data']['length']) ? $data['data']['length'] : 30)), 'l');
+						$table->add_field($table->make_input($field, $data['value'], ($data['data']['length'] ?? 30)), 'l');
 						$table->add_row();
 						break;
 					case 'func':

@@ -46,8 +46,8 @@ function crud_dns_manager()
 			}
 		}
 	}
-	$domain = isset($GLOBALS['tf']->variables->request['domain']) ? $GLOBALS['tf']->variables->request['domain'] : '';
-	$ip = isset($GLOBALS['tf']->variables->request['ip']) ? $GLOBALS['tf']->variables->request['ip'] : '';
+	$domain = $GLOBALS['tf']->variables->request['domain'] ?? '';
+	$ip = $GLOBALS['tf']->variables->request['ip'] ?? '';
 	$strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
 	if ($GLOBALS['tf']->default_theme != 'adminlte') {
 		$ip_icon = '<div class="input-group-btn">
