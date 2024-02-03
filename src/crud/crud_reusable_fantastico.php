@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_reusable_fantastico()
 {
-	Crud::init('get_reusable_fantastico', 'licenses', 'function')
-		->set_title(_('Reusable Fantastico'))
-		->go();
+    Crud::init('get_reusable_fantastico', 'licenses', 'function')
+        ->set_title(_('Reusable Fantastico'))
+        ->go();
 }

@@ -17,16 +17,16 @@
  */
 function array2Xml($array, $rootElement = null, $xml = null)
 {
-	$_xml = $xml;
-	if ($_xml === null) {
-		$_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<root/>');
-	}
-	foreach ($array as $k => $v) {
-		if (is_array($v)) {
-			array2Xml($v, $k, $_xml->addChild($k));
-		} else {
-			$_xml->addChild($k, $v);
-		}
-	}
-	return $_xml->asXML();
+    $_xml = $xml;
+    if ($_xml === null) {
+        $_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<root/>');
+    }
+    foreach ($array as $k => $v) {
+        if (is_array($v)) {
+            array2Xml($v, $k, $_xml->addChild($k));
+        } else {
+            $_xml->addChild($k, $v);
+        }
+    }
+    return $_xml->asXML();
 }

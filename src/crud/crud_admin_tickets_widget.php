@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_admin_tickets_widget()
 {
-	Crud::init("select swtickets.subject
+    Crud::init("select swtickets.subject
 , swtickets.ticketid
 , swtickets.ticketmaskid
 , swtickets.lastreplier
@@ -60,6 +60,6 @@ WHERE
 								 ON swstaffassigns.staffid = swstaff.staffid
 								 WHERE
 								   swstaff.email = '__LOGIN__')", 'helpdesk')
-		->set_title(_('Admin Tickets'))
-		->go();
+        ->set_title(_('Admin Tickets'))
+        ->go();
 }

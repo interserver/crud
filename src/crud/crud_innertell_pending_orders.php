@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_innertell_pending_orders()
 {
-	Crud::init('SELECT
+    Crud::init('SELECT
 	servers.server_id,
 	server_custid,
 	server_ccname,
@@ -89,6 +89,6 @@ FROM
 	dedicated_os ON server_dedicated_os = dedicated_os.id
 		LEFT JOIN
 	dedicated_cp ON server_dedicated_cp = dedicated_cp.id', 'servers')
-		->set_title(_('Pending Dedicated Server Orders'))
-		->go();
+        ->set_title(_('Pending Dedicated Server Orders'))
+        ->go();
 }

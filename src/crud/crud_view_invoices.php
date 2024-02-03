@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_view_invoices()
 {
-	$crud = Crud::init("select
+    $crud = Crud::init("select
 date_format(invoices_date, '%Y-%m-%d') as invoices_date,
 concat(
   '<img src=\"images/myadmin/',
@@ -82,14 +82,14 @@ if (invoices_type = 1,
 ) as invoices_paid,
 invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__'")
         ->set_limit_custid_role('list_all')
-		->enable_labels()
-		->set_use_html_filtering(false)
-		->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
-		->set_title(_('View Invoices List'));
-	function_requirements('has_acl');
-	if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config')) {
-		$crud->disable_edit()
-			->disable_delete();
-	}
-	$crud->go();
+        ->enable_labels()
+        ->set_use_html_filtering(false)
+        ->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
+        ->set_title(_('View Invoices List'));
+    function_requirements('has_acl');
+    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config')) {
+        $crud->disable_edit()
+            ->disable_delete();
+    }
+    $crud->go();
 }

@@ -14,9 +14,9 @@ use \MyCrud\Crud;
  */
 function crud_vps_list_free_ips2()
 {
-	Crud::init('get_vps_free_ips', 'vps', 'function')
-		->set_title(_('Available IPs For VPS Servers'))
-		->disable_delete()
-		->disable_edit()
-		->go();
+    Crud::init('get_vps_free_ips', 'vps', 'function')
+        ->set_title(_('Available IPs For VPS Servers'))
+        ->disable_delete()
+        ->disable_edit()
+        ->go();
 }

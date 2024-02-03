@@ -16,6 +16,6 @@
  */
 function array2Ods(array $fields, $headers)
 {
-	function_requirements('phpExcellCommon');
-	return phpExcellCommon($fields, 'Ods', $headers);
+    function_requirements('phpExcellCommon');
+    return phpExcellCommon($fields, 'Ods', $headers);
 }

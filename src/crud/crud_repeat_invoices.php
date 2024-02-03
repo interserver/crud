@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_repeat_invoices()
 {
-	Crud::init('select * from repeat_invoices')
+    Crud::init('select * from repeat_invoices')
         ->set_limit_custid_role('list_all')
-		->set_title(_('Repeat Invoices'))
-		->go();
+        ->set_title(_('Repeat Invoices'))
+        ->go();
 }

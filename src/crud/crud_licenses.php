@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_licenses()
 {
-	Crud::init('select * from licenses', 'licenses')
+    Crud::init('select * from licenses', 'licenses')
         ->set_limit_custid_role('list_all')
-		->set_title(_('Licenses'))
-		->go();
+        ->set_title(_('Licenses'))
+        ->go();
 }

@@ -23,34 +23,34 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 function phpExcellCommon(array &$rows, $type, $headers = [])
 {
-	$spreadsheet = new Spreadsheet();
+    $spreadsheet = new Spreadsheet();
 
-	// Set document properties
-	$spreadsheet->getProperties()->setCreator('InterServer, Inc')
-		->setLastModifiedBy('InterServer, Inc')
-		->setTitle("{$type} Table Export")
-		->setSubject("{$type} Table Export")
-		->setDescription('Here is the exported information you requested.')
-		->setKeywords('table interserver myadmin export')
-		->setCategory('Exports');
-	$spreadsheet->setActiveSheetIndex(0);
-	$spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(false);
-	$spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
-	$spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
-	$spreadsheet->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);
-	$spreadsheet->getActiveSheet()->fromArray($rows);
-	if ($type == 'Pdf') {
-		$spreadsheet->getActiveSheet()->setShowGridlines(false);
-	}
-	$spreadsheet->setActiveSheetIndex(0);
-	if ($type == 'Pdf') {
-		IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::class);
-	}
-	foreach ($headers as $header) {
-		header($header);
-	}
-	$objWriter = IOFactory::createWriter($spreadsheet, $type);
-	ob_end_clean();
-	$objWriter->save('php://output');
-	die();
+    // Set document properties
+    $spreadsheet->getProperties()->setCreator('InterServer, Inc')
+        ->setLastModifiedBy('InterServer, Inc')
+        ->setTitle("{$type} Table Export")
+        ->setSubject("{$type} Table Export")
+        ->setDescription('Here is the exported information you requested.')
+        ->setKeywords('table interserver myadmin export')
+        ->setCategory('Exports');
+    $spreadsheet->setActiveSheetIndex(0);
+    $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(false);
+    $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
+    $spreadsheet->getActiveSheet()->getPageSetup()->setFitToHeight(0);
+    $spreadsheet->getActiveSheet()->getDefaultColumnDimension()->setAutoSize(true);
+    $spreadsheet->getActiveSheet()->fromArray($rows);
+    if ($type == 'Pdf') {
+        $spreadsheet->getActiveSheet()->setShowGridlines(false);
+    }
+    $spreadsheet->setActiveSheetIndex(0);
+    if ($type == 'Pdf') {
+        IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::class);
+    }
+    foreach ($headers as $header) {
+        header($header);
+    }
+    $objWriter = IOFactory::createWriter($spreadsheet, $type);
+    ob_end_clean();
+    $objWriter->save('php://output');
+    die();
 }

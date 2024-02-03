@@ -14,11 +14,11 @@ use \MyCrud\Crud;
  */
 function crud_active_packages()
 {
-	Crud::init("select '__TBLNAME__' as module, count(*) AS packages
+    Crud::init("select '__TBLNAME__' as module, count(*) AS packages
  FROM
   __TABLE__
 WHERE
   __TABLE__.__PREFIX___status = 'active'")
-		->set_title(_('Active Packages'))
-		->go();
+        ->set_title(_('Active Packages'))
+        ->go();
 }

@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_vps_masters()
 {
-	Crud::init('select * from vps_masters', 'vps')
-		->set_title(_('VPS Host Servers'))
-		->go();
+    Crud::init('select * from vps_masters', 'vps')
+        ->set_title(_('VPS Host Servers'))
+        ->go();
 }

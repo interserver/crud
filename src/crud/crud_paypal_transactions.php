@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_paypal_transactions()
 {
-	Crud::init('select * from paypal')
+    Crud::init('select * from paypal')
         ->set_limit_custid_role('list_all')
-		->set_title(_('Paypal Transactions'))
-		->go();
+        ->set_title(_('Paypal Transactions'))
+        ->go();
 }

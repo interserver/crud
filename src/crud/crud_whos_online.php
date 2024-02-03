@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_whos_online()
 {
-	add_output(alert('TODO', 'Hide some of the fields, make it auto update'));
-	Crud::init("SELECT history_owner custid, account_lid AS email, DATE_FORMAT(history_timestamp, '%r') AS time, history_type AS page, access_ip AS ip
+    add_output(alert('TODO', 'Hide some of the fields, make it auto update'));
+    Crud::init("SELECT history_owner custid, account_lid AS email, DATE_FORMAT(history_timestamp, '%r') AS time, history_type AS page, access_ip AS ip
 FROM session_log
 	LEFT JOIN access_log ON history_sid = access_sid
 	LEFT JOIN sessions ON history_sid = session_id
@@ -23,7 +23,7 @@ FROM session_log
 WHERE session_id IS NOT NULL
 AND account_id IS NOT NULL
 AND access_id IS NOT NULL")
-		->set_order('history_id', 'desc')
-		->set_title(_('Whos Online'))
-		->go();
+        ->set_order('history_id', 'desc')
+        ->set_title(_('Whos Online'))
+        ->go();
 }

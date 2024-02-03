@@ -16,6 +16,6 @@
  */
 function array2Pdf(array $fields, $headers = [])
 {
-	function_requirements('phpExcellCommon');
-	return phpExcellCommon($fields, 'Pdf', $headers);
+    function_requirements('phpExcellCommon');
+    return phpExcellCommon($fields, 'Pdf', $headers);
 }
