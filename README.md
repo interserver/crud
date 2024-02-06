@@ -35,6 +35,6 @@ Here are some sql parsers to check out to find the best to use
 
 * [greenlion/PHP-SQL-Parser: A pure PHP SQL (non validating) parser w/ focus on MySQL dialect of SQL](https://github.com/greenlion/PHP-SQL-Parser)
 * [phpmyadmin/sql-parser: A validating SQL lexer and parser with a focus on MySQL dialect.](https://github.com/phpmyadmin/sql-parser)
-* [iamcal/SQLParser: Parse MySQL schemas in PHP, fast](https://github.com/iamcal/SQLParser)
+* [marcocesarato/PHP-Light-SQL-Parser: This class can parse SQL to get query type, tables, field values, etc.. It takes an string with a SQL statements and parses it to extract its different components. Currently the class can extract the SQL query method, the names of the tables involved in the query and the field values that are passed as parameters. This parser is pretty light respect phpsqlparser or others php sql parser.](https://github.com/marcocesarato/PHP-Light-SQL-Parser)
 * [crodas/SQLParser: SQL-Parser](https://github.com/crodas/SQLParser)
 * [SQLFTW/sqlftw: SQL lexer, parser, model and static analysis in PHP (for MySQL dialect)](https://github.com/SQLFTW/sqlftw)
