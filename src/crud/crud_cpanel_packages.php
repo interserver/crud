@@ -13,7 +13,13 @@ function get_cpanel_packages()
     $cpl = new \Detain\Cpanel\Cpanel(CPANEL_LICENSING_USERNAME, CPANEL_LICENSING_PASSWORD);
     $response = $cpl->fetchPackages(true);
     $license = [];
+    //$fields = ['servers', 'sites', 'projects', 'hosted_sites', 'self_hosted_sites'];
     foreach ($response['package'] as $idx => $data) {
+        /*foreach ($fields as $field) {
+            if (!array_key_exists($field, $data)) {
+                $data[$field] = '';
+            }
+        }*/
         $licenses[] = $data;
     }
     return $licenses;

@@ -12,7 +12,7 @@
 {section name=itemrow loop=$table_headers}
 		<tr {$table_headers[itemrow].rowopts}>
 {section name=itemcol loop=$table_headers[itemrow].cols}
-			<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
+			<th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {if isset($table_headers[itemrow].cols[itemcol].colopts)}{$table_headers[itemrow].cols[itemcol].colopts}{/if}>
 				{$table_headers[itemrow].cols[itemcol].text}
 			</th>
 {/section}

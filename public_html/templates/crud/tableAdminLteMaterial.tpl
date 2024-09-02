@@ -123,7 +123,7 @@
                                             <th><input type="checkbox" id="checkall" /></th>
                                             {/if}
                                             {section name=itemcol loop=$table_headers[itemrow].cols}
-                                            <th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {$table_headers[itemrow].cols[itemcol].colopts}>
+                                            <th colspan="{$table_headers[itemrow].cols[itemcol].colspan}" bgcolor="{$table_headers[itemrow].cols[itemcol].colbgcolor}" style="text-align:{$table_headers[itemrow].cols[itemcol].colalign};" {if isset($table_headers[itemrow].cols[itemcol].colopts)}{$table_headers[itemrow].cols[itemcol].colopts}{/if}>
                                                 <span role="button" class="header_link" onClick="crud_update_sort(this);">
                                                     {$table_headers[itemrow].cols[itemcol].text}
                                                 </span>
