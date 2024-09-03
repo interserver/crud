@@ -41,7 +41,7 @@ function array2Csv(array &$fields, $delimiter = ',', $enclosure = '"', $encloseA
                 continue;
             }
             // Enclose fields containing $delimiter, $enclosure or whitespace
-            if ($encloseAll || preg_match( "/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field))
+            if ($encloseAll || preg_match( "/(?:{$delimiter_esc}|{$enclosure_esc}|\s)/", $field))
                 $output .= $key.$delimiter.$enclosure.str_replace($enclosure, $enclosure . $enclosure,     $field).$enclosure.PHP_EOL;
             else
                 $output .= $key.$delimiter.$field.PHP_EOL;
@@ -53,7 +53,7 @@ function array2Csv(array &$fields, $delimiter = ',', $enclosure = '"', $encloseA
             continue;
         }
         // Enclose fields containing $delimiter, $enclosure or whitespace
-        if ($encloseAll || preg_match("/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field)) {
+        if ($encloseAll || preg_match("/(?:{$delimiter_esc}|{$enclosure_esc}|\s)/", $field)) {
             $output .= $index.$delimiter.$enclosure.str_replace($enclosure, $enclosure . $enclosure, $field).$enclosure.PHP_EOL;
         } else {
             $output .= $index.$delimiter.$field.PHP_EOL;
