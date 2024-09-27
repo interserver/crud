@@ -47,6 +47,7 @@ use TFSmarty;
 use TFTable;
 use MyCrud\CrudFunctionIterator;
 use MyAdmin\Form;
+use Punic\Currency;
 
 /**
  * Class Crud
@@ -685,7 +686,8 @@ class Crud extends Form
         $this->run_list_query();
         $json = [];
         while ($this->db->next_record(MYSQL_ASSOC)) {
-            $json[] = $this->db->Record;
+            //$json[] = $this->db->Record;
+            $json[] = $this->get_record();
         }
         // send response for js handler
         header('Content-type: application/json');
@@ -1670,6 +1672,10 @@ class Crud extends Form
         if ($this->type == 'function') {
             return $this->queries->Record;
         } else {
+            if (!empty($this->db->Record['cost'])) {
+                $temp = explode(' ', $this->db->Record['cost']);
+                $this->db->Record['cost'] = Currency::getSymbol($temp[0]).$temp[1];
+            }
             return $this->db->Record;
         }
     }
