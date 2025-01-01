@@ -3,7 +3,7 @@
 /**
  * CRUD System
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2020
+ * @copyright 2025
  * @package MyAdmin
  * @category Admin
  */

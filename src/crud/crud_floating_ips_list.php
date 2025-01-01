@@ -2,7 +2,7 @@
 /**
  * floating ips List
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2023
+ * @copyright 2025
  * @package MyAdmin
  * @category floating_ips
  */

@@ -2,7 +2,7 @@
 /**
  * Converts an Array to XLS
  * @author Joe Huss <detain@interserver.net>
- * @copyright 2020
+ * @copyright 2025
  * @package MyAdmin
  * @category XML
  */
