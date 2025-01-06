@@ -268,3 +268,51 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=edit{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{t}Close{/t}"><span aria-hidden="true">&times;</span></button>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button> -->
+                    <h4 class="modal-title custom_align" id="editModalLabel">{t}Edit{/t} {$title} {t}Details{/t}</h4>
+                </div>
+                <div class="modal-body">
+                    {$edit_form}
+                    <div class="error_message"></div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="submit" id="editModalUpdateButton" class="btn btn-primary btn-lg" ><span class="fa fa-check-circle"></span> {t}Update{/t}</button>
+                    <button type="button" id="editModalCancelButton" class="btn btn-danger btn-lg" data-dismiss="modal"><span class="fa fa-remove"></span> {t}Cancel{/t}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form accept-charset="UTF-8" role="form" id="deleteModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=delete{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>
+                    <h4 class="modal-title custom_align" id="deleteModalLabel">{t}Delete this entry{/t}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="offset-md-1 col-md-4 col-form-label" for="primary_key">{t}ID{/t}</label>
+                        <div class="form-group input-group col-md-6">
+                            <div class="input-group-prepend"><div class="input-group-text"><i class="fa fa-fw fa-info"></i></div></div>
+                            <input type="text" class="form-control" disabled="disabled" name="primary_key" id="primary_key" value="" placeholder="" autocomplete="off" style="width: 100%;">
+                        </div>
+                    </div>
+                    <div class="error_message" style="text-align: left;"></div>
+                    <div class="alert alert-danger"><span class="fa fa-exclamation-triangle"></span> {t}Are you sure you want to delete this Record?{/t}</div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="submit" class="btn btn-success" ><span class="fa fa-check-circle"></span> {t}Yes{/t}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="fa fa-remove"></span> {t}No{/t}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
