@@ -35,7 +35,7 @@
 							</button>
 							<ul class="dropdown-menu slidedown">
 								<li><a href="//www.interserver.net"><span class="fa fa-pencil"></span>{t}Edit{/t}</a></li>
-								<li><a href="//www.interserver.net"><span class="fa fa-trash"></span>{t}Delete{/t}</a></li>
+								<li><a href="//www.interserver.net"><span class="fa fa-trash-o"></span>{t}Delete{/t}</a></li>
 								<li><a href="//www.interserver.net"><span class="fa fa-flag"></span>{t}Flag{/t}</a></li>
 							</ul>
 						</div>
@@ -53,7 +53,7 @@
 							</div>
 							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
@@ -66,7 +66,7 @@
 							</div>
 							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
@@ -79,7 +79,7 @@
 							</div>
 							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
@@ -92,7 +92,7 @@
 							</div>
 							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
@@ -105,7 +105,7 @@
 							</div>
 							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
-								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash"></span></a>
+								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
 							</div>
 						</li>
