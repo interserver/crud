@@ -231,7 +231,7 @@
                     var crud_order_by = "{$order_by}";
                     var crud_total_pages = {$total_pages};
                     var crud_page = {$page};
-                    var crud_search_terms = [];
+                    var crud_search_terms = {$search_terms};
                     var crud_total_count = "{$total_rows}";
                 </script>
                 <script src="/js/crud.js"></script>

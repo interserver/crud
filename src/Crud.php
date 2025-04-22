@@ -191,6 +191,13 @@ class Crud extends Form
         $crud->default_filters();
         return $crud;
     }
+    
+    public function add_search_param($field, $var) {
+        if (isset($_GET[$var])) {
+            $this->search_terms = [$field, '=', $_GET[$var]];
+        }
+        return $this;
+    }
 
     /**
     * controls whether or not the output is returned or sent to the normal output handler
@@ -1576,6 +1583,7 @@ class Crud extends Form
                 'expired' => 'danger',
                 'terminated' => 'danger'
             ],
+            'search_terms' => json_encode($this->search_terms),
             'primary_key' => $this->primary_key,
             'choice' => $this->choice,
             'admin' => $this->admin,
