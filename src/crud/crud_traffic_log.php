@@ -22,7 +22,7 @@ function crud_traffic_log()
     }
     // IF(accounts_ext.account_id is null,'<i class=\"fa fa-remove\">',concat('<a href=\"index.php?choice=none.edit_customer&customer=',accounts_ext.account_id,'\"><i class=\"fa fa-search\"></i></a>')) AS affiliate
     // LEFT JOIN accounts_ext ON account_key = 'referrer_coupon' AND account_value = name
-    Crud::init("select id,timestamp,method,status,custid,sessionid,client_ip,substring(uri, 1, 75) as uri from traffic_log")
+    Crud::init("select id, timestamp, duration, method, status, custid, sessionid, client_ip, substring(uri, 1, 75) as uri from traffic_log")
         ->set_title(_('Traffic Log'))
         ->enable_labels()
         ->set_order('id', 'desc')
