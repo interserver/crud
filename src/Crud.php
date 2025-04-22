@@ -1728,7 +1728,7 @@ class Crud extends Form
                 $input_type = 'input';
                 $input_data = false;
                 $validations = [];
-                if (preg_match("/^(?P<type>decimal|tinyint|smallint|mediumint|bigint|int|float|double|datetime|timestamp|char|varchar|mediumtext|text|enum)(\((?P<size>\d*){0,1},{0,1}(?P<size2>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+                if (preg_match("/^(?P<type>decimal|longtext|tinyint|smallint|mediumint|bigint|int|float|double|datetime|timestamp|char|varchar|mediumtext|text|enum)(\((?P<size>\d*){0,1},{0,1}(?P<size2>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
                     $type = $matches['type'];
                     switch ($type) {
                         case 'enum':
@@ -1807,6 +1807,7 @@ class Crud extends Form
                             }
                             break;
                         case 'float':
+                        case 'decimal':
                             if (isset($matches['size']) && $matches['size'] != '') {
                             }
                             if (isset($matches['signed']) && $matches['signed'] == 'unsigned') {
