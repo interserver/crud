@@ -14,6 +14,10 @@ use \MyCrud\Crud;
  */
 function crud_view_invoices()
 {
+	$where = '';
+	if (!empty($GLOBALS['tf']->variables->request['type']) && $GLOBALS['tf']->variables->request['type'] == 'check') {
+		$where = " AND invoices_type = 17";
+	}
     $crud = Crud::init("select
 date_format(invoices_date, '%Y-%m-%d') as invoices_date,
 concat(
@@ -80,7 +84,7 @@ if (invoices_type = 1,
  ),
  ''
 ) as invoices_paid,
-invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__'")
+invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__' $where")
         ->set_limit_custid_role('list_all')
         ->enable_labels()
         ->set_use_html_filtering(false)
