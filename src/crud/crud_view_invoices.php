@@ -84,6 +84,9 @@ invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id 
         ->set_limit_custid_role('list_all')
         ->enable_labels()
         ->set_use_html_filtering(false)
+        ->add_title_search_button(['invoices_type', '=', 17], _('Check Payments'), 'info')
+        ->add_title_search_button([], _('All'), 'info')
+        ->enable_fluid_container()
         ->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
         ->set_title(_('View Invoices List'));
     function_requirements('has_acl');
