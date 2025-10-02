@@ -8,6 +8,11 @@
  */
 use \MyCrud\Crud;
 
+
+function decorate_cc($field, $value) {
+    return (mask_cc($value));
+}
+
 /**
  * crud_cc_log()
  * @return void
@@ -15,6 +20,7 @@ use \MyCrud\Crud;
 function crud_cc_log($custid = null, $return_output = false)
 {
     function_requirements('has_acl');
+    function_requirements('mask_cc');
     if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
         if (is_null($custid)) {
             dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
@@ -29,6 +35,7 @@ function crud_cc_log($custid = null, $return_output = false)
     $crud = Crud::init('select * from cc_log' . (!is_null($custid) ? ' where cc_custid='.$custid : ''))
         ->set_order('cc_timestamp', 'desc')
         ->set_return_output($return_output)
+        ->add_filter('cc_request_card_num', 'decorate_cc', 'function')
         ->disable_delete()
         ->disable_edit()
         ->enable_fluid_container()
