@@ -98,6 +98,11 @@ function crud_dns_manager()
 				<input class="form-control form-control-sm btn ' . $strClass . '" type="submit" value="' . _('Add DNS Entry') . '">
 			</div>
 		</div>
+        <div class="col-md-4 offset-md-3">
+			<div class="printer-hidden">
+				<span class="text-muted text-bold">Note: Specify the IP address and domain name that you want to map.</span>
+			</div>
+		</div>
 	</div>
 </form>
 ')
