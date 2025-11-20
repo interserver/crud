@@ -191,7 +191,7 @@ class Crud extends Form
         $crud->default_filters();
         return $crud;
     }
-    
+
     public function add_search_param($field, $var) {
         if (isset($_GET[$var])) {
             $this->search_terms = [$field, '=', $_GET[$var]];
@@ -1172,7 +1172,11 @@ class Crud extends Form
                     foreach ($this->tables as $table => $fields) {
                         foreach ($fields as $field_name => $field_data) {
                             if (in_array($field_name, $this->fields)) {
-                                $search[] = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
+                                $searchString = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
+                                if (!empty(trim($searchString))) {
+                                    $search[] = $searchString;
+                                }
+
                             }
                         }
                     }
@@ -1182,9 +1186,15 @@ class Crud extends Form
                 } elseif (!in_array($oper, $valid_opers)) {
                     $this->log("Invalid Search Operator {$oper}", __LINE__, __FILE__, 'warning');
                 } else {
-                    $search[] = $this->json_search_tosql($field, $oper, $value);
+                    $searchString = $this->json_search_tosql($field, $oper, $value);
+                    if (!empty(trim($searchString))) {
+                        $search[] = $searchString;
+                    }
                 }
             }
+        }
+        if (count($search) == 0) {
+            return '';
         }
         if ($implode_type == 'and') {
             $search = implode(' and ', $search);
