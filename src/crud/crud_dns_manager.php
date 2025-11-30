@@ -100,7 +100,7 @@ function crud_dns_manager()
 		</div>
         <div class="col-md-4 offset-md-3">
 			<div class="printer-hidden">
-				<span class="text-muted text-bold">Note: Specify the IP address and domain name that you want to map.</span>
+				<span class="text-muted text-body-secondary text-bold">Note: Specify the IP address and domain name that you want to map.</span>
 			</div>
 		</div>
 	</div>
