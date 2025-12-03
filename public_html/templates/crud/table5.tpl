@@ -46,7 +46,7 @@
                         <tr>
                             <th colspan="{$titcolspan}">
                                 {if sizeof($title_buttons) > 0}
-                                <div class="crud-header-buttons float-start printer-hidden">
+                                <div class="crud-header-buttons float-left printer-hidden">
                                     <div class="btn-group">
                                         {foreach item=button from=$title_buttons}
                                         {$button}
@@ -56,7 +56,7 @@
                                 {/if}
                                 <span class="crud-title">{$title}</span>
                                 {if $print_button == true || $export_button == true}
-                                <div class="export btn-group float-end printer-hidden">
+                                <div class="export btn-group float-right printer-hidden">
                                     {if $print_button == true}
                                     <button class="btn btn-sm btn-secondary" type="button" title="Print" onClick="crud_print();">
                                         <i class="fa fa-print crud-icon"></i>
@@ -64,7 +64,7 @@
                                     </button>
                                     {/if}
                                     {if $export_button == true}
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-download crud-icon"></i>
                                         {t}Export{/t}
                                         <span class="caret"></span>
@@ -73,7 +73,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         {foreach item=format_data key=ext from=$export_formats}
                                         <li role="presentation" data-type="{$ext}">
-                                            <a href="#" data-container="body" data-bs-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
+                                            <a href="#" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
                                                 <img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
                                             </a>
                                         </li>
@@ -206,7 +206,7 @@
                         {if $admin == true || $refresh_button == true}
                         <span class="btn-group nav-rows">
                             {if $admin == true}
-                            <a class="btn btn-sm btn-warning" href="" data-bs-toggle="modal" data-bs-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
+                            <a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
                                 <span class="fa fa-bug fa-fw"></span>
                             </a>
                             {/if}

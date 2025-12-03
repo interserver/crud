@@ -5,15 +5,15 @@
         <div class="alert alert-default">({t}For pricing and more information{/t}: <a style="color: #004085;" target="_blank" href="https://www.interserver.net/storage/">https://www.interserver.net/storage/</a>)</div>
         {/if}
         <div class="card">
-            <div class="card-header text-end">
-                <div class="row float-end">
+            <div class="card-header text-right">
+                <div class="row float-right">
                     {if $total_pages > 1}
-                    <div id="search_btns" class="col-md-auto printer-hidden text-end pl-2">
+                    <div id="search_btns" class="col-md-auto printer-hidden text-right pl-2">
                         <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
                             <a id="crud-search" class="btn btn-sm btn-primary" href="" title="Search" data-tile="Search">
                                 <span class="fa fa-search fa-fw"></span> {t}Search{/t}
                             </a>
-                            <span id="crud-search-more" class="crud-search form-inline float-end" style="display: none;">
+                            <span id="crud-search-more" class="crud-search form-inline float-right" style="display: none;">
                                 <input class="crud-searchdata crud-search-active form-control form-control-sm mr-1" name="search" data-type="text" type="text" value="">
                                 <select class="crud-daterange crud-searchdata form-control form-control-sm selectpicker mr-1" name="range" data-fieldtype="date" style="display:none; ">
                                     <option value="">- choose range -</option>
@@ -46,7 +46,7 @@
                         </form>
                     </div>
                     {/if}
-                    <div id="header_btns" class="col-md-auto printer-hidden text-end pl-2">
+                    <div id="header_btns" class="col-md-auto printer-hidden text-right pl-2">
                         <div class="btn-group">
                             {foreach item=button from=$header_buttons}
                             {$button}
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     {if $print_button == true || $export_button == true}
-                    <div id="print_expo_btns" class="col-md-auto export float-end printer-hidden pl-2">
+                    <div id="print_expo_btns" class="col-md-auto export float-right printer-hidden pl-2">
                         <div class="btn-group">
                             {if $print_button == true}
                             <button class="btn btn-sm btn-secondary" type="button" title="Print" onClick="crud_print();">
@@ -62,7 +62,7 @@
                             </button>
                             {/if}
                             {if $export_button == true}
-                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" title="Export data" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-download crud-icon"></i>
                                 {t}Export{/t}
                                 <span class="caret"></span>
@@ -71,7 +71,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 {foreach item=format_data key=ext from=$export_formats}
                                 <li role="presentation" data-type="{$ext}">
-                                    <a href="#" data-container="body" data-bs-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
+                                    <a href="#" data-container="body" data-toggle="tooltip" title="{$format_data.name}"  onClick="crud_export(this); this.preventDefault();">
                                         <img src="/images/crud/{$ext}.png" alt=""> {$ext|strtoupper}
                                     </a>
                                 </li>
@@ -180,7 +180,7 @@
                                 {if $admin == true || $refresh_button == true}
                                 <span class="btn-group nav-rows">
                                     {if $admin == true}
-                                    <a class="btn btn-sm btn-warning" href="" data-bs-toggle="modal" data-bs-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
+                                    <a class="btn btn-sm btn-warning" href="" data-toggle="modal" data-target="#debugModal" title="{t}Debug Output{/t}" data-title="{t}Debug Output{/t}" >
                                         <span class="fa fa-bug fa-fw"></span>
                                     </a>
                                     {/if}
@@ -194,9 +194,9 @@
                                 {/if}
                             </form>
                         </div>
-                        <div class="col-md-6 float-end">
+                        <div class="col-md-6 float-right">
                             {if $total_pages > 1}
-                            <nav aria-label="Page navigation float-end" class="crud">
+                            <nav aria-label="Page navigation float-right" class="crud">
                                 <ul class="pagination justify-content-end">
                                     <li id="crud-pager-prev" class="page-item {if $page == 1}disabled{/if}">
                                         <a class="page-link" href="javascript:void(0);" aria-label="Previous">

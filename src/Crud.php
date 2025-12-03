@@ -1221,7 +1221,7 @@ class Crud extends Form
     public function add_header_button($link, $label = '', $status = 'default', $icon = false, $title = false, $ima = false)
     {
         if ($ima == false || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid']))) {
-            $this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-bs-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+            $this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
         }
         return $this;
     }
@@ -1397,7 +1397,7 @@ class Crud extends Form
         //$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
         $button = '<button type="button" alt="'.$title.'" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
         if ($title != '') {
-            $button .= ' title="'.$title.'" data-bs-toggle="tooltip" tooltip="'.$title.'">';
+            $button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
         }
         if ($icon != '') {
             $button .= '<i class="fa fa-fw fa-'.$icon.'"></i>';
@@ -2520,7 +2520,7 @@ class Crud extends Form
     {
         //$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
         // $link = 'choice=none.edit_customer&customer=%field%'
-        $this->add_filter($field, '<a href="'.$link.'" data-container="body"'.($title !== false ? ' data-bs-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
+        $this->add_filter($field, '<a href="'.$link.'" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
     }
 
     /**

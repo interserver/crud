@@ -20,7 +20,7 @@
 {if isset($title)}
 					{$title}
 {/if}
-					<div class="btn-group float-end">
+					<div class="btn-group float-right">
 						<button class="btn btn-primary btn-xs panel-reset-settings" type="button" title="Reset Panel Settings to Default State">
 							<i class="fa fa-power-off"></i>
 						</button>
@@ -28,9 +28,9 @@
 							<i class="fa fa-chevron-down"></i>
 						</button>
 					</div>
-					<div class="float-end action-buttons">
-						<div class="btn-group float-end">
-							<button type="button" class="btn btn-secondary btn-xs dropdown-toggle" data-bs-toggle="dropdown">
+					<div class="float-right action-buttons">
+						<div class="btn-group float-right">
+							<button type="button" class="btn btn-secondary btn-xs dropdown-toggle" data-toggle="dropdown">
 								<span class="fa fa-list"></span>
 							</button>
 							<ul class="dropdown-menu slidedown">
@@ -51,7 +51,7 @@
 									List group item heading
 								</label>
 							</div>
-							<div class="float-end action-buttons">
+							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
 								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
@@ -64,7 +64,7 @@
 									List group item heading 1
 								</label>
 							</div>
-							<div class="float-end action-buttons">
+							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
 								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
@@ -77,7 +77,7 @@
 									List group item heading 2
 								</label>
 							</div>
-							<div class="float-end action-buttons">
+							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
 								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
@@ -90,7 +90,7 @@
 									List group item heading 3
 								</label>
 							</div>
-							<div class="float-end action-buttons">
+							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
 								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
@@ -103,7 +103,7 @@
 									List group item heading 4
 								</label>
 							</div>
-							<div class="float-end action-buttons">
+							<div class="float-right action-buttons">
 								<a href="//www.interserver.net"><span class="fa fa-pencil"></span></a>
 								<a href="//www.interserver.net" class="trash"><span class="fa fa-trash-o"></span></a>
 								<a href="//www.interserver.net" class="flag"><span class="fa fa-flag"></span></a>
@@ -118,7 +118,7 @@
 								Total Count <span class="label label-info">25</span></h6>
 						</div>
 						<div class="col-md-6">
-							<ul class="pagination pagination-sm float-end">
+							<ul class="pagination pagination-sm float-right">
 								<li class="disabled"><a href="javascript:void(0)">«</a></li>
 								<li class="active"><a href="javascript:void(0)">1 <span class="sr-only">(current)</span></a></li>
 								<li><a href="//www.interserver.net">2</a></li>

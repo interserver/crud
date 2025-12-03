@@ -3,7 +3,7 @@
 	.filterable {
 		margin-top: 15px;
 	}
-	.filterable .card-header .float-end {
+	.filterable .card-header .float-right {
 		margin-top: -20px;
 	}
 	.filterable .filters input[disabled] {
@@ -36,7 +36,7 @@
 {if isset($title)}
 				<h3 class="card-title">{$title}</h3>
 {/if}
-				<div class="float-end">
+				<div class="float-right">
 					<button class="btn btn-secondary btn-xs btn-filter"><span class="fa fa-filter"></span> {t}Filter{/t}</button>
 				</div>
 			</div>
