@@ -22,7 +22,7 @@ font-size: 12px;
 						<th>
 							<input type="checkbox" name="permissions_check_all" id="permissions_check_all" value="" title="Toggle all the Permissions On/Off">
 						</th>
-						<th class="text-left">
+						<th class="text-start">
 							Description
 						</th>
 					</tr>
@@ -30,7 +30,7 @@ font-size: 12px;
 				<tbody>
 {foreach from=$perms item=perm}
 						<tr class="table-row">
-						<td class="text-right">
+						<td class="text-end">
 							<strong>{$perm.perm_name}</strong>
 						</td>
 						<td class="">
@@ -40,7 +40,7 @@ font-size: 12px;
 							<input type="checkbox" name="permissions[]" id="permission_{$perm.perm_id}" value="{$perm.perm_id}" class="permission_checkbox">
 {/if}
 						</td>
-						<td class="text-left">
+						<td class="text-start">
 							{$perm.perm_text}
 						</td>
 					</tr>
