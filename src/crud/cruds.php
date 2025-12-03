@@ -162,7 +162,7 @@ function cruds()
 	<div class='panel-group' id='cruds-accordion' role='tablist' aria-multiselectable='true'>
 		<div class='panel panel-primary cruds list-group'>
 			<div class='panel-heading' role='tab' id='headingOne'>
-				<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
+				<a class='panel-title list-group-item active' role='button' data-bs-toggle='collapse' data-parent='#cruds-accordion' href='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
 					CRUD Page Links
 					<span class='pull-right label label-danger'>Not Working Yet ({$sizes['danger']})</span>
 					<span class='pull-right label label-warning'>Loads ({$sizes['warning']})</span>
@@ -214,7 +214,7 @@ function cruds()
         "
 	<div class='panel panel-primary cruds list-group'>
 		<div class='panel-heading' role='tab' id='headingTwo'>
-				<a class='panel-title list-group-item active' role='button' data-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
+				<a class='panel-title list-group-item active' role='button' data-bs-toggle='collapse' data-parent='#cruds-accordion' href='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
 					CRUD Database Table Links
 					" . implode("\n					", $key) . "
 					<span class='pull-right'>Key:</span>

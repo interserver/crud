@@ -72,7 +72,7 @@ function crud_dns_manager()
 	<input type="hidden" name="choice" value="none.crud_dns_manager">
 	<input type="hidden" name="new" value="1">
 	<div class="row mb-4">
-		<div class="col-md-2 col-md-offset-2 text-right">
+		<div class="col-md-2 col-md-offset-2 text-end">
 			<div class="printer-hidden" style="vertical-align: middle;">
 				<label style="margin-top: 5px;">' . _('Add Domain to DNS') . '</label>
 			</div>
