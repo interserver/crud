@@ -57,6 +57,7 @@ function crud_request_log($custid = null, $return_output = false)
         ->add_filter('request_request', 'request_log_decorate', 'function')
         ->add_filter('request_result', 'request_log_decorate', 'function')
         ->enable_fluid_container()
+        ->set_page_limit(500)
         ->set_title(_('Request Log'));
     $return = $crud->go();
     if ($return_output == true) {

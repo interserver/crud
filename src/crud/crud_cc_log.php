@@ -39,6 +39,7 @@ function crud_cc_log($custid = null, $return_output = false)
         ->disable_delete()
         ->disable_edit()
         ->enable_fluid_container()
+        ->set_page_limit(500)
         ->set_title(_('CC Log'));
     $return = $crud->go();
     if ($return_output == true) {
