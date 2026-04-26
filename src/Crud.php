@@ -300,7 +300,7 @@ class Crud extends Form
      */
     public function apply_request_data()
     {
-        if (isset($GLOBALS['tf'])) {
+        if (\MyAdmin\App::has(\MyAdmin\tf::class)) {
             $this->request = \MyAdmin\App::variables()->request;
             $this->admin = (\MyAdmin\App::ima() == 'admin');
             $this->custid = \MyAdmin\App::session()->account_id;
