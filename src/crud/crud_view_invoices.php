@@ -15,7 +15,7 @@ use \MyCrud\Crud;
 function crud_view_invoices()
 {
 	$where = '';
-	if (!empty($GLOBALS['tf']->variables->request['type']) && $GLOBALS['tf']->variables->request['type'] == 'check') {
+	if (!empty(\MyAdmin\App::variables()->request['type']) && \MyAdmin\App::variables()->request['type'] == 'check') {
 		$where = " AND invoices_type = 17";
 	}
     $crud = Crud::init("select
@@ -94,7 +94,7 @@ invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id 
         ->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
         ->set_title(_('View Invoices List'));
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('system_config')) {
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('system_config')) {
         $crud->disable_edit()
             ->disable_delete();
     }

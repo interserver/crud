@@ -301,9 +301,9 @@ class Crud extends Form
     public function apply_request_data()
     {
         if (isset($GLOBALS['tf'])) {
-            $this->request = $GLOBALS['tf']->variables->request;
-            $this->admin = ($GLOBALS['tf']->ima == 'admin');
-            $this->custid = $GLOBALS['tf']->session->account_id;
+            $this->request = \MyAdmin\App::variables()->request;
+            $this->admin = (\MyAdmin\App::ima() == 'admin');
+            $this->custid = \MyAdmin\App::session()->account_id;
         } else {
             $this->request = $_REQUEST;
         }
@@ -368,8 +368,8 @@ class Crud extends Form
         add_js('bootstrap');
         add_js('font-awesome');
         add_js('tempusdominus');
-        $GLOBALS['tf']->add_html_head_js_file('/lib/twbs-pagination/jquery.twbsPagination.js');
-        $GLOBALS['tf']->add_html_head_js_file('/js/crud.js');
+        \MyAdmin\App::output()->addHeadJsFile('/lib/twbs-pagination/jquery.twbsPagination.js');
+        \MyAdmin\App::output()->addHeadJsFile('/js/crud.js');
     }
 
     /**
@@ -1220,7 +1220,7 @@ class Crud extends Form
      */
     public function add_header_button($link, $label = '', $status = 'default', $icon = false, $title = false, $ima = false)
     {
-        if ($ima == false || $GLOBALS['tf']->ima == $ima || ($GLOBALS['tf']->ima == 'admin' && $ima == 'client' && isset($this->request['custid']))) {
+        if ($ima == false || \MyAdmin\App::ima() == $ima || (\MyAdmin\App::ima() == 'admin' && $ima == 'client' && isset($this->request['custid']))) {
             $this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
         }
         return $this;
@@ -1635,7 +1635,7 @@ class Crud extends Form
         }
         \Tracy\Debugger::barDump($assign, 'Crud '.$this->title.' Smarty Assign');
         \Tracy\Debugger::barDump($table, 'Crud '.$this->title.' TFTable');
-        //$GLOBALS['tf']->add_html_head_js_string('let assign'.str_replace('-','_',slugify($this->title)).' = '.json_encode($assign).';');
+        //\MyAdmin\App::output()->addHeadJsString('let assign'.str_replace('-','_',slugify($this->title)).' = '.json_encode($assign).';');
         $table->smarty->assign($assign);
         $this->add_js_headers();
         $this->add_output($table->get_table());
@@ -2019,7 +2019,7 @@ class Crud extends Form
             $table->add_field($table->make_submit('Continue'));
             $table->add_row();
             $this->add_output($table->get_table());
-            $GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
+            \MyAdmin\App::output()->addHeadJsFile('js/g_a.js');
         } else {
             foreach ($this->fields as $idx => $field) {
                 if (isset($this->input_types[$field])) {
@@ -2152,8 +2152,8 @@ class Crud extends Form
             $table->add_row();
             $table->set_method('get');
             $this->add_output($table->get_table());
-            $GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
-            $GLOBALS['tf']->add_html_head_js_file('js/customSelect/jquery.customSelect.min.js');
+            \MyAdmin\App::output()->addHeadJsFile('js/g_a.js');
+            \MyAdmin\App::output()->addHeadJsFile('js/customSelect/jquery.customSelect.min.js');
             */
         }
         return $edit_form;
@@ -2355,7 +2355,7 @@ class Crud extends Form
             }
         }
         if (SESSION_COOKIES == false) {
-            $this->returnURL .= '&sessionid='.urlencode($GLOBALS['tf']->session->sessionid);
+            $this->returnURL .= '&sessionid='.urlencode(\MyAdmin\App::session()->sessionid);
         }
         if ($this->admin == true) {
             foreach ($this->admin_confirm_fields as $field => $data) {
@@ -2389,7 +2389,7 @@ class Crud extends Form
             'pend_custid' => $this->custid,
             'pend_data' => myadmin_stringify($this->set_vars)
         ]), __LINE__, __FILE__);
-        //				$GLOBALS['tf']->add_html_head_js_file('js/g_a.js');
+        //				\MyAdmin\App::output()->addHeadJsFile('js/g_a.js');
         $this->continue = false;
     }
 
@@ -2416,7 +2416,7 @@ class Crud extends Form
                 $this->module,
                 $this->settings['TITLE'],
                 $this->custid,
-                $GLOBALS['tf']->accounts->cross_reference($this->custid),
+                \MyAdmin\App::accounts()->cross_reference($this->custid),
                 $this->settings['TBLNAME'],
                 $this->settings['TABLE'],
                 $this->settings['PREFIX'],

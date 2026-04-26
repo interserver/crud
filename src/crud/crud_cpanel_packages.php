@@ -32,7 +32,7 @@ function get_cpanel_packages()
 function crud_cpanel_packages()
 {
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin') {
+    if (\MyAdmin\App::ima() != 'admin') {
         dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
         return false;
     }

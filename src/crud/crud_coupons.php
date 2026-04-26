@@ -16,7 +16,7 @@ function crud_coupons()
 {
     page_title(_('Coupons List'));
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('client_billing')) {
         dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
         return false;
     }
@@ -26,7 +26,7 @@ function crud_coupons()
         ->set_title(_('Coupons'))
         ->enable_labels()
         ->set_labels(['id' => _('ID'),'name' => _('Coupon Name'), 'amount' => _('Amount'), 'customer' => _('Customer'), 'usable' => _('Usable'), 'applies' => _('Applies'), 'type' => 'Type', 'onetime' => 'One Time', 'module' => 'Module', 'affiliate' => 'Affiliate'])
-        ->add_header_button($GLOBALS['tf']->link('index.php', 'choice=none.coupons'), _('Manage Coupons'), 'primary', 'pencil', _('Manage Coupons'))
+        ->add_header_button(\MyAdmin\App::link('index.php', 'choice=none.coupons'), _('Manage Coupons'), 'primary', 'pencil', _('Manage Coupons'))
         ->set_order('id', 'asc')
         ->add_title_search_button([['onetime','=',1],['usable','=',1],['amount','=',0.01]], _('Affiliate Coupons'), 'info')
         ->add_title_search_button([], _('All'), 'info active')

@@ -14,11 +14,11 @@ use \MyCrud\Crud;
  */
 function crud_abuse()
 {
-    $db = $GLOBALS['tf']->db;
-    if ($GLOBALS['tf']->ima != 'admin') {
-        $lid = $db->real_escape($GLOBALS['tf']->accounts->cross_reference($GLOBALS['tf']->session->account_id));
-    } elseif (isset($GLOBALS['tf']->variables->request['lid'])) {
-        $lid = $db->real_escape($GLOBALS['tf']->variables->request['lid']);
+    $db = \MyAdmin\App::db();
+    if (\MyAdmin\App::ima() != 'admin') {
+        $lid = $db->real_escape(\MyAdmin\App::accounts()->cross_reference(\MyAdmin\App::session()->account_id));
+    } elseif (isset(\MyAdmin\App::variables()->request['lid'])) {
+        $lid = $db->real_escape(\MyAdmin\App::variables()->request['lid']);
     }
     Crud::init("select * from abuse where abuse_status='pending'".(isset($lid) ? " and abuse_lid='{$lid}'" : ""))
         ->disable_edit()

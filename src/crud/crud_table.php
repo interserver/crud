@@ -16,12 +16,12 @@ use \MyCrud\Crud;
 function crud_table()
 {
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('admins_control')) {
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('admins_control')) {
         dialog('Not admin', 'Not Admin or you lack the permissions to view this page.');
         return false;
     }
-    $module = $GLOBALS['tf']->variables->request['db'];
-    $table = $GLOBALS['tf']->variables->request['table'];
+    $module = \MyAdmin\App::variables()->request['db'];
+    $table = \MyAdmin\App::variables()->request['table'];
     $db = get_module_db($module);
     page_title("{$db->database} {$table} Table Data Browser");
     Crud::init($table, $module)

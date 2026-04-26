@@ -16,14 +16,14 @@ use \MyCrud\Crud;
  */
 function crud_dns_manager()
 {
-    if (isset($GLOBALS['tf']->variables->request['new']) && $GLOBALS['tf']->variables->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
+    if (isset(\MyAdmin\App::variables()->request['new']) && \MyAdmin\App::variables()->request['new'] == 1 && verify_csrf_referrer(__LINE__, __FILE__)) {
         function_requirements('validIp');
         function_requirements('add_dns_domain');
-        if (isset($GLOBALS['tf']->variables->request['ip'])) {
-            if (validIp($GLOBALS['tf']->variables->request['ip'])) {
-                $ip = trim($GLOBALS['tf']->variables->request['ip']);
-                if (isset($GLOBALS['tf']->variables->request['domain']) && trim($GLOBALS['tf']->variables->request['domain']) != '') {
-                    $domain = trim($GLOBALS['tf']->variables->request['domain']);
+        if (isset(\MyAdmin\App::variables()->request['ip'])) {
+            if (validIp(\MyAdmin\App::variables()->request['ip'])) {
+                $ip = trim(\MyAdmin\App::variables()->request['ip']);
+                if (isset(\MyAdmin\App::variables()->request['domain']) && trim(\MyAdmin\App::variables()->request['domain']) != '') {
+                    $domain = trim(\MyAdmin\App::variables()->request['domain']);
                     $result = add_dns_domain($domain, $ip);
                     myadmin_log('dns', 'debug', "add_dns_domain($domain, $ip) = " . json_encode($result), __LINE__, __FILE__);
                     if (!is_null($result)) {
@@ -32,8 +32,8 @@ function crud_dns_manager()
                 } else {
                     flash_message('error', 'Domain name is required');
                 }
-                if (isset($GLOBALS['tf']->variables->request['domains']) && !in_array(trim($GLOBALS['tf']->variables->request['domains']), ['', 'Domain Names...'])) {
-                    $domains = explode("\n", $GLOBALS['tf']->variables->request['domains']);
+                if (isset(\MyAdmin\App::variables()->request['domains']) && !in_array(trim(\MyAdmin\App::variables()->request['domains']), ['', 'Domain Names...'])) {
+                    $domains = explode("\n", \MyAdmin\App::variables()->request['domains']);
                     foreach ($domains as $domain) {
                         $domain = trim($domain);
                         if ($domain != '') {
@@ -43,14 +43,14 @@ function crud_dns_manager()
                     }
                 }
             } else {
-                flash_message('error', 'Invalid IP ' . $GLOBALS['tf']->variables->request['ip']);
+                flash_message('error', 'Invalid IP ' . \MyAdmin\App::variables()->request['ip']);
             }
         }
     }
-    $domain = $GLOBALS['tf']->variables->request['domain'] ?? '';
-    $ip = $GLOBALS['tf']->variables->request['ip'] ?? '';
-    $strClass = $GLOBALS['tf']->default_theme == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
-    if ($GLOBALS['tf']->default_theme != 'adminlte') {
+    $domain = \MyAdmin\App::variables()->request['domain'] ?? '';
+    $ip = \MyAdmin\App::variables()->request['ip'] ?? '';
+    $strClass = \MyAdmin\App::defaultTheme() == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
+    if (\MyAdmin\App::defaultTheme() != 'adminlte') {
         $ip_icon = '<div class="input-group-btn">
 			<button type="button" class="btn btn-default" aria-label="' . _('IP Address') . '" style="padding: 0px;"><img src="/images/myadmin/web-address.png" border="0" style="width: 32px;"></button>
 		</div>';

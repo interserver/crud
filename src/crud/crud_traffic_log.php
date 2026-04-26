@@ -16,7 +16,7 @@ function crud_traffic_log()
 {
     page_title(_('Traffic Log'));
     function_requirements('has_acl');
-    if ($GLOBALS['tf']->ima != 'admin' || !has_acl('client_billing')) {
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('client_billing')) {
         dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
         return false;
     }

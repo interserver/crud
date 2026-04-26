@@ -14,7 +14,7 @@ use \MyCrud\Crud;
  */
 function crud_invoices()
 {
-    if ($GLOBALS['tf']->variables->request['type'] == 'check') {
+    if (\MyAdmin\App::variables()->request['type'] == 'check') {
         Crud::init("SELECT ".
             "date_format(invoices_date, '%Y-%m-%d') as date, concat(invoices_currency,' ',invoices_amount) AS invoice_amount, account_lid as customer, invoices_description as description, invoices_module AS module, invoices_service as service ".
             "FROM invoices ".
