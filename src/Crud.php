@@ -1099,47 +1099,181 @@ class Crud extends Form
     }
 
     /**
-     * json_search_tosql()
-     * converts a JSON search request to an sql query.
+     * resolves the column type from $this->tables for a given field reference.
+     * accepts a bare column name or qualified table.column.
      *
-     * @todo we need here more advanced checking using the type of the field - i.e. integer, string, float
+     * @param string $field field reference
+     * @return array{type:string,values:array} normalized info: type is one of int,float,date,enum,set,string; values populated for enum/set
+     */
+    public function get_field_type($field)
+    {
+        $info = ['type' => 'string', 'values' => []];
+        $table = null;
+        $column = $field;
+        if (strpos($field, '.') !== false) {
+            [$table, $column] = explode('.', $field, 2);
+        }
+        $details = null;
+        if ($table !== null && isset($this->tables[$table][$column]['Type'])) {
+            $details = $this->tables[$table][$column];
+        } else {
+            foreach ($this->tables as $tbl => $fields) {
+                if (isset($fields[$column]['Type'])) {
+                    $details = $fields[$column];
+                    break;
+                }
+            }
+        }
+        if ($details === null) {
+            return $info;
+        }
+        $sqlType = strtolower((string) $details['Type']);
+        if (preg_match('/^(tinyint|smallint|mediumint|int|bigint|bit|year)\b/', $sqlType)) {
+            $info['type'] = 'int';
+        } elseif (preg_match('/^(decimal|numeric|float|double|real)\b/', $sqlType)) {
+            $info['type'] = 'float';
+        } elseif (preg_match('/^(date|datetime|timestamp|time)\b/', $sqlType)) {
+            $info['type'] = 'date';
+        } elseif (preg_match("/^(enum|set)\((.*)\)$/", $sqlType, $m)) {
+            $info['type'] = $m[1];
+            if (preg_match_all("/'((?:[^']|'')*)'/", $m[2], $vmatches)) {
+                foreach ($vmatches[1] as $v) {
+                    $info['values'][] = str_replace("''", "'", $v);
+                }
+            }
+        }
+        return $info;
+    }
+
+    /**
+     * json_search_tosql()
+     * converts a JSON search request to an sql query, dropping clauses whose value
+     * cannot be coerced to the column type (so a free-text search does not blow up
+     * against TIMESTAMP / INT / ENUM columns under MySQL strict mode).
+     *
      * @param string $field field name
      * @param string $oper search operation
      * @param string $val search string
-     * @return string the mysql safe search tag
+     * @param bool $useLike when true, string columns use LIKE '%val%' instead of '=' (used for the search-all-fields path)
+     * @return string the mysql safe search tag, or '' when the value is incompatible with the column type
      */
-    public function json_search_tosql($field, $oper, $val)
+    public function json_search_tosql($field, $oper, $val, $useLike = false)
     {
         //$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__, 'debug');
         if (isset($this->query_fields[$field])) {
             $field = $this->query_fields[$field];
         }
+        if (isset($this->validations[$field]) && in_array('int', $this->validations[$field])) {
+            $type = 'int';
+            $values = [];
+        } elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field])) {
+            $type = 'float';
+            $values = [];
+        } else {
+            $info = $this->get_field_type($field);
+            $type = $info['type'];
+            $values = $info['values'];
+        }
         switch ($oper) {
             case '=':
-                if (isset($this->validations[$field]) && in_array('int', $this->validations[$field])) {
-                    return $field.$oper. (int)$val;
-                } elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field])) {
-                    return $field.$oper. (float)$val;
-                } else {
-                    return $field.$oper."'".$this->db->real_escape($val)."'";
-                }
-                break;
+                return $this->build_eq_clause($field, $val, $type, $values, $useLike);
             case 'in':
+                if (!is_array($val)) {
+                    $val = [$val];
+                }
                 $valArray = [];
                 foreach ($val as $value) {
-                    if (isset($this->validations[$field]) && in_array('int', $this->validations[$field])) {
-                        $valArray[] = (int)$value;
-                    } elseif (isset($this->validations[$field]) && in_array('float', $this->validations[$field])) {
-                        $valArray[] = (float)$value;
-                    } else {
-                        $valArray[] = "'".$this->db->real_escape($value)."'";
+                    $coerced = $this->coerce_for_type($value, $type, $values);
+                    if ($coerced !== null) {
+                        $valArray[] = $coerced;
                     }
                 }
+                if (count($valArray) === 0) {
+                    return '';
+                }
                 return $field.' '.$oper.' ('.implode(',', $valArray).')';
-                break;
             default:
                 $this->log("Don't know how to handle oper {$oper} in json_search_tosql({$field}, {$oper}, ".var_export($val, true).')', __LINE__, __FILE__, 'warning');
                 break;
+        }
+        return '';
+    }
+
+    /**
+     * builds a single equality (or LIKE) clause, returning '' when the value is
+     * incompatible with the column type.
+     *
+     * @param string $field qualified field reference
+     * @param mixed $val raw search value
+     * @param string $type normalized type from get_field_type()
+     * @param array $values enum/set allowed values
+     * @param bool $useLike use LIKE '%val%' for string columns
+     * @return string SQL fragment or ''
+     */
+    protected function build_eq_clause($field, $val, $type, array $values, $useLike)
+    {
+        switch ($type) {
+            case 'int':
+                if (!is_numeric($val)) {
+                    return '';
+                }
+                return $field.'='.(int) $val;
+            case 'float':
+                if (!is_numeric($val)) {
+                    return '';
+                }
+                return $field.'='.(float) $val;
+            case 'date':
+                if (!preg_match('/^[0-9 \\/:\\-]+$/', (string) $val)) {
+                    return '';
+                }
+                return $field."='".$this->db->real_escape($val)."'";
+            case 'enum':
+            case 'set':
+                if (!in_array((string) $val, $values, true)) {
+                    return '';
+                }
+                return $field."='".$this->db->real_escape($val)."'";
+            case 'string':
+            default:
+                $escaped = $this->db->real_escape($val);
+                if ($useLike) {
+                    return $field." like '%".$escaped."%'";
+                }
+                return $field."='".$escaped."'";
+        }
+    }
+
+    /**
+     * coerces a value for use inside an IN(...) list, returning null when the
+     * value is incompatible with the column type so the caller can drop it.
+     *
+     * @param mixed $value raw value
+     * @param string $type normalized type from get_field_type()
+     * @param array $values enum/set allowed values
+     * @return string|int|float|null SQL-ready literal or null to skip
+     */
+    protected function coerce_for_type($value, $type, array $values)
+    {
+        switch ($type) {
+            case 'int':
+                return is_numeric($value) ? (int) $value : null;
+            case 'float':
+                return is_numeric($value) ? (float) $value : null;
+            case 'date':
+                if (!preg_match('/^[0-9 \\/:\\-]+$/', (string) $value)) {
+                    return null;
+                }
+                return "'".$this->db->real_escape($value)."'";
+            case 'enum':
+            case 'set':
+                if (!in_array((string) $value, $values, true)) {
+                    return null;
+                }
+                return "'".$this->db->real_escape($value)."'";
+            case 'string':
+            default:
+                return "'".$this->db->real_escape($value)."'";
         }
     }
 
@@ -1172,7 +1306,7 @@ class Crud extends Form
                     foreach ($this->tables as $table => $fields) {
                         foreach ($fields as $field_name => $field_data) {
                             if (in_array($field_name, $this->fields)) {
-                                $searchString = $this->json_search_tosql($table.'.'.$field_name, $oper, $value);
+                                $searchString = $this->json_search_tosql($table.'.'.$field_name, $oper, $value, true);
                                 if (!empty(trim($searchString))) {
                                     $search[] = $searchString;
                                 }
