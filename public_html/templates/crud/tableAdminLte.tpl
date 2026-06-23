@@ -232,7 +232,7 @@
                     var crud_total_count = "{$total_rows}";
                 </script>
                 <script src="/js/crud.js"></script>
-                <link rel="stylesheet" href="/css/crud_table5.css">
+                <link rel="stylesheet" href="/css/crud_table5.css?v=20260622b">
                 <script src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
                 <script src="/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
                 <script>

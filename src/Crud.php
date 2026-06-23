@@ -1355,7 +1355,55 @@ class Crud extends Form
     public function add_header_button($link, $label = '', $status = 'default', $icon = false, $title = false, $ima = false)
     {
         if ($ima == false || \MyAdmin\App::ima() == $ima || (\MyAdmin\App::ima() == 'admin' && $ima == 'client' && isset($this->request['custid']))) {
-            $this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."');'" . ($title != false ? ' data-toggle="tooltip" title="'.$title.'"' : '') . '>' . ($icon != false ? "<i class='fa fa-{$icon}'></i> " : '') . "{$label}</a>";
+            if ($status === 'primary') {
+                $btnStyle = ''
+                    .'display:inline-flex !important;'
+                    .'align-items:center !important;'
+                    .'gap:11px !important;'
+                    .'padding:11px 14px 11px 11px !important;'
+                    .'min-height:48px !important;'
+                    .'font-size:0.98rem !important;'
+                    .'font-weight:600 !important;'
+                    .'letter-spacing:0.01em !important;'
+                    .'line-height:1.1 !important;'
+                    .'border-radius:14px !important;'
+                    .'border:0 !important;'
+                    .'color:#ffffff !important;'
+                    .'background:linear-gradient(135deg,#2aa5f3 0%,#118fdd 50%,#0c79c4 100%) !important;'
+                    .'box-shadow:0 1px 0 rgba(255,255,255,0.25) inset,0 -1px 0 rgba(0,0,0,0.08) inset,0 6px 14px -2px rgba(17,143,221,0.45),0 2px 4px rgba(17,143,221,0.18) !important;'
+                    .'text-decoration:none !important;'
+                    .'transition:transform .18s cubic-bezier(0.34,1.56,0.64,1),box-shadow .18s ease,filter .18s ease !important;'
+                    .'height:auto !important;'
+                    .'cursor:pointer !important;'
+                    .'position:relative !important;';
+                $iconBadgeStyle = ''
+                    .'display:inline-flex !important;'
+                    .'align-items:center !important;'
+                    .'justify-content:center !important;'
+                    .'width:28px !important;'
+                    .'height:28px !important;'
+                    .'border-radius:9px !important;'
+                    .'background:rgba(255,255,255,0.18) !important;'
+                    .'box-shadow:0 1px 0 rgba(255,255,255,0.22) inset !important;'
+                    .'flex-shrink:0 !important;';
+                $iconStyle = 'font-size:0.92rem !important;color:#ffffff !important;line-height:1 !important;margin:0 !important;';
+                $iconHtml = $icon !== false
+                    ? "<span style='{$iconBadgeStyle}'><i class='fas fa-{$icon}' style='{$iconStyle}'></i></span>"
+                    : '';
+                $tooltip = $title !== false ? ' data-toggle="tooltip" title="'.htmlspecialchars($title, ENT_QUOTES).'"' : '';
+                $labelStyle = 'color:#ffffff !important;font-weight:600 !important;letter-spacing:0.01em !important;padding-right:6px !important;';
+                $hoverIn = "this.style.setProperty('transform','translateY(-2px)','important');"
+                    ."this.style.setProperty('box-shadow','0 1px 0 rgba(255,255,255,0.28) inset,0 -1px 0 rgba(0,0,0,0.1) inset,0 14px 26px -4px rgba(17,143,221,0.55),0 4px 8px rgba(17,143,221,0.24)','important');"
+                    ."this.style.setProperty('filter','brightness(1.04) saturate(1.05)','important');";
+                $hoverOut = "this.style.setProperty('transform','translateY(0)','important');"
+                    ."this.style.setProperty('box-shadow','0 1px 0 rgba(255,255,255,0.25) inset,0 -1px 0 rgba(0,0,0,0.08) inset,0 6px 14px -2px rgba(17,143,221,0.45),0 2px 4px rgba(17,143,221,0.18)','important');"
+                    ."this.style.setProperty('filter','none','important');";
+                $this->header_buttons[] = "<a class='crud-deploy-btn printer-hidden' href='".$link."' style='{$btnStyle}' onmouseover=\"{$hoverIn}\" onmouseout=\"{$hoverOut}\"{$tooltip}>{$iconHtml}<span style='{$labelStyle}'>{$label}</span></a>";
+            } else {
+                $iconHtml = $icon !== false ? "<i class='fas fa-{$icon}'></i> " : '';
+                $tooltip = $title !== false ? ' data-toggle="tooltip" title="'.htmlspecialchars($title, ENT_QUOTES).'"' : '';
+                $this->header_buttons[] = "<a class='btn btn-{$status} btn-sm printer-hidden' href='".$link."'{$tooltip}>{$iconHtml}{$label}</a>";
+            }
         }
         return $this;
     }
