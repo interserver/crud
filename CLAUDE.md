@@ -75,6 +75,7 @@ Crud::init('my_function_name', 'module', 'function')
 - `->set_return_output(true)` + capture `->go()` return when embedding in widget context
 - `->add_filter($field, $callable, 'function')` for per-cell value decoration
 - `CrudFunctionIterator` in `src/CrudFunctionIterator.php` wraps PHP functions as DB-like result sets
+- `binary(16)` columns named `*_uuid` are auto-detected by `parse_tables()` (tracked in `$uuid_fields`), validated/stored via `uuid_to_bin()`/`UUID_TO_BIN()`, and converted back to hyphenated strings on read via `convert_uuid_fields()`/`bin_to_uuid()`
 
 ## Tests
 
@@ -98,3 +99,20 @@ caliber refresh && git add CLAUDE.md .claude/ .cursor/ .github/copilot-instructi
 Read `CALIBER_LEARNINGS.md` for patterns and anti-patterns learned from previous sessions.
 These are auto-extracted from real tool usage — treat them as project-specific rules.
 <!-- /caliber:managed:learnings -->
+
+<!-- caliber:managed:model-config -->
+## Model Configuration
+
+Recommended default: `claude-sonnet-4-6` with high effort (stronger reasoning; higher cost and latency than smaller models).
+Smaller/faster models trade quality for speed and cost — pick what fits the task.
+Pin your choice (`/model` in Claude Code, or `CALIBER_MODEL` when using Caliber with an API provider) so upstream default changes do not silently change behavior.
+
+<!-- /caliber:managed:model-config -->
+
+<!-- caliber:managed:sync -->
+## Context Sync
+
+This project uses [Caliber](https://github.com/caliber-ai-org/ai-setup) to keep AI agent configs in sync across Claude Code, Cursor, Copilot, and Codex.
+Configs update automatically before each commit via `caliber refresh`.
+If the pre-commit hook is not set up, run `/setup-caliber` to configure everything automatically.
+<!-- /caliber:managed:sync -->

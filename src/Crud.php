@@ -100,6 +100,8 @@ class Crud extends Form
     // temp fields maybe from buy service class i think
     public $disabled_fields = [];
     public $filters = [];
+    // field => swap flag, populated by parse_tables() for binary(16) uuid columns (see bin_to_uuid()/uuid_to_bin())
+    public $uuid_fields = [];
     public $use_labels = false;
     public $column_templates = [];
     public $tables = [];
@@ -495,6 +497,20 @@ class Crud extends Form
                                     $this->errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
                                     $this->error_fields[] = $field;
                                     $valid = false;
+                                }
+                                break;
+                            case 'uuid':
+                                // convert the hyphenated uuid string from the form back to the raw
+                                // binary(16) form it's stored in (see uuid_to_bin()/bin_to_uuid())
+                                if (isset($value) && $value !== '') {
+                                    $binary = uuid_to_bin($value, true);
+                                    if ($binary === false) {
+                                        $this->errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
+                                        $this->error_fields[] = $field;
+                                        $valid = false;
+                                    } else {
+                                        $value = $binary;
+                                    }
                                 }
                                 break;
                             case 'trim':
@@ -1141,6 +1157,8 @@ class Crud extends Form
                     $info['values'][] = str_replace("''", "'", $v);
                 }
             }
+        } elseif (preg_match('/^binary\(16\)$/', $sqlType) && isset($this->uuid_fields[$column])) {
+            $info['type'] = 'uuid';
         }
         return $info;
     }
@@ -1234,6 +1252,11 @@ class Crud extends Form
                     return '';
                 }
                 return $field."='".$this->db->real_escape($val)."'";
+            case 'uuid':
+                if (uuid_to_bin($val, true) === false) {
+                    return '';
+                }
+                return $field."=UUID_TO_BIN('".$this->db->real_escape($val)."', 1)";
             case 'string':
             default:
                 $escaped = $this->db->real_escape($val);
@@ -1271,6 +1294,11 @@ class Crud extends Form
                     return null;
                 }
                 return "'".$this->db->real_escape($value)."'";
+            case 'uuid':
+                if (uuid_to_bin($value, true) === false) {
+                    return null;
+                }
+                return "UUID_TO_BIN('".$this->db->real_escape($value)."', 1)";
             case 'string':
             default:
                 return "'".$this->db->real_escape($value)."'";
@@ -1870,16 +1898,37 @@ class Crud extends Form
     {
         //$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
         if ($this->type == 'function') {
-            return $this->queries->Record;
+            return $this->convert_uuid_fields($this->queries->Record);
         } else {
             if (!empty($this->db->Record['cost'])) {
                 $temp = explode(' ', $this->db->Record['cost']);
                 $this->db->Record['cost'] = Currency::getSymbol($temp[0]).$temp[1];
             }
-            return $this->db->Record;
+            return $this->convert_uuid_fields($this->db->Record);
         }
     }
 
+    /**
+     * converts any binary(16) uuid columns (see $this->uuid_fields, populated by parse_tables())
+     * in a fetched record from their raw bytes into the hyphenated string form, in place. raw
+     * uuid bytes are not valid utf8, which breaks json_encode() (used for the crud_rows JS
+     * payload) and the CSV/XLSX/JSON/etc export formats.
+     *
+     * @param array $record the record as read from the db or function iterator
+     * @return array the record with any uuid fields converted to strings
+     */
+    protected function convert_uuid_fields($record)
+    {
+        foreach ($this->uuid_fields as $field => $swapFlag) {
+            if (array_key_exists($field, $record) && $record[$field] !== null) {
+                $uuid = bin_to_uuid($record[$field], $swapFlag);
+                if ($uuid !== false) {
+                    $record[$field] = $uuid;
+                }
+            }
+        }
+        return $record;
+    }
 
     /**
      * sets the title for the crud page setting both the web page title and the table title
@@ -1928,7 +1977,7 @@ class Crud extends Form
                 $input_type = 'input';
                 $input_data = false;
                 $validations = [];
-                if (preg_match("/^(?P<type>decimal|longtext|tinyint|smallint|mediumint|bigint|int|float|double|datetime|timestamp|char|varchar|mediumtext|text|enum)(\((?P<size>\d*){0,1},{0,1}(?P<size2>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
+                if (preg_match("/^(?P<type>decimal|longtext|tinyint|smallint|mediumint|bigint|int|float|double|datetime|timestamp|char|varchar|mediumtext|text|enum|binary|varbinary)(\((?P<size>\d*){0,1},{0,1}(?P<size2>\d*){0,1}(?P<types>'.*'){0,1}\)){0,1} *(?P<signed>unsigned){0,1}/m", $data['Type'], $matches)) {
                     $type = $matches['type'];
                     switch ($type) {
                         case 'enum':
@@ -2031,6 +2080,15 @@ class Crud extends Form
                             break;
                         case 'timestamp':
                             $validations[] = 'timestamp';
+                            break;
+                        case 'binary':
+                            // <prefix>_uuid columns are always stored as UUID_TO_BIN($uuid, 1) - see bin_to_uuid()/uuid_to_bin()
+                            if (isset($matches['size']) && (int)$matches['size'] === 16 && preg_match('/_uuid$/i', $field)) {
+                                $validations[] = 'uuid';
+                                $this->uuid_fields[$field] = true;
+                            }
+                            break;
+                        case 'varbinary':
                             break;
                         default:
                             $this->log("CRUD class Found Field Type '{$type}' from {$data['Type']} it does not Understand", __LINE__, __FILE__, 'warning');
