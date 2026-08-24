@@ -56,6 +56,22 @@ use Punic\Currency;
  */
 class Crud extends Form
 {
+    /**
+     * name of the synthetic row field holding the query string fragment that
+     * identifies a row's service in a generated link - 'uuid=<uuid>' for a row that
+     * carries a real uuid, 'id=<id>' for one that does not. added to every record by
+     * add_service_param() once a list has opted in through use_uuid_links(), and
+     * hidden from the visible columns.
+     *
+     * it is a whole `name=value` fragment rather than just the uuid so the id
+     * fallback can change the parameter NAME too: a uuid that never got stamped must
+     * fall back to `id=`, and putting an integer in a `uuid=` slot is not the same
+     * url (uuid_resolve_request() resolves `uuid=` as a uuid). that also keeps the
+     * fallback in exactly one place - here - rather than once in php for the
+     * server rendered links and again in javascript for the row buttons.
+     */
+    const SERVICE_PARAM_FIELD = 'service_param';
+
     public $limit_custid_role = false;
     public $limit_custid = false;
     public $custid_match = '/_custid$/m';
@@ -100,8 +116,24 @@ class Crud extends Form
     // temp fields maybe from buy service class i think
     public $disabled_fields = [];
     public $filters = [];
-    // field => swap flag, populated by parse_tables() for binary(16) uuid columns (see bin_to_uuid()/uuid_to_bin())
+    // field => swap flag, populated by parse_tables() for binary(16) uuid columns
+    // (see bin_to_uuid()/uuid_to_bin()). the flag is null - auto detect - so test
+    // membership with array_key_exists(), NOT isset().
     public $uuid_fields = [];
+    /**
+     * the row field holding this list's service uuid as a hyphenated string, set by
+     * use_uuid_links(). '' means the list has not opted into uuid links and every
+     * link it builds keeps addressing rows by their sequential id.
+     * @var string
+     */
+    public $uuid_key = '';
+    /**
+     * fields that stay in the row payload - so decorate_field() can substitute them
+     * into a link and the crud_rows json can hand them to the row button js - but are
+     * not rendered as visible table columns. see hide_field().
+     * @var string[]
+     */
+    public $hidden_fields = [];
     public $use_labels = false;
     public $column_templates = [];
     public $tables = [];
@@ -501,9 +533,12 @@ class Crud extends Form
                                 break;
                             case 'uuid':
                                 // convert the hyphenated uuid string from the form back to the raw
-                                // binary(16) form it's stored in (see uuid_to_bin()/bin_to_uuid())
+                                // binary(16) form it's stored in (see uuid_to_bin()/bin_to_uuid()).
+                                // no swap flag: uuid_to_bin() swaps only for v1, and these columns
+                                // hold v7, which stores in natural order. forcing the swap here
+                                // wrote a mangled uuid for every edit.
                                 if (isset($value) && $value !== '') {
-                                    $binary = uuid_to_bin($value, true);
+                                    $binary = uuid_to_bin($value);
                                     if ($binary === false) {
                                         $this->errors[] = 'Invalid '.$this->label($field).' "'.$value.'"';
                                         $this->error_fields[] = $field;
@@ -694,7 +729,14 @@ class Crud extends Form
         $this->run_list_query();
         $this->rows = [];
         while ($this->next_record($resultType)) {
-            $this->rows[] = $this->get_record();
+            $record = $this->get_record();
+            // the hidden fields only exist to be pasted into a link, so they are
+            // dropped here - the exports built off $this->rows key their columns off
+            // the record itself, and they keep exactly the columns they had before.
+            foreach ($this->hidden_fields as $field) {
+                unset($record[$field]);
+            }
+            $this->rows[] = $record;
         }
     }
 
@@ -1157,7 +1199,11 @@ class Crud extends Form
                     $info['values'][] = str_replace("''", "'", $v);
                 }
             }
-        } elseif (preg_match('/^binary\(16\)$/', $sqlType) && isset($this->uuid_fields[$column])) {
+        // array_key_exists() and not isset(): $uuid_fields holds null (auto detect
+        // swap) as its value, and isset() reports false for a null value, which
+        // would drop the 'uuid' type and send the column back to being an
+        // unparseable raw binary blob.
+        } elseif (preg_match('/^binary\(16\)$/', $sqlType) && array_key_exists($column, $this->uuid_fields)) {
             $info['type'] = 'uuid';
         }
         return $info;
@@ -1253,10 +1299,13 @@ class Crud extends Form
                 }
                 return $field."='".$this->db->real_escape($val)."'";
             case 'uuid':
-                if (uuid_to_bin($val, true) === false) {
+                // no swap flag on either side: these columns hold v7, stored in
+                // natural order, so UUID_TO_BIN($x, 1) built the wrong 16 bytes and
+                // searching by a row's real uuid never matched it.
+                if (uuid_to_bin($val) === false) {
                     return '';
                 }
-                return $field."=UUID_TO_BIN('".$this->db->real_escape($val)."', 1)";
+                return $field."=UUID_TO_BIN('".$this->db->real_escape($val)."')";
             case 'string':
             default:
                 $escaped = $this->db->real_escape($val);
@@ -1295,10 +1344,12 @@ class Crud extends Form
                 }
                 return "'".$this->db->real_escape($value)."'";
             case 'uuid':
-                if (uuid_to_bin($value, true) === false) {
+                // see the matching case in the search clause builder: v7 is stored
+                // unswapped, so no swap flag here either
+                if (uuid_to_bin($value) === false) {
                     return null;
                 }
-                return "UUID_TO_BIN('".$this->db->real_escape($value)."', 1)";
+                return "UUID_TO_BIN('".$this->db->real_escape($value)."')";
             case 'string':
             default:
                 return "'".$this->db->real_escape($value)."'";
@@ -1590,7 +1641,130 @@ class Crud extends Form
     }
 
     /**
+     * keeps a field in the row payload but out of the visible table columns.
+     *
+     * the field still reaches decorate_field() (so a link template can substitute
+     * %field% from it) and still lands in the crud_rows json the row button
+     * javascript reads, it just gets no <th>/<td> of its own. exports drop it, see
+     * get_all_rows().
+     *
+     * @param string $field field name to hide
+     * @return MyCrud\Crud
+     */
+    public function hide_field($field)
+    {
+        if (!in_array($field, $this->hidden_fields, true)) {
+            $this->hidden_fields[] = $field;
+        }
+        return $this;
+    }
+
+    /**
+     * whether a field is hidden from the visible table columns
+     *
+     * @param string $field field name
+     * @return bool
+     */
+    public function is_hidden_field($field)
+    {
+        return in_array($field, $this->hidden_fields, true);
+    }
+
+    /**
+     * opts this list into addressing its service rows by uuid instead of by their
+     * sequential id in the links it generates.
+     *
+     * the query must select the row's uuid in its hyphenated string form under
+     * $uuidField, which is what `bin_to_uuid(<prefix>_uuid) as service_uuid` in the
+     * select list gives you - the raw binary(16) column is not valid utf8 and would
+     * take the whole crud_rows json_encode() down with it.
+     *
+     * both identifier forms load the same page (uuid_resolve_request() translates a
+     * `uuid=` parameter back into the `id=` every page already reads), so this only
+     * decides which one the generated urls carry. nothing about the id path changes.
+     *
+     * @param string $uuidField the row field holding the hyphenated uuid
+     * @return MyCrud\Crud
+     */
+    public function use_uuid_links($uuidField = 'service_uuid')
+    {
+        $this->uuid_key = $uuidField;
+        // neither the uuid nor the fragment computed from it is something to show in
+        // a column, they exist purely to be pasted into links
+        $this->hide_field($uuidField);
+        $this->hide_field(self::SERVICE_PARAM_FIELD);
+        // default_filters() already ran (from init(), before this call) and baked the
+        // TITLE_FIELD "View <service>" link as `...&id=%<prefix>_id%`. rewrite that
+        // exact fragment to the identifier fragment.
+        //
+        // matching on the leading '&id=' and on the row field name is deliberately
+        // narrow: it cannot touch a link keyed on some other entity - '&custid=',
+        // '&customer=', '&service=', '&r=' - whose id is NOT a service id and would
+        // not resolve from a service uuid.
+        if (isset($this->settings['PREFIX'])) {
+            $needle = '&id=%'.$this->settings['PREFIX'].'_id%';
+            $replacement = '&%'.self::SERVICE_PARAM_FIELD.'%';
+            foreach ($this->filters as $field => $filters) {
+                foreach ($filters as $idx => $filter) {
+                    if ($filter['type'] == 'string' && is_string($filter['value'])) {
+                        $this->filters[$field][$idx]['value'] = str_replace($needle, $replacement, $filter['value']);
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * adds the SERVICE_PARAM_FIELD identifier fragment to a fetched record.
+     *
+     * a no-op until the list has called use_uuid_links(), so a list that has not
+     * opted in keeps exactly the row payload it had before.
+     *
+     * @param array $record the record as read from the db / function iterator
+     * @return array the record, with the identifier fragment added when applicable
+     */
+    protected function add_service_param($record)
+    {
+        if ($this->uuid_key === '' || !is_array($record)) {
+            return $record;
+        }
+        // prefer the module's own <prefix>_id: that is the id the pages this links to
+        // read, and it is what the `id=%<prefix>_id%` links said before. primary_key
+        // is the fallback for a query that did not select it.
+        $idField = isset($this->settings['PREFIX']) && array_key_exists($this->settings['PREFIX'].'_id', $record)
+            ? $this->settings['PREFIX'].'_id'
+            : $this->primary_key;
+        $id = array_key_exists($idField, $record) ? $record[$idField] : '';
+        $uuid = array_key_exists($this->uuid_key, $record) ? $record[$this->uuid_key] : null;
+        // uuid_is_blank() rather than empty()/isset(): a row the uuid backfill never
+        // reached holds 16 zero bytes, which bin_to_uuid() hands back as the NON empty
+        // string '00000000-0000-0000-0000-000000000000'. that sails past empty() and
+        // past is_uuid() (a plain hex shape regex), and uuid_resolve_request() refuses
+        // the nil uuid - so emitting it would produce a dead link. fall back to the id.
+        if (!is_string($uuid) || uuid_is_blank($uuid) || !is_uuid($uuid)) {
+            $record[self::SERVICE_PARAM_FIELD] = 'id='.$id;
+        } else {
+            $record[self::SERVICE_PARAM_FIELD] = 'uuid='.rawurlencode($uuid);
+        }
+        return $record;
+    }
+
+    /**
      * adds a button to the list of buttons shown with each record
+     *
+     * the link may carry either identifier token. both are resolved in the browser
+     * from the crud_rows json payload, since one button's html is rendered once and
+     * reused for every row:
+     *
+     *   %id%    - the row's primary key,               eg '&id=%id%'
+     *   %uuid%  - the whole identifier fragment from
+     *             SERVICE_PARAM_FIELD, ie 'uuid=<uuid>'
+     *             or 'id=<id>' for a row with no
+     *             usable uuid,                         eg '&%uuid%'
+     *
+     * note %uuid% replaces the parameter name as well as its value, so it is written
+     * without an `id=`/`uuid=` prefix of its own. see get_crud_row_uuid() in crud.js.
      *
      * @param $link
      * @param string $title
@@ -1603,7 +1777,7 @@ class Crud extends Form
     public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php')
     {
         //$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
-        $link = str_replace(['%id%', '+\'\''], ['\'+get_crud_row_id(this)', ''], $link);
+        $link = str_replace(['%id%', '%uuid%', '+\'\''], ['\'+get_crud_row_id(this)', '\'+get_crud_row_uuid(this)', ''], $link);
         //$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
         $button = '<button type="button" alt="'.$title.'" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
         if ($title != '') {
@@ -1717,11 +1891,17 @@ class Crud extends Form
             if ($header_shown == false) {
                 $header_shown = true;
                 $empty_record = [];
+                // NOTE the hidden fields stay in $empty_record and in $record - they are
+                // what decorate_field() substitutes into a link template - they are only
+                // skipped where a column would be emitted for them.
                 if ($this->type == 'function' || $this->type == 'table') {
                     foreach (array_keys($this->tables[$this->table]) as $field) {
                         $empty_record[$field] = "%{$field}%";
                     }
                     foreach ($this->tables[$this->table] as $field => $field_data) {
+                        if ($this->is_hidden_field($field)) {
+                            continue;
+                        }
                         $table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
                         //$table->add_header_field($field_data['Comment'].$this->get_sort_icon($field));
                         $table->add_header_field($this->label($field).$this->get_sort_icon($field));
@@ -1731,6 +1911,9 @@ class Crud extends Form
                         $empty_record[$field] = "%{$field}%";
                     }
                     foreach (array_keys($record) as $field) {
+                        if ($this->is_hidden_field($field)) {
+                            continue;
+                        }
                         $table->set_col_options('data-order-dir="asc" data-order-by="'.$field.'" class=""');
                         if (isset($this->tables[$this->table][$field]) && $this->use_labels == false) {
                             $table->add_header_field($this->tables[$this->table][$field]['Comment'].$this->get_sort_icon($field));
@@ -1744,13 +1927,18 @@ class Crud extends Form
                 $table->add_header_row();
                 $table->set_row_options('id="itemrowempty" style="display: none;"');
                 foreach ($empty_record as $field => $value) {
+                    if ($this->is_hidden_field($field)) {
+                        continue;
+                    }
                     $table->add_field($this->decorate_field($field, $empty_record));
                 }
                 $table->add_row();
             }
             $table->set_row_options('id="itemrow'.$idx.'"');
             foreach ($record as $field =>$value) {
-                $table->add_field($this->decorate_field($field, $record));
+                if (!$this->is_hidden_field($field)) {
+                    $table->add_field($this->decorate_field($field, $record));
+                }
                 if (isset($this->input_types[$field]) && $this->input_types[$field][0] == 'select_multiple') {
                     $record[$field] = explode(',', $value);
                 }
@@ -1805,6 +1993,11 @@ class Crud extends Form
             ],
             'search_terms' => json_encode($this->search_terms),
             'primary_key' => $this->primary_key,
+            // the row field the row button javascript reads the identifier fragment
+            // out of, or '' when this list has not opted into uuid links - in which
+            // case the templates emit no crud_uuid_key at all and get_crud_row_uuid()
+            // falls back to the primary key. see use_uuid_links().
+            'uuid_key' => $this->uuid_key === '' ? '' : self::SERVICE_PARAM_FIELD,
             'choice' => $this->choice,
             'admin' => $this->admin,
             'fluid_container' => $this->fluid_container,
@@ -1898,13 +2091,13 @@ class Crud extends Form
     {
         //$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
         if ($this->type == 'function') {
-            return $this->convert_uuid_fields($this->queries->Record);
+            return $this->add_service_param($this->convert_uuid_fields($this->queries->Record));
         } else {
             if (!empty($this->db->Record['cost'])) {
                 $temp = explode(' ', $this->db->Record['cost']);
                 $this->db->Record['cost'] = Currency::getSymbol($temp[0]).$temp[1];
             }
-            return $this->convert_uuid_fields($this->db->Record);
+            return $this->add_service_param($this->convert_uuid_fields($this->db->Record));
         }
     }
 
@@ -2082,10 +2275,17 @@ class Crud extends Form
                             $validations[] = 'timestamp';
                             break;
                         case 'binary':
-                            // <prefix>_uuid columns are always stored as UUID_TO_BIN($uuid, 1) - see bin_to_uuid()/uuid_to_bin()
+                            // <prefix>_uuid columns hold uuid v7, whose 48 bit millisecond
+                            // clock is already big endian, so they are stored in natural
+                            // order and must NOT get the group swap that only ever applied
+                            // to v1. null = let bin_to_uuid()/uuid_to_bin() auto detect, so
+                            // any row left in the legacy swapped v1 layout still reads back
+                            // correctly. NOTE: the value is null on purpose, so every test
+                            // for "is this a uuid field" must use array_key_exists() and not
+                            // isset(), which is false for a null value.
                             if (isset($matches['size']) && (int)$matches['size'] === 16 && preg_match('/_uuid$/i', $field)) {
                                 $validations[] = 'uuid';
-                                $this->uuid_fields[$field] = true;
+                                $this->uuid_fields[$field] = null;
                             }
                             break;
                         case 'varbinary':

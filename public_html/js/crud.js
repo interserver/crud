@@ -124,6 +124,58 @@ function get_crud_row_id(that) {
 }
 
 /**
+ * whether a uuid string is the nil uuid, ie has never actually been stamped.
+ *
+ * the <prefix>_uuid columns are binary(16) NOT NULL with no default, so a row the
+ * uuid backfill never reached holds 16 zero bytes, which comes back as the
+ * perfectly non-empty string "00000000-0000-0000-0000-000000000000". a falsy test
+ * says nothing about it, and the server refuses it as an identifier, so it has to
+ * be checked for explicitly.
+ *
+ * @param string uuid the uuid to test
+ * @returns bool TRUE when the value is missing, empty, or all zeroes
+ */
+function crud_uuid_is_blank(uuid) {
+	if (typeof uuid != "string" || uuid === "")
+		return true;
+	return uuid.replace(/[0\-]/g, "") === "";
+}
+
+/**
+ * gets the query string fragment identifying the row's service, for a row button
+ * link built with the %uuid% token - eg "uuid=0196bd0a-5b4c-7e2a-91d3-f1a4c7b90e55"
+ * or "id=12345".
+ *
+ * the whole "name=value" fragment comes from the row payload (crud_uuid_key names
+ * the field, see Crud::SERVICE_PARAM_FIELD), because the parameter NAME changes with
+ * the fallback: a row with no usable uuid has to be linked as id=, an integer in a
+ * uuid= slot is not the same url. the server already applied that fallback, the
+ * checks here are so a hand written list that points crud_uuid_key straight at a raw
+ * uuid column, or a payload with no such field at all, still yields a live link
+ * instead of a dead one.
+ *
+ * @param that the this object from the row that triggered the call
+ * @returns string the identifier fragment to append to the link
+ */
+function get_crud_row_uuid(that) {
+	var row = crud_rows[get_crud_row_idx(that)];
+	if (typeof row == "undefined" || row === null)
+		return "";
+	var param = "";
+	if (typeof crud_uuid_key != "undefined" && crud_uuid_key !== "" && typeof row[crud_uuid_key] == "string")
+		param = row[crud_uuid_key];
+	if (param.substring(0, 5) == "uuid=" && !crud_uuid_is_blank(param.substring(5)))
+		return param;
+	if (param.substring(0, 3) == "id=" && param.length > 3)
+		return param;
+	// no usable fragment: the raw uuid may be sitting there instead, otherwise fall
+	// all the way back to the primary key, which is what %id% would have emitted
+	if (param !== "" && param.indexOf("=") == -1 && !crud_uuid_is_blank(param))
+		return "uuid=" + encodeURIComponent(param);
+	return "id=" + row[crud_primary_key];
+}
+
+/**
  * replaces all text within a string similar to php's str_replace() function
  *
  * @param string str the original string to find+replace text in

@@ -294,7 +294,8 @@
 <script>
     var crud_rows = {$rows|json_encode};
     var crud_primary_key = "{$primary_key}";
-    var crud_page_offset = {$page_offset};
+{if isset($uuid_key) && $uuid_key != ''}    var crud_uuid_key = "{$uuid_key}";{* the row field holding the identifier fragment ("uuid=<uuid>", or "id=<id>" for a row with no usable uuid) that a %uuid% row button link appends - see Crud::use_uuid_links() and Crud::SERVICE_PARAM_FIELD. the {if} deliberately starts in column 0 so a list that did NOT opt into uuid links renders byte for byte what it did before; get_crud_row_uuid() reads an undefined crud_uuid_key as "no uuid" and links by primary key instead. *}
+{/if}    var crud_page_offset = {$page_offset};
     var crud_page_limit = {$page_limit};
     var crud_order_dir = "{$order_dir}";
     var crud_order_by = "{$order_by}";
@@ -303,5 +304,10 @@
     var crud_search_terms = {$search_terms};
     var crud_total_count = "{$total_rows}";
 </script>
-<script src="/js/crud.js"></script>
+{* cache buster: mod_expires serves javascript with "access plus 1 week" (see
+   public_html/.htaccess), so without this a browser holding the previous crud.js
+   would call the get_crud_row_uuid() the %uuid% row buttons emit and hit a
+   ReferenceError - a button that silently does nothing for up to 7 days. bump the
+   version whenever crud.js changes, same as crud_table5.css above. *}
+<script src="/js/crud.js?v=20260824"></script>
 <link rel="stylesheet" href="/css/crud_table5.css">

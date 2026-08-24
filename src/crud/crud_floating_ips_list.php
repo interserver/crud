@@ -19,7 +19,7 @@ function crud_floating_ips_list()
     $module = 'floating_ips';
     $settings = \get_module_settings($module);
     page_title(_($settings['TITLE']).' '._('List'));
-    Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, CONCAT(repeat_invoices_currency, ' ', repeat_invoices_cost) AS cost, {$settings['PREFIX']}_ip, {$settings['PREFIX']}_status, services_name from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}' left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
+    Crud::init("select {$settings['TABLE']}.{$settings['PREFIX']}_id, CONCAT(repeat_invoices_currency, ' ', repeat_invoices_cost) AS cost, {$settings['PREFIX']}_ip, {$settings['PREFIX']}_status, services_name, bin_to_uuid({$settings['TABLE']}.{$settings['PREFIX']}_uuid) as service_uuid from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}' left join services on services_id={$settings['TABLE']}.{$settings['PREFIX']}_type", $module)
         ->set_limit_custid_role('list_all')
         ->set_order($settings['PREFIX'].'_status', 'asc')
         ->set_title(_($settings['TITLE']).' '._('List'))
@@ -33,6 +33,9 @@ function crud_floating_ips_list()
         ->disable_delete()
         ->disable_edit()
         //->enable_fluid_container()
-        ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&id=%id%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
+        // link this list's rows by their service_uuid instead of their sequential id.
+        // both forms load the same page, and a row with no usable uuid keeps linking by id.
+        ->use_uuid_links()
+        ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&%uuid%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
         ->go();
 }

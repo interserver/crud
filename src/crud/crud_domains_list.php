@@ -21,7 +21,7 @@ function crud_domains_list()
     page_title(_($settings['TITLE']).' '._('List'));
     $defaultTimezone = getDefaultTimezone();
     $timezone = getTimezone();
-    Crud::init("select concat('<a href=\"index.php?choice=none.view_domain&id=',{$settings['PREFIX']}_id,'\"><img src=\"https://shot.sh?w=300&h=100&img=',{$settings['PREFIX']}_hostname,'\"></a>') as screenshot, {$settings['PREFIX']}_id,{$settings['PREFIX']}_hostname, if({$settings['PREFIX']}_expire_date is null, '', if({$settings['PREFIX']}_expire_date = '0000-00-00 00:00:00','', convert_tz({$settings['PREFIX']}_expire_date, '{$defaultTimezone}', '{$timezone}'))) as {$settings['PREFIX']}_expire_date, CONCAT(repeat_invoices_currency, ' ', repeat_invoices_cost) as cost, {$settings['PREFIX']}_status from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}'", $module)
+    Crud::init("select concat('<a href=\"index.php?choice=none.view_domain&id=',{$settings['PREFIX']}_id,'\"><img src=\"https://shot.sh?w=300&h=100&img=',{$settings['PREFIX']}_hostname,'\"></a>') as screenshot, {$settings['PREFIX']}_id,{$settings['PREFIX']}_hostname, if({$settings['PREFIX']}_expire_date is null, '', if({$settings['PREFIX']}_expire_date = '0000-00-00 00:00:00','', convert_tz({$settings['PREFIX']}_expire_date, '{$defaultTimezone}', '{$timezone}'))) as {$settings['PREFIX']}_expire_date, CONCAT(repeat_invoices_currency, ' ', repeat_invoices_cost) as cost, {$settings['PREFIX']}_status, bin_to_uuid({$settings['TABLE']}.{$settings['PREFIX']}_uuid) as service_uuid from {$settings['TABLE']} left join repeat_invoices on repeat_invoices_id={$settings['PREFIX']}_invoice and repeat_invoices_module='{$module}'", $module)
         ->set_limit_custid_role('list_all')
     ->set_order($settings['PREFIX'].'_status', 'asc')
     ->set_title(_($settings['TITLE']).' '._('List'))
@@ -33,6 +33,9 @@ function crud_domains_list()
     ->disable_delete()
     ->disable_edit()
     ->enable_fluid_container()
-    ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&id=%id%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
+    // link this list's rows by their service_uuid instead of their sequential id.
+    // both forms load the same page, and a row with no usable uuid keeps linking by id.
+    ->use_uuid_links()
+    ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&%uuid%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
     ->go();
 }

@@ -18,7 +18,7 @@ function crud_ssl_list()
     $module = 'ssl';
     $settings = \get_module_settings($module);
     page_title(_($settings['TITLE']).' '._('List'));
-    Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
+    Crud::init("select {$settings['PREFIX']}_id, {$settings['PREFIX']}_hostname, services_name, {$settings['PREFIX']}_status, {$settings['PREFIX']}_company, bin_to_uuid(ssl_certs.{$settings['PREFIX']}_uuid) as service_uuid from ssl_certs left join services on {$settings['PREFIX']}_type=services_id", $module)
         ->set_limit_custid_role('list_all')
         ->set_order($settings['PREFIX'].'_status', 'asc')
         ->set_title(_($settings['TITLE']).' '._('List'))
@@ -30,6 +30,9 @@ function crud_ssl_list()
         ->disable_delete()
         ->disable_edit()
         ->enable_fluid_container()
-        ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&id=%id%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
+        // link this list's rows by their service_uuid instead of their sequential id.
+        // both forms load the same page, and a row with no usable uuid keeps linking by id.
+        ->use_uuid_links()
+        ->add_row_button('none.view_'.$settings['PREFIX'].($module == 'webhosting' ? (\MyAdmin\App::ima() == 'admin' ? '' : '4') : '').'&%uuid%', _('View').' '._($settings['TITLE']), 'primary', 'cog')
         ->go();
 }
