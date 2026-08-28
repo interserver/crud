@@ -176,7 +176,7 @@ function cruds()
     foreach ($functions as $level => $functionsArray) {
         foreach ($functionsArray as $origFunction => $functionData) {
             add_output("
-				<a href='?choice=none.{$functionData['function']}' class='list-group-item' target='_blank'>
+				<a href='".\MyAdmin\App::link('index.php', 'choice=none.'.$functionData['function'])."' class='list-group-item' target='_blank'>
 					<span class='label label-{$level}'>{$origFunction}</span> {$functionData['title']}
 				</a>");
         }
@@ -200,7 +200,7 @@ function cruds()
         $key[] = "<span class='pull-right label label-{$level}'>{$dbName} ({$size})</span>";
         foreach ($tables as $table) {
             $rows[] = "
-			<a href='?choice=none.crud_table&db={$module}&table={$table}' class='list-group-item' target='_blank'>
+			<a href='".\MyAdmin\App::link('index.php', "choice=none.crud_table&db={$module}&table={$table}")."' class='list-group-item' target='_blank'>
 				<span class='label label-{$level}'>{$dbName}</span> {$table}
 			</a>";
         }

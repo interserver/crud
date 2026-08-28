@@ -1697,17 +1697,21 @@ class Crud extends Form
         // TITLE_FIELD "View <service>" link as `...&id=%<prefix>_id%`. rewrite that
         // exact fragment to the identifier fragment.
         //
-        // matching on the leading '&id=' and on the row field name is deliberately
+        // matching on the leading '&id='/'?id=' and on the row field name is deliberately
         // narrow: it cannot touch a link keyed on some other entity - '&custid=',
         // '&customer=', '&service=', '&r=' - whose id is NOT a service id and would
         // not resolve from a service uuid.
+        //
+        // both separators have to be covered because add_filter_link() runs the url
+        // through make_link_url() first: with SEO links on the id is the first parameter
+        // of a '<function>?id=...' url, with them off it is still '...&id=...'.
         if (isset($this->settings['PREFIX'])) {
-            $needle = '&id=%'.$this->settings['PREFIX'].'_id%';
-            $replacement = '&%'.self::SERVICE_PARAM_FIELD.'%';
+            $needles = ['&id=%'.$this->settings['PREFIX'].'_id%', '?id=%'.$this->settings['PREFIX'].'_id%'];
+            $replacements = ['&%'.self::SERVICE_PARAM_FIELD.'%', '?%'.self::SERVICE_PARAM_FIELD.'%'];
             foreach ($this->filters as $field => $filters) {
                 foreach ($filters as $idx => $filter) {
                     if ($filter['type'] == 'string' && is_string($filter['value'])) {
-                        $this->filters[$field][$idx]['value'] = str_replace($needle, $replacement, $filter['value']);
+                        $this->filters[$field][$idx]['value'] = str_replace($needles, $replacements, $filter['value']);
                     }
                 }
             }
@@ -1751,6 +1755,32 @@ class Crud extends Form
     }
 
     /**
+     * converts an internal 'index.php?choice=none.<function>&...' url into the pretty
+     * form the rest of the app links with ('<function>?...'), by handing it to the very
+     * same tf::link() that make_link() uses - so a crud link and a make_link() link to
+     * the same page come out identical, and the SEO_LINKS setting keeps deciding for
+     * both of them at once.
+     *
+     * the links this class builds are only finished off in the browser: a row button
+     * pastes the row's identifier onto the end of the url, and a filter link's %token%
+     * placeholders are substituted by crud_load_page(). so the conversion has to happen
+     * while the url is still a template. that is safe because the only part tf::link()
+     * reads is the choice/function name, which is already known here - everything past
+     * it, tokens included, is copied through untouched.
+     *
+     * @param string $url the url to convert, eg 'index.php?choice=none.view_vps&id=%id%'
+     * @return string the converted url, or $url unchanged when there is no app to ask
+     */
+    public function make_link_url($url)
+    {
+        if (!\MyAdmin\App::has(\MyAdmin\tf::class)) {
+            return $url;
+        }
+        $parts = explode('?', $url, 2);
+        return \MyAdmin\App::link($parts[0], isset($parts[1]) ? $parts[1] : '');
+    }
+
+    /**
      * adds a button to the list of buttons shown with each record
      *
      * the link may carry either identifier token. both are resolved in the browser
@@ -1777,9 +1807,16 @@ class Crud extends Form
     public function add_row_button($link, $title = '', $level = 'primary', $icon = 'cog', $page = 'index.php')
     {
         //$this->log("called add_row_button({$link}, {$title}, {$level}, {$icon}, {$page})", __LINE__, __FILE__, 'debug');
-        $link = str_replace(['%id%', '%uuid%', '+\'\''], ['\'+get_crud_row_id(this)', '\'+get_crud_row_uuid(this)', ''], $link);
-        //$button = '<a href="'.$page.'?choice='.$link.'" class="btn btn-'.$level.' btn-xs"';
-        $button = '<button type="button" alt="'.$title.'" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location=\''.$page.'?choice='.$link.';"';
+        // convert to the pretty '<function>?...' form BEFORE the tokens are swapped out
+        // for javascript, while the url is still a plain string tf::link() can read
+        $url = $this->make_link_url($page.'?choice='.$link);
+        $js = str_replace(['%id%', '%uuid%', '+\'\''], ['\'+get_crud_row_id(this)', '\'+get_crud_row_uuid(this)', ''], $url);
+        // a token becomes a string concatenation that closes the javascript string
+        // literal itself ("'+get_crud_row_uuid(this)"); a link carrying no token has to
+        // close its own quote instead
+        $location = $js === $url ? '\''.$js.'\';' : '\''.$js.';';
+        //$button = '<a href="'.$url.'" class="btn btn-'.$level.' btn-xs"';
+        $button = '<button type="button" alt="'.$title.'" class="btn btn-'.$level.' btn-xs printer-hidden" onclick="window.location='.$location.'"';
         if ($title != '') {
             $button .= ' title="'.$title.'" data-toggle="tooltip" tooltip="'.$title.'">';
         }
@@ -2091,14 +2128,50 @@ class Crud extends Form
     {
         //$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
         if ($this->type == 'function') {
-            return $this->add_service_param($this->convert_uuid_fields($this->queries->Record));
+            return $this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->queries->Record)));
         } else {
             if (!empty($this->db->Record['cost'])) {
                 $temp = explode(' ', $this->db->Record['cost']);
                 $this->db->Record['cost'] = Currency::getSymbol($temp[0]).$temp[1];
             }
-            return $this->add_service_param($this->convert_uuid_fields($this->db->Record));
+            return $this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->db->Record)));
         }
+    }
+
+    /**
+     * rewrites any 'index.php?choice=none.<function>&...' href inside a fetched record
+     * into the pretty '<function>?...' form.
+     *
+     * a handful of lists build their own <a href> html inside the sql itself (see
+     * crud_domains_list() and crud_coupons()), and those values are handed to the browser
+     * raw in the crud_rows json - they never pass through add_filter_link(), so this is
+     * the only place they can be converted.
+     *
+     * only the contents of an href attribute are rewritten, deliberately: a list whose
+     * DATA happens to contain such a url - the request log, the query log - has to keep
+     * showing it exactly as it was logged.
+     *
+     * @param array $record the fetched record
+     * @return array the record with any links inside it converted
+     */
+    protected function convert_choice_links($record)
+    {
+        if (!is_array($record)) {
+            return $record;
+        }
+        foreach ($record as $field => $value) {
+            if (!is_string($value) || strpos($value, 'choice=none.') === false || stripos($value, 'href=') === false) {
+                continue;
+            }
+            $record[$field] = preg_replace_callback(
+                '/href=(["\'])([^"\']*choice=none\.[^"\']*)\1/i',
+                function ($matches) {
+                    return 'href='.$matches[1].$this->make_link_url($matches[2]).$matches[1];
+                },
+                $value
+            );
+        }
+        return $record;
     }
 
     /**
@@ -2960,6 +3033,9 @@ class Crud extends Form
     {
         //$this->log("add_filter_link({$field}, {$link}, {$title}, {$acl}, {$bad_acl_test}) called", __LINE__, __FILE__, 'debug');
         // $link = 'choice=none.edit_customer&customer=%field%'
+        // the %token%s are substituted in the browser, so the url has to be put in its
+        // pretty form here, while it is still a template - see make_link_url()
+        $link = $this->make_link_url($link);
         $this->add_filter($field, '<a href="'.$link.'" data-container="body"'.($title !== false ? ' data-toggle="tooltip" title="'.$title.'"' : '').'>%value%</a>', 'string', $acl, $bad_acl_test);
     }
 

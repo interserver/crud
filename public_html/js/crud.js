@@ -202,6 +202,30 @@ function crud_search(that, terms) {
 }
 
 /**
+ * builds the '?choice=crud&crud=<name>...' query string the crud ajax endpoint expects,
+ * out of the url of the page we are currently on.
+ *
+ * that page can be reached under either link style, so both have to be understood:
+ *
+ *   index.php?choice=none.view_vps_list&custid=5   the raw form - the crud name is in
+ *                                                  the query, swap the parameter names
+ *   /view_vps_list?custid=5                        the pretty form make_link() and
+ *                                                  Crud::make_link_url() emit when
+ *                                                  SEO_LINKS is on - the crud name is
+ *                                                  the last path segment and the query
+ *                                                  says nothing about it
+ *
+ * @returns string the query string to hang off ajax.php, leading '?' included
+ */
+function crud_choice_query() {
+	var search = document.location.search;
+	if (search.indexOf('choice=none.') != -1)
+		return search.replace('choice=none.', 'choice=crud&crud=');
+	var name = document.location.pathname.replace(/^.*\//, '').replace(/\.[^.]*$/, '');
+	return '?choice=crud&crud=' + encodeURIComponent(name) + (search.length > 1 ? '&' + search.substring(1) : '');
+}
+
+/**
  * gets the crud URL to use with the current pagination/offset/order information
  *
  * @returns string the URL to use
@@ -209,7 +233,7 @@ function crud_search(that, terms) {
 function get_crud_url() {
 	var url = jQuery("#paginationForm").attr("action");
 	if (typeof url == undefined || typeof url == "undefined") {
-		url = document.location.pathname.replace(/\/[^\/]*$/,'')+'/ajax.php'+document.location.search.replace('choice=none\.', 'choice=crud&crud=')+'&action=list';
+		url = document.location.pathname.replace(/\/[^\/]*$/,'')+'/ajax.php'+crud_choice_query()+'&action=list';
 		console.log("Got undefined action= contents from #pagionationForm so used fallback method and generated: "+url);
 	}
 	url = url+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit;
