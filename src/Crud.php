@@ -1439,7 +1439,7 @@ class Crud extends Form
                     .'display:inline-flex !important;'
                     .'align-items:center !important;'
                     .'gap:8px !important;'
-                    .'padding:7px 14px 7px 7px !important;'
+                    .'padding:7px 14px !important;'
                     .'min-height:32px !important;'
                     .'font-size:0.82rem !important;'
                     .'font-weight:600 !important;'
