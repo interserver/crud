@@ -113,6 +113,25 @@ class Crud extends Form
     public $admin_confirm_fields = [];
     public $query_fields = [];
     public $search_terms = [];
+    /**
+     * columns that hold secrets (service/root/ipmi passwords, card security codes).
+     * wherever one of these shows up in a list, a table browser or an export its value
+     * is replaced by $secret_mask, it can never be searched or sorted on (a LIKE search
+     * would let anyone test guesses against the real value), and an edit only writes it
+     * when a new value was actually typed in. matched on the bare column name, with or
+     * without a table. prefix.
+     */
+    public static $secret_columns = [
+        'domain_password',
+        'vps_rootpass',
+        'qs_rootpass',
+        'asset_password',
+        'ipmi_admin_password',
+        'ipmi_client_password',
+        'ipmi_admin_pass',
+        'cc_request_card_code',
+    ];
+    public $secret_mask = '********';
     // temp fields maybe from buy service class i think
     public $disabled_fields = [];
     public $filters = [];
@@ -486,6 +505,11 @@ class Crud extends Form
         $this->errors = [];
         $this->error_fields = [];
         foreach ($fields as $field => $value) {
+            // a secret column comes back from the edit form as the mask (or empty); only a
+            // value that was actually typed in is written, the masked one never is
+            if ($this->is_secret_field($field) && ($value === '' || $value === null || $value === $this->secret_mask)) {
+                continue;
+            }
             // match up fields
             if (isset($this->query_fields[$field])) {
                 $origField = $field;
@@ -993,6 +1017,15 @@ class Crud extends Form
             }
         }
         if (isset($fields)) {
+            // a secret column selected through an expression (the masked
+            // "if(ifnull(col,''),'','********') as col" form) is mapped above to whatever
+            // column came before it; map it back to itself so an edit or search can
+            // never land on a different column
+            foreach ($fields as $alias => $target) {
+                if ($this->is_secret_field($alias) && !$this->is_secret_field($target)) {
+                    $fields[$alias] = $alias;
+                }
+            }
             $this->query_fields = $fields;
         }
         //$this->add_output('<pre style="text-align: left;">'.print_r($fields, TRUE).'</pre>');
@@ -1125,7 +1158,7 @@ class Crud extends Form
     public function run_list_query()
     {
         //$this->log("Order by {$this->order_by} Direction {$this->order_dir}", __LINE__, __FILE__, 'debug');
-        if (!in_array($this->order_by, $this->fields)) {
+        if (!in_array($this->order_by, $this->fields) || $this->is_secret_field($this->order_by)) {
             $this->order_by = $this->primary_key;
         }
         if ($this->type == 'function') {
@@ -1224,8 +1257,15 @@ class Crud extends Form
     public function json_search_tosql($field, $oper, $val, $useLike = false)
     {
         //$this->log("called json_search_tosql({$field}, {$oper}, ".var_export($val,true).")", __LINE__, __FILE__, 'debug');
+        // secret columns are never searchable, or a LIKE search would test guesses against the real value
+        if ($this->is_secret_field($field)) {
+            return '';
+        }
         if (isset($this->query_fields[$field])) {
             $field = $this->query_fields[$field];
+        }
+        if ($this->is_secret_field($field)) {
+            return '';
         }
         if (isset($this->validations[$field]) && in_array('int', $this->validations[$field])) {
             $type = 'int';
@@ -2120,6 +2160,44 @@ class Crud extends Form
     }
 
     /**
+     * whether a field (bare or table.field) is one of the secret columns
+     *
+     * @param string $field the field name, optionally prefixed with its table
+     * @return bool
+     */
+    public function is_secret_field($field)
+    {
+        if (!is_string($field) || $field === '') {
+            return false;
+        }
+        $pos = strrpos($field, '.');
+        if ($pos !== false) {
+            $field = substr($field, $pos + 1);
+        }
+        return in_array(strtolower(trim($field, '` ')), self::$secret_columns, true);
+    }
+
+    /**
+     * replaces the value of every secret column in a record with the mask; empty
+     * values stay empty so "is a password set" is still visible.
+     *
+     * @param array $record the record
+     * @return array the record with secrets masked
+     */
+    public function mask_secret_fields($record)
+    {
+        if (!is_array($record)) {
+            return $record;
+        }
+        foreach ($record as $field => $value) {
+            if (is_string($field) && $value !== '' && $value !== null && $this->is_secret_field($field)) {
+                $record[$field] = $this->secret_mask;
+            }
+        }
+        return $record;
+    }
+
+    /**
      * returns the record for the current row whether its an sql or function type
      *
      * @return array the result row
@@ -2128,13 +2206,13 @@ class Crud extends Form
     {
         //$this->log(__FUNCTION__ . " called with type {$this->type} = " . json_encode($this->db->Record), __LINE__, __FILE__, 'debug');
         if ($this->type == 'function') {
-            return $this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->queries->Record)));
+            return $this->mask_secret_fields($this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->queries->Record))));
         } else {
             if (!empty($this->db->Record['cost'])) {
                 $temp = explode(' ', $this->db->Record['cost']);
                 $this->db->Record['cost'] = Currency::getSymbol($temp[0]).$temp[1];
             }
-            return $this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->db->Record)));
+            return $this->mask_secret_fields($this->convert_choice_links($this->add_service_param($this->convert_uuid_fields($this->db->Record))));
         }
     }
 
