@@ -341,7 +341,7 @@ class Crud extends Form
     public function set_default_search($search)
     {
         if ($this->ajax == false && !isset($this->request['search'])) {
-            $this->search_terms = $search;
+            $this->search_terms = is_array($search) ? $search : [];
         }
         return $this;
     }
@@ -372,7 +372,9 @@ class Crud extends Form
             $this->order_dir = $this->request['order_dir'];
         }
         if (isset($this->request['search'])) {
-            $this->search_terms = json_decode(html_entity_decode($this->request['search']));
+            // an empty or malformed search param decodes to null (or a scalar), which would fatal count() later
+            $search = json_decode(html_entity_decode($this->request['search']));
+            $this->search_terms = is_array($search) ? $search : [];
         }
         if (isset($this->request['offset'])) {
             $this->page_offset = (int)$this->request['offset'];
