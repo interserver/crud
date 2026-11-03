@@ -1121,14 +1121,7 @@ class Crud extends Form
             $count = $db->f(0);
         } else {
             if (!is_null($this->query) && preg_match('/^.*( from .*)$/iU', str_replace("\n", ' ', $this->query), $matches)) {
-                $from = $matches[1];
-                if (count($this->search_terms) > 0) {
-                    if ($this->queries[0]->hasWhere() == false) {
-                        $from .= ' where '.$this->search_to_sql();
-                    } else {
-                        $from .= ' and '.$this->search_to_sql();
-                    }
-                }
+                $from = $this->append_search_sql($matches[1], $this->queries[0]->hasWhere());
                 $db->query("select count(*) {$from}", __LINE__, __FILE__);
                 $db->next_record(MYSQL_NUM);
                 $count = $db->f(0);
@@ -1151,6 +1144,28 @@ class Crud extends Form
     }
 
     /**
+     * appends the search terms to a query as a where (or and) clause. search_to_sql()
+     * returns '' when every term was dropped (a value that does not fit the column type,
+     * like an email searched against an int id, a secret column, an unknown field), and
+     * appending a bare ' where ' then made the list and count queries a syntax error.
+     *
+     * @param string $query the query (or the from part of it) to add the search to
+     * @param bool $hasWhere whether the query already has a where clause
+     * @return string the query with the search appended, or unchanged when there is none
+     */
+    public function append_search_sql($query, $hasWhere)
+    {
+        if (count($this->search_terms) == 0) {
+            return $query;
+        }
+        $search = $this->search_to_sql();
+        if (trim($search) === '') {
+            return $query;
+        }
+        return $query.($hasWhere ? ' and ' : ' where ').$search;
+    }
+
+    /**
      * builds up the query and sends it to the sql server to run i.  if there are any search terms
      * setup then they are automatically added onto the query as well as current order field, order
      * direction, result limit, and result offset.
@@ -1169,19 +1184,9 @@ class Crud extends Form
             $this->queries = new CrudFunctionIterator($this->query);
         } else {
             if ($this->type == 'table') {
-                $query = "select * from {$this->table}";
-                if (count($this->search_terms) > 0) {
-                    $query .= ' where '.$this->search_to_sql();
-                }
+                $query = $this->append_search_sql("select * from {$this->table}", false);
             } else {
-                $query = $this->query;
-                if (count($this->search_terms) > 0) {
-                    if ($this->queries[0]->hasWhere() == false) {
-                        $query .= ' where '.$this->search_to_sql();
-                    } else {
-                        $query .= ' and '.$this->search_to_sql();
-                    }
-                }
+                $query = $this->append_search_sql($this->query, $this->queries[0]->hasWhere());
             }
             if ($this->page_limit > 0) {
                 $query .= " order by {$this->order_by} {$this->order_dir} limit {$this->page_offset}, {$this->page_limit}";
