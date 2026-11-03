@@ -42,10 +42,14 @@ function crud_request_log($custid = null, $return_output = false)
       request_request: {"ip":"n","cgi":1,"frontpage":0,"hasshell":0,"cpmod":"x3","maxsql":"unlimited","maxpop":"unlimited","maxlst":0,"maxsub":"unlimited","quota":"unlimited","maxftp":"unlimited","maxpark":"unlimited","maxaddon":"unlimited","bwlimit":"unlimited","domain":"k-botfb.net","username":"kbotfbne","password":"matkhau123","contactemail":"vunguyenkhanhv1.6599@gmail.com"}
        request_result: {"result":[{"options":null,"statusmsg":"A DNS entry for â€œk-botfb.netâ€ already exists. You must remove this DNS entry from all servers in the DNS cluster to proceed.","rawout":null,"status":0}]}
     */
+    // custid / customer may be an account uuid rather than an account id, so
+    // resolve it (0 for unknown) and always cast before it goes into the sql
     if (isset(\MyAdmin\App::variables()->request['custid'])) {
-        $custid = \MyAdmin\App::variables()->request['custid'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['custid']);
     } elseif (isset(\MyAdmin\App::variables()->request['customer'])) {
-        $custid = \MyAdmin\App::variables()->request['customer'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['customer']);
+    } elseif (!is_null($custid)) {
+        $custid = (int)$custid;
     }
     $crud = Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_service, request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
         ->set_limit_custid_role('list_all')

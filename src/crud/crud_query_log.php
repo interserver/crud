@@ -21,10 +21,14 @@ function crud_query_log($custid = null, $return_output = false)
         }
         return false;
     }
+    // custid / customer may be an account uuid rather than an account id, so
+    // resolve it (0 for unknown) and always cast before it goes into the sql
     if (isset(\MyAdmin\App::variables()->request['custid'])) {
-        $custid = \MyAdmin\App::variables()->request['custid'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['custid']);
     } elseif (isset(\MyAdmin\App::variables()->request['customer'])) {
-        $custid = \MyAdmin\App::variables()->request['customer'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['customer']);
+    } elseif (!is_null($custid)) {
+        $custid = (int)$custid;
     }
     $crud = Crud::init('select * from query_log' . (!is_null($custid) ? ' where history_owner='.$custid : ''))
         ->set_order('history_timestamp', 'desc')

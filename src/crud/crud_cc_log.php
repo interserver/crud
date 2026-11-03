@@ -27,10 +27,14 @@ function crud_cc_log($custid = null, $return_output = false)
         }
         return false;
     }
+    // custid / customer may be an account uuid rather than an account id, so
+    // resolve it (0 for unknown) and always cast before it goes into the sql
     if (isset(\MyAdmin\App::variables()->request['custid'])) {
-        $custid = \MyAdmin\App::variables()->request['custid'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['custid']);
     } elseif (isset(\MyAdmin\App::variables()->request['customer'])) {
-        $custid = \MyAdmin\App::variables()->request['customer'];
+        $custid = resolve_account_id(\MyAdmin\App::variables()->request['customer']);
+    } elseif (!is_null($custid)) {
+        $custid = (int)$custid;
     }
     $crud = Crud::init('select 
 cc_id, cc_timestamp, cc_custid, cc_request_type, cc_request_version, cc_request_email, cc_request_card_num, cc_request_exp_date, if(ifnull(cc_request_card_code,\'\')=\'\',\'\',\'********\') as cc_request_card_code, 

@@ -401,7 +401,8 @@ class Crud extends Form
 
         if ($this->admin == true) {
             if (isset($this->request['custid'])) {
-                $this->custid = $this->request['custid'];
+                // may be an account uuid; unresolved, mysql would coerce '0195f3d2-...' to 195
+                $this->custid = function_exists('resolve_account_id') ? resolve_account_id($this->request['custid']) : (int)$this->request['custid'];
             //$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__, 'debug');
             } elseif ($this->limit_custid_role !== false) {
                 function_requirements('has_acl');
