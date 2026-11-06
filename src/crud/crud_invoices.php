@@ -23,6 +23,9 @@ function crud_invoices()
             ->set_limit_custid_role('list_all')
             ->enable_fluid_container()
             ->set_title(_('Invoices'))
+            // list only: its edit never wrote anything (the written table had no query_where entry,
+            // so the handler fataled); with that fixed it would be a raw editor of the table
+            ->disable_edit()
             ->go();
     } else {
         Crud::init('select * from invoices')

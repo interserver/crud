@@ -41,6 +41,9 @@ function crud_vps_templates()
     }
     $crud = Crud::init('select template_id, template_type, template_os, template_version, template_bits, template_file, template_available, template_name, template_dir from vps_templates')
         ->set_title(_('Templates'))
+        // list only: its edit never wrote anything (the written table had no query_where entry,
+        // so the handler fataled); with that fixed it would be a raw editor of the table
+        ->disable_edit()
         //->add_filter('template_type', 'decorate_vps_templates', 'function')
         //->add_filter('template_available', 'decorate_vps_templates', 'function')
         ->enable_fluid_container()

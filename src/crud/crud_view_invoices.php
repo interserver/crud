@@ -92,7 +92,10 @@ invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id 
         ->add_title_search_button([], _('All'), 'info')
         ->enable_fluid_container()
         ->set_labels(['invoices_date' => 'Date', 'invoices_type' => 'Type', 'invoices_service' =>  'Service', 'invoices_description' => 'Description', 'invoices_amount' => 'Cost', 'invoices_paid' => 'Paid', 'invoices_id' => 'ID'])
-        ->set_title(_('View Invoices List'));
+        ->set_title(_('View Invoices List'))
+        // list only: its edit never wrote anything (the written table had no query_where entry,
+        // so the handler fataled); with that fixed it would be a raw editor of the table
+        ->disable_edit();
     function_requirements('has_acl');
     if (\MyAdmin\App::ima() != 'admin' || !has_acl('system_config')) {
         $crud->disable_edit()
