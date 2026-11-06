@@ -10,10 +10,17 @@ use \MyCrud\Crud;
 
 /**
  * crud_paypal_history()
- * @return void
+ * @return false|void
  */
 function crud_paypal_history()
 {
+    // admin only: this lists every customer's rows (the table has no *_custid column for
+    // limit_custid to filter on) and index.php/ajax.php reach any registered function
+    function_requirements('has_acl');
+    if (\MyAdmin\App::ima() != 'admin' || !has_acl('client_billing')) {
+        dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
+        return false;
+    }
     Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid')
         ->set_limit_custid_role('list_all')
         ->set_title(_('Paypal History'))
