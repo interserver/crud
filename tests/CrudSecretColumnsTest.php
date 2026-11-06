@@ -76,6 +76,19 @@ class CrudSecretColumnsTest extends TestCase
         }
     }
 
+    public function testHostQueueKeysAreSecret(): void
+    {
+        $crud = $this->crud();
+        foreach (['vps_queue_key', 'vps_masters.vps_queue_key', 'qs_queue_key', 'qs_masters.qs_queue_key'] as $field) {
+            $this->assertTrue($crud->is_secret_field($field), $field);
+        }
+        $this->assertFalse($crud->is_secret_field('vps_queue_key_updated'));
+        $out = $crud->mask_secret_fields(['vps_id' => 1, 'vps_name' => 'host1', 'vps_queue_key' => 'abcdef0123456789', 'vps_queue_key_updated' => '2026-11-06 00:00:00']);
+        $this->assertSame('********', $out['vps_queue_key']);
+        $this->assertSame('host1', $out['vps_name']);
+        $this->assertSame('2026-11-06 00:00:00', $out['vps_queue_key_updated']);
+    }
+
     public function testRecordsAreMaskedButEmptyValuesStayEmpty(): void
     {
         $crud = $this->crud();

@@ -141,6 +141,9 @@ class Crud extends Form
         'ipmi_client_password',
         'ipmi_admin_pass',
         'cc_request_card_code',
+        // per-host queue psk: whoever has it can act as that host on public_html/*queue.php
+        'vps_queue_key',
+        'qs_queue_key',
     ];
     public $secret_mask = '********';
     // temp fields maybe from buy service class i think
