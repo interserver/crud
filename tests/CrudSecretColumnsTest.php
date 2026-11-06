@@ -15,6 +15,12 @@ class SecretColumnsTestCrud extends Crud
     {
         $this->logged[] = $message;
     }
+
+    // the edit handler's csrf check needs a MyAdmin session; CrudEditGuardTest covers it
+    protected function verify_write_csrf()
+    {
+        return true;
+    }
 }
 
 class SecretColumnsTestDb
@@ -148,6 +154,7 @@ class CrudSecretColumnsTest extends TestCase
     {
         $crud = $this->crud();
         $crud->edit_row = true;
+        $crud->admin = true; // the edit handler is admin-only
         $crud->query_fields = ['domain_id' => 'domain_id', 'domain_hostname' => 'domain_hostname', 'domain_password' => 'domain_password'];
         $crud->validations = ['domain_id' => ['int'], 'domain_hostname' => [], 'domain_password' => []];
         $crud->query_where = ['domains' => []];

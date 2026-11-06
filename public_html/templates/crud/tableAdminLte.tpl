@@ -278,6 +278,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=edit{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+                {if !empty($crud_csrf_token)}<input type="hidden" name="csrf_token" value="{$crud_csrf_token|escape}">{/if}
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="{t}Close{/t}"><span aria-hidden="true">&times;</span></button>
                     <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button> -->
@@ -298,6 +299,7 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form accept-charset="UTF-8" role="form" id="deleteModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=delete{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+            {if !empty($crud_csrf_token)}<input type="hidden" name="csrf_token" value="{$crud_csrf_token|escape}">{/if}
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="fa fa-remove" aria-hidden="true"></span></button>

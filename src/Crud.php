@@ -109,6 +109,17 @@ class Crud extends Form
     public $delete_row = true;
     public $edit_row = true;
     public $add_row = true;
+    /**
+     * whether a non-admin session may use the ajax edit/add/delete handlers. off by
+     * default: they write by the posted primary key, so a client reaching them could
+     * change any row of the table (any customer's vps or domain, any host). a crud page
+     * that really needs client writes opts in with allow_client_edit(); its writes are
+     * then always pinned to the client's own rows by the *_custid tenant term.
+     * @var bool
+     */
+    public $client_edit = false;
+    /** session csrf token name the edit/add/delete forms carry and the handlers check */
+    const CSRF_NAME = 'crud_edit';
     public $query_where = [];
     public $admin_confirm_fields = [];
     public $query_fields = [];
@@ -491,6 +502,89 @@ class Crud extends Form
     }
 
     /**
+     * gate for every ajax write (edit/add/delete). the handlers write by the posted
+     * primary key, so they are admin-only unless the page opted in with
+     * allow_client_edit(), and the post must carry the session's crud csrf token
+     * (the edit/delete modals in the crud templates send it as csrf_token).
+     *
+     * @param string $action edit, add or delete
+     * @return bool
+     */
+    protected function authorize_write($action)
+    {
+        if ($this->admin !== true && $this->client_edit !== true) {
+            $this->log("refused crud {$this->choice} {$action} for a non-admin session", __LINE__, __FILE__, 'warning');
+            echo 'Not Authorized';
+            return false;
+        }
+        if ($this->verify_write_csrf() !== true) {
+            $this->log("refused crud {$this->choice} {$action}, missing or invalid csrf token", __LINE__, __FILE__, 'warning');
+            echo 'Invalid or expired form token, please reload the page and try again';
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * checks the posted csrf_token against the session one (fails closed when the
+     * MyAdmin csrf helper is not loaded).
+     *
+     * @return bool
+     */
+    protected function verify_write_csrf()
+    {
+        if (!function_exists('verify_csrf')) {
+            return false;
+        }
+        return verify_csrf(self::CSRF_NAME) === true;
+    }
+
+    /**
+     * the session csrf token for the edit/delete forms, '' when there is no session helper.
+     * not one-time, so several edits from one list page all pass.
+     *
+     * @return string
+     */
+    public function get_write_csrf_token()
+    {
+        if (!function_exists('get_csrf')) {
+            return '';
+        }
+        return (string) get_csrf(self::CSRF_NAME);
+    }
+
+    /**
+     * where terms pinning a write on $table to the session's account: one per column
+     * of the table that matches $custid_match (*_custid by default).
+     *
+     * @param string $table
+     * @return string[]
+     */
+    protected function tenant_where($table)
+    {
+        $where = [];
+        if (!isset($this->tables[$table]) || !is_array($this->tables[$table]) || !is_string($this->custid_match)) {
+            return $where;
+        }
+        $custid = $this->db->real_escape((string) (int) $this->custid);
+        foreach (array_keys($this->tables[$table]) as $column) {
+            if (preg_match($this->custid_match, $column)) {
+                $where[] = "{$column}='{$custid}'";
+            }
+        }
+        return $where;
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    protected function escape_html($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
      * handler function to process the ajax edit requests
      */
     public function ajax_edit_handler()
@@ -499,11 +593,16 @@ class Crud extends Form
             echo 'Editing Disabled';
             return false;
         }
+        if (!$this->authorize_write('edit')) {
+            return false;
+        }
         $fields = $_POST;
         $query_fields = [];
         $insert_fields = [];
         $insert_values = [];
         $query_where = [];
+        $query_table = null;
+        $has_primary_key = false;
         $valid = true;
         $this->errors = [];
         $this->error_fields = [];
@@ -634,6 +733,7 @@ class Crud extends Form
                     $safe_value = $value;
                 }
                 if ($field == $this->primary_key) {
+                    $has_primary_key = true;
                     $query_where[] = "{$field}='{$safe_value}'";
                     $insert_fields[] = $field;
                     $insert_values[] = "'{$safe_value}'";
@@ -648,8 +748,27 @@ class Crud extends Form
             }
         }
         if (count($query_fields) > 0) {
+            // never a where-less (every row) write: the row has to be named by its primary
+            // key, and that key has to be a column of the table being written
+            if ($query_table === null || $has_primary_key !== true
+                || (isset($this->tables[$query_table]) && is_array($this->tables[$query_table]) && !isset($this->tables[$query_table][$this->primary_key]))) {
+                $this->log("refused crud {$this->choice} edit with no primary key term for table ".var_export($query_table, true), __LINE__, __FILE__, 'warning');
+                echo 'There was nothing to update';
+                return false;
+            }
             //$this->log("Query Table {$query_table} Where " . implode(',', $query_where).' Class Where '.implode(',' ,$this->query_where[$query_table]), __LINE__, __FILE__, 'debug');
-            $query_where = array_merge($query_where, $this->query_where[$query_table]);
+            // only tables named first in a join condition get a query_where entry
+            $query_where = array_merge($query_where, $this->query_where[$query_table] ?? []);
+            // a list limited to the session's account writes only that account's rows
+            if ($this->limit_custid == true) {
+                $tenant_where = $this->tenant_where($query_table);
+                if (count($tenant_where) == 0 && $this->admin !== true) {
+                    $this->log("refused crud {$this->choice} client edit of {$query_table}, it has no account column", __LINE__, __FILE__, 'warning');
+                    echo 'Editing Disabled';
+                    return false;
+                }
+                $query_where = array_merge($query_where, $tenant_where);
+            }
             // update database
             if ($this->insert_over_update == true) {
                 $query = 'insert into '.$query_table.' ('.implode(', ', $insert_fields).') values ('.implode(', ', $insert_values).' where '.implode(' and ', $query_where);
@@ -659,13 +778,13 @@ class Crud extends Form
             if ($valid == true) {
                 //$this->log("i want to run query {$query}", __LINE__, __FILE__, 'info');
                 $this->db->query($query, __LINE__, __FILE__);
-                // send response for js handler
+                // send response for js handler (the sql is not echoed back)
                 echo 'ok';
-                echo "<br>updated<br>ran query<div class='well'>{$query}</div>";
+                echo '<br>updated';
             } else {
                 $this->log("error validating so could not run query {$query}", __LINE__, __FILE__, 'warning');
-                // send response for js handler
-                echo 'There was an error with validation:<br>'.implode('<br>', $this->errors).' with the fields '.implode(', ', $this->error_fields);
+                // send response for js handler (crud.js puts it in the modal with .html())
+                echo 'There was an error with validation:<br>'.implode('<br>', array_map([$this, 'escape_html'], $this->errors)).' with the fields '.implode(', ', array_map([$this, 'escape_html'], $this->error_fields));
             }
         } else {
             $this->log('crud error nothing to update ', __LINE__, __FILE__, 'warning');
@@ -679,6 +798,13 @@ class Crud extends Form
      */
     public function ajax_add_handler()
     {
+        if ($this->add_row == false) {
+            echo 'Adding Disabled';
+            return false;
+        }
+        if (!$this->authorize_write('add')) {
+            return false;
+        }
         // generic data to get us here is in _GET, while the specific fields are all in _POST
         // match up fields
         // see which fields are editable
@@ -693,6 +819,13 @@ class Crud extends Form
      */
     public function ajax_delete_handler()
     {
+        if ($this->delete_row == false) {
+            echo 'Deleting Disabled';
+            return false;
+        }
+        if (!$this->authorize_write('delete')) {
+            return false;
+        }
         // match up row
         // build query
         // update db
@@ -2108,6 +2241,8 @@ class Crud extends Form
             'add_row' => $this->add_row,
             'labels' => $this->labels,
             'rows' => $rows,
+            // posted back as csrf_token by the edit/delete modal forms, see authorize_write()
+            'crud_csrf_token' => ($this->edit_row == true || $this->delete_row == true || $this->add_row == true) ? $this->get_write_csrf_token() : '',
         ];
         if ($this->export_button == true) {
             $assign['export_formats'] = $this->get_export_formats();
@@ -2787,6 +2922,20 @@ class Crud extends Form
     public function disable_select_multiple()
     {
         $this->select_multiple = false;
+        return $this;
+    }
+
+    /**
+     * lets a non-admin session use the ajax edit handler on this crud. every client
+     * write is then limited to rows whose *_custid column(s) hold the client's own
+     * account id, and refused outright on a table that has no such column.
+     *
+     * @param bool $enable
+     * @return Crud
+     */
+    public function allow_client_edit($enable = true)
+    {
+        $this->client_edit = (bool) $enable;
         return $this;
     }
 

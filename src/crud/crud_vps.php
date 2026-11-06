@@ -19,5 +19,8 @@ function crud_vps()
     Crud::init("select vps_id,vps_uuid,vps_custid,vps_server,vps_ip,vps_ipv6,vps_vzid,vps_currency,vps_type,vps_order_date,vps_status,vps_invoice,vps_coupon,vps_extra,vps_hostname,vps_server_status,vps_comment,vps_slices,vps_vnc,vps_vnc_port,if(ifnull(vps_rootpass,'')='','','********') as vps_rootpass,vps_mac,vps_os,vps_version,vps_location,vps_platform,vps_diskused,vps_diskmax from vps", 'vps')
         ->set_limit_custid_role('list_all')
         ->set_title(_('Virtual Private Servers'))
+        // list only: the edit handler never worked here (it fataled before writing); left on, it
+        // would be a raw editor for every vps column including vps_custid
+        ->disable_edit()
         ->go();
 }
