@@ -89,6 +89,24 @@ class CrudSecretColumnsTest extends TestCase
         $this->assertSame('2026-11-06 00:00:00', $out['vps_queue_key_updated']);
     }
 
+    public function testAccountPasswordColumnsAreSecret(): void
+    {
+        $crud = $this->crud();
+        foreach (['account_passwd', 'accounts.account_passwd', '`account_password_hash`', 'accounts.account_password_hash', 'ACCOUNT_PASSWD'] as $field) {
+            $this->assertTrue($crud->is_secret_field($field), $field);
+        }
+        foreach (['account_lid', 'account_password_hash_updated', 'account_passwd2'] as $field) {
+            $this->assertFalse($crud->is_secret_field($field), $field);
+        }
+        $out = $crud->mask_secret_fields(['account_id' => 7, 'account_lid' => 'a@example.com', 'account_passwd' => md5('x'), 'account_password_hash' => '$argon2id$v=19$m=19456,t=2,p=1$c2FsdA$aGFzaA']);
+        $this->assertSame('********', $out['account_passwd']);
+        $this->assertSame('********', $out['account_password_hash']);
+        $this->assertSame('a@example.com', $out['account_lid']);
+        $blank = $crud->mask_secret_fields(['account_passwd' => '', 'account_password_hash' => '']);
+        $this->assertSame('', $blank['account_passwd'], 'an empty value stays empty (no password set)');
+        $this->assertSame('', $blank['account_password_hash']);
+    }
+
     public function testRecordsAreMaskedButEmptyValuesStayEmpty(): void
     {
         $crud = $this->crud();

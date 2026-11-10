@@ -144,6 +144,11 @@ class Crud extends Form
         // per-host queue psk: whoever has it can act as that host on public_html/*queue.php
         'vps_queue_key',
         'qs_queue_key',
+        // account login password hashes (core plan_hash.md §6.7, R2-9): masked so the crud_table
+        // browser cannot show, export, LIKE-search or sort on them, and an edit cannot store an
+        // arbitrary string there (it would read as an unknown format and lock the user out)
+        'account_passwd',
+        'account_password_hash',
     ];
     public $secret_mask = '********';
     // temp fields maybe from buy service class i think
