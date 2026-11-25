@@ -1570,6 +1570,7 @@ class Crud extends Form
                     }
                 }
                 if ($found == false && $field == '') {
+			if ($this->admin !== true) {        continue;    }
                     //$this->log("Searching All Fields", __LINE__, __FILE__);
                     foreach ($this->tables as $table => $fields) {
                         foreach ($fields as $field_name => $field_data) {
