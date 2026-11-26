@@ -1319,6 +1319,12 @@ class Crud extends Form
         return $this;
     }
 
+    /** the upper cased keyword of scan_search_slot()'s token $k, or null (not a keyword, or no such token) */
+    private static function scan_token_word(array $tokens, $k)
+    {
+        return $tokens[$k][0] ?? null;
+    }
+
     /**
      * lexes a query (or the ' from ...' part of one) once to find where append_search_sql()
      * has to put the search terms so they land inside the WHERE clause.
@@ -1458,9 +1464,6 @@ class Crud extends Form
         if ($depth !== 0) {
             return null;
         }
-        $word = static function ($k) use ($tokens) {
-            return $tokens[$k][0] ?? null;
-        };
         $start = 0;
         foreach ($tokens as $k => $token) {
             if (in_array($token[0], ['UNION', 'EXCEPT', 'INTERSECT'], true)) {
@@ -1483,12 +1486,12 @@ class Crud extends Form
             if (in_array($keyword, ['HAVING', 'WINDOW', 'LIMIT', 'PROCEDURE', 'INTO'], true)) {
                 $terminator = true;
             } elseif ($keyword === 'GROUP' || $keyword === 'ORDER') {
-                $indexHint = $word($k - 1) === 'FOR' && in_array($word($k - 2), ['INDEX', 'KEY'], true) && in_array($word($k - 3), ['USE', 'FORCE', 'IGNORE'], true);
-                $terminator = $word($k + 1) === 'BY' && !$indexHint;
+                $indexHint = self::scan_token_word($tokens, $k - 1) === 'FOR' && in_array(self::scan_token_word($tokens, $k - 2), ['INDEX', 'KEY'], true) && in_array(self::scan_token_word($tokens, $k - 3), ['USE', 'FORCE', 'IGNORE'], true);
+                $terminator = self::scan_token_word($tokens, $k + 1) === 'BY' && !$indexHint;
             } elseif ($keyword === 'FOR') {
-                $terminator = in_array($word($k + 1), ['UPDATE', 'SHARE'], true);
+                $terminator = in_array(self::scan_token_word($tokens, $k + 1), ['UPDATE', 'SHARE'], true);
             } elseif ($keyword === 'LOCK') {
-                $terminator = $word($k + 1) === 'IN' && $word($k + 2) === 'SHARE' && $word($k + 3) === 'MODE';
+                $terminator = self::scan_token_word($tokens, $k + 1) === 'IN' && self::scan_token_word($tokens, $k + 2) === 'SHARE' && self::scan_token_word($tokens, $k + 3) === 'MODE';
             } else {
                 $terminator = false;
             }
