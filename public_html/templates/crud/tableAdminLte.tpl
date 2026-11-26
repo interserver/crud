@@ -9,7 +9,7 @@
                 <div class="row float-right">
                     {if $total_pages > 1}
                     <div id="search_btns" class="col-md-auto printer-hidden text-right pl-2">
-                        <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
+                        <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=list{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="GET">
                             <a id="crud-search" class="btn btn-sm btn-primary" href="" title="Search" data-tile="Search">
                                 <span class="fa fa-search fa-fw"></span> {t}Search{/t}
                             </a>
@@ -166,7 +166,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET" style="display:inline-flex;">
+                            <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=list{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="GET" style="display:inline-flex;">
                                 {if $total_pages > 1}
 
                                 <div class="btn-group row-counts" role="group"  aria-label="{t}Rows Per Page{/t}">
@@ -277,7 +277,7 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=edit{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+            <form accept-charset="UTF-8" role="form" id="editModalForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=edit{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="POST" enctype="multipart/form-data">
                 {if !empty($crud_csrf_token)}<input type="hidden" name="csrf_token" value="{$crud_csrf_token|escape}">{/if}
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="{t}Close{/t}"><span aria-hidden="true">&times;</span></button>
@@ -298,7 +298,7 @@
 </div>
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form accept-charset="UTF-8" role="form" id="deleteModalForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=delete{$extra_url_args}" autocomplete="on" method="POST" enctype="multipart/form-data">
+        <form accept-charset="UTF-8" role="form" id="deleteModalForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=delete{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="POST" enctype="multipart/form-data">
             {if !empty($crud_csrf_token)}<input type="hidden" name="csrf_token" value="{$crud_csrf_token|escape}">{/if}
             <div class="modal-content">
                 <div class="modal-header">

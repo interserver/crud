@@ -366,6 +366,39 @@ class Crud extends Form
     }
 
     /**
+     * reduces a `choice` (or, on the ajax path, `crud`) request value to the page function
+     * name the dispatcher actually ran. core's dispatchers (index.php, iframe.php, widget.php,
+     * admin/dc.php) do `[$class, $function] = explode('.', $choice)` when the value has a dot
+     * and run the second segment whatever the prefix ('none.' by convention, the class part is
+     * never used), so this keeps everything after the first dot (any prefix), then only the
+     * leading php identifier of that: 'none.crud_x' and 'foo.crud_x' give crud_x, 'a.b.c' gives
+     * b, '.crud_x' gives crud_x, 'crud_x.' and 'none.' give ''; a value without a dot (the
+     * ajax crud= value) is only cut to its leading identifier. so
+     * 'none.crud_vps_list." onfocus="..." x="' still ran crud_vps_list - and the whole value
+     * used to come back out in the templates' action="..." attributes (request values are only
+     * pre-escaped for <>&, never for quotes).
+     *
+     * @param mixed $choice the raw request value
+     * @return string|null the function name, '' when the dispatched segment has no leading
+     *                     identifier or the value is not a string (choice[]=x), or null when it
+     *                     was missing (null)
+     */
+    protected static function choice_function_name($choice)
+    {
+        if ($choice === null) {
+            return null;
+        }
+        if (!is_string($choice)) {
+            return '';
+        }
+        $dot = strpos($choice, '.');
+        if ($dot !== false) {
+            $choice = (string) substr($choice, $dot + 1);
+        }
+        return preg_match('/^[A-Za-z_][A-Za-z0-9_]*/', $choice, $matches) ? $matches[0] : '';
+    }
+
+    /**
      * checks for various request fields and applies them to their various crud settings
      *
      * @return void
@@ -401,9 +434,10 @@ class Crud extends Form
         if (isset($this->request['limit'])) {
             $this->page_limit = (int)$this->request['limit'];
         }
-        if (mb_substr($this->choice, 0, 5) == 'none.') {
-            $this->choice = mb_substr($this->choice, 5);
-        }
+        // keeps only the function name the dispatcher ran (the segment after the first dot,
+        // whatever the prefix, cut to its leading identifier); the templates, the logs and
+        // pending_orders.pend_choice all get this normalized value
+        $this->choice = self::choice_function_name($this->choice);
         $this->limit_custid = true;
         if ($this->page_limit < 1) {
             $this->page_limit = 500;
@@ -1286,14 +1320,224 @@ class Crud extends Form
     }
 
     /**
-     * appends the search terms to a query as a where (or and) clause. search_to_sql()
-     * returns '' when every term was dropped (a value that does not fit the column type,
-     * like an email searched against an int id, a secret column, an unknown field), and
-     * appending a bare ' where ' then made the list and count queries a syntax error.
+     * lexes a query (or the ' from ...' part of one) once to find where append_search_sql()
+     * has to put the search terms so they land inside the WHERE clause.
+     *
+     * skipped: '...' and "..." literals (backslash escapes and doubled quotes), `...`
+     * identifiers (doubled backticks), '-- ' comments (a double dash followed by whitespace, a
+     * control character or the end of the query), '#' comments and slash-star comments (the
+     * slash-star-! and slash-star-+ forms too). the paren depth is tracked, and only a word at
+     * depth 0 that is not the second half of a qualified name or a variable is read as a
+     * keyword, case-insensitively. the second half of a qualified name is a word after a '.'
+     * that follows an identifier - a word that is not all digits, or a `quoted` name - with
+     * any whitespace or comments around the dot (t.order, `t`.order, t . limit); a '.' after a
+     * number is a decimal point (x = 1. group by, x = 1.5 order by, x = .5 limit 3). a variable
+     * is a word right after an '@' (@limit, @@global.max_connections):
+     *  - the first FROM;
+     *  - after it the first WHERE;
+     *  - after that (or after FROM when there is no WHERE, or from the start when there is no
+     *    FROM) the first clause terminator: GROUP BY, HAVING, WINDOW, ORDER BY, LIMIT,
+     *    PROCEDURE, INTO, FOR UPDATE, FOR SHARE or LOCK IN SHARE MODE, with any whitespace or
+     *    comments between the words. the FOR ORDER BY / FOR GROUP BY / FOR JOIN of an index
+     *    hint (USE|FORCE|IGNORE INDEX|KEY FOR ...) is not a terminator.
+     *
+     * @param string $query the query to scan
+     * @return array|null null when the scan cannot read the query (a ')' with no open paren, or
+     *                    the query ends inside a literal, a slash-star comment or an open paren);
+     *                    otherwise ['where' => offset of the WHERE keyword or null, 'where_end' =>
+     *                    offset just past it or null, 'end' => offset of the clause terminator or
+     *                    the query length, 'line_comments' => [[start, stop], ...] for every -- and
+     *                    # comment, stop being the offset of the newline ending it or the length]
+     * @throws \RuntimeException on a top level UNION, EXCEPT or INTERSECT: one insertion cannot
+     *                           filter every branch, and filtering just one is a silent leak
+     */
+    protected function scan_search_slot($query)
+    {
+        static $wordChars = null;
+        if ($wordChars === null) {
+            // unquoted identifier/keyword/number characters; bytes >= 0x80 are the utf-8
+            // letters mysql also allows in an unquoted identifier
+            $wordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$'.implode('', array_map('chr', range(128, 255)));
+        }
+        $query = (string) $query;
+        $len = strlen($query);
+        $depth = 0;
+        // every token at depth 0, in order: [upper cased keyword, or null for anything else, start, end]
+        $tokens = [];
+        $lineComments = [];
+        // the last token was a '.' after an identifier, so a word now is the second half of a
+        // qualified name
+        $qualified = false;
+        // the last token (whitespace and comments aside) was an identifier: a word that is not
+        // all digits, or a `quoted` name. a '.' after anything else (1. 1.5) is a decimal point
+        $identifier = false;
+        $i = 0;
+        while ($i < $len) {
+            $char = $query[$i];
+            if ($char === "'" || $char === '"' || $char === '`') {
+                $j = $i + 1;
+                $closed = false;
+                while ($j < $len) {
+                    if ($char !== '`' && $query[$j] === '\\') {
+                        $j += 2;
+                        continue;
+                    }
+                    if ($query[$j] === $char) {
+                        if ($j + 1 < $len && $query[$j + 1] === $char) {
+                            $j += 2;
+                            continue;
+                        }
+                        $closed = true;
+                        $j++;
+                        break;
+                    }
+                    $j++;
+                }
+                if (!$closed) {
+                    return null;
+                }
+                if ($depth === 0) {
+                    $tokens[] = [null, $i, $j];
+                }
+                $qualified = false;
+                $identifier = $char === '`';
+                $i = $j;
+                continue;
+            }
+            if ($char === '#' || ($char === '-' && $i + 1 < $len && $query[$i + 1] === '-'
+                && ($i + 2 >= $len || ord($query[$i + 2]) <= 32 || ord($query[$i + 2]) === 127))) {
+                $stop = strpos($query, "\n", $i);
+                $stop = $stop === false ? $len : $stop;
+                $lineComments[] = [$i, $stop];
+                $i = $stop;
+                continue;
+            }
+            if ($char === '/' && $i + 1 < $len && $query[$i + 1] === '*') {
+                $stop = strpos($query, '*/', $i + 2);
+                if ($stop === false) {
+                    return null;
+                }
+                $i = $stop + 2;
+                continue;
+            }
+            if (ctype_space($char)) {
+                $i++;
+                continue;
+            }
+            $wordLen = strspn($query, $wordChars, $i);
+            if ($wordLen > 0) {
+                if ($depth === 0) {
+                    $keyword = $qualified || ($i > 0 && $query[$i - 1] === '@') ? null : strtoupper(substr($query, $i, $wordLen));
+                    $tokens[] = [$keyword, $i, $i + $wordLen];
+                }
+                $qualified = false;
+                $identifier = !ctype_digit(substr($query, $i, $wordLen));
+                $i += $wordLen;
+                continue;
+            }
+            if ($char === '(') {
+                if ($depth === 0) {
+                    $tokens[] = [null, $i, $i + 1];
+                }
+                $depth++;
+            } elseif ($char === ')') {
+                $depth--;
+                if ($depth < 0) {
+                    return null;
+                }
+                if ($depth === 0) {
+                    $tokens[] = [null, $i, $i + 1];
+                }
+            } elseif ($depth === 0) {
+                $tokens[] = [null, $i, $i + 1];
+            }
+            $qualified = $char === '.' && $identifier;
+            $identifier = false;
+            $i++;
+        }
+        if ($depth !== 0) {
+            return null;
+        }
+        $word = static function ($k) use ($tokens) {
+            return $tokens[$k][0] ?? null;
+        };
+        $start = 0;
+        foreach ($tokens as $k => $token) {
+            if (in_array($token[0], ['UNION', 'EXCEPT', 'INTERSECT'], true)) {
+                throw new \RuntimeException("append_search_sql() cannot add a search to a query with a top level {$token[0]}");
+            }
+            if ($token[0] === 'FROM' && $start === 0) {
+                $start = $k + 1;
+            }
+        }
+        $where = null;
+        $end = $len;
+        for ($k = $start, $count = count($tokens); $k < $count; $k++) {
+            $keyword = $tokens[$k][0];
+            if ($keyword === 'WHERE') {
+                if ($where === null) {
+                    $where = $k;
+                }
+                continue;
+            }
+            if (in_array($keyword, ['HAVING', 'WINDOW', 'LIMIT', 'PROCEDURE', 'INTO'], true)) {
+                $terminator = true;
+            } elseif ($keyword === 'GROUP' || $keyword === 'ORDER') {
+                $indexHint = $word($k - 1) === 'FOR' && in_array($word($k - 2), ['INDEX', 'KEY'], true) && in_array($word($k - 3), ['USE', 'FORCE', 'IGNORE'], true);
+                $terminator = $word($k + 1) === 'BY' && !$indexHint;
+            } elseif ($keyword === 'FOR') {
+                $terminator = in_array($word($k + 1), ['UPDATE', 'SHARE'], true);
+            } elseif ($keyword === 'LOCK') {
+                $terminator = $word($k + 1) === 'IN' && $word($k + 2) === 'SHARE' && $word($k + 3) === 'MODE';
+            } else {
+                $terminator = false;
+            }
+            if ($terminator) {
+                $end = $tokens[$k][1];
+                break;
+            }
+        }
+        return [
+            'where' => $where === null ? null : $tokens[$where][1],
+            'where_end' => $where === null ? null : $tokens[$where][2],
+            'end' => $end,
+            'line_comments' => $lineComments,
+        ];
+    }
+
+    /**
+     * adds the search terms to a query's WHERE clause. search_to_sql() returns '' when every
+     * term was dropped (a value that does not fit the column type, like an email searched
+     * against an int id, a secret column, an unknown field), and adding a bare ' where ' then
+     * made the list and count queries a syntax error, so then the query comes back unchanged.
+     *
+     * the search used to be appended at the END of the query. the tenant filter
+     * (get_table_details() adds [<*_custid field>, '=', <custid>] when limit_custid) is one of
+     * the terms, so on a query ending in GROUP BY it became 'group by x and invoices_custid=5'
+     * - which mysql runs (without ONLY_FULL_GROUP_BY) and which filters nothing. now
+     * scan_search_slot() finds the WHERE clause and the clause that ends it, and the search
+     * goes in between:
+     *  - with a WHERE:    '... where (<existing condition>) and <search> <rest>'; the parens
+     *    stop an OR/XOR/|| in the existing condition from swallowing the search, and when the
+     *    condition holds a -- or # comment the paren is closed on a new line so the comment
+     *    cannot eat the added text;
+     *  - without a WHERE: '... where <search> <rest>' (on a new line when the text before it
+     *    ends in a -- or # comment);
+     * where <rest> is the query from the terminator (GROUP BY, HAVING, ORDER BY, LIMIT, ...)
+     * on, or nothing. so a query with no terminator still just gets the search at the end, with
+     * the existing condition in parens. a subquery, function call or window (depth > 0) never
+     * counts, nor does anything in a literal, a quoted identifier or a comment.
+     *
+     * $hasWhere (the sql parser's answer) is only used when the scan cannot read the query
+     * (unbalanced parens, an unterminated literal or comment): such sql is malformed and mysql
+     * rejects it however the search is added, so it keeps the old append at the end.
      *
      * @param string $query the query (or the from part of it) to add the search to
-     * @param bool $hasWhere whether the query already has a where clause
-     * @return string the query with the search appended, or unchanged when there is none
+     * @param bool $hasWhere whether the query already has a where clause, used only when the
+     *                       query cannot be scanned
+     * @return string the query with the search added, or unchanged when there is none
+     * @throws \RuntimeException when there is a search to add and the query has a top level
+     *                           UNION, EXCEPT or INTERSECT (see scan_search_slot())
      */
     public function append_search_sql($query, $hasWhere)
     {
@@ -1304,7 +1548,31 @@ class Crud extends Form
         if (trim($search) === '') {
             return $query;
         }
-        return $query.($hasWhere ? ' and ' : ' where ').$search;
+        $slot = $this->scan_search_slot($query);
+        if ($slot === null) {
+            return $query.($hasWhere ? ' and ' : ' where ').$search;
+        }
+        $rest = (string) substr($query, $slot['end']);
+        $rest = $rest === '' ? '' : ' '.$rest;
+        if ($slot['where'] !== null) {
+            $condition = substr($query, $slot['where_end'], $slot['end'] - $slot['where_end']);
+            $commented = false;
+            foreach ($slot['line_comments'] as [$start, $stop]) {
+                if ($start >= $slot['where_end'] && $start < $slot['end']) {
+                    $commented = true;
+                }
+            }
+            return substr($query, 0, $slot['where_end']).' ('.trim($condition).($commented ? "\n" : '').') and '.$search.$rest;
+        }
+        $head = rtrim(substr($query, 0, $slot['end']));
+        $headEnd = strlen($head);
+        $commented = false;
+        foreach ($slot['line_comments'] as [$start, $stop]) {
+            if ($start < $headEnd && $headEnd <= $stop) {
+                $commented = true;
+            }
+        }
+        return $head.($commented ? "\n" : ' ').'where '.$search.$rest;
     }
 
     /**

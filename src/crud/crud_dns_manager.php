@@ -43,12 +43,22 @@ function crud_dns_manager()
                     }
                 }
             } else {
-                flash_message('error', 'Invalid IP ' . \MyAdmin\App::variables()->request['ip']);
+                // the adminlte layout prints the flash message unescaped inside a js string
+                // (html: "{$error_msg}"), and request values are only pre-escaped for <>& (never
+                // quotes or backslashes): echo just the ip shaped characters of the value, capped
+                $shown_ip = \MyAdmin\App::variables()->request['ip'];
+                $shown_ip = substr((string) preg_replace('/[^0-9A-Fa-f.:]/', '', is_string($shown_ip) ? $shown_ip : ''), 0, 64);
+                flash_message('error', 'Invalid IP ' . $shown_ip);
             }
         }
     }
+    // echoed back into the add form's value="..." attributes: request values are only
+    // pre-escaped for <>& (never quotes), so escape for the attribute here. double_encode
+    // off so the pre-escaped entities are not escaped a second time
     $domain = \MyAdmin\App::variables()->request['domain'] ?? '';
     $ip = \MyAdmin\App::variables()->request['ip'] ?? '';
+    $domain = htmlspecialchars(is_string($domain) ? $domain : '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+    $ip = htmlspecialchars(is_string($ip) ? $ip : '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
     $strClass = \MyAdmin\App::defaultTheme() == 'adminlte' ? 'btn-secondary btn-sm' : 'btn-default';
     if (\MyAdmin\App::defaultTheme() != 'adminlte') {
         $ip_icon = '<div class="input-group-btn">

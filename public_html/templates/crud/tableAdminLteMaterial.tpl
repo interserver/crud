@@ -49,7 +49,7 @@
                     {/if}
                     {if $total_pages > 1}
                     <div id="search_btns" class="col-md printer-hidden float-right pl-2">
-                        <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET">
+                        <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=list{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="GET">
                             <a id="crud-search" class="btn btn-raised btn-sm btn-primary" href="" title="Search" data-tile="Search">
                                 <span class="fa fa-search fa-fw"></span> {t}Search{/t}
                             </a>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice}&action=list{$extra_url_args}" autocomplete="on" method="GET" style="display:inline-flex;">
+                            <form accept-charset="UTF-8" role="form" id="paginationForm" class="" action="ajax.php?choice=crud&crud={$choice|escape:'url'}&action=list{$extra_url_args|escape:'html':'UTF-8':false}" autocomplete="on" method="GET" style="display:inline-flex;">
                                 {if $total_pages > 1}
 
                                 <div class="btn-group row-counts" role="group"  aria-label="{t}Rows Per Page{/t}">
