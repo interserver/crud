@@ -96,8 +96,133 @@ class CrudExportFormulaTest extends TestCase
             \MyAdmin\App::resetContainer();
         }
         $lines = array_values(array_filter(explode("\n", $csv), 'strlen'));
-        $this->assertSame(['vps_id', 'vps_hostname', 'cost', 'vps_comment', 'vps_ip'], str_getcsv($lines[0]), 'the header row is unchanged');
-        $this->assertSame(['5', '\'=HYPERLINK("http://example.invalid","x")', '-5.00', "'-cmd", '192.0.2.10'], str_getcsv($lines[1]));
+        // read as a spreadsheet reads it: rfc 4180, no escape character
+        $this->assertSame(['vps_id', 'vps_hostname', 'cost', 'vps_comment', 'vps_ip'], str_getcsv($lines[0], ',', '"', ''), 'the header row is unchanged');
+        $this->assertSame(['5', '\'=HYPERLINK("http://example.invalid","x")', '-5.00', "'-cmd", '192.0.2.10'], str_getcsv($lines[1], ',', '"', ''));
+    }
+
+    /** runs the real export_csv() over $rows and returns what it printed */
+    private static function exportCsv(array $rows): string
+    {
+        $rc = new ReflectionClass(ExportFormulaTestCrud::class);
+        /** @var ExportFormulaTestCrud $crud */
+        $crud = $rc->newInstanceWithoutConstructor();
+        // export_csv() asks function_requirements() for array2Csv, which it does not call
+        require_once self::packageDir() . '/src/Export/array2Csv.php';
+        $crud->rows = $rows;
+        $tf = new class {
+            public function function_requirements($function)
+            {
+                return true;
+            }
+        };
+        \MyAdmin\App::setContainer(\MyAdmin\App\Testing\TestContainerBuilder::make()->withTf($tf)->build());
+        try {
+            ob_start();
+            $crud->export_csv([]);
+            return (string) ob_get_clean();
+        } finally {
+            \MyAdmin\App::resetContainer();
+        }
+    }
+
+    /**
+     * the records of a csv as excel / libreoffice / sheets read it: rfc 4180, where '"' is
+     * escaped only by doubling it (a backslash is an ordinary character), and a quoted field
+     * may hold line breaks
+     *
+     * @return list<list<string|null>>
+     */
+    private static function readCsv(string $csv): array
+    {
+        $fp = fopen('php://memory', 'w+');
+        fwrite($fp, $csv);
+        rewind($fp);
+        $records = [];
+        while (($record = fgetcsv($fp, null, ',', '"', '')) !== false) {
+            $records[] = $record;
+        }
+        fclose($fp);
+        return $records;
+    }
+
+    /**
+     * @return array<string, array{0: string}> values a customer can type that held '\"'
+     */
+    public static function backslashQuoteProvider(): array
+    {
+        return [
+            // the reviewer's payload: the field closed early and '=1+1' became a cell of its own
+            'comma breakout' => ['web1\\",=1+1,\\"'],
+            // the same through a line break: '=1+1' started the next row
+            'row breakout' => ["web1\\\"\n=1+1"],
+            'two backslashes' => ['web1\\\\",=2+2,\\\\"'],
+            'backslash first' => ['\\",=3+3,\\"'],
+        ];
+    }
+
+    /**
+     * fputcsv()'s default escape '\' left a '"' after a backslash undoubled, so a spreadsheet
+     * (rfc 4180 has no escape character) closed the quoted field there and read the text after
+     * the next comma or line break as a new cell: one starting with '=' ran as a formula, past
+     * csv_safe_cell(), which only sees the first character of the whole value. the export
+     * passes escape '' now: every '"' is doubled and the value stays one cell
+     *
+     * @dataProvider backslashQuoteProvider
+     */
+    public function testExportCsvKeepsABackslashQuoteInItsCell(string $payload): void
+    {
+        $this->assertSame($payload, Crud::csv_safe_cell($payload), 'csv_safe_cell() leaves it alone (it does not start with a formula character)');
+        $csv = self::exportCsv([['vps_id' => 5, 'vps_hostname' => $payload, 'vps_ip' => '192.0.2.10']]);
+        $records = self::readCsv($csv);
+        foreach ($records as $record) {
+            foreach ($record as $cell) {
+                $this->assertSame($cell, Crud::csv_safe_cell($cell), 'no cell a spreadsheet would run as a formula: ' . json_encode($cell));
+            }
+        }
+        $this->assertSame([['vps_id', 'vps_hostname', 'vps_ip'], ['5', $payload, '192.0.2.10']], $records, 'the payload stays in its one cell of its one row');
+    }
+
+    /** the reviewer's row, byte for byte: '"' doubled after the backslash too */
+    public function testExportCsvWritesTheBackslashQuoteRowAsRfc4180(): void
+    {
+        $csv = self::exportCsv([['vps_id' => 5, 'vps_hostname' => 'web1\\",=1+1,\\"', 'vps_ip' => '192.0.2.10']]);
+        $this->assertSame("vps_id,vps_hostname,vps_ip\n5,\"web1\\\"\",=1+1,\\\"\"\",192.0.2.10\n", $csv);
+    }
+
+    /**
+     * a row with no backslash is written byte for byte as before the escape changed (spaces,
+     * commas, quotes, a line break, a tab, a formula cell, numbers, null and true)
+     */
+    public function testExportCsvBytesOfOrdinaryRowsAreUnchanged(): void
+    {
+        $csv = self::exportCsv([
+            ['vps_id' => 5, 'vps_hostname' => 'web1.example.com', 'cost' => '6.00', 'vps_comment' => 'say "hi", then go', 'vps_ip' => '192.0.2.10'],
+            ['vps_id' => 6, 'vps_hostname' => 'a b', 'cost' => '-5.00', 'vps_comment' => "two\nlines\tand a tab", 'vps_ip' => null],
+            ['vps_id' => 7, 'vps_hostname' => '=1+1', 'cost' => 1.5, 'vps_comment' => '', 'vps_ip' => true],
+        ]);
+        $this->assertSame(
+            "vps_id,vps_hostname,cost,vps_comment,vps_ip\n"
+            . "5,web1.example.com,6.00,\"say \"\"hi\"\", then go\",192.0.2.10\n"
+            . "6,\"a b\",-5.00,\"two\nlines\tand a tab\",\n"
+            . "7,'=1+1,1.5,,1\n",
+            $csv
+        );
+    }
+
+    /** array2Csv() writes with the same escape: the payload stays one cell there too */
+    public function testArray2CsvKeepsABackslashQuoteInItsCell(): void
+    {
+        require_once self::packageDir() . '/src/Export/array2Csv.php';
+        $fields = ['web1\\",=1+1,\\"', '=1'];
+        ob_start();
+        try {
+            array2Csv($fields);
+        } finally {
+            $csv = (string) ob_get_clean();
+        }
+        $this->assertSame("\"web1\\\"\",=1+1,\\\"\"\",'=1\n", $csv);
+        $this->assertSame([['web1\\",=1+1,\\"', "'=1"]], self::readCsv($csv));
     }
 
     public function testArray2CsvWritesOneSafeRow(): void

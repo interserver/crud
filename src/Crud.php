@@ -283,9 +283,9 @@ class Crud extends Form
         $this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
         $this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
         $this->theme = DEFAULT_THEME;
-        // $this->module is still null here, and get_module_name() uses it as an array offset,
-        // which php 8.5 deprecates; '' is the key null was, so the result is the same
-        // (the $_REQUEST['module'] fallback included)
+        // $this->module is null here unless a subclass gives it a default (none does; ?? passes one
+        // through). get_module_name() uses it as an array offset, which php 8.5 deprecates for null;
+        // '' is the key null was, so the result is the same (the $_REQUEST['module'] fallback too)
         $this->module = get_module_name($this->module ?? '');
         $this->settings = get_module_settings($this->module);
     }
@@ -4526,9 +4526,13 @@ class Crud extends Form
         }
         $csv = '';
         $out = fopen('php://output', 'wb');
+        // escape '' (rfc 4180, what spreadsheets read): every '"' is doubled. the default '\'
+        // left a '"' after a backslash undoubled, so a value holding \",=1+1 closed its field
+        // early in excel / sheets and '=1+1' became a cell of its own, past csv_safe_cell().
+        // a row with no backslash is written byte for byte as before
         foreach ($this->rows as $idx => $Record) {
             if ($idx == 0) {
-                fputcsv($out, array_keys($Record));
+                fputcsv($out, array_keys($Record), ',', '"', '');
             }
             // a cell a spreadsheet would read as a formula (=, +, -, @, tab, cr first) gets a
             // leading ' (customer text such as hostnames and comments ends up here)
@@ -4536,7 +4540,7 @@ class Crud extends Form
             foreach ($Record as $field => $value) {
                 $safe[$field] = self::csv_safe_cell($value);
             }
-            fputcsv($out, $safe);
+            fputcsv($out, $safe, ',', '"', '');
             //$csv .= array2Csv($Record);
         }
         fclose($out);

@@ -9,7 +9,9 @@
 
 /**
  * writes one csv row to php://output: the values of $fields, in order, through fputcsv() with
- * its default ',' delimiter and '"' enclosure. nothing is returned, the row is printed.
+ * a ',' delimiter, a '"' enclosure and no escape character (rfc 4180: every '"' is doubled; the
+ * default '\' left one after a backslash undoubled, which ended the field early in a
+ * spreadsheet). nothing is returned, the row is printed.
  *
  * 		http://php.net/manual/en/function.fputcsv.php
  * 		http://stackoverflow.com/questions/13108157/php-array-to-csv
@@ -37,7 +39,7 @@ function array2Csv(array &$fields, $delimiter = ',', $enclosure = '"', $encloseA
         $row[$index] = \MyCrud\Crud::csv_safe_cell($field);
     }
     $out = fopen('php://output', 'wb');
-    fputcsv($out, $row);
+    fputcsv($out, $row, ',', '"', '');
     fclose($out);
     return '';
 
