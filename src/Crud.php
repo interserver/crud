@@ -1337,6 +1337,14 @@ class Crud extends Form
      */
     public function ajax_export_handler()
     {
+        // a list that disabled its export (disable_export_button()) answers an export request
+        // as it answers an unknown format, and reads nothing: hiding the button was all the
+        // flag did, and the export url still sent every row of the list
+        if ($this->export_button != true) {
+            $this->log("refused crud {$this->choice} export, the export is disabled on this list", __LINE__, __FILE__, 'warning');
+            echo 'Error';
+            return false;
+        }
         // get export type
         $format = $this->request['format'];
         $formats = $this->get_export_formats();
@@ -2693,18 +2701,20 @@ class Crud extends Form
     }
 
     /**
-     * disables the refresh button on the list view
+     * disables the export button on the list view, and the export itself: ajax_export_handler()
+     * refuses an export request for this list (hiding the button alone left the export one
+     * ajax.php url away). it used to set the flag to true, as enable_export_button() does
      *
      * @return MyCrud\Crud an instance of the crud system.
      */
     public function disable_export_button()
     {
-        $this->export_button = true;
+        $this->export_button = false;
         return $this;
     }
 
     /**
-     * enables the refresh button on the list view
+     * enables the export button on the list view (the default)
      *
      * @return MyCrud\Crud an instance of the crud system.
      */

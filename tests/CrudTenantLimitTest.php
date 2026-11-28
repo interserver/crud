@@ -11,6 +11,14 @@ if (!function_exists('has_acl')) {
         return $GLOBALS['_test_has_acl'] ?? true;
     }
 }
+// slugify() is core's too (include/decorators.php): ajax_export_handler() names the download
+// file with it
+if (!function_exists('slugify')) {
+    function slugify($string)
+    {
+        return strtolower(trim((string) preg_replace('/[^A-Za-z0-9-]+/', '-', (string) $string), '-'));
+    }
+}
 if (!defined('MYSQL_ASSOC')) {
     define('MYSQL_ASSOC', 1);
 }
@@ -1377,6 +1385,62 @@ class CrudTenantLimitTest extends TestCase
                 $this->assertSame('Error', $out, $label);
                 $this->assertSame([], TenantLimitTestDb::$queries, $label);
             }
+        }
+    }
+
+    /**
+     * disable_export_button() set export_button to true, as enable_export_button() does, and
+     * ajax_export_handler() never read the flag, which only hid the button: the export url
+     * still sent every row of the list (review crud-r2 N4). disabling clears the flag now, and
+     * a disabled list answers every export request 'Error', reads nothing and logs one warning
+     */
+    public function testADisabledExportIsRefused(): void
+    {
+        foreach ([false, true] as $admin) {
+            foreach (['csv', 'json', 'xlsx', 'nope', ['csv']] as $format) {
+                $label = json_encode($format) . ($admin ? ' admin' : ' client');
+                [$crud, $out, $diagnostics, $thrown] = $this->diagnosedCrud($admin, ['action' => 'export', 'format' => $format] + self::AJAX_LIST, function (TenantLimitTestCrud $crud) {
+                    $this->assertTrue($crud->export_button, 'export is on by default');
+                    $this->assertSame($crud, $crud->disable_export_button());
+                    $this->assertFalse($crud->export_button);
+                    $crud->go();
+                });
+                $this->assertNull($thrown, $label);
+                $this->assertSame([], $diagnostics, $label);
+                $this->assertSame('Error', $out, $label);
+                $this->assertSame([], TenantLimitTestDb::$queries, $label . ': nothing read');
+                $this->assertSame(['refused crud crud_vps export, the export is disabled on this list'], $crud->logged, $label);
+                $this->assertSame(['warning'], $crud->logged_levels, $label);
+            }
+        }
+    }
+
+    /**
+     * the default (export on), and a list that enables it again, still export: the client's
+     * own rows (the tenant term), as before
+     */
+    public function testAnEnabledExportStillSendsTheList(): void
+    {
+        $row = ['vps_id' => 5, 'vps_custid' => 1234, 'vps_hostname' => 'web1', 'vps_status' => 'active'];
+        TenantLimitTestDb::$results = ['/^select \\* from vps /' => [$row]] + TenantLimitTestDb::$results;
+        foreach (['default' => false, 'enabled again' => true] as $label => $reenable) {
+            [$crud, $out, $diagnostics, $thrown] = $this->diagnosedCrud(false, ['action' => 'export', 'format' => 'json'] + self::AJAX_LIST, function (TenantLimitTestCrud $crud) use ($reenable) {
+                if ($reenable) {
+                    $crud->disable_export_button();
+                    $this->assertSame($crud, $crud->enable_export_button());
+                }
+                $this->assertTrue($crud->export_button);
+                $crud->go();
+            });
+            $this->assertNull($thrown, $label);
+            // export_json() sends its headers, which the cli refuses once phpunit has printed
+            $this->assertSame([], array_values(array_filter($diagnostics, static function ($d) {
+                return strpos($d, 'Cannot modify header information') === false;
+            })), $label);
+            $this->assertSame([$row], json_decode($out, true), $label);
+            $this->assertCount(1, TenantLimitTestDb::$queries, $label);
+            $this->assertStringStartsWith('select * from vps where vps_custid=1234 ', TenantLimitTestDb::$queries[0], $label);
+            $this->assertSame([], $crud->logged, $label);
         }
     }
 
