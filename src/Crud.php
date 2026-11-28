@@ -283,7 +283,10 @@ class Crud extends Form
         $this->edit_button = '<button type="button" class="btn btn-primary btn-xs" onclick="crud_edit_form(this);" title="'._('Edit').'"><i class="fa fa-fw fa-pencil"></i></button>';
         $this->delete_button = '<button type="button" class="btn btn-danger btn-xs" onclick="crud_delete_form(this);" title="'._('Delete').'"><i class="fa fa-fw fa-trash"></i></button>';
         $this->theme = DEFAULT_THEME;
-        $this->module = get_module_name($this->module);
+        // $this->module is still null here, and get_module_name() uses it as an array offset,
+        // which php 8.5 deprecates; '' is the key null was, so the result is the same
+        // (the $_REQUEST['module'] fallback included)
+        $this->module = get_module_name($this->module ?? '');
         $this->settings = get_module_settings($this->module);
     }
 
