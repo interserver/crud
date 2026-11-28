@@ -207,7 +207,6 @@ class CrudEditGuardTest extends TestCase
         $rc = new ReflectionClass(Crud::class);
         $crud = $rc->newInstanceWithoutConstructor();
         $m = new ReflectionMethod(Crud::class, 'verify_write_csrf');
-        $m->setAccessible(true);
         $this->assertFalse($m->invoke($crud));
     }
 

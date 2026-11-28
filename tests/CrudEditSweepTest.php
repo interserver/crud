@@ -34,7 +34,7 @@ class CrudEditSweepTest extends TestCase
     /**
      * @return array<string, array{0:string, 1:int}> "file#n" => [file, index of the init() call]
      */
-    public function initCalls(): array
+    public static function initCalls(): array
     {
         $out = [];
         foreach (glob(__DIR__.'/../src/crud/*.php') as $file) {
