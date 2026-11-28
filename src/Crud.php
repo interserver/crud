@@ -4534,8 +4534,8 @@ class Crud extends Form
             if ($idx == 0) {
                 fputcsv($out, array_keys($Record), ',', '"', '');
             }
-            // a cell a spreadsheet would read as a formula (=, +, -, @, tab, cr first) gets a
-            // leading ' (customer text such as hostnames and comments ends up here)
+            // a cell a spreadsheet would read as a formula (=, +, -, @, tab, cr or nul first) gets
+            // a leading ' (customer text such as hostnames and comments ends up here)
             $safe = [];
             foreach ($Record as $field => $value) {
                 $safe[$field] = self::csv_safe_cell($value);
@@ -4551,7 +4551,9 @@ class Crud extends Form
      * neutralizes csv formula injection: a value that is not a number and starts with '=',
      * '+', '-', '@', a tab or a carriage return is what excel / libreoffice / sheets run as a
      * formula when the csv is opened, so it gets a leading single quote, which they show as
-     * text. numbers (-5.00, +1, 1e3) and every other value are returned unchanged.
+     * text. so does one starting with a nul byte: libreoffice drops a leading nul and runs
+     * what follows ("\0=1+1" became the formula =1+1 where it evaluates formulas). numbers
+     * (-5.00, +1, 1e3) and every other value are returned unchanged.
      *
      * @param mixed $value
      * @return mixed
@@ -4561,7 +4563,7 @@ class Crud extends Form
         if (!is_string($value) || $value === '' || is_numeric($value)) {
             return $value;
         }
-        if (in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+        if (in_array($value[0], ['=', '+', '-', '@', "\t", "\r", "\0"], true)) {
             return "'".$value;
         }
         return $value;

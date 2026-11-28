@@ -18,7 +18,7 @@
  * 		https://coderwall.com/p/zvzwwa/array-to-comma-separated-string-in-php
  *
  * every value goes through \MyCrud\Crud::csv_safe_cell() first: one a spreadsheet would run as
- * a formula (=, +, -, @, tab or cr first, not a number) gets a leading single quote.
+ * a formula (=, +, -, @, tab, cr or nul first, not a number) gets a leading single quote.
  *
  * the other parameters only belonged to the older string builder kept (unreachable) after the
  * return below; the row written ignores them.

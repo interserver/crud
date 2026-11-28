@@ -17,7 +17,8 @@ class ExportFormulaTestCrud extends Crud
 /**
  * formula injection through the exports: customer text (hostnames, comments, names,
  * descriptions) went into the csv as it is, where excel / libreoffice / sheets run a cell
- * starting with = + - @ (or a tab or cr) as a formula, and into the xlsx / xls / ods / pdf
+ * starting with = + - @ (or a tab or cr; libreoffice drops a leading nul first) as a formula,
+ * and into the xlsx / xls / ods / pdf
  * through fromArray(), whose value binder stores a string starting with '=' as a live formula
  * (phpspreadsheet's own calculation engine evaluated it while writing the file).
  */
@@ -47,6 +48,11 @@ class CrudExportFormulaTest extends TestCase
             'at' => ['@SUM(A1:A2)', '\'@SUM(A1:A2)'],
             'tab' => ["\t=1+1", "'\t=1+1"],
             'carriage return' => ["\r=1+1", "'\r=1+1"],
+            // libreoffice drops a leading nul and runs the rest as a formula (review crud-r2 F2a)
+            'nul' => ["\0=1+1", "'\0=1+1"],
+            'two nuls' => ["\0\0=1+1", "'\0\0=1+1"],
+            'nul alone' => ["\0", "'\0"],
+            'nul later' => ["a\0=1", "a\0=1"],
             'negative number string' => ['-5.00', '-5.00'],
             'positive number string' => ['+1', '+1'],
             'exponent' => ['1e3', '1e3'],
@@ -208,6 +214,34 @@ class CrudExportFormulaTest extends TestCase
             . "7,'=1+1,1.5,,1\n",
             $csv
         );
+    }
+
+    /**
+     * a value starting with a nul byte: fputcsv() does not quote a nul, and libreoffice dropped
+     * it and ran the rest ("\0=1+1" imported as the formula =1+1 where formulas are evaluated),
+     * past csv_safe_cell(), which saw only the nul first (review crud-r2 F2a). it gets the leading '
+     * now, through export_csv() and array2Csv() alike; a nul later in a value changes nothing
+     */
+    public function testALeadingNulIsWrittenAsText(): void
+    {
+        $csv = self::exportCsv([
+            ['vps_id' => 5, 'vps_hostname' => "\0=1+1", 'vps_comment' => "\0\0=HYPERLINK(\"http://x.invalid\")", 'vps_ip' => "192.0.2.10\0"],
+        ]);
+        $this->assertSame(
+            "vps_id,vps_hostname,vps_comment,vps_ip\n5,'\0=1+1,\"'\0\0=HYPERLINK(\"\"http://x.invalid\"\")\",192.0.2.10\0\n",
+            $csv
+        );
+        $this->assertSame([['vps_id', 'vps_hostname', 'vps_comment', 'vps_ip'], ['5', "'\0=1+1", "'\0\0=HYPERLINK(\"http://x.invalid\")", "192.0.2.10\0"]], self::readCsv($csv));
+
+        require_once self::packageDir() . '/src/Export/array2Csv.php';
+        $fields = ["\0=1+1", "a\0=1"];
+        ob_start();
+        try {
+            array2Csv($fields);
+        } finally {
+            $row = (string) ob_get_clean();
+        }
+        $this->assertSame("'\0=1+1,a\0=1\n", $row);
     }
 
     /** array2Csv() writes with the same escape: the payload stays one cell there too */
