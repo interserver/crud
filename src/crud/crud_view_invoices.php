@@ -87,7 +87,11 @@ if (invoices_type = 1,
 invoices_id from invoices left join __TABLE__ on invoices_service=__PREFIX___id where invoices_module='__MODULE__' $where")
         ->set_limit_custid_role('list_all')
         ->enable_labels()
-        ->set_use_html_filtering(false)
+        // only the two <img> columns are html, built in the sql from constants and the
+        // smallint invoices_type / invoices_paid; the rest of the row (the description, the
+        // service's title field: customer text) is escaped. filtering used to be off for the
+        // whole list, which printed those raw as well
+        ->set_raw_html_fields(['invoices_type', 'invoices_paid'])
         ->add_title_search_button(['invoices_type', '=', 17], _('Check Payments'), 'info')
         ->add_title_search_button([], _('All'), 'info')
         ->enable_fluid_container()

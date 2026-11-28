@@ -23,5 +23,11 @@ function crud_renewals()
     }
     Crud::init('get_renewals', 'default', 'function')
         ->set_title(_('Renewals'))
+        // every column core's get_renewals() (include/admin/invoicing/view_renewals.php)
+        // returns is the service link it builds from App::link() and the service id/uuid,
+        // around a value it escapes (the hostname and the login are customer text). shown as
+        // html on the page and after an ajax refill; with filtering on and no raw fields the
+        // links printed as escaped markup
+        ->set_raw_html_fields(['id', 'type', 'field', 'cost', 'status', 'ordered', 'email', 'payments', 'last_payment'])
         ->go();
 }

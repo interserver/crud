@@ -14,8 +14,8 @@ use \MyCrud\Crud;
  */
 function crud_paypal_history()
 {
-    // admin only: this lists every customer's rows (the table has no *_custid column for
-    // limit_custid to filter on) and index.php/ajax.php reach any registered function
+    // admin only: this lists every customer's rows and index.php/ajax.php reach any
+    // registered function
     function_requirements('has_acl');
     if (\MyAdmin\App::ima() != 'admin' || !has_acl('client_billing')) {
         dialog(_('Not Admin'), _('Not Admin or you lack the permissions to view this page.'));
@@ -23,6 +23,11 @@ function crud_paypal_history()
     }
     Crud::init('SELECT accounts.account_id AS owner, paypal.txn_id AS txn_id, paypal.payment_status AS payment_status, paypal.`when` AS history_timestamp, paypal.payer_email AS payer_email, paypal.payment_gross AS payment_gross FROM paypal INNER JOIN accounts ON paypal.lid = accounts.account_lid')
         ->set_limit_custid_role('list_all')
+        // paypal's account column is plain custid, which the default /_custid$/ misses (and
+        // accounts has no custid column, so the term 'custid=<id>' is not ambiguous): a
+        // requested customer (custid) lists that customer's rows, staff without list_all
+        // their own, instead of every row (or, with the role limit, none)
+        ->set_custid_match('/^custid$/')
         ->set_title(_('Paypal History'))
         ->enable_labels()
         ->set_labels(['owner' => 'Owner', 'txn_id' => 'Transaction ID', 'payment_status' => 'Status', 'history_timestamp' => 'When', 'payer_email' => 'Email', 'payment_gross' => 'Amount'])

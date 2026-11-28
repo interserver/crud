@@ -72,6 +72,31 @@ class Crud extends Form
      */
     const SERVICE_PARAM_FIELD = 'service_param';
 
+    /**
+     * suffix of the ajax list cell that carries a column's decorated html, for the columns
+     * whose filters cannot be filled in from a template (see has_server_decoration()). the row
+     * template holds '%<field>:html%' in that column, and ajax_cells() sends the decorated value
+     * under '<field>:html', next to the plain escaped '<field>' value the other columns' string
+     * filters paste in. ':' never occurs in an unquoted column name or alias.
+     */
+    const DECORATED_CELL_SUFFIX = ':html';
+
+    /**
+     * U+FFFD in utf-8: what JSON_INVALID_UTF8_SUBSTITUTE puts in place of an invalid byte in the
+     * crud_rows json (the page's inline json and the ajax list's rows) the edit form fills its
+     * inputs from. see unchanged_substituted_fields()
+     */
+    const UTF8_REPLACEMENT_CHAR = "\xEF\xBF\xBD";
+
+    /**
+     * the json_encode() flags for json printed inside the templates' inline <script> blocks
+     * (crud_rows, crud_search_terms; see inline_json()): < > & ' " as \u escapes, so no stored
+     * or requested value can close or derail the script block ('</script>', '<!--<script'),
+     * and an invalid utf-8 byte becomes U+FFFD instead of json_encode() failing and printing
+     * nothing. javascript reads the same values.
+     */
+    const INLINE_JSON_FLAGS = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE;
+
     public $limit_custid_role = false;
     public $limit_custid = false;
     public $custid_match = '/_custid$/m';
@@ -113,8 +138,11 @@ class Crud extends Form
      * whether a non-admin session may use the ajax edit/add/delete handlers. off by
      * default: they write by the posted primary key, so a client reaching them could
      * change any row of the table (any customer's vps or domain, any host). a crud page
-     * that really needs client writes opts in with allow_client_edit(); its writes are
-     * then always pinned to the client's own rows by the *_custid tenant term.
+     * that really needs client writes opts in with allow_client_edit(); an edit is then
+     * pinned to the client's own rows by a tenant term on each account column of the table
+     * (custid_match, *_custid by default; a table with none refuses the edit), and an edit
+     * posting another account into an account column, however the page's query spells its
+     * letter case, is refused whole (see locks_account_columns(), is_account_column()).
      * @var bool
      */
     public $client_edit = false;
@@ -149,8 +177,40 @@ class Crud extends Form
         // arbitrary string there (it would read as an unknown format and lock the user out)
         'account_passwd',
         'account_password_hash',
+        // full card numbers in cc_log (most rows from 2013 to 2026-09-25). it used to be masked
+        // only by crud_cc_log's table cell filter, so the inline crud_rows json, the ajax list and
+        // every export still carried the whole number; shown as stars plus the last 4 (see
+        // $secret_column_masks), never searchable or sortable (a LIKE search would test guesses)
+        'cc_request_card_num',
     ];
+    /**
+     * secret columns that show more than $secret_mask: column => mask style. 'last4' is
+     * mask_cc()'s output (core myadmin-authorizenet-payments cc.inc.php): a value longer than 6
+     * characters becomes a '*' per character but the last 4, followed by those last 4; a shorter
+     * one is shown as it is. staff identify a card by its last 4, so that much stays visible.
+     * matched on the bare column name like $secret_columns.
+     *
+     * @var array<string, string>
+     */
+    public static $secret_column_masks = [
+        'cc_request_card_num' => 'last4',
+    ];
+    /**
+     * the module databases the crud_table browser is linked with (core's menu links db=domains,
+     * cruds.php lists every table of these two). crud_table() refuses any other db value.
+     *
+     * @var string[]
+     */
+    public static $table_browser_modules = ['domains', 'pdns'];
     public $secret_mask = '********';
+    /**
+     * columns whose value is html the page built itself from trusted constants (an <img> picked by
+     * a status code, say) and that decorate_field() therefore does not escape while html filtering
+     * is on; every other column is escaped. see set_raw_html_fields().
+     *
+     * @var string[]
+     */
+    public $raw_html_fields = [];
     // temp fields maybe from buy service class i think
     public $disabled_fields = [];
     public $filters = [];
@@ -197,6 +257,19 @@ class Crud extends Form
      */
     public $auto_update = false;
     /**
+     * whether the 'list limited by a role the admin lacks, on tables with no account column'
+     * warning was logged for this crud already (see tenant_search_sql())
+     * @var bool
+     */
+    protected $role_limit_warned = false;
+    /**
+     * whether the session is an admin lacking the page's limit role (set_limit_custid_role()),
+     * whatever customer the request names; decided by apply_custid_limit(), read by
+     * is_role_limited()
+     * @var bool
+     */
+    protected $lacks_limit_role = false;
+    /**
     * Layout/Theme variable
     */
     public $theme;
@@ -219,7 +292,9 @@ class Crud extends Form
      *
      * @param string $table_or_query the table name or sql query or function to use in the result
      * @param string $module optional module to associate w/ this query
-     * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function
+     * @param string $type optional parameter to specify the type of data we're dealing with , can be sql (default) or function,
+     *                     or table: $table_or_query is then always a table name, never run as a query (crud_table passes
+     *                     the requested table name this way)
      * @param string $account_match optional regex to amtch custid type field names
      * @return MyCrud\Crud an instance of the crud system.
      */
@@ -246,7 +321,7 @@ class Crud extends Form
             $crud->type = $type;
             $crud->table = $table_or_query;
             $crud->query = $table_or_query;
-        } elseif (mb_strpos($table_or_query, ' ')) {
+        } elseif ($type !== 'table' && mb_strpos($table_or_query, ' ')) {
             $crud->all_fields = false;
             $crud->query = $crud->decorate_query($table_or_query);
             $crud->type = 'query';
@@ -298,6 +373,40 @@ class Crud extends Form
         return $this;
     }
 
+    /**
+     * names the columns whose value is html the page builds itself, from trusted constants or
+     * values no customer controls (an <img> chosen by an integer type column, say), so
+     * decorate_field() and the ajax list leave them unescaped while every other column of the
+     * row stays escaped. it replaces turning html filtering off for the whole list, which also
+     * printed the customer controlled columns of the same rows (descriptions, hostnames) raw.
+     * a column whose html mixes in customer data does not belong here: build that html in a
+     * 'function' filter that escapes what it puts in.
+     *
+     * @param string[] $fields
+     * @return Crud
+     */
+    public function set_raw_html_fields($fields)
+    {
+        $this->raw_html_fields = [];
+        foreach ((array) $fields as $field) {
+            if (is_string($field)) {
+                $this->raw_html_fields[] = $field;
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * whether a field's value is printed as html (see set_raw_html_fields())
+     *
+     * @param string $field
+     * @return bool
+     */
+    public function is_raw_html_field($field)
+    {
+        return in_array($field, $this->raw_html_fields, true);
+    }
+
     public function set_custid_match($match = true)
     {
         $this->custid_match = $match;
@@ -316,9 +425,21 @@ class Crud extends Form
         return $this;
     }
 
+    /**
+     * the acl that lets an admin list every account's rows. an admin without it is limited to
+     * their own account, unless the request names a customer (custid). pages chain this after
+     * init(), when apply_request_data() has already decided limit_custid, so the decision is
+     * made again here; the tenant terms are only built when a query runs (see
+     * tenant_search_terms()), so the list, its count, the ajax list, the exports and the
+     * edit handler all follow it.
+     *
+     * @param string|false $role the acl name, or false for no role (admins are unlimited)
+     * @return Crud
+     */
     public function set_limit_custid_role($role = false)
     {
         $this->limit_custid_role = $role;
+        $this->apply_custid_limit();
         return $this;
     }
 
@@ -424,8 +545,11 @@ class Crud extends Form
             $this->order_dir = $this->request['order_dir'];
         }
         if (isset($this->request['search'])) {
-            // an empty or malformed search param decodes to null (or a scalar), which would fatal count() later
-            $search = json_decode(html_entity_decode($this->request['search']));
+            // an empty or malformed search param decodes to null (or a scalar), which would fatal count() later.
+            // a search that is not a string (search[]=x: core's request filter keeps an array an
+            // array) is malformed too: html_entity_decode() threw a TypeError on it, a fatal
+            // error for the page and for every ajax call of the list
+            $search = is_string($this->request['search']) ? json_decode(html_entity_decode($this->request['search'])) : null;
             $this->search_terms = is_array($search) ? $search : [];
         }
         if (isset($this->request['offset'])) {
@@ -438,33 +562,171 @@ class Crud extends Form
         // whatever the prefix, cut to its leading identifier); the templates, the logs and
         // pending_orders.pend_choice all get this normalized value
         $this->choice = self::choice_function_name($this->choice);
-        $this->limit_custid = true;
         if ($this->page_limit < 1) {
             $this->page_limit = 500;
         }
         if ($this->page_offset < 0) {
             $this->page_offset = 0;
         }
-
-        $count = $this->get_count();
-        $this->total_pages = $this->get_total_pages($count);
-        $page = $this->get_page();
-        $this->page_links = $this->get_page_links($page, $this->total_pages);
-        $this->total_rows = $count;
-
-        if ($this->admin == true) {
-            if (isset($this->request['custid'])) {
-                // may be an account uuid; unresolved, mysql would coerce '0195f3d2-...' to 195
-                $this->custid = function_exists('resolve_account_id') ? resolve_account_id($this->request['custid']) : (int)$this->request['custid'];
-            //$this->log("Setting Custid to {$this->custid} and limiting", __LINE__, __FILE__, 'debug');
-            } elseif ($this->limit_custid_role !== false) {
-                function_requirements('has_acl');
-                $this->limit_custid = !has_acl($this->limit_custid_role);
-            } else {
-                $this->limit_custid = false;
-                //$this->log("Disabling CustID Limiting", __LINE__, __FILE__, 'debug');
-            }
+        // the record count, total_pages and page_links used to be worked out here, before init()
+        // knew the table or query (so the count was always 0), and before the page had set its
+        // limit role. list_records() works them out once the list query has run, with the final
+        // limit
+        if ($this->admin == true && isset($this->request['custid'])) {
+            // may be an account uuid; unresolved, mysql would coerce '0195f3d2-...' to 195
+            $this->custid = function_exists('resolve_account_id') ? resolve_account_id($this->request['custid']) : (int)$this->request['custid'];
         }
+        $this->apply_custid_limit();
+    }
+
+    /**
+     * decides whether this list is limited to one account ($this->limit_custid, the account
+     * being $this->custid), the same way core's legacy forms do (js.render_form.inc.php,
+     * list_all_acl):
+     *  - a client: always, to their own account;
+     *  - an admin whose request names a customer (custid): to that customer;
+     *  - an admin, no custid, on a page that set a limit role they lack: to their own account;
+     *  - an admin who holds the role, or on a page with no role: not limited.
+     * run by apply_request_data() and again by set_limit_custid_role(), which pages call after
+     * init(). the limit itself is applied where it is used: tenant_search_terms() for the list,
+     * count and export queries, tenant_where() for the edit handler, confirm_order() for the
+     * order form's custid.
+     *
+     * whether an admin lacks the page's role is kept apart ($lacks_limit_role, see
+     * is_role_limited()), custid or not: a requested customer only says whose rows to show,
+     * and on tables with no account column it cannot pin anything, so it must not lift the
+     * role limit there.
+     *
+     * @return void
+     */
+    protected function apply_custid_limit()
+    {
+        $this->lacks_limit_role = false;
+        if ($this->admin == true && $this->limit_custid_role !== false) {
+            function_requirements('has_acl');
+            $this->lacks_limit_role = !has_acl($this->limit_custid_role);
+        }
+        if ($this->admin != true || isset($this->request['custid'])) {
+            $this->limit_custid = true;
+        } else {
+            $this->limit_custid = $this->lacks_limit_role;
+        }
+    }
+
+    /**
+     * whether the list is under a role limit: an admin, on a page that set a limit role
+     * (set_limit_custid_role()) the admin lacks, whether or not the request names a customer.
+     * a client's limit and the requested customer of an admin holding the role (or on a page
+     * with no role) are not role limits. such a list always needs a tenant term, and fails
+     * closed where none can be built (tables with no column custid_match finds): the role
+     * exists to keep the admin from every other account's rows, and without a column to pin
+     * the rows to their own account or to the requested customer the list would show them
+     * all. so the list, count and exports get '0=1' (tenant_search_sql()) and the edit, add and
+     * delete handlers refuse (ajax_edit_handler(), refuse_role_limited_write()). a custid in
+     * the request used to lift this, which gave such an admin every row of crud_paypal_history
+     * and crud_paypal_transactions (and an update by any id) for adding &custid=N.
+     *
+     * @return bool
+     */
+    protected function is_role_limited()
+    {
+        return $this->admin == true && $this->limit_custid_role !== false && $this->lacks_limit_role === true;
+    }
+
+    /**
+     * whether a write is pinned to one account and must not move a row out of it: a client's
+     * (always limited to their own account) or a role limited admin's (is_role_limited(), with
+     * or without a requested customer). the tenant term pins only the edit's where, so a posted
+     * account column (is_account_column()) in the set moved the row to another account (update
+     * vps set vps_custid='9', ... where vps_id='5' and vps_custid='7'): for them the edit
+     * handler refuses an edit posting any other account there, and leaves the row's own account
+     * (which the edit form posts back on every save) out of the set. an unlimited admin, and an
+     * admin holding the page's role (or on a page with no role) who opened the list for a
+     * requested customer, still change the account column (moving a service to another account).
+     *
+     * @return bool
+     */
+    protected function locks_account_columns()
+    {
+        return $this->limit_custid == true && ($this->admin !== true || $this->is_role_limited());
+    }
+
+    /**
+     * whether $column names an account column: custid_match (*_custid by default) matches it
+     * as spelled or in its simple lower case form. mysql resolves a column name in any letter
+     * case to the same column (VPS_CUSTID, Vps_Custid, even vps_custİd with U+0130, all write
+     * vps_custid; accented letters, the dotless ı and the long ſ do not fold), and the edit
+     * writes the column as the page's query spells it, so a pattern matched only as spelled let
+     * a query selecting vps.VPS_CUSTID (or vps.Vps_Custid as owner) take a posted account into
+     * the set. the page patterns are lower case; matching the spelling too keeps any other
+     * pattern matching what it did. the edit handler, tenant_where() and tenant_search_terms()
+     * all decide with this, so the column an edit may not move is the one the where pins.
+     *
+     * @param string $column a column name, without its table
+     * @return bool
+     */
+    protected function is_account_column($column)
+    {
+        if (!is_string($this->custid_match) || !is_string($column)) {
+            return false;
+        }
+        if (preg_match($this->custid_match, $column) === 1) {
+            return true;
+        }
+        // mb simple lower case maps one code point to one, as mysql's identifier compare does
+        // (strtolower() leaves U+0130 alone); php before 7.3 has only the ascii fold
+        $lower = defined('MB_CASE_LOWER_SIMPLE') ? mb_convert_case($column, MB_CASE_LOWER_SIMPLE, 'UTF-8') : strtolower($column);
+        return $lower !== $column && preg_match($this->custid_match, $lower) === 1;
+    }
+
+    /**
+     * refuses an add or delete of a role limited admin (is_role_limited()) on a crud whose
+     * tables have no account column to pin the write to (no tenant term), as the edit handler
+     * and the list do. prints the refusal and logs a warning.
+     *
+     * @param string $action add or delete
+     * @param string $refusal what the js handler is answered
+     * @return bool true when refused
+     */
+    protected function refuse_role_limited_write($action, $refusal)
+    {
+        if ($this->type == 'function' || !$this->is_role_limited() || count($this->tenant_search_terms()) > 0) {
+            return false;
+        }
+        $this->log("refused crud {$this->choice} {$action}: the admin lacks the {$this->limit_custid_role} role and its tables have no account column", __LINE__, __FILE__, 'warning');
+        echo $refusal;
+        return true;
+    }
+
+    /**
+     * the extra_url_args every crud url of the page carries (the list/paging/search/export
+     * action and the edit and delete form actions, all built by the templates from this):
+     * the page's own set_extra_url_args(), plus the request custid an admin opened the list
+     * with, as it was requested (it may be a uuid; url encoded here, the templates html escape
+     * the whole string). apply_request_data() limits the list to that customer, and the ajax
+     * calls (paging, sorting, searching, exporting, editing) go to ajax.php with only these
+     * args, so without it page 2, a search, an export or an edit lost the customer: an admin
+     * holding the limit role got every account's rows, one lacking it their own (none).
+     * a client's request custid is ignored (a client is always limited to their own account),
+     * and a page whose own args already name a custid keeps it as it is.
+     *
+     * @return string
+     */
+    public function get_extra_url_args()
+    {
+        $args = (string) $this->extra_url_args;
+        if ($this->admin != true || !isset($this->request['custid'])) {
+            return $args;
+        }
+        $custid = $this->request['custid'];
+        if (!is_string($custid) && !is_int($custid)) {
+            return $args;
+        }
+        parse_str(ltrim($args, '?&'), $own);
+        if (array_key_exists('custid', $own)) {
+            return $args;
+        }
+        return $args.'&custid='.rawurlencode((string) $custid);
     }
 
     /**
@@ -538,7 +800,10 @@ class Crud extends Form
                 $this->ajax_export_handler();
                 break;
             default:
-                $this->log("Invalid Crud {$this->title} Action {$action}", __LINE__, __FILE__, 'warning');
+                // $action was never set here, a php warning on every unknown action (action[]=x
+                // too) and no action in the log. the request's action: a string (first 64
+                // bytes), else its type (an array for action[]=x, NULL when missing)
+                $this->log('Invalid Crud '.$this->title.' Action '.json_encode(is_string($this->ajax) ? substr($this->ajax, 0, 64) : gettype($this->ajax), JSON_INVALID_UTF8_SUBSTITUTE), __LINE__, __FILE__, 'warning');
                 break;
         }
     }
@@ -597,7 +862,8 @@ class Crud extends Form
 
     /**
      * where terms pinning a write on $table to the session's account: one per column
-     * of the table that matches $custid_match (*_custid by default).
+     * of the table that is an account column (is_account_column(): $custid_match, *_custid
+     * by default, in any letter case).
      *
      * @param string $table
      * @return string[]
@@ -610,7 +876,7 @@ class Crud extends Form
         }
         $custid = $this->db->real_escape((string) (int) $this->custid);
         foreach (array_keys($this->tables[$table]) as $column) {
-            if (preg_match($this->custid_match, $column)) {
+            if ($this->is_account_column((string) $column)) {
                 $where[] = "{$column}='{$custid}'";
             }
         }
@@ -624,6 +890,73 @@ class Crud extends Form
     protected function escape_html($value)
     {
         return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * the edit form fills its inputs from crud_rows, json that carries U+FFFD in place of each
+     * invalid utf-8 byte of a stored value (JSON_INVALID_UTF8_SUBSTITUTE), and posts every
+     * field back, so saving such a row wrote the substituted text over stored bytes the user
+     * never touched. given the written fields whose posted value holds U+FFFD, this reads
+     * their stored values (the row of $where: the primary key, the table's query_where and the
+     * tenant terms, exactly what the update is limited to) and returns those whose stored
+     * value is not valid utf-8 and whose posted value is its substituted form,
+     * json_decode(json_encode($stored, JSON_INVALID_UTF8_SUBSTITUTE)): they are unchanged.
+     * a stored value that is valid utf-8, a changed value, or a row the read does not find
+     * leaves the field to be written as before. only called when a posted value holds U+FFFD,
+     * so a normal edit runs no extra query.
+     *
+     * @param string $table the table the edit writes
+     * @param string[] $where the update's where terms
+     * @param array<int, array{column: string, posted: string, query: int, insert: int}> $candidates
+     * @return array<int, array{column: string, posted: string, query: int, insert: int}> the unchanged ones
+     */
+    protected function unchanged_substituted_fields($table, array $where, array $candidates)
+    {
+        $columns = [];
+        foreach ($candidates as $candidate) {
+            // only real columns of the table (from its 'show full columns'), quoted
+            if (is_string($candidate['column']) && isset($this->tables[$table][$candidate['column']])) {
+                $columns[$candidate['column']] = '`'.str_replace('`', '``', $candidate['column']).'`';
+            }
+        }
+        if (count($columns) == 0 || count($where) == 0) {
+            return [];
+        }
+        $this->db->query('select '.implode(', ', $columns).' from '.$table.' where '.implode(' and ', $where).' limit 1', __LINE__, __FILE__);
+        if (!$this->db->next_record(MYSQL_ASSOC) || !is_array($this->db->Record)) {
+            return [];
+        }
+        $stored = $this->db->Record;
+        $unchanged = [];
+        foreach ($candidates as $candidate) {
+            $value = $stored[$candidate['column']] ?? null;
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')
+                && json_decode((string) json_encode($value, JSON_INVALID_UTF8_SUBSTITUTE)) === $candidate['posted']) {
+                $unchanged[] = $candidate;
+            }
+        }
+        return $unchanged;
+    }
+
+    /**
+     * whether a row of $table matches $where (the edit's whole where: the primary key, the
+     * table's query_where and the tenant terms). the edit handler asks only when the posted
+     * primary key holds U+FFFD: a stored key that is not valid utf-8 comes back from the list
+     * substituted, and the update would name no row. a key that really holds U+FFFD finds no
+     * row either when the query_where or the tenant terms exclude it. a where with no terms,
+     * or a query that fails, finds none.
+     *
+     * @param string $table the table the edit writes
+     * @param string[] $where the update's where terms
+     * @return bool
+     */
+    protected function row_exists($table, array $where)
+    {
+        if (count($where) == 0) {
+            return false;
+        }
+        $this->db->query('select 1 from '.$table.' where '.implode(' and ', $where).' limit 1', __LINE__, __FILE__);
+        return $this->db->next_record(MYSQL_ASSOC) && is_array($this->db->Record);
     }
 
     /**
@@ -646,14 +979,21 @@ class Crud extends Form
         $query_table = null;
         $has_primary_key = false;
         $valid = true;
+        // the written fields whose posted value holds U+FFFD, see unchanged_substituted_fields()
+        $substituted = [];
+        // the written fields that are account columns (is_account_column()), see locks_account_columns()
+        $account_fields = [];
+        // whether a posted primary key holds U+FFFD, see row_exists()
+        $key_substituted = false;
         $this->errors = [];
         $this->error_fields = [];
         foreach ($fields as $field => $value) {
             // a secret column comes back from the edit form as the mask (or empty); only a
             // value that was actually typed in is written, the masked one never is
-            if ($this->is_secret_field($field) && ($value === '' || $value === null || $value === $this->secret_mask)) {
+            if ($this->is_secret_field($field) && ($value === '' || $value === null || $this->is_secret_mask_value($field, $value))) {
                 continue;
             }
+            $posted = $value;
             // match up fields
             if (isset($this->query_fields[$field])) {
                 $origField = $field;
@@ -776,12 +1116,23 @@ class Crud extends Form
                 }
                 if ($field == $this->primary_key) {
                     $has_primary_key = true;
+                    if (is_string($posted) && strpos($posted, self::UTF8_REPLACEMENT_CHAR) !== false) {
+                        $key_substituted = true;
+                    }
                     $query_where[] = "{$field}='{$safe_value}'";
                     $insert_fields[] = $field;
                     $insert_values[] = "'{$safe_value}'";
                 } else {
                     // see which fields are editable
                     if (!in_array($field, $this->disabled_fields)) {
+                        if (is_string($posted) && strpos($posted, self::UTF8_REPLACEMENT_CHAR) !== false) {
+                            $substituted[] = ['column' => $field, 'posted' => $posted, 'query' => count($query_fields), 'insert' => count($insert_fields)];
+                        }
+                        // the column the posted field maps to, whatever name the list selects it
+                        // as and however its query spells the column's letter case
+                        if ($this->is_account_column($field)) {
+                            $account_fields[] = ['column' => $field, 'posted' => $posted, 'query' => count($query_fields), 'insert' => count($insert_fields)];
+                        }
                         $query_fields[] = "{$field}='{$safe_value}'";
                         $insert_fields[] = $field;
                         $insert_values[] = "'{$safe_value}'";
@@ -809,7 +1160,89 @@ class Crud extends Form
                     echo 'Editing Disabled';
                     return false;
                 }
+                // an admin limited by a role they lack (custid requested or not) can not be
+                // pinned to their own account or to the requested customer on a table with no
+                // account column either: refused like the list, which shows them no rows (see
+                // tenant_search_sql(), is_role_limited())
+                if (count($tenant_where) == 0 && $this->is_role_limited()) {
+                    $this->log("refused crud {$this->choice} edit of {$query_table}: the admin lacks the {$this->limit_custid_role} role and the table has no account column", __LINE__, __FILE__, 'warning');
+                    echo 'Editing Disabled';
+                    return false;
+                }
                 $query_where = array_merge($query_where, $tenant_where);
+                // the where pins the row to the account; for a client or a role limited admin
+                // the set must not move it to another: an edit posting another account in an
+                // account column is refused whole, and the row's own account posted back is
+                // left out of the set (an unlimited admin's, or a role holder's on a requested
+                // customer, is written)
+                if ($this->locks_account_columns() && count($account_fields) > 0) {
+                    $pinned = (string) (int) $this->custid;
+                    $dropped = [];
+                    $moves_account = false;
+                    foreach ($account_fields as $entry) {
+                        // unset by index, not reindexed: the U+FFFD entries below address theirs
+                        unset($query_fields[$entry['query']], $insert_fields[$entry['insert']], $insert_values[$entry['insert']]);
+                        $dropped[$entry['query']] = true;
+                        // the edit form posts the row's own account back on every save: no warning.
+                        // any other account refuses the edit (here, or by its validation errors)
+                        if (!is_scalar($entry['posted']) || (string) $entry['posted'] !== $pinned) {
+                            $this->log("refused crud {$this->choice} edit of {$query_table}: the posted account column {$entry['column']} would move the row off account {$pinned}", __LINE__, __FILE__, 'warning');
+                            $moves_account = true;
+                        }
+                    }
+                    $kept = [];
+                    foreach ($substituted as $entry) {
+                        if (!isset($dropped[$entry['query']])) {
+                            $kept[] = $entry;
+                        }
+                    }
+                    $substituted = $kept;
+                    // an invalid post reports its validation errors first, as before (below)
+                    if ($valid == true && $moves_account) {
+                        // writing the other fields and answering ok would tell the user the
+                        // account changed: nothing is written
+                        echo _('The account of this row cannot be changed here.');
+                        return false;
+                    }
+                    if ($valid == true && count($query_fields) == 0) {
+                        $this->log("crud {$this->choice} edit of {$query_table} has nothing left to write: its account column is left out", __LINE__, __FILE__, 'info');
+                        echo 'There was nothing to update';
+                        return false;
+                    }
+                }
+            }
+            // a primary key posted with U+FFFD is the substituted form of a stored key that is
+            // not valid utf-8 (the list's json carries it so), unless the key really holds
+            // U+FFFD: the update's where matched no row, wrote nothing, and the edit still
+            // answered ok. only then is the row looked up first, under the update's whole where
+            // (a normal edit runs no extra query); when it is not found nothing is written and
+            // the user is told. no row matching can also mean the key really holds U+FFFD and
+            // the table's query_where or the tenant terms exclude its row, so neither the answer
+            // nor the log line names a cause. an invalid post reports its validation errors
+            // first (below)
+            if ($valid == true && $key_substituted && !$this->row_exists($query_table, $query_where)) {
+                $this->log("refused crud {$this->choice} edit of {$query_table}: no row matched the edit's where, whose primary key {$this->primary_key} holds U+FFFD", __LINE__, __FILE__, 'warning');
+                echo _('This row cannot be edited here.');
+                return false;
+            }
+            // a field the form posted back as the U+FFFD substituted form of a stored value
+            // that is not valid utf-8 was not touched: it is left out, not written over the
+            // stored bytes (see unchanged_substituted_fields())
+            if ($valid == true && count($substituted) > 0) {
+                $unchanged = $this->unchanged_substituted_fields($query_table, $query_where, $substituted);
+                foreach ($unchanged as $entry) {
+                    unset($query_fields[$entry['query']], $insert_fields[$entry['insert']], $insert_values[$entry['insert']]);
+                }
+                if (count($unchanged) > 0) {
+                    $query_fields = array_values($query_fields);
+                    $insert_fields = array_values($insert_fields);
+                    $insert_values = array_values($insert_values);
+                }
+                if (count($query_fields) == 0) {
+                    $this->log("crud {$this->choice} edit of {$query_table} changed nothing: every field was posted back as stored", __LINE__, __FILE__, 'info');
+                    echo 'There was nothing to update';
+                    return false;
+                }
             }
             // update database
             if ($this->insert_over_update == true) {
@@ -847,6 +1280,14 @@ class Crud extends Form
         if (!$this->authorize_write('add')) {
             return false;
         }
+        if ($this->refuse_role_limited_write('add', 'Adding Disabled')) {
+            return false;
+        }
+        // nothing is written here yet. when it is: for a client or a role limited admin
+        // (locks_account_columns()) every account column (is_account_column()) of the new row
+        // is the pinned account ($this->custid), never a posted value, as the edit handler
+        // refuses an edit posting another account there; an unlimited admin or a role holder
+        // may post one
         // generic data to get us here is in _GET, while the specific fields are all in _POST
         // match up fields
         // see which fields are editable
@@ -866,6 +1307,9 @@ class Crud extends Form
             return false;
         }
         if (!$this->authorize_write('delete')) {
+            return false;
+        }
+        if ($this->refuse_role_limited_write('delete', 'Deleting Disabled')) {
             return false;
         }
         // match up row
@@ -896,7 +1340,9 @@ class Crud extends Form
         // get data
         // convert data
         // send data
-        if (!isset($formats[$format])) {
+        // a format that is not a scalar (format[]=x) is no format: isset() with an array
+        // offset threw a TypeError
+        if (!is_scalar($format) || !isset($formats[$format])) {
             echo 'Error';
             return false;
         }
@@ -951,14 +1397,142 @@ class Crud extends Form
         // apply pagination
         // apply sorting
         $this->run_list_query();
-        $json = [];
-        while ($this->db->next_record(MYSQL_ASSOC)) {
+        $rows = [];
+        $cells = [];
+        // $this->next_record(), as list_records() and get_all_rows() use: a 'function' crud's
+        // rows come from its CrudFunctionIterator, not the db handle (whose next_record() gave
+        // a function list no rows, or the rows of whatever query that handle ran last, so
+        // sorting, paging or searching one emptied it)
+        while ($this->next_record(MYSQL_ASSOC)) {
             //$json[] = $this->db->Record;
-            $json[] = $this->get_record();
+            $record = $this->get_record();
+            $rows[] = $record;
+            $cells[] = $this->ajax_cells($record);
         }
-        // send response for js handler
+        // send response for js handler. crud.js pastes each field into the empty row
+        // template's %field% placeholders and appends the result as html, so it takes those
+        // values from 'cells' (escaped here the same way decorate_field() escapes the rows
+        // rendered with the page). the plain 'rows' it keeps as crud_rows, which the edit form
+        // fills its inputs from with .val(): escaped values there would be saved back escaped.
+        // JSON_INVALID_UTF8_SUBSTITUTE: one invalid utf-8 byte in any stored value (the rows
+        // carry them as stored) made json_encode() return false, an empty answer, and the
+        // whole page of the list blank; it becomes U+FFFD instead
         header('Content-type: application/json');
-        echo json_encode($json);
+        echo json_encode(['rows' => $rows, 'cells' => $cells], JSON_INVALID_UTF8_SUBSTITUTE);
+    }
+
+    /**
+     * one row of the ajax list's 'cells': html_safe_record() (every value escaped for pasting
+     * into the row template), plus, for each visible column whose filters can not be filled in
+     * from the template (has_server_decoration()), the column's decorated html under
+     * '<field>:html' (DECORATED_CELL_SUFFIX), which is what the row template holds in that
+     * column. so a 'function' or 'simple' filtered column shows the same html after a refill
+     * as on the page it was rendered with (decorate_field() with the row; a function filter
+     * escapes what it puts in), and the other columns' string filters still paste the plain
+     * escaped value of that field.
+     *
+     * @param array $record a fetched record (get_record())
+     * @return array
+     */
+    public function ajax_cells($record)
+    {
+        $cells = $this->html_safe_record($record);
+        if (!is_array($record)) {
+            return $cells;
+        }
+        foreach (array_keys($record) as $field) {
+            if (!is_string($field) || $this->is_hidden_field($field) || !$this->has_server_decoration($field)) {
+                continue;
+            }
+            $html = $this->decorate_field($field, $record);
+            $cells[$field.self::DECORATED_CELL_SUFFIX] = is_scalar($html) || $html === null ? (string) $html : '';
+        }
+        return $cells;
+    }
+
+    /**
+     * whether a column's filters have to run on the server for every row: any filter that is
+     * not a 'string' filter. a string filter's output is a template (its %field% placeholders
+     * are filled in from the ajax cells, see crud_fill_row() in crud.js), so the row template
+     * can hold it; a 'simple' filter (value replacements) or a 'function' filter (any php)
+     * decides its output from the value itself, so run on a placeholder for the template it
+     * gave the placeholder back unreplaced (licenses' paid icons came back as 1/2 after a
+     * refill) or worse. such a column's template cell is '%<field>:html%' and its decorated
+     * html comes with every ajax row (ajax_cells()).
+     *
+     * @param string $field
+     * @return bool
+     */
+    public function has_server_decoration($field)
+    {
+        if (!isset($this->filters[$field]) || !is_array($this->filters[$field])) {
+            return false;
+        }
+        foreach ($this->filters[$field] as $filter) {
+            // decorate_field() applies these two besides 'string' (any other type is ignored
+            // there, so the plain template placeholder shows the same)
+            if (isset($filter['type']) && ($filter['type'] === 'simple' || $filter['type'] === 'function')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * a fetched record with every value made safe to paste into the row template's html (see
+     * ajax_list_handler() and crud_fill_row() in crud.js): escaped while html filtering is on,
+     * except the raw html columns (set_raw_html_fields()); null becomes ''. with filtering off
+     * the values go out as they are, as the page asked.
+     *
+     * @param array $record
+     * @return array
+     */
+    public function html_safe_record($record)
+    {
+        if (!is_array($record)) {
+            return $record;
+        }
+        foreach ($record as $field => $value) {
+            if ($value === null) {
+                $record[$field] = '';
+            } elseif (is_scalar($value) && $this->use_html_fitering == true && !$this->is_raw_html_field((string) $field)) {
+                $record[$field] = self::escape_cell($value);
+            }
+        }
+        return $record;
+    }
+
+    /**
+     * html escapes one value for an element's text or a quoted attribute (single or double):
+     * htmlspecialchars with ENT_QUOTES, and ENT_SUBSTITUTE so a stray invalid utf-8 byte
+     * becomes U+FFFD instead of htmlspecialchars() returning '' for the whole value. it only
+     * covers the escaped value: the ajax list also sends the stored rows, which still hold the
+     * byte, and its answer survives that because ajax_list_handler() json encodes with
+     * JSON_INVALID_UTF8_SUBSTITUTE.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public static function escape_cell($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * json for a javascript value inside an inline <script> block (INLINE_JSON_FLAGS): the
+     * templates printed {$rows|json_encode} with no flags, so one invalid utf-8 byte in a stored
+     * value printed 'var crud_rows = ;' (a syntax error that broke the edit and delete buttons),
+     * and a stored '<!--<script' could derail the script block. the value javascript reads is
+     * the same. $fallback is printed when json_encode() still fails (a nan, inf or depth error).
+     *
+     * @param mixed $value
+     * @param string $fallback
+     * @return string
+     */
+    public static function inline_json($value, $fallback = 'null')
+    {
+        $json = json_encode($value, self::INLINE_JSON_FLAGS);
+        return $json === false ? $fallback : $json;
     }
 
     /**
@@ -1256,21 +1830,10 @@ class Crud extends Form
                     $db->Record['Field']
                 ));
             }
-            if (preg_match($this->custid_match, $db->Record['Field'])) {
-                //$this->log("Found CustID type field: {$db->Record['Field']}", __LINE__, __FILE__, 'info');
-                if ($this->limit_custid == true) {
-                    if (count($this->search_terms) > 0) {
-                        if (!is_array($this->search_terms[0])) {
-                            $this->search_terms = [$this->search_terms];
-                        }
-                    }
-
-                    //$this->log("Old: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
-                    $this->search_terms[] = [$db->Record['Field'], '=', $this->custid];
-                    //$this->log("New: " . json_encode($this->search_terms), __LINE__, __FILE__, 'debug');
-                }
-            }
-
+            // the *_custid columns (custid_match) no longer get a tenant term pushed into
+            // search_terms here: that ran at init(), before a page could set its limit role, and
+            // put the term among the user's search terms, where set_default_search() replaced it
+            // and an all fields search ORed it away. tenant_search_terms() builds it per query.
             $fields[$db->Record['Field']] = $db->Record;
         }
         return $fields;
@@ -1292,7 +1855,10 @@ class Crud extends Form
                 $count = $this->queries->size;
             }
         } elseif ($this->type == 'table') {
-            $db->query("select count(*) from {$this->table}", __LINE__, __FILE__);
+            // the same search (and tenant terms) as the list query, so the count and the pages
+            // match the rows listed; with neither it is the plain 'select count(*) from <table>'
+            $from = $this->append_search_sql(" from {$this->table}", false);
+            $db->query("select count(*){$from}", __LINE__, __FILE__);
             $db->next_record(MYSQL_NUM);
             $count = $db->f(0);
         } else {
@@ -1515,8 +2081,8 @@ class Crud extends Form
      * made the list and count queries a syntax error, so then the query comes back unchanged.
      *
      * the search used to be appended at the END of the query. the tenant filter
-     * (get_table_details() adds [<*_custid field>, '=', <custid>] when limit_custid) is one of
-     * the terms, so on a query ending in GROUP BY it became 'group by x and invoices_custid=5'
+     * (tenant_search_terms(): <*_custid field> = <custid> when limit_custid) is part of the
+     * search, so on a query ending in GROUP BY it became 'group by x and invoices_custid=5'
      * - which mysql runs (without ONLY_FULL_GROUP_BY) and which filters nothing. now
      * scan_search_slot() finds the WHERE clause and the clause that ends it, and the search
      * goes in between:
@@ -1544,9 +2110,8 @@ class Crud extends Form
      */
     public function append_search_sql($query, $hasWhere)
     {
-        if (count($this->search_terms) == 0) {
-            return $query;
-        }
+        // no early return on empty search_terms: the tenant terms are not among them (see
+        // tenant_search_terms()), search_to_sql() returns '' when there is neither
         $search = $this->search_to_sql();
         if (trim($search) === '') {
             return $query;
@@ -1868,15 +2433,82 @@ class Crud extends Form
             }
         }
         if (count($search) == 0) {
-            return '';
-        }
-        if ($implode_type == 'and') {
+            $search = '';
+        } elseif ($implode_type == 'and') {
             $search = implode(' and ', $search);
         } else {
             $search = '('.implode(' or ', $search).')';
         }
+        // the tenant terms come last, as when they were appended to search_terms, and are
+        // always ANDed outside the user's terms: an all fields search ORs its own terms
+        // together, '(<or group>) and <tenant terms>', and can no longer OR the account limit away
+        $tenant = $this->tenant_search_sql();
+        if (count($tenant) > 0) {
+            $search = ($search === '' ? '' : $search.' and ').implode(' and ', $tenant);
+        }
         //$this->log("search_to_sql() got {$search}", __LINE__, __FILE__, 'debug');
         return $search;
+    }
+
+    /**
+     * the terms pinning a limited list (limit_custid) to $this->custid: one
+     * [<column>, '=', <custid>] for every column of the query's tables that is an account
+     * column (is_account_column(): $custid_match, *_custid by default, in any letter case),
+     * in table then column order. they are kept out of
+     * the user modifiable $search_terms and built when a query runs, so a limit role or a
+     * custid_match set after init() applies, and set_default_search() / add_search_param()
+     * cannot replace them. a function backed crud has no table columns to filter.
+     *
+     * @return array<int, array{0: string, 1: string, 2: mixed}>
+     */
+    public function tenant_search_terms()
+    {
+        $terms = [];
+        if ($this->limit_custid != true || $this->type == 'function' || !is_string($this->custid_match) || !is_array($this->tables)) {
+            return $terms;
+        }
+        foreach ($this->tables as $table => $fields) {
+            if (!is_array($fields)) {
+                continue;
+            }
+            foreach (array_keys($fields) as $column) {
+                if (is_string($column) && $this->is_account_column($column)) {
+                    $terms[] = [$column, '=', $this->custid];
+                }
+            }
+        }
+        return $terms;
+    }
+
+    /**
+     * the sql of each tenant term (see tenant_search_terms()). a term whose sql cannot be built
+     * (no numeric account id to compare with) is '0=1': a limited list then shows no rows,
+     * where dropping the term would have shown every account's rows.
+     *
+     * a list limited by a role the admin lacks (is_role_limited(), custid requested or not)
+     * whose tables have no account column gets no term at all, which listed every account's
+     * rows: it fails closed, '0=1' for the list, the count and the exports (they all build their
+     * where here), and a warning is logged once. a client's list of such tables (catalogs:
+     * packages, templates, ...) and the list of an admin holding the role (a requested customer
+     * or not) stay unfiltered, as before.
+     *
+     * @return string[]
+     */
+    protected function tenant_search_sql()
+    {
+        $sql = [];
+        foreach ($this->tenant_search_terms() as $term) {
+            $clause = $this->json_search_tosql($term[0], $term[1], $term[2]);
+            $sql[] = trim($clause) === '' ? '0=1' : $clause;
+        }
+        if (count($sql) == 0 && $this->type != 'function' && $this->is_role_limited()) {
+            if ($this->role_limit_warned !== true) {
+                $this->role_limit_warned = true;
+                $this->log("crud {$this->choice} lists no rows: the admin lacks the {$this->limit_custid_role} role and its tables have no account column to limit it to their own account or the requested customer", __LINE__, __FILE__, 'warning');
+            }
+            $sql[] = '0=1';
+        }
+        return $sql;
     }
 
     /**
@@ -2234,6 +2866,19 @@ class Crud extends Form
      */
     public function make_link_url($url)
     {
+        return self::link_url($url);
+    }
+
+    /**
+     * make_link_url() without an instance, for the 'function' filters of the crud pages that
+     * build a link in php (crud_domains_list_screenshot(), crud_coupons_customer()), so their
+     * links come out as the ones convert_choice_links() made of the sql built html before.
+     *
+     * @param string $url the url to convert, eg 'index.php?choice=none.view_domain&id=5'
+     * @return string the converted url, or $url unchanged when there is no app to ask
+     */
+    public static function link_url($url)
+    {
         if (!\MyAdmin\App::has(\MyAdmin\tf::class)) {
             return $url;
         }
@@ -2428,6 +3073,14 @@ class Crud extends Form
                     if ($this->is_hidden_field($field)) {
                         continue;
                     }
+                    // a column whose filters can only run on a real value (a 'function' or
+                    // 'simple' filter) gets the placeholder of its decorated ajax cell, which
+                    // ajax_cells() fills with decorate_field() of each row; string filters stay
+                    // a template filled in from the plain cells
+                    if ($this->has_server_decoration($field)) {
+                        $table->add_field('%'.$field.self::DECORATED_CELL_SUFFIX.'%');
+                        continue;
+                    }
                     $table->add_field($this->decorate_field($field, $empty_record));
                 }
                 $table->add_row();
@@ -2469,7 +3122,12 @@ class Crud extends Form
         if ($this->admin == true) {
             $debug = $this;
             unset($debug->db);
-            $table->smarty->assign('debug_output', print_r($debug, true));
+            // table5.tpl prints the dump through smarty's escape, htmlspecialchars() without
+            // ENT_SUBSTITUTE, which prints '' for a string holding one invalid utf-8 byte: the
+            // rows of a 'function' list (remote or feed data, kept in the dumped crud) or a
+            // request parameter name could blank the whole dump. each invalid byte becomes
+            // the substitute character ('?') here; this is what mb_scrub() does (php 7.2+)
+            $table->smarty->assign('debug_output', mb_convert_encoding(print_r($debug, true), 'UTF-8', 'UTF-8'));
         }
         $table->hide_form();
         $page = $this->get_page();
@@ -2477,6 +3135,8 @@ class Crud extends Form
         //$total_pages = $this->get_total_pages($count);
         //$total_pages = $page_count;
         //echo 'pages'.$total_pages;
+        // the count ran after the list query, with the final account limit and search
+        $this->total_rows = $count;
         $this->total_pages = $this->get_total_pages($count);
         $this->page_links = $this->get_page_links($page, $this->total_pages);
         $assign = [
@@ -2489,7 +3149,9 @@ class Crud extends Form
                 'expired' => 'danger',
                 'terminated' => 'danger'
             ],
-            'search_terms' => json_encode($this->search_terms),
+            // printed as 'var crud_search_terms = ...' in the inline script: the request's search,
+            // html_entity_decode()d, so it is encoded for the script block (see inline_json())
+            'search_terms' => self::inline_json($this->search_terms, '[]'),
             'primary_key' => $this->primary_key,
             // the row field the row button javascript reads the identifier fragment
             // out of, or '' when this list has not opted into uuid links - in which
@@ -2516,11 +3178,17 @@ class Crud extends Form
             'header' => $this->header,
             'header_buttons' => $this->header_buttons,
             'title_buttons' => $this->title_buttons,
-            'extra_url_args' => $this->extra_url_args,
+            // the page's args plus an admin's requested custid (see get_extra_url_args()):
+            // every ajax.php url the templates build (list/export, edit, delete) carries them
+            'extra_url_args' => $this->get_extra_url_args(),
             'module' => $this->module,
             'add_row' => $this->add_row,
             'labels' => $this->labels,
             'rows' => $rows,
+            // the same rows as the json the templates print as 'var crud_rows = ...' (core's
+            // invoices.js and repeat_invoices.js read crud_rows[row][field] too), encoded for the
+            // inline script (see inline_json())
+            'rows_json' => self::inline_json($rows, '[]'),
             // posted back as csrf_token by the edit/delete modal forms, see authorize_write()
             'crud_csrf_token' => ($this->edit_row == true || $this->delete_row == true || $this->add_row == true) ? $this->get_write_csrf_token() : '',
         ];
@@ -2560,7 +3228,9 @@ class Crud extends Form
             //$this->log('ran is '.var_export($this->queries->ran, TRUE), __LINE__, __FILE__, 'debug');
             $ran = $this->queries->ran;
             $return = $this->queries->next_record($resultType);
-            if ($ran == false) {
+            // a function that returned no rows leaves Record null (foreach warned on the page
+            // and on every ajax refill); its columns are then simply not known
+            if ($ran == false && is_array($this->queries->Record)) {
                 //$this->log('queries->Record is '.var_export($this->queries->Record, TRUE), __LINE__, __FILE__, 'debug');
                 foreach ($this->queries->Record as $field => $value) {
                     $comment = ucwords(str_replace(
@@ -2614,10 +3284,82 @@ class Crud extends Form
         }
         foreach ($record as $field => $value) {
             if (is_string($field) && $value !== '' && $value !== null && $this->is_secret_field($field)) {
-                $record[$field] = $this->secret_mask;
+                $record[$field] = $this->secret_display_value($field, $value);
             }
         }
         return $record;
+    }
+
+    /**
+     * the mask style of a secret column (see $secret_column_masks), '' for the plain mask
+     *
+     * @param string $field the field name, optionally prefixed with its table
+     * @return string
+     */
+    protected static function secret_mask_style($field)
+    {
+        if (!is_string($field)) {
+            return '';
+        }
+        $pos = strrpos($field, '.');
+        if ($pos !== false) {
+            $field = substr($field, $pos + 1);
+        }
+        return self::$secret_column_masks[strtolower(trim($field, '` '))] ?? '';
+    }
+
+    /**
+     * what a secret column shows instead of its value: $secret_mask, or for a 'last4' column
+     * the stars plus last 4 of mask_last4()
+     *
+     * @param string $field
+     * @param mixed $value a non-empty value
+     * @return string
+     */
+    public function secret_display_value($field, $value)
+    {
+        if (self::secret_mask_style($field) === 'last4') {
+            return self::mask_last4($value);
+        }
+        return $this->secret_mask;
+    }
+
+    /**
+     * mask_cc()'s default output, without needing core's function loaded: a value longer than 6
+     * characters becomes a '*' for each character but the last 4, then the last 4; a shorter
+     * one comes back as it is. counted in characters (mb_*), like mask_cc(). applying it to its
+     * own output gives the same string, so a value masked in the sql (crud_cc_log) comes out of
+     * mask_secret_fields() unchanged.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public static function mask_last4($value)
+    {
+        $value = (string) $value;
+        $len = mb_strlen($value);
+        if ($len > 6) {
+            return str_repeat('*', $len - 4).mb_substr($value, $len - 4);
+        }
+        return $value;
+    }
+
+    /**
+     * whether a value posted for a secret column is what the list showed rather than something
+     * typed in: the plain mask, or for a 'last4' column anything holding a '*' (its stars, or a
+     * row stored already masked) - a real card number never contains one. the edit handler
+     * never writes such a value.
+     *
+     * @param string $field
+     * @param mixed $value
+     * @return bool
+     */
+    public function is_secret_mask_value($field, $value)
+    {
+        if ($value === $this->secret_mask) {
+            return true;
+        }
+        return self::secret_mask_style($field) === 'last4' && is_string($value) && strpos($value, '*') !== false;
     }
 
     /**
@@ -2643,10 +3385,11 @@ class Crud extends Form
      * rewrites any 'index.php?choice=none.<function>&...' href inside a fetched record
      * into the pretty '<function>?...' form.
      *
-     * a handful of lists build their own <a href> html inside the sql itself (see
-     * crud_domains_list() and crud_coupons()), and those values are handed to the browser
+     * a handful of lists built their own <a href> html inside the sql itself (crud_domains_list()
+     * and crud_coupons() did; they now select plain values and build the html in a 'function'
+     * filter that escapes what it puts in), and those values are handed to the browser
      * raw in the crud_rows json - they never pass through add_filter_link(), so this is
-     * the only place they can be converted.
+     * the only place they can be converted. kept for any list (core's too) that still does.
      *
      * only the contents of an href attribute are rewritten, deliberately: a list whose
      * DATA happens to contain such a url - the request log, the query log - has to keep
@@ -3458,6 +4201,13 @@ class Crud extends Form
      * handles any type of special formatting that has been setup for that field , such as
      * displaying a specific field as a link to edit_customer or something like that
      *
+     * a 'function' filter is called as fn($field, $value, $row): $value is the field's value
+     * (htmlspecial() escaped while html filtering is on and the field is not a raw html field,
+     * or what the previous filter made of it), $row the whole record as fetched, unescaped, so a
+     * filter can build its html from several columns; whatever it puts in from $row it escapes
+     * itself (see crud_domains_list_screenshot()). a filter written for ($field, $value) just
+     * does not take the third argument.
+     *
      * @param string $field the name of the field
      * @param array $row associative array of field =>value pairs
      * @return string the $value formatted for display
@@ -3469,23 +4219,36 @@ class Crud extends Form
             $this->log("Field {$field} has array value " . json_encode($value), __LINE__, __FILE__, 'info');
             return $value;
         }
-        if ($this->use_html_fitering == true) {
+        $filtering = $this->use_html_fitering == true;
+        if ($filtering && !$this->is_raw_html_field($field)) {
             $value = htmlspecial($value);
         }
-        $search = ['%field%', '%value%'];
-        $replace = [$field, $value];
+        // the %row_field% values a 'string' filter pastes into its html are escaped too while
+        // filtering is on (they used to go in raw), and every placeholder is replaced in one
+        // pass: str_replace() went through the placeholders one after another, so a value that
+        // itself held '%other_field%' had that placeholder replaced by the other field's raw
+        // value. %field% and %value% win over row fields of the same name, as before.
+        $pairs = [];
         foreach ($row as $row_field => $row_value) {
-            $search[] = '%'.$row_field.'%';
-            $replace[] = $row_value;
+            if ($filtering && is_scalar($row_value) && !$this->is_raw_html_field((string) $row_field)) {
+                $row_value = self::escape_cell($row_value);
+            }
+            $pairs['%'.$row_field.'%'] = $row_value;
         }
+        $pairs['%field%'] = $field;
+        $pairs['%value%'] = $value;
         if (isset($this->filters[$field])) {
             foreach ($this->filters[$field] as $idx => $filter) {
                 if ($filter['type'] == 'string') {
-                    $value = str_replace($search, $replace, $filter['value']);
+                    $value = strtr((string) $filter['value'], $pairs);
                 } elseif ($filter['type'] == 'simple') {
-                    $value = str_replace(array_keys($filter['value']), array_values($filter['value']), $value);
+                    // a NULL cell (a LEFT JOIN with no match, such as crud_licenses_list's
+                    // invoices_paid) is '' as str_replace() made it, without its php 8.1
+                    // deprecation on every row of every refill; any other scalar is the string
+                    // str_replace() converted it to anyway. a 'function' filter still gets NULL
+                    $value = str_replace(array_keys($filter['value']), array_values($filter['value']), (string) $value);
                 } elseif ($filter['type'] == 'function') {
-                    $value = call_user_func_array($filter['value'], [$field, $value]);
+                    $value = call_user_func_array($filter['value'], [$field, $value, $row]);
                 }
             }
         }
@@ -3497,7 +4260,10 @@ class Crud extends Form
      *
      * @param string $field the name of the field
      * @param mixed $value the string pattern to use to replace
-     * @param string $type type of filter, can be string, function,
+     * @param string $type type of filter, can be string, simple (an array of value =>
+     *                     replacement), function (the name of a function called as
+     *                     fn($field, $value, $row), see decorate_field()). simple and function
+     *                     filters run on the server for every ajax row (has_server_decoration())
      * @param bool|false|string $acl optional acl rule required for this filter, such as 'view_customer'
      * @param string $bad_acl_test
      * @return $this
@@ -3761,11 +4527,37 @@ class Crud extends Form
             if ($idx == 0) {
                 fputcsv($out, array_keys($Record));
             }
-            fputcsv($out, $Record);
+            // a cell a spreadsheet would read as a formula (=, +, -, @, tab, cr first) gets a
+            // leading ' (customer text such as hostnames and comments ends up here)
+            $safe = [];
+            foreach ($Record as $field => $value) {
+                $safe[$field] = self::csv_safe_cell($value);
+            }
+            fputcsv($out, $safe);
             //$csv .= array2Csv($Record);
         }
         fclose($out);
         return $csv;
+    }
+
+    /**
+     * neutralizes csv formula injection: a value that is not a number and starts with '=',
+     * '+', '-', '@', a tab or a carriage return is what excel / libreoffice / sheets run as a
+     * formula when the csv is opened, so it gets a leading single quote, which they show as
+     * text. numbers (-5.00, +1, 1e3) and every other value are returned unchanged.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function csv_safe_cell($value)
+    {
+        if (!is_string($value) || $value === '' || is_numeric($value)) {
+            return $value;
+        }
+        if (in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'".$value;
+        }
+        return $value;
     }
 
     /**
@@ -3780,7 +4572,8 @@ class Crud extends Form
         foreach ($headers as $header) {
             header($header);
         }
-        return json_encode($this->rows, JSON_PRETTY_PRINT);
+        // an invalid utf-8 byte in any stored value made this false, an empty download
+        return json_encode($this->rows, JSON_PRETTY_PRINT | JSON_INVALID_UTF8_SUBSTITUTE);
     }
 
     /**

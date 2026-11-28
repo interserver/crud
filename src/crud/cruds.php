@@ -18,7 +18,8 @@ function get_crud_tables()
         'modules' => [],
         'tables' => []
     ];
-    foreach (['domains', 'pdns'] as $module) {
+    // the same list crud_table() accepts as its db, so every link here opens
+    foreach (Crud::$table_browser_modules as $module) {
         if (isset($GLOBALS[$module.'_dbh'])) {
             $dbh = $GLOBALS[$module.'_dbh'];
             $dbName = $dbh->database;

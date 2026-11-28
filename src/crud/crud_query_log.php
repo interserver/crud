@@ -38,6 +38,16 @@ function crud_query_log($custid = null, $return_output = false)
         ->enable_fluid_container()
         ->set_page_limit(500)
         ->set_title(_('Query Log'));
+    // edit_customer embeds this tab (with the customer's id, its url naming them as customer=).
+    // the crud urls (crud.js's ajax refills: paging, search, export) named the page that was
+    // dispatched, edit_customer, and carried no customer, so a refill ran the whole
+    // edit_customer page with none ('Invalid Customer'). they name this function and the
+    // customer it resolved, so a refill (which calls it with no arguments) lists the same
+    // customer; get_extra_url_args() does not add a second custid
+    $crud->choice = __FUNCTION__;
+    if (!is_null($custid)) {
+        $crud->set_extra_url_args('&custid='.(int) $custid);
+    }
     $return = $crud->go();
     if ($return_output == true) {
         return $return;

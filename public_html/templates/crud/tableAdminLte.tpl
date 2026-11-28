@@ -220,7 +220,7 @@
                     </div>
                 </div>
                 <script>
-                    var crud_rows = {$rows|json_encode};
+                    var crud_rows = {$rows_json};
                     var crud_primary_key = "{$primary_key}";
 {if isset($uuid_key) && $uuid_key != ''}                    var crud_uuid_key = "{$uuid_key}";{* the row field holding the identifier fragment ("uuid=<uuid>", or "id=<id>" for a row with no usable uuid) that a %uuid% row button link appends - see Crud::use_uuid_links() and Crud::SERVICE_PARAM_FIELD. the {if} deliberately starts in column 0 so a list that did NOT opt into uuid links renders byte for byte what it did before; get_crud_row_uuid() reads an undefined crud_uuid_key as "no uuid" and links by primary key instead. *}
 {/if}                    var crud_page_offset = {$page_offset};
@@ -237,7 +237,7 @@
    would call the get_crud_row_uuid() the %uuid% row buttons emit and hit a
    ReferenceError - a button that silently does nothing for up to 7 days. bump the
    version whenever crud.js changes, same as crud_table5.css above. *}
-<script src="/js/crud.js?v=20260824"></script>
+<script src="/js/crud.js?v=20261127"></script>
                 <link rel="stylesheet" href="/css/crud_table5.css?v=20260622b">
                 <script src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
                 <script src="/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>

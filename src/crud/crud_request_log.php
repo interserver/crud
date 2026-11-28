@@ -8,14 +8,29 @@
  */
 use \MyCrud\Crud;
 
+/**
+ * pretty prints a logged api request/response that is json, html escaped.
+ *
+ * the stored responses carry text the far end chose (an ses bounce's diagnosticCode is the
+ * rejecting mail server's own reply), and json_encode() does not escape < or >, so the
+ * printed json is escaped. the crud has html filtering on and hands this filter the value
+ * already escaped by htmlspecial() (ENT_COMPAT | ENT_HTML5), which json_decode() cannot read:
+ * that escaping is undone first, the json decoded and pretty printed as before, and the result
+ * escaped again for the page. a value that is not json comes back escaped.
+ *
+ * @param string $field
+ * @param string|null $value the htmlspecial() escaped column value
+ * @return string html
+ */
 function request_log_decorate($field, $value)
 {
+    $value = htmlspecialchars_decode((string) $value, ENT_COMPAT | ENT_HTML5);
     $new = json_decode($value, true);
     if (is_null($new)) {
-        return $value;
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
     $new = json_encode($new, JSON_PRETTY_PRINT);
-    $new = '<pre style="text-align: left;">'.$new.'</pre>';
+    $new = '<pre style="text-align: left;">'.htmlspecialchars((string) $new, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'</pre>';
     return $new;
 }
 
@@ -52,9 +67,17 @@ function crud_request_log($custid = null, $return_output = false)
         $custid = (int)$custid;
     }
     $crud = Crud::init('select request_timestamp'.(is_null($custid) ? ', request_custid' : '').', request_service, request_function, request_category, request_action, request_request, request_result from request_log' . (!is_null($custid) ? ' where request_custid='.$custid : ''))
-        ->set_limit_custid_role('list_all')
+        // the list of every customer's requests is limited to the admin's own account without
+        // list_all. one customer's log (edit_customer embeds it with that customer's id, or the
+        // request names the customer) is already filtered to that customer by the where above,
+        // like core's legacy forms let an explicit custid win over list_all_acl; the role would
+        // AND the admin's own id onto it and empty the tab for every admin without list_all
+        ->set_limit_custid_role(is_null($custid) ? 'list_all' : false)
         ->set_order('request_timestamp', 'desc')
-        ->set_use_html_filtering(false)
+        // escaped like every list: request_log_decorate() reads the escaped value and escapes
+        // what it prints (filtering was off so the decorator could json_decode the raw value,
+        // which printed the logged responses as html)
+        ->set_use_html_filtering(true)
         ->set_return_output($return_output)
         ->disable_delete()
         ->disable_edit()
@@ -63,6 +86,16 @@ function crud_request_log($custid = null, $return_output = false)
         ->enable_fluid_container()
         ->set_page_limit(500)
         ->set_title(_('Request Log'));
+    // edit_customer embeds this tab (with the customer's id, its url naming them as customer=).
+    // the crud urls (crud.js's ajax refills: paging, search, export) named the page that was
+    // dispatched, edit_customer, and carried no customer, so a refill ran the whole
+    // edit_customer page with none ('Invalid Customer'). they name this function and the
+    // customer it resolved, so a refill (which calls it with no arguments) lists the same
+    // customer; get_extra_url_args() does not add a second custid
+    $crud->choice = __FUNCTION__;
+    if (!is_null($custid)) {
+        $crud->set_extra_url_args('&custid='.(int) $custid);
+    }
     $return = $crud->go();
     if ($return_output == true) {
         return $return;

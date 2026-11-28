@@ -188,6 +188,45 @@ function replaceAll(str, find, replace) {
 }
 
 /**
+ * escapes a string for use as a literal inside a RegExp
+ *
+ * @param string str the text to match literally
+ * @returns string the escaped pattern
+ */
+function crud_escape_regexp(str) {
+	return String(str).replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+}
+
+/**
+ * fills the %field% placeholders of the empty row template with a row's values, the way
+ * Crud::decorate_field() does on the server: every placeholder in one pass (a value that
+ * itself holds '%other_field%' is not filled in again), the longest field name first, and the
+ * value pasted as given (a function callback, so '$&' or '$`' in a value is not a replacement
+ * pattern). the values must already be safe for html: they are the 'cells' of the ajax list,
+ * which the server escaped (Crud::html_safe_record()).
+ *
+ * @param string template the html of the empty row
+ * @param object cells field => html safe value
+ * @returns string the html of the filled row
+ */
+function crud_fill_row(template, cells) {
+	var names = [], field;
+	for (field in cells)
+		if (Object.prototype.hasOwnProperty.call(cells, field))
+			names.push(field);
+	if (names.length == 0)
+		return template;
+	names.sort(function(a, b) {
+		return b.length - a.length;
+	});
+	var pattern = new RegExp('%(' + names.map(crud_escape_regexp).join('|') + ')%', 'g');
+	return template.replace(pattern, function(match, name) {
+		var value = cells[name];
+		return value === null || typeof value == 'undefined' ? '' : String(value);
+	});
+}
+
+/**
  * performs a crud search request
  *
  * @param that
@@ -237,8 +276,11 @@ function get_crud_url() {
 		console.log("Got undefined action= contents from #pagionationForm so used fallback method and generated: "+url);
 	}
 	url = url+"&order_by="+crud_order_by+"&order_dir="+crud_order_dir+"&offset="+crud_page_offset+"&limit="+crud_page_limit;
+	// the search terms are what the user typed: url encoded, or a '&' (AT&T) split the json
+	// into another parameter, a '+' came back a space and a '#' cut the url (the export url
+	// is this one too). the server reads the decoded parameter (Crud::apply_request_data())
 	if (crud_search_terms.length > 0)
-		url = url + "&search=" + JSON.stringify(crud_search_terms);
+		url = url + "&search=" + encodeURIComponent(JSON.stringify(crud_search_terms));
 	return url;
 }
 
@@ -266,18 +308,19 @@ function crud_export(that) {
  */
 function crud_load_page(callback) {
 	$.getJSON(get_crud_url(), { }, function(json) {
-		crud_rows = json;
+		// the list handler answers {rows: [...], cells: [...]}: rows are the records as
+		// stored (crud_rows, which the edit form fills its inputs from), cells the same
+		// records escaped by the server for pasting into the row html
+		var rows = json.rows || [], cells = json.cells || [];
+		crud_rows = rows;
         if (document.getElementById('itemrowempty') != null) {
 		    var empty = document.getElementById('itemrowempty').innerHTML;
 		    var x, row;
 		    jQuery('#crud-table tbody').html('');
 		    jQuery('#crud-table tbody').append('<tr id="itemrowempty" style="display: none;">' + empty + '</tr>');
-		    for(var x = 0; x < json.length; x++) {
+		    for(var x = 0; x < cells.length; x++) {
 			    //row = replaceAll(empty, 'display: none;','');
-			    row = empty;
-			    for (var field in json[x]) {
-				    row = replaceAll(row, '%'+field+'%', json[x][field]);
-			    }
+			    row = crud_fill_row(empty, cells[x]);
 			    jQuery('#crud-table tbody').append('<tr id="itemrow'+x+'">' + row + '</tr>');
 		    }
 		    crud_update_pager();

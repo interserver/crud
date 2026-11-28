@@ -68,10 +68,11 @@ class CrudSecretColumnsTest extends TestCase
     public function testSecretFieldDetection(): void
     {
         $crud = $this->crud();
-        foreach (['domain_password', 'domains.domain_password', '`vps_rootpass`', 'qs_rootpass', 'assets.asset_password', 'ipmi_admin_password', 'ipmi_client_password', 'ipmi_admin_pass', 'cc_request_card_code', 'VPS_ROOTPASS'] as $field) {
+        // cc_request_card_num (cc_log's full card number) is secret too, shown as its last 4
+        foreach (['domain_password', 'domains.domain_password', '`vps_rootpass`', 'qs_rootpass', 'assets.asset_password', 'ipmi_admin_password', 'ipmi_client_password', 'ipmi_admin_pass', 'cc_request_card_code', 'VPS_ROOTPASS', 'cc_request_card_num', 'cc_log.cc_request_card_num'] as $field) {
             $this->assertTrue($crud->is_secret_field($field), $field);
         }
-        foreach (['domain_hostname', 'domain_username', 'cc_result_card_code', 'cc_request_card_num', '', 'password_expire'] as $field) {
+        foreach (['domain_hostname', 'domain_username', 'cc_result_card_code', '', 'password_expire'] as $field) {
             $this->assertFalse($crud->is_secret_field($field), $field);
         }
     }
@@ -143,6 +144,8 @@ class CrudSecretColumnsTest extends TestCase
     public function testSearchAllFieldsSkipsSecretColumns(): void
     {
         $crud = $this->crud();
+        // the all fields search is admin only (search_to_sql() skips it for a client)
+        $crud->admin = true;
         $crud->search_terms = [['', '=', 'guess']];
         $sql = $crud->search_to_sql();
         $this->assertStringContainsString("domains.domain_hostname like '%guess%'", $sql);
